@@ -1,0 +1,47 @@
+# Copyright (C) 2021 Krokedil
+# This file is distributed under the same license as the Qliro One for WooCommerce package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Qliro One for WooCommerce 2.6.3\n"
+"Report-Msgid-Bugs-To: "
+"https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
+"POT-Creation-Date: 2021-12-01 14:27:34+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2021-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: qliro-one-for-woocommerce.php:79 qliro-one-for-woocommerce.php:89
+msgid "Nope"
+msgstr ""
+
+#: qliro-one-for-woocommerce.php:119
+msgid "Settings"
+msgstr ""
+
+#: qliro-one-for-woocommerce.php:120
+msgid "Support"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Qliro One for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://krokedil.com/qliro/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Qliro One Checkout payment gateway for WooCommerce."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Krokedil"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://krokedil.com/"
+msgstr ""

@@ -76,7 +76,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		private function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
 		}
 
 		/**
@@ -86,12 +86,12 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
 		}
 
 		/**
 		 * Protected constructor to prevent creating a new instance of the
-		 * *Singleton* via the `new` operator from outside of this class.
+		 * *Singleton* via the `new` operator from outside this class.
 		 */
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
@@ -116,8 +116,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public function plugin_action_links( $links ) {
 			$setting_link = $this->get_setting_link();
 			$plugin_links = array(
-				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce' ) . '</a>',
-				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce' ) . '</a>',
+				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce.php' ) . '</a>',
+				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce.php' ) . '</a>',
 			);
 
 			return array_merge( $plugin_links, $links );
@@ -151,6 +151,9 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
 				return;
 			}
+
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-assets.php';
+
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
