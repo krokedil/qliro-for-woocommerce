@@ -21,28 +21,28 @@ class Qliro_One_Fields {
 	 */
 	public static function fields() {
 		$settings = array(
-			'enabled'                    => array(
+			'enabled'         => array(
 				'title'       => __( 'Enable/Disable', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable Qliro One payment', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
 			),
-			'title'                      => array(
+			'title'           => array(
 				'title'       => __( 'Title', 'qliro-one-for-woocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'Payment method title.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'Qliro One',
 				'desc_tip'    => true,
 			),
-			'description'                => array(
+			'description'     => array(
 				'title'       => __( 'Description', 'qliro-one-for-woocommerce' ),
 				'type'        => 'textarea',
 				'description' => __( 'Payment method description.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'Payment method description.',
 				'desc_tip'    => true,
 			),
-			'testmode'                   => array(
+			'testmode'        => array(
 				'title'       => __( 'Test mode', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable Test Mode', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
@@ -50,7 +50,7 @@ class Qliro_One_Fields {
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
-			'logging'                    => array(
+			'logging'         => array(
 				'title'       => __( 'Logging', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Log debug messages', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
@@ -59,11 +59,11 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 			// credentials.
-			'credentials'                => array(
+			'credentials'     => array(
 				'title' => 'API Credentials',
 				'type'  => 'title',
 			),
-			'api_key'                => array(
+			'api_key'         => array(
 				'title'             => __( 'Production Qliro One API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
 				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
@@ -73,7 +73,7 @@ class Qliro_One_Fields {
 					'autocomplete' => 'off',
 				),
 			),
-			'api_secret'              => array(
+			'api_secret'      => array(
 				'title'             => __( 'Production Qliro One API Secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
 				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
@@ -83,7 +83,7 @@ class Qliro_One_Fields {
 					'autocomplete' => 'new-password',
 				),
 			),
-			'test_api_key'           => array(
+			'test_api_key'    => array(
 				'title'             => __( 'Test Qliro One API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
 				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
@@ -93,7 +93,7 @@ class Qliro_One_Fields {
 					'autocomplete' => 'off',
 				),
 			),
-			'test_api_secret'         => array(
+			'test_api_secret' => array(
 				'title'             => __( 'Test Qliro One API Secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
 				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
@@ -103,7 +103,6 @@ class Qliro_One_Fields {
 					'autocomplete' => 'new-password',
 				),
 			),
-
 
 		);
 		return apply_filters( 'qliro_one_gateway_settings', $settings );
