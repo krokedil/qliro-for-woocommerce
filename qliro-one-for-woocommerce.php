@@ -153,6 +153,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			}
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-assets.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
 
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
@@ -168,7 +170,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @since  1.0.0
 		 */
 		public function add_gateways( $methods ) {
-			$methods[] = 'QOC_Gateway';
+			$methods[] = 'Qliro_One_Gateway';
 
 			return $methods;
 		}
