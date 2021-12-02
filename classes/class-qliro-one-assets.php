@@ -34,10 +34,11 @@ class Qliro_One_Assets {
 	 *
 	 * Checks whether a SCRIPT_DEBUG constant exists.
 	 * If there is, the plugin will use minified files.
+	 *
 	 * @return string
 	 */
 	protected function qoc_is_script_debug_enabled() {
-		return  ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )  ? '.min' : '';
+		return ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '.min' : '';
 	}
 
 	/**
@@ -52,17 +53,17 @@ class Qliro_One_Assets {
 			return;
 		}
 		$script_version = $this->qoc_is_script_debug_enabled();
-		$src          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
-		$dependencies = array( 'jquery' );
+		$src            = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
+		$dependencies   = array( 'jquery' );
 		wp_register_script( 'qliro-one-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, true );
 		wp_localize_script(
 			'qliro-one-for-woocommerce',
 			'qliroOneParams',
 			array(
-				'isEnabled' => 'yes'
+				'isEnabled' => 'yes',
 			)
 		);
-		wp_enqueue_script( 'qliro-one-for-woocommerce');
+		wp_enqueue_script( 'qliro-one-for-woocommerce' );
 	}
 
 
@@ -82,7 +83,7 @@ class Qliro_One_Assets {
 			QLIRO_WC_PLUGIN_URL . '/assets/css/qliro-one-for-woocommerce' . $style_version . '.css',
 			array()
 		);
-		wp_enqueue_style( 'qliro-one-style');
+		wp_enqueue_style( 'qliro-one-style' );
 	}
 }
 new Qliro_One_Assets();
