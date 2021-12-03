@@ -2,7 +2,7 @@
 /**
  * Main class for GET requests.
  *
- * @package Qliro_One_ForWooCommerce/Classes/Requests
+ * @package Qliro_One_For_WooCommerce/Classes/Requests
  */
 
 defined( 'ABSPATH' ) || exit;
