@@ -131,10 +131,9 @@ abstract class Qliro_One_Request {
 	 * @return object|WP_Error
 	 */
 	public function request() {
-		$url      = $this->get_request_url( $this->arguments );
-		$args     = $this->get_request_args( $this->arguments );
+		$url  = $this->get_request_url( $this->arguments );
+		$args = $this->get_request_args( $this->arguments );
 		$response = wp_remote_request( $url, $args );
-		error_log( 'response create' . var_export( $response, true ) );
 		return $this->process_response( $response, $args, $url );
 	}
 
@@ -151,7 +150,8 @@ abstract class Qliro_One_Request {
 			return $response;
 		}
 
-		if ( wp_remote_retrieve_response_code( $response ) < 200 || wp_remote_retrieve_response_code( $response ) > 299 ) {
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( $response_code < 200 || $response_code > 299 ) {
 			$data          = 'URL: ' . $request_url . ' - ' . wp_json_encode( $request_args );
 			$error_message = '';
 			// Get the error messages.
@@ -184,5 +184,7 @@ abstract class Qliro_One_Request {
 		$title  = "{$this->log_title} - URL: {$request_url}";
 		$code   = wp_remote_retrieve_response_code( $response );
 		// todo format log.
+
+		// Qliro_One_Logger::format_log( 'qliro_order_id_todo', $method, $title, $request_args, $response, $code );
 	}
 }
