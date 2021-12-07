@@ -58,7 +58,7 @@ class Qliro_One_Templates {
 				}
 			}
 
-			// Klarna Checkout.
+			// QLiro One Checkout.
 			if ( 'checkout/form-checkout.php' === $template_name ) {
 				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 
@@ -68,7 +68,7 @@ class Qliro_One_Templates {
 					$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout.php';
 				}
 
-				// Klarna checkout page.
+				// Qliro One checkout page.
 				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
 					// If chosen payment method exists.
 					if ( 'qliro_one' === WC()->session->get( 'chosen_payment_method' ) ) {
@@ -103,14 +103,14 @@ class Qliro_One_Templates {
 				}
 			}
 
-			// Klarna Checkout Pay for order.
+			// Qliro One Checkout Pay for order.
 			if ( 'checkout/form-pay.php' === $template_name ) {
 				global $wp;
 				$order_id           = $wp->query_vars['order-pay'];
 				$order              = wc_get_order( $order_id );
 				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
-					if ( locate_template( 'woocommerce/klarna-checkout-pay.php' ) ) {
+					if ( locate_template( 'woocommerce/qliro-one-checkout-pay.php' ) ) {
 						$qliro_one_checkout_template = locate_template( 'woocommerce/qliro-one-checkout-pay.php' );
 					} else {
 						$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout-pay.php';
