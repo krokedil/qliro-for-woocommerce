@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class for the request to add a item to the Klarna order.
+ * Get Qliro One order.
  */
 class Qliro_One_Request_Get_Order extends Qliro_One_Request_Get {
 
