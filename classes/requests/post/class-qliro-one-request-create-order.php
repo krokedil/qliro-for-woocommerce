@@ -1,0 +1,77 @@
+<?php
+/**
+ * Class for the request to create order.
+ *
+ * @package Qliro_One_Create_Order/Classes/Requests/POST
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Class for the request to add a item to the Klarna order.
+ */
+class Qliro_One_Create_Order extends Qliro_One_Request_Post {
+
+	/**
+	 * Class constructor.
+	 *
+	 * @param array $arguments The request arguments.
+	 */
+	public function __construct( $arguments ) {
+		parent::__construct( $arguments );
+		$this->log_title = 'Create order';
+	}
+
+	/**
+	 * Get the request url.
+	 *
+	 * @return string
+	 */
+	protected function get_request_url() {
+		return $this->get_api_url_base() . 'checkout/merchantapi/orders';
+	}
+
+	protected function get_request_args() {
+		return array(
+			'headers'    => $this->get_request_headers(),
+			'user-agent' => $this->get_user_agent(),
+			'method'     => $this->method,
+			'timeout'    => apply_filters( 'qliro_one_request_timeout', 10 ),
+			'body'       => wp_json_encode( apply_filters( 'qliro_one_request_args', $this->get_body() ) ),
+		);
+	}
+
+
+
+	/**
+	 * Get the body for the request.
+	 *
+	 * @return array
+	 */
+	protected function get_body() {
+
+		return array(
+			'MerchantReference'                    => 'MerchantUniqueReference98',
+			'Currency'                             => get_woocommerce_currency(),
+			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
+			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
+			'MerchantCheckoutStatusPushUrl'        => 'https://Merchant.com/push/',
+			'MerchantConfirmationUrl'              => 'http://Merchant.com/confirmation/',
+			'MerchantOrderManagementStatusPushUrl' => 'https://Merchant.com/push/',
+			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
+			'PrimaryColor'                         => '#00FF00',
+			'CallToActionColor'                    => '#0000FF',
+			'OrderItems'                           =>
+			array(
+				array(
+					'MerchantReference'  => 'XXX',
+					'Description'        => 'ZZZ',
+					'Quantity'           => 4,
+					'PricePerItemIncVat' => 450,
+					'PricePerItemExVat'  => 450,
+				),
+			),
+			'MerchantApiKey'                       => 'KROKE',
+		);
+	}
+}
