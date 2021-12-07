@@ -34,4 +34,15 @@ abstract class Qliro_One_Request_Get extends Qliro_One_Request {
 			'method'     => $this->method,
 		);
 	}
+
+	/**
+	 * Calculates the basic auth.
+	 *
+	 * @param $payload array
+	 * @return string
+	 */
+	protected function calculate_auth() {
+		$secret = 'yes' === $this->settings['testmode'] ? 'test_api_secret' : 'api_secret';
+		return 'Qliro ' . base64_encode( hex2bin( hash( 'sha256', '' . $this->settings[ $secret ] ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions -- Base64 used to calculate auth header.
+	}
 }
