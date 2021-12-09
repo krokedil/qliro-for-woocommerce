@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class for the request to add a item to the Klarna order.
+ * Qliro_One_Create_Order class.
  */
 class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 
@@ -30,18 +30,6 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	protected function get_request_url() {
 		return $this->get_api_url_base() . 'checkout/merchantapi/orders';
 	}
-
-	protected function get_request_args() {
-		return array(
-			'headers'    => $this->get_request_headers(),
-			'user-agent' => $this->get_user_agent(),
-			'method'     => $this->method,
-			'timeout'    => apply_filters( 'qliro_one_request_timeout', 10 ),
-			'body'       => wp_json_encode( apply_filters( 'qliro_one_request_args', $this->get_body() ) ),
-		);
-	}
-
-
 
 	/**
 	 * Get the body for the request.
