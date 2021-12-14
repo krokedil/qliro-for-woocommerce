@@ -72,7 +72,7 @@ class Qliro_One_Logger {
 			unset( $response['OrderHtmlSnippet'] );
 		}
 		// Unset the snippet to prevent issues in the request body.
-		if ( ! isset( $request_args['body'] ) ) {
+		if ( isset( $request_args['body'] ) ) {
 			$request_body = json_decode( $request_args['body'], true );
 			if ( isset( $request_body['OrderHtmlSnippet'] ) ) {
 				unset( $request_body['OrderHtmlSnippet'] );
