@@ -37,20 +37,19 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-
+		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
 		return array(
-			'MerchantReference'                    => 'MerchantUniqueReference98',
+			'MerchantReference'                    => 'qliro-one-98',
 			'Currency'                             => get_woocommerce_currency(),
 			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
 			'MerchantCheckoutStatusPushUrl'        => 'https://Merchant.com/push/',
-			'MerchantConfirmationUrl'              => 'http://Merchant.com/confirmation/',
+			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
 			'MerchantOrderManagementStatusPushUrl' => 'https://Merchant.com/push/',
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
-			'PrimaryColor'                         => '#00FF00',
-			'CallToActionColor'                    => '#0000FF',
-			'OrderItems'                           =>
-			array(
+			'PrimaryColor'                         => $this->get_primary_color(),
+			'CallToActionColor'                    => $this->get_call_to_action_color(),
+			'OrderItems'                           => array(
 				array(
 					'MerchantReference'  => 'XXX',
 					'Description'        => 'ZZZ',
@@ -59,7 +58,7 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 					'PricePerItemExVat'  => 450,
 				),
 			),
-			'MerchantApiKey'                       => 'KROKE',
+			'MerchantApiKey'                       => $this->get_qliro_key(),
 		);
 	}
 }
