@@ -131,8 +131,8 @@ abstract class Qliro_One_Request {
 	 * @return object|WP_Error
 	 */
 	public function request() {
-		$url  = $this->get_request_url( $this->arguments );
-		$args = $this->get_request_args( $this->arguments );
+		$url      = $this->get_request_url();
+		$args     = $this->get_request_args();
 		$response = wp_remote_request( $url, $args );
 		return $this->process_response( $response, $args, $url );
 	}
@@ -157,8 +157,9 @@ abstract class Qliro_One_Request {
 			// Get the error messages.
 			if ( null !== json_decode( $response['body'], true ) ) {
 				$errors = json_decode( $response['body'], true );
-				foreach ( $errors['error_messages'] as $error ) {
-					$error_message = $error_message . ' ' . $error;
+
+				foreach ( $errors as $key => $value ) {
+					$error_message .= ' ' . $key . ': ' . $value . ',';
 				}
 			}
 			$response = new WP_Error( wp_remote_retrieve_response_code( $response ), $response['body'] . $error_message, $data );
@@ -166,7 +167,7 @@ abstract class Qliro_One_Request {
 			$response = json_decode( wp_remote_retrieve_body( $response ), true );
 		}
 
-		$this->log_response( $response, $request_args, $request_url );
+		$this->log_response( $response, $request_args, $request_url, $response_code );
 
 		return $response;
 	}
@@ -177,14 +178,67 @@ abstract class Qliro_One_Request {
 	 * @param object|WP_Error $response The response from the request.
 	 * @param array           $request_args The request args.
 	 * @param string          $request_url The request URL.
+	 * @param int|string      $code The response code.
 	 * @return void
 	 */
-	protected function log_response( $response, $request_args, $request_url ) {
+	protected function log_response( $response, $request_args, $request_url, $code ) {
 		$method = $this->method;
 		$title  = "{$this->log_title} - URL: {$request_url}";
-		$code   = wp_remote_retrieve_response_code( $response );
-		// todo format log.
+		$log    = Qliro_One_Logger::format_log( 'qliro_order_id_todo', $method, $title, $request_args, $response, $code, $request_url );
+		Qliro_One_Logger::log( $log );
+	}
 
-		// Qliro_One_Logger::format_log( 'qliro_order_id_todo', $method, $title, $request_args, $response, $code );
+	/**
+	 * Get the api secret.
+	 *
+	 * @return string
+	 */
+	protected function get_qliro_secret() {
+		if ( 'yes' === $this->settings['testmode'] ) {
+			return $this->settings['test_api_secret'];
+		}
+		return $this->settings['api_secret'];
+	}
+
+	/**
+	 * Get the api key.
+	 *
+	 * @return string
+	 */
+	protected function get_qliro_key() {
+		if ( 'yes' === $this->settings['testmode'] ) {
+			return $this->settings['test_api_key'];
+		}
+		return $this->settings['api_key'];
+	}
+
+	/**
+	 * Get the primary color.
+	 *
+	 * @return string
+	 */
+	public function get_primary_color() {
+		// todo maybe option.
+		$default_value = '#00FF00';
+		if ( empty( $this->settings['qliro_one_primary_color'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_primary_color'];
+	}
+
+	/**
+	 * Get the call to action color.
+	 *
+	 * @return string
+	 */
+	public function get_call_to_action_color() {
+		// todo maybe option.
+		$default_value = '#0000FF';
+		if ( empty( $this->settings['qliro_one_call_action_color'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_call_action_color'];
 	}
 }
