@@ -39,9 +39,8 @@ class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 	 */
 	protected function get_body() {
 		return array(
-			'MerchantApiKey' => 'KROKE',
-			'OrderItems'     =>
-			array(
+			'MerchantApiKey' => $this->get_qliro_key(),
+			'OrderItems'     => array(
 				array(
 					'MerchantReference'  => 'XXX',
 					'Description'        => 'ZZZ',
