@@ -22,7 +22,7 @@ class Qliro_One_API {
 	 * @return mixed
 	 */
 	public function create_qliro_one_order( $order_id = false ) {
-		$request  = new Qliro_One_Create_Order(array());
+		$request  = new Qliro_One_Create_Order( array() );
 		$response = $request->request();
 
 		return $this->check_for_api_error( $response );
@@ -35,7 +35,7 @@ class Qliro_One_API {
 	 * @return mixed
 	 */
 	public function get_qliro_one_order( $qliro_one_order_id ) {
-		$request  = new Qliro_One_Request_Get_Order(array('order_id' => $qliro_one_order_id));
+		$request  = new Qliro_One_Request_Get_Order( array( 'order_id' => $qliro_one_order_id ) );
 		$response = $request->request();
 		return $this->check_for_api_error( $response );
 	}
@@ -51,6 +51,9 @@ class Qliro_One_API {
 	 */
 	public function update_qliro_one_order( $qliro_one_order_id, $order_id = null, $force = false ) {
 		// todo add update request.
+		$request  = new Qliro_One_Update_Order( array( 'order_id' => $qliro_one_order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
 	}
 
 	/**
@@ -67,5 +70,5 @@ class Qliro_One_API {
 		return $response;
 	}
 
-	
+
 }
