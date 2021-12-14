@@ -12,20 +12,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Echoes Qliro One Checkout iframe snippet.
  *
- * @return void
+ * @return array|void
  */
-function qliro_one_wc_show_snippet() {
-	// todo
-	// maybe create or update
-	// save id instead of the response.
-	if ( WC()->session->get( 'qliro_one_res' ) ) {
-		// update
-	} else {
-		// create
+function qliro_one_create_or_update_order() {
+	$session = WC()->session;
+	// try to get id from session.
+	$qliro_one_order_id = $session->get( 'qliro_one_order_id' );
+	if ( $qliro_one_order_id ) {
+		// try to update and then get the order again.
+		$response = QOC_WC()->api->update_qliro_one_order( $qliro_one_order_id );
+		if ( ! is_wp_error( $response ) ) {
+			return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		}
 	}
-	$response = WC()->session->get( 'qliro_get_res' );
+	// create.
+	$response = QOC_WC()->api->create_qliro_one_order();
+	if ( is_wp_error( $response ) || ! isset( $response['OrderId'] ) ) {
+		// If failed then bail.
+		return;
+	}
+	// store id.
+	$session->set( 'qliro_one_order_id', $response['OrderId'] );
+	// get qliro order.
+	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
+}
 
-	echo $response['OrderHtmlSnippet'];// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
+/**
+ * Echoes Qliro One Checkout iframe snippet.
+ */
+function qliro_wc_show_snippet() {
+	$qliro_one_order = qliro_one_create_or_update_order();
+	if ( null !== $qliro_one_order ) {
+		do_action( 'qliro_one_wc_show_snippet', $qliro_one_order );
+		echo $qliro_one_order['OrderHtmlSnippet'];// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
+	}
+	// todo here order is null.
 }
 
 
