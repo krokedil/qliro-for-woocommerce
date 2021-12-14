@@ -28,7 +28,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 		</div>
 		<div id="qliro-one-iframe-wrapper">
 			<?php do_action( 'qliro_one_wc_before_snippet' ); ?>
-			<?php qliro_one_wc_show_snippet(); ?>
+			<?php qliro_wc_show_snippet(); ?>
 			<?php do_action( 'qliro_one_wc_after_snippet' ); ?>
 		</div>
 	</div>
