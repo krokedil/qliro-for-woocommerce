@@ -68,14 +68,14 @@ class Qliro_One_Logger {
 	 */
 	public static function format_log( $qliro_order_id, $method, $title, $request_args, $response, $code, $request_url = null ) {
 		// Unset the snippet to prevent issues in the response.
-		if ( isset( $response['html_snippet'] ) ) {// todo check snippet.
-			unset( $response['html_snippet'] );
+		if ( ! is_wp_error( $response ) && isset( $response['OrderHtmlSnippet'] ) ) {// todo check snippet.
+			unset( $response['OrderHtmlSnippet'] );
 		}
 		// Unset the snippet to prevent issues in the request body.
-		if ( isset( $request_args['body'] ) ) {
+		if ( ! isset( $request_args['body'] ) ) {
 			$request_body = json_decode( $request_args['body'], true );
-			if ( isset( $request_body['html_snippet'] ) && $request_body['snippet'] ) {
-				unset( $request_body['html_snippet'] );
+			if ( isset( $request_body['OrderHtmlSnippet'] ) ) {
+				unset( $request_body['OrderHtmlSnippet'] );
 				$request_args['body'] = wp_json_encode( $request_body );
 			}
 		}
