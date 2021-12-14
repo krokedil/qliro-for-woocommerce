@@ -57,6 +57,21 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 
 		/**
+		 * Reference to merchant URLs class.
+		 *
+		 * @var Qliro_One_Merchant_URLs
+		 */
+		public $merchant_urls;
+
+		/**
+		 *  Reference to API class.
+		 *
+		 * @var Qliro_One_API
+		 */
+		public $api;
+
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -131,7 +146,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return string Setting link
 		 */
 		public function get_setting_link() {
-			$section_slug = 'qoc';
+			$section_slug = 'qliro_one';
 
 			$params = array(
 				'page'    => 'wc-settings',
@@ -156,9 +171,29 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
 
+
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qlirro-one-logger.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-post.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-get.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-put.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-get-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/put/class-qliro-one-request-update-order.php';
+
+
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-templates.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-api.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-merchant-urls.php';
+
+			$this->api           = new Qliro_One_API();
+			$this->merchant_urls = new Qliro_One_Merchant_URLS();
+
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+
 		}
 
 		/**
