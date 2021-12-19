@@ -38,6 +38,7 @@ class Qliro_One_Templates {
 	public function __construct() {
 		// Override template if Qliro One Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
+		add_action( 'qliro_one_wc_after_order_review', 'qliro_one_wc_show_another_gateway_button', 20 );
 	}
 
 	/**

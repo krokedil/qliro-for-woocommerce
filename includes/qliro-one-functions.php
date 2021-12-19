@@ -78,3 +78,23 @@ function qliro_one_unset_sessions() {
 	// todo unset qliro variables from session.
 	// todo clear qliro order id.
 }
+
+/**
+ * Shows select another payment method button in Qliro One Checkout page.
+ */
+function qliro_one_wc_show_another_gateway_button() {
+	$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+
+	if ( count( $available_gateways ) > 1 ) {
+		$settings                   = get_option( 'woocommerce_qliro_one_settings' );
+		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-checkout-for-woocommerce' );
+
+		?>
+		<p class="qliro-one-checkout-select-other-wrapper">
+			<a class="checkout-button button" href="#" id="qliro-one-select-other">
+				<?php echo esc_html( $select_another_method_text ); ?>
+			</a>
+		</p>
+		<?php
+	}
+}

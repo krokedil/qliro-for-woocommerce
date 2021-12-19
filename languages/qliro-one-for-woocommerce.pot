@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Qliro One for WooCommerce 2.6.3\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2021-12-01 14:27:34+00:00\n"
+"POT-Creation-Date: 2021-12-17 14:42:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,16 +14,242 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: qliro-one-for-woocommerce.php:79 qliro-one-for-woocommerce.php:89
+#: classes/class-qliro-one-confirmation.php:118
+msgid "Failed getting the order for the external payment."
+msgstr ""
+
+#: classes/class-qliro-one-confirmation.php:124
+msgid "Failed to find the payment method for the external payment."
+msgstr ""
+
+#: classes/class-qliro-one-confirmation.php:134
+msgid "Something went wrong with the external payment. Please try again"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:25
+msgid "Enable/Disable"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:26
+msgid "Enable Qliro One payment"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:32
+msgid "Title"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:34
+msgid "Payment method title."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:39
+msgid "Description"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:41
+msgid "Payment method description."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:46
+msgid "Other payment method button text"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:48
+msgid ""
+"Customize the <em>Select another payment method</em> button text that is "
+"displayed in checkout if using other payment methods than Qliro One. Leave "
+"blank to use the default (and translatable) text."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:56
+msgid "Test mode"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:57
+msgid "Enable Test Mode"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:59
+msgid "Place the payment gateway in test mode using test API keys."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:64
+msgid "Logging"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:65
+msgid "Log debug messages"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:67
+msgid "Save debug messages to the WooCommerce System Status log."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:77
+msgid "Production Qliro One API key"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:79 classes/class-qliro-one-fields.php:89
+#: classes/class-qliro-one-fields.php:99 classes/class-qliro-one-fields.php:109
+msgid ""
+"Use API key and API secret you downloaded in the Qliro One Merchant Portal. "
+"Don’t use your email address."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:87
+msgid "Production Qliro One API Secret"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:97
+msgid "Test Qliro One API key"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:107
+msgid "Test Qliro One API Secret"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:118
+msgid "Background color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:120
+msgid "Hex color code to use as background color in Qliro One."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:126
+msgid "Primary color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:128
+msgid "Define the color for the selected options throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:134
+msgid "Call to action color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:136
+msgid "Define the color for the CTA buttons throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:142
+msgid "Call to action hover color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:144
+msgid "Define the color for the CTA buttons hoovered throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:150
+msgid "Corner radius"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:152
+msgid "A pixel value to be used on corners throughout Qliro One."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:159
+msgid "Button corner radius"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:161
+msgid "Define the corners for the CTA buttons. Can be either boxy or rounded."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:168
+msgid "Ask for newsletter signup"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:170
+#: classes/class-qliro-one-fields.php:178
+msgid "If true, Qliro One will set signup newsletter as checked."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:176
+msgid "Ask for newsletter signup checked"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:184
+msgid "Enforced juridical type"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:187
+msgid "Physical"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:188
+msgid "Company"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:190
+msgid "Select juridical type"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:195
+msgid "Enable Order Management"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:197
+msgid "Enable Qliro One order capture on WooCommerce order completion."
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:18
+msgid "Qliro One"
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:19
+msgid "Qliro One replaces the standard WooCommerce checkout page."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:57
+msgid "Briqpay reservation could not be activated. Missing Briqpay session id."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:72
+msgid "Briqpay order has been autocaptured by Briqpay."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:83
+msgid ""
+"Could not activate Briqpay reservation, Briqpay reservation is already "
+"activated."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:105
+msgid "Briqpay reservation was successfully activated."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:112
+msgid "Briqpay reservation could not be activated."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:152
+msgid "Failed to refund the order with Briqpay"
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:156
+#. translators: refund amount, refund id.
+msgid "%1$s successfully refunded in Briqpay.. RefundID: %2$s"
+msgstr ""
+
+#: includes/qliro-one-functions.php:90
+msgid "Select another payment method"
+msgstr ""
+
+#: qliro-one-for-woocommerce.php:94 qliro-one-for-woocommerce.php:104
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:119
+#: qliro-one-for-woocommerce.php:134
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:120
+#: qliro-one-for-woocommerce.php:135
 msgid "Support"
+msgstr ""
+
+#: templates/qliro-one-checkout.php:15
+msgid "You must be logged in to checkout."
 msgstr ""
 
 #. Plugin Name of the plugin/theme

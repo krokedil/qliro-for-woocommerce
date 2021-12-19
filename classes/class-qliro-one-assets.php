@@ -45,6 +45,10 @@ class Qliro_One_Assets {
 	 * Loads scripts for the plugin.
 	 */
 	public function qoc_load_js() {
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		if ( 'yes' !== $settings['enabled'] ) {
+			return;
+		}
 		// load front js.
 		if ( ! is_checkout() ) {
 			return;
@@ -60,7 +64,9 @@ class Qliro_One_Assets {
 			'qliro-one-for-woocommerce',
 			'qliroOneParams',
 			array(
-				'isEnabled' => 'yes',
+				'isEnabled'                   => $settings['enabled'],
+				'change_payment_method_url'   => WC_AJAX::get_endpoint( 'qliro_one_wc_change_payment_method' ),
+				'change_payment_method_nonce' => wp_create_nonce( 'qliro_one_wc_change_payment_method' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );
