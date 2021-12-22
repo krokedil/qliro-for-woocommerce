@@ -39,6 +39,8 @@ class Qliro_One_Templates {
 		// Override template if Qliro One Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
 		add_action( 'qliro_one_wc_after_order_review', 'qliro_one_wc_show_another_gateway_button', 20 );
+		add_action( 'qliro_one_wc_after_order_review', array( $this, 'add_extra_checkout_fields' ), 10 );
+		add_action( 'qliro_one_wc_before_snippet', array( $this, 'add_wc_form' ), 10 );
 	}
 
 	/**
@@ -139,6 +141,47 @@ class Qliro_One_Templates {
 
 		return $template;
 	}
+
+	/**
+	 * Adds the extra checkout field div to the checkout page.
+	 */
+	public function add_extra_checkout_fields() {
+		do_action( 'qliro_wc_before_extra_fields' );
+		?>
+		<div id="qliro-one-extra-checkout-fields">
+		</div>
+		<?php
+		do_action( 'qliro_wc_after_extra_fields' );
+	}
+
+
+	/**
+	 * Adds the WC form and other fields to the checkout page.
+	 *
+	 * @return void
+	 */
+	public function add_wc_form() {
+		?>
+		<div aria-hidden="true" id="qliro-one-wc-form" style="position:absolute; top:-99999px; left:-99999px;">
+			<?php do_action( 'woocommerce_checkout_billing' ); ?>
+			<?php do_action( 'woocommerce_checkout_shipping' ); ?>
+			<div id="qliro-one-nonce-wrapper">
+				<?php
+				if ( version_compare( WOOCOMMERCE_VERSION, '3.4', '<' ) ) {
+					wp_nonce_field( 'woocommerce-process_checkout' );
+				} else {
+					wp_nonce_field( 'woocommerce-process_checkout', 'woocommerce-process-checkout-nonce' );
+				}
+				wc_get_template( 'checkout/terms.php' );
+				?>
+			</div>
+			<input id="payment_method_qliro_one" type="radio" class="input-radio" name="payment_method" value="qliro_one" checked="checked" />
+		</div>
+		<?php
+	}
+
+
+
 
 }
 

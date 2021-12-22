@@ -56,10 +56,40 @@ class Qliro_One_Assets {
 		if ( is_order_received_page() ) {
 			return;
 		}
-		$script_version = $this->qoc_is_script_debug_enabled();
-		$src            = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
-		$dependencies   = array( 'jquery' );
+		$script_version               = $this->qoc_is_script_debug_enabled();
+		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
+		$dependencies                 = array( 'jquery' );
+		$standard_woo_checkout_fields = array(
+			'billing_first_name',
+			'billing_last_name',
+			'billing_address_1',
+			'billing_address_2',
+			'billing_postcode',
+			'billing_city',
+			'billing_phone',
+			'billing_email',
+			'billing_state',
+			'billing_country',
+			'billing_company',
+			'shipping_first_name',
+			'shipping_last_name',
+			'shipping_address_1',
+			'shipping_address_2',
+			'shipping_postcode',
+			'shipping_city',
+			'shipping_state',
+			'shipping_country',
+			'shipping_company',
+			'terms',
+			'terms-field',
+			'_wp_http_referer',
+		);
+		$pay_for_order                = false;
+		if ( is_wc_endpoint_url( 'order-pay' ) ) {
+			$pay_for_order = true;
+		}
 		wp_register_script( 'qliro-one-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, true );
+
 		wp_localize_script(
 			'qliro-one-for-woocommerce',
 			'qliroOneParams',
@@ -67,6 +97,15 @@ class Qliro_One_Assets {
 				'isEnabled'                   => $settings['enabled'],
 				'change_payment_method_url'   => WC_AJAX::get_endpoint( 'qliro_one_wc_change_payment_method' ),
 				'change_payment_method_nonce' => wp_create_nonce( 'qliro_one_wc_change_payment_method' ),
+				'standardWooCheckoutFields'   => $standard_woo_checkout_fields,
+				'submitOrder'                 => WC_AJAX::get_endpoint( 'checkout' ),
+				'get_order_url'               => WC_AJAX::get_endpoint( 'qliro_one_get_order' ),
+				'get_order_nonce'             => wp_create_nonce( 'qliro_one_get_order' ),
+				'log_to_file_url'             => WC_AJAX::get_endpoint( 'qliro_one_wc_log_js' ),
+				'get_log_nonce'               => wp_create_nonce( 'qliro_one_wc_log_js' ),
+				'payForOrder'                 => $pay_for_order,
+				'update_order_url'            => WC_AJAX::get_endpoint( 'qliro_one_wc_update_order' ),
+				'update_order_nonce'          => wp_create_nonce( 'qliro_one_wc_update_order' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );

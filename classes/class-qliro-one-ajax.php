@@ -26,6 +26,8 @@ class Qliro_One_Ajax extends WC_AJAX {
 	public static function add_ajax_events() {
 		$ajax_events = array(
 			'qliro_one_wc_change_payment_method' => true,
+			'qliro_one_get_order'                => true,
+			'qliro_one_wc_log_js'                => true,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_woocommerce_' . $ajax_event, array( __CLASS__, $ajax_event ) );
@@ -69,6 +71,32 @@ class Qliro_One_Ajax extends WC_AJAX {
 		);
 
 		wp_send_json_success( $data );
+		wp_die();
+	}
+
+
+	/**
+	 * Gets the Qliro One order.
+	 */
+	public static function qliro_one_get_order() {
+
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
+			wp_send_json_error( 'bad_nonce' );
+			exit;
+		}
+		$order_id        = WC()->session->get( 'qliro_one_order_id' );
+		$qliro_one_order = QOC_WC()->api->get_qliro_one_order( $order_id );
+		$billing_data    = $qliro_one_order['BillingAddress'];
+		$shipping_data   = $qliro_one_order['ShippingAddress'];
+		$customer        = $qliro_one_order['Customer'];
+
+		wp_send_json_success(
+			array(
+				'billingAddress'  => $billing_data,
+				'shippingAddress' => $shipping_data,
+				'customer'        => $customer,
+			)
+		);
 		wp_die();
 	}
 }

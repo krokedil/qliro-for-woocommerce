@@ -17,12 +17,24 @@ jQuery( function( $ ) {
 			$( document ).ready( qliroOneForWooCommerce.documentReady );
 			qliroOneForWooCommerce.bodyEl.on( 'change', 'input[name="payment_method"]', qliroOneForWooCommerce.maybeChangeToQliroOne );
 			qliroOneForWooCommerce.bodyEl.on( 'click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne );
+			window.q1Ready = function(q1) {
+				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
+			}
 		},
 		/**
 		 * Triggers on document ready.
 		 */
 		documentReady: function() {
-			// todo
+			if ( 0 < $('input[name="payment_method"]').length ) {
+				qliroOneForWooCommerce.paymentMethod = $('input[name="payment_method"]').filter( ':checked' ).val();
+			} else {
+				qliroOneForWooCommerce.paymentMethod = 'qliro_one';
+			}
+
+			if( ! qliroOneParams.payForOrder && qliroOneForWooCommerce.paymentMethod === 'qliro_one' ) {
+				qliroOneForWooCommerce.moveExtraCheckoutFields();
+			}
+
 		},
 
 		/**
@@ -102,6 +114,157 @@ jQuery( function( $ ) {
 			}
 			return false;
 		},
+
+		/**
+		 * Moves all non standard fields to the extra checkout fields.
+		 */
+		moveExtraCheckoutFields: function() {
+			// Move order comments.
+			$('.woocommerce-additional-fields').appendTo('#qliro-one-extra-checkout-fields');
+
+			let form = $('form[name="checkout"] input, form[name="checkout"] select, textarea');
+			for (var i = 0; i < form.length; i++ ) {
+				let name = form[i].name;
+				console.log('wc input element ', name);
+				// Check if field is inside the order review.
+				if( $( 'table.woocommerce-checkout-review-order-table' ).find( form[i] ).length ) {
+					continue;
+				}
+
+				// Check if this is a standard field.
+				if ( -1 === $.inArray( name, qliroOneParams.standardWooCheckoutFields ) ) {
+
+					// This is not a standard Woo field, move to our div.
+					if ( 0 < $( 'p#' + name + '_field' ).length ) {
+						$( 'p#' + name + '_field' ).appendTo( '#qliro-one-extra-checkout-fields' );
+					} else {
+						$( 'input[name="' + name + '"]' ).closest( 'p' ).appendTo( '#qliro-one-extra-checkout-fields' );
+					}
+				}
+			}
+		},
+		updateAddress: function (customerInfo) {
+			var billingEmail = (('email' in customerInfo) ? customerInfo.email : null);
+			var billingPhone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
+			var billingFirstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
+			var billingLastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
+			var billingStreet = (('street' in customerInfo.address) ? customerInfo.address.street : null);
+			var billingPostalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
+			var billingCity = (('city' in customerInfo.address) ? customerInfo.address.city : null);
+
+			(billingEmail !== null && billingEmail !== undefined) ? $('#billing_email').val(customerInfo.email) : null;
+			(billingPhone !== null && billingPhone !== undefined) ? $('#billing_phone').val(customerInfo.mobileNumber) : null;
+			(billingFirstName !== null && billingFirstName !== undefined) ? $('#billing_first_name').val(customerInfo.address.firstName) : null;
+			(billingLastName !== null && billingLastName !== undefined) ? $('#billing_last_name').val(customerInfo.address.lastName) : null;
+			(billingStreet !== null && billingStreet !== undefined) ? $('#billing_address_1').val(customerInfo.address.street) : null;
+			(billingPostalCode !== null && billingPostalCode !== undefined) ? $('#billing_postcode').val(customerInfo.address.postalCode) : null;
+			(billingCity !== null && billingCity !== undefined) ? $('#billing_city').val(customerInfo.address.city) : null;
+
+			$("form.checkout").trigger('update_checkout');
+		},
+		getQliroOneOrder: function () {
+			$.ajax({
+				type: 'POST',
+				data: {
+					nonce: qliroOneParams.get_order_nonce,
+				},
+				dataType: 'json',
+				url: qliroOneParams.get_order_url,
+				success: function (data) {
+				},
+				error: function (data) {
+				},
+				complete: function (data) {
+					qliroOneForWooCommerce.setAddressData(data.responseJSON.data);
+				}
+			});
+		},
+		/*
+		 * Sets the WooCommerce form field data.
+		 */
+		setAddressData: function (addressData) {
+			if (0 < $('form.checkout #terms').length) {
+				$('form.checkout #terms').prop('checked', true);
+			}
+			console.log( addressData );
+
+			// Billing fields.
+			$('#billing_first_name').val(addressData.billingAddress.FirstName);
+			$('#billing_last_name').val(addressData.billingAddress.LastName);
+			$('#billing_company').val(addressData.billingAddress.CompanyName);
+			$('#billing_address_1').val(addressData.billingAddress.Street);
+			$('#billing_address_2').val(addressData.billingAddress.Street2);
+			$('#billing_city').val(addressData.billingAddress.City);
+			$('#billing_postcode').val(addressData.billingAddress.PostalCode);
+			$('#billing_phone').val(addressData.customer.MobileNumber);
+			$('#billing_email').val(addressData.customer.Email);
+
+			// Shipping fields.
+			$('#ship-to-different-address-checkbox').prop( 'checked', true);
+			$('#shipping_first_name').val(addressData.shippingAddress.FirstName);
+			$('#shipping_last_name').val(addressData.shippingAddress.LastName);
+			$('#shipping_company').val(addressData.shippingAddress.CompanyName);
+			$('#shipping_address_1').val(addressData.shippingAddress.Street);
+			$('#shipping_address_2').val(addressData.shippingAddress.Street2);
+			$('#shipping_city').val(addressData.shippingAddress.City);
+			$('#shipping_postcode').val(addressData.shippingAddress.PostalCode);
+			// todo country
+
+			// Only set country fields if we have data in them.
+			if (addressData.billingAddress) {
+				$('#billing_country').val(addressData.billingAddress.CountryCode);
+			}
+			if (addressData.shippingAddress) {
+				$('#shipping_country').val(addressData.shippingAddress.CountryCode);
+			}
+
+			qliroOneForWooCommerce.submitOrder();
+
+		},
+		/**
+		 * Submit the order using the WooCommerce AJAX function.
+		 */
+		submitOrder: function () {
+			$('.woocommerce-checkout-review-order-table').block({
+				message: null,
+				overlayCSS: {
+					background: '#fff',
+					opacity: 0.6
+				}
+			});
+			$.ajax({
+				type: 'POST',
+				url: qliroOneParams.submitOrder,
+				data: $('form.checkout').serialize(),
+				dataType: 'json',
+				success: function (data) {
+					try {
+						if ('success' === data.result) {
+							console.log('submit order success', data);
+						} else {
+							console.log(    data, 1111);
+							throw 'Result failed';
+						}
+					} catch (err) {
+						console.log('catch error');
+						console.error(err);
+						if (data.messages) {
+							console.log('error ', data.messages);
+							// qliroOneForWooCommerce.logToFile( 'Checkout error | ' + data.messages );
+							// qliroOneForWooCommerce.failOrder( 'submission', data.messages );
+						} else {
+							console.log('no message');
+							// qliroOneForWooCommerce.logToFile( 'Checkout error | No message' );
+							// qliroOneForWooCommerce.failOrder( 'submission', '<div class="woocommerce-error">' + 'Checkout error' + '</div>' );
+						}
+					}
+				},
+				error: function (data) {
+					console.log(data);
+				}
+			});
+		},
+
 	};
 
 	qliroOneForWooCommerce.init();
