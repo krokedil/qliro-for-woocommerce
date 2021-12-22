@@ -158,18 +158,18 @@ abstract class Qliro_One_Request {
 			if ( null !== json_decode( $response['body'], true ) ) {
 				$errors = json_decode( $response['body'], true );
 
-				foreach ( $errors as $key => $value ) {
-					$error_message .= ' ' . $key . ': ' . $value . ',';
+				foreach ( $errors as $error ) {
+					$error_message .= ' ' . $error;
 				}
 			}
-			$response = new WP_Error( wp_remote_retrieve_response_code( $response ), $response['body'] . $error_message, $data );
+			$code   = wp_remote_retrieve_response_code( $response );
+			$return = new WP_Error( $code, json_decode( $response['body'], true ), $data );
 		} else {
-			$response = json_decode( wp_remote_retrieve_body( $response ), true );
+			$return = json_decode( wp_remote_retrieve_body( $response ), true );
 		}
 
-		$this->log_response( $response, $request_args, $request_url, $response_code );
-
-		return $response;
+		$this->log_response( $response, $request_args, $request_url );
+		return $return;
 	}
 
 	/**
@@ -178,13 +178,14 @@ abstract class Qliro_One_Request {
 	 * @param object|WP_Error $response The response from the request.
 	 * @param array           $request_args The request args.
 	 * @param string          $request_url The request URL.
-	 * @param int|string      $code The response code.
 	 * @return void
 	 */
-	protected function log_response( $response, $request_args, $request_url, $code ) {
-		$method = $this->method;
-		$title  = "{$this->log_title} - URL: {$request_url}";
-		$log    = Qliro_One_Logger::format_log( 'qliro_order_id_todo', $method, $title, $request_args, $response, $code, $request_url );
+	protected function log_response( $response, $request_args, $request_url ) {
+		$method   = $this->method;
+		$title    = "{$this->log_title} - URL: {$request_url}";
+		$code     = wp_remote_retrieve_response_code( $response );
+		$order_id = $response['OrderID'] ?? null;
+		$log      = Qliro_One_Logger::format_log( $order_id, $method, $title, $request_args, $response, $code, $request_url );
 		Qliro_One_Logger::log( $log );
 	}
 
