@@ -65,19 +65,10 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		// Regular purchase.
-		// 1. Process the payment.
-		// 2. Redirect to order received page.
-		if ( $this->process_payment_handler( $order_id ) ) {
-			// Base64 encoded timestamp to always have a fresh URL for on hash change event.
-			return array(
-				'result' => 'success',
-			);
-		} else {
-			return array(
-				'result' => 'error',
-			);
-		}
+		// todo
+		return array(
+			'result' => 'success',
+		);
 
 	}
 }

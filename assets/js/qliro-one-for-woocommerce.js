@@ -20,6 +20,7 @@ jQuery( function( $ ) {
 			window.q1Ready = function(q1) {
 				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
 			}
+			qliroOneForWooCommerce.bodyEl.on('test_update_checkout', qliroOneForWooCommerce.getQliroOneOrder);
 		},
 		/**
 		 * Triggers on document ready.

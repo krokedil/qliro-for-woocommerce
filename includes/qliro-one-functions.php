@@ -19,11 +19,7 @@ function qliro_one_create_or_update_order() {
 	// try to get id from session.
 	$qliro_one_order_id = $session->get( 'qliro_one_order_id' );
 	if ( $qliro_one_order_id ) {
-		// try to update and then get the order again.
-		$response = QOC_WC()->api->update_qliro_one_order( $qliro_one_order_id );
-		if ( ! is_wp_error( $response ) ) {
-			return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
-		}
+		return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 	}
 	// create.
 	$response = QOC_WC()->api->create_qliro_one_order();
