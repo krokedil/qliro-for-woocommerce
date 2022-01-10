@@ -70,6 +70,11 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public $api;
 
+		/**
+		 * @var Qliro_One_Order_Management
+		 */
+		public $order_management;
+
 
 		/**
 		 * Returns the *Singleton* instance of this class.
@@ -181,14 +186,16 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/put/class-qliro-one-request-update-order.php';
 
-
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-templates.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-api.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-merchant-urls.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-cart.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 
-			$this->api           = new Qliro_One_API();
-			$this->merchant_urls = new Qliro_One_Merchant_URLS();
+			$this->api              = new Qliro_One_API();
+			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
+			$this->order_management = new Qliro_One_Order_Management();
 
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
