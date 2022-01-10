@@ -69,7 +69,10 @@ class Qliro_One_API {
 	}
 
 	/**
+	 * Capture a Qliro one order.
+	 *
 	 * @param int $order_id Order ID.
+	 * @return array
 	 */
 	public function capture_qliro_one_order( $order_id ) {
 		// todo.
@@ -78,6 +81,12 @@ class Qliro_One_API {
 		return $this->check_for_api_error( $response );
 	}
 
+	/**
+	 * Refund a Qliro one order.
+	 *
+	 * @param int $order_id Order ID.
+	 * @return array
+	 */
 	public function refund_qliro_one_order( $order_id ) {
 		// todo.
 		$request  = new Qliro_One_Request_Return_Items( array( 'order_id' => $order_id ) );
@@ -85,6 +94,12 @@ class Qliro_One_API {
 		return $this->check_for_api_error( $response );
 	}
 
+	/**
+	 * Update the merchant references for a Qliro one order.
+	 *
+	 * @param int $order_id Order ID.
+	 * @return array
+	 */
 	public function update_qliro_one_merchant_reference( $order_id ) {
 		$request  = new Qliro_One_Update_Merchant_Reference( array( 'order_id' => $order_id ) );
 		$response = $request->request();
