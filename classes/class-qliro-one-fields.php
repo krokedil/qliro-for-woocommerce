@@ -180,6 +180,20 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 
+			'checkout_layout'                            => array(
+				'title'       => __( 'Checkout layout', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'one_column_checkout' => __( 'One column checkout', 'qliro-one-for-woocommerce' ),
+					'two_column_right'    => __( 'Two column checkout (Qliro One in right column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left'     => __( 'Two column checkout (Qliro One in left column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left_sf'  => __( 'Two column checkout (Qliro One in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
+				),
+				'description' => __( 'Select the Checkout layout.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'one_column_checkout',
+				'desc_tip'    => false,
+			),
+
 			'qliro_one_enforced_juridical_type'          => array(
 				'title'       => __( 'Enforced juridical type', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
