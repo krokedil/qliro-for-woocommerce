@@ -2,13 +2,13 @@
 /**
  * Class for the request to create order.
  *
- * @package Qliro_One_Create_Order/Classes/Requests/POST
+ * @package Qliro_One_Create_Order/Classes/Requests/PUT
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class for the request to add a item to the Klarna order.
+ * Class for the request to add an item to the Qliro One order.
  */
 class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 
@@ -38,6 +38,7 @@ class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 	 * @return array
 	 */
 	protected function get_body() {
+		// todo get order details from post_meta.
 		return array(
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'OrderItems'     => array(
