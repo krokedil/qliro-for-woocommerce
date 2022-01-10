@@ -21,6 +21,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			'qliro_one_gateway_supports',
 			array(
 				'products',
+				'refunds',
 			)
 		);
 		$this->has_fields         = false;
@@ -65,10 +66,37 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		// todo
+		// todo update merchant ref, and update thankyou url.
+		// todo set transaction id etc.
+
+		// try to get qliro order id from wc session.
+		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
+
+		// todo try to update qliro one merchant reference.
+//		QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+
+//		$response = QOC_WC()->api->update_qliro_one_order();
+//		if ( is_wp_error( $response ) ) {
+//			return array(
+//				'result' => 'error',
+//			);
+//		}
+		update_post_meta( $order_id, '_qliro_one_order_id', $qliro_order_id );
 		return array(
 			'result' => 'success',
 		);
 
+	}
+
+	/** Process refund request.
+	 *
+	 * @param int    $order_id The WooCommerce order ID.
+	 * @param float  $amount The amount to be refunded.
+	 * @param string $reason The reason given for the refund.
+	 *
+	 * @return bool|void
+	 */
+	public function process_refund( $order_id, $amount = null, $reason = '' ) {
+		return QOC_WC()->order_management->refund( $order_id, $amount );
 	}
 }
