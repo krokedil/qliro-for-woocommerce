@@ -19,6 +19,7 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	 */
 	public function __construct( $arguments ) {
 		parent::__construct( $arguments );
+		// todo order id.
 		$this->log_title = 'Create order';
 	}
 
@@ -38,8 +39,31 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
+		// todo temp merchant ref. save merchant ref to the session.
+		$merchant_reference = uniqid( 'q1' );
+		$mer_ref            = null;
+		$session            = WC()->session;
+
+		//
+		$billing_country = WC()->checkout()->get_value( 'billing_country' );
+		$session->set( 'qliro_one_billing_country', $billing_country );
+
+		// todo if order is null do the else part.
+
+		// merchant reference.
+		if ( $session->get( 'qliro_one_merchant_reference' ) ) {
+			$mer_ref = $session->get( 'qliro_one_merchant_reference' );
+		} else {
+			$mer_ref = uniqid( 'q1' );
+			$session->set( 'qliro_one_merchant_reference', $mer_ref );
+		}
+
+		// todo check if billing_country is null.
+
+		// todo save country to the session.
+
 		return array(
-			'MerchantReference'                    => 'qliro-one-98',
+			'MerchantReference'                    => $mer_ref,
 			'Currency'                             => get_woocommerce_currency(),
 			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
