@@ -57,6 +57,41 @@ class Qliro_One_API {
 	}
 
 	/**
+	 * Cancels a Qliro One order.
+	 *
+	 * @param int $order_id Order ID.
+	 */
+	public function cancel_qliro_one_order( $order_id ) {
+		// todo.
+		$request  = new Qliro_One_Cancel_Order( array( 'order_id' => $order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
+	 * @param int $order_id Order ID.
+	 */
+	public function capture_qliro_one_order( $order_id ) {
+		// todo.
+		$request  = new Qliro_One_Capture_Order( array( 'order_id' => $order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	public function refund_qliro_one_order( $order_id ) {
+		// todo.
+		$request  = new Qliro_One_Request_Return_Items( array( 'order_id' => $order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	public function update_qliro_one_merchant_reference( $order_id ) {
+		$request  = new Qliro_One_Update_Merchant_Reference( array( 'order_id' => $order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
 	 * Checks for WP Errors and returns either the response as array or a false.
 	 *
 	 * @param array $response The response from the request.
