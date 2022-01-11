@@ -52,6 +52,36 @@ class Qliro_One_Fields {
 					'autocomplete' => 'off',
 				),
 			),
+			'qliro_one_button_ask_for_newsletter_signup' => array(
+				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
+			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
+				'title'       => __( 'Ask for newsletter signup checked', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
+			'qliro_one_enforced_juridical_type'          => array(
+				'title'       => __( 'Enforced juridical type', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'Physical' => __( 'Physical', 'qliro-one-for-woocommerce' ),
+					'Company'  => __( 'Company', 'qliro-one-for-woocommerce' ),
+				),
+				'description' => __( 'Select juridical type', 'qliro-one-for-woocommerce' ),
+				'desc_tip'    => false,
+			),
+			'qliro_one_order_management'                 => array(
+				'title'   => __( 'Enable Order Management', 'qliro-one-for-woocommerce' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable Qliro One order capture on WooCommerce order completion.', 'qliro-one-for-woocommerce' ),
+				'default' => 'no',
+			),
 			'testmode'                                   => array(
 				'title'       => __( 'Test mode', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable Test Mode', 'qliro-one-for-woocommerce' ),
@@ -113,7 +143,11 @@ class Qliro_One_Fields {
 					'autocomplete' => 'new-password',
 				),
 			),
-
+			// Iframe customization.
+			'iframe_customization'                       => array(
+				'title' => 'iFrame Customization',
+				'type'  => 'title',
+			),
 			'qliro_one_bg_color'                         => array(
 				'title'       => __( 'Background color', 'qliro-one-for-woocommerce' ),
 				'type'        => 'color',
@@ -121,7 +155,6 @@ class Qliro_One_Fields {
 				'default'     => '',
 				'desc_tip'    => true,
 			),
-
 			'qliro_one_primary_color'                    => array(
 				'title'       => __( 'Primary color', 'qliro-one-for-woocommerce' ),
 				'type'        => 'color',
@@ -129,7 +162,6 @@ class Qliro_One_Fields {
 				'default'     => '',
 				'desc_tip'    => true,
 			),
-
 			'qliro_one_call_action_color'                => array(
 				'title'       => __( 'Call to action color', 'qliro-one-for-woocommerce' ),
 				'type'        => 'color',
@@ -137,7 +169,6 @@ class Qliro_One_Fields {
 				'default'     => '',
 				'desc_tip'    => true,
 			),
-
 			'qliro_one_call_action_hover_color'          => array(
 				'title'       => __( 'Call to action hover color', 'qliro-one-for-woocommerce' ),
 				'type'        => 'color',
@@ -145,7 +176,6 @@ class Qliro_One_Fields {
 				'default'     => '',
 				'desc_tip'    => true,
 			),
-
 			'qliro_one_corner_radius'                    => array(
 				'title'       => __( 'Corner radius', 'qliro-one-for-woocommerce' ),
 				'type'        => 'number',
@@ -154,7 +184,6 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 				'css'         => 'width: 100px',
 			),
-
 			'qliro_one_button_corner_radius'             => array(
 				'title'       => __( 'Button corner radius', 'qliro-one-for-woocommerce' ),
 				'type'        => 'number',
@@ -163,41 +192,19 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 				'css'         => 'width: 100px',
 			),
-
-			'qliro_one_button_ask_for_newsletter_signup' => array(
-				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
-				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-			),
-
-			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
-				'title'       => __( 'Ask for newsletter signup checked', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
-				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-			),
-
-			'qliro_one_enforced_juridical_type'          => array(
-				'title'       => __( 'Enforced juridical type', 'qliro-one-for-woocommerce' ),
+			'checkout_layout'                            => array(
+				'title'       => __( 'Checkout layout', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'options'     => array(
-					'Physical' => __( 'Physical', 'qliro-one-for-woocommerce' ),
-					'Company'  => __( 'Company', 'qliro-one-for-woocommerce' ),
+					'one_column_checkout' => __( 'One column checkout', 'qliro-one-for-woocommerce' ),
+					'two_column_right'    => __( 'Two column checkout (Qliro One in right column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left'     => __( 'Two column checkout (Qliro One in left column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left_sf'  => __( 'Two column checkout (Qliro One in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
 				),
-				'description' => __( 'Select juridical type', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Select the Checkout layout.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'one_column_checkout',
 				'desc_tip'    => false,
 			),
-
-			'qliro_one_order_management'                 => array(
-				'title'   => __( 'Enable Order Management', 'qliro-one-for-woocommerce' ),
-				'type'    => 'checkbox',
-				'label'   => __( 'Enable Qliro One order capture on WooCommerce order completion.', 'qliro-one-for-woocommerce' ),
-				'default' => 'no',
-			),
-
 		);
 		return apply_filters( 'qliro_one_gateway_settings', $settings );
 	}
