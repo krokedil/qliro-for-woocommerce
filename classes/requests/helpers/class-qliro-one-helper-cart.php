@@ -148,15 +148,13 @@ class Qliro_One_Helper_Cart {
 	public static function get_fee( $fee ) {
 		// todo.
 		return array(
-			'producttype'  => 'digital',
-			'name'         => $fee->name,
-			'unitprice'    => ( round( $fee->amount, 2 ) * 100 ),
-			'quantityunit' => 'pc',
-			'quantity'     => 1,
-			'taxrate'      => ( ( $fee->tax / $fee->amount ) * 10000 ),
-			'reference'    => 'fee|' . $fee->id,
-			'discount'     => 0,
+			'MerchantReference'  => 'fee|' . $fee->id,
+			'Description'        => $fee->name,
+			'Quantity'           => 1,
+			'PricePerItemIncVat' => $fee->amount,
+			'PricePerItemExVat'  => $fee->amount - $fee->tax,
 		);
+
 	}
 
 	/**
@@ -172,28 +170,21 @@ class Qliro_One_Helper_Cart {
 			foreach ( $package['rates'] as $method ) {
 				if ( $chosen_shipping === $method->id ) {
 					if ( $method->cost > 0 ) {
-
 						return array(
-							'producttype'  => 'shipping_fee',
-							'name'         => $method->label, // String.
-							'unitprice'    => intval( round( WC()->cart->shipping_total * 100 ) ),
-							'quantityunit' => 'pc',
-							'quantity'     => 1,
-							'taxrate'      => intval( ( WC()->cart->shipping_tax_total / WC()->cart->shipping_total ) * 10000 ),
-							'reference'    => 'shipping|' . $method->id, // String.
-							'discount'     => 0,
+							'MerchantReference'  => $method->id,
+							'Description'        => $method->label,
+							'Quantity'           => 1,
+							'PricePerItemIncVat' => WC()->cart->get_shipping_total(),
+							'PricePerItemExVat'  => WC()->cart->get_shipping_total() - WC()->cart->get_tax_amount(),
 						);
 					}
 
 					return array(
-						'producttype'  => 'shipping_fee',
-						'name'         => $method->label, // String.
-						'unitprice'    => 0,
-						'quantityunit' => 'pc',
-						'quantity'     => 1,
-						'taxrate'      => 0,
-						'reference'    => 'shipping|' . $method->id,
-						'discount'     => 0,
+						'MerchantReference'  => $method->id,
+						'Description'        => $method->label,
+						'Quantity'           => 1,
+						'PricePerItemIncVat' => 0,
+						'PricePerItemExVat'  => 0,
 					);
 				}
 			}
