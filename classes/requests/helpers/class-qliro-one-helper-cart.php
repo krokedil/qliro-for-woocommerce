@@ -120,7 +120,7 @@ class Qliro_One_Helper_Cart {
 		if ( 0 === intval( $cart_item['line_total'] ) ) {
 			return 0;
 		}
-		return ( round( $cart_item['line_tax'] / $cart_item['line_total'], 2 ) * 10000 );
+		return ( round( $cart_item['line_tax'] / $cart_item['line_total'], 2 ) );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class Qliro_One_Helper_Cart {
 							'Description'        => $method->label,
 							'Quantity'           => 1,
 							'PricePerItemIncVat' => WC()->cart->get_shipping_total(),
-							'PricePerItemExVat'  => WC()->cart->get_shipping_total() - WC()->cart->get_tax_amount(),
+							'PricePerItemExVat'  => WC()->cart->get_shipping_total() - WC()->cart->get_total_tax(),
 						);
 					}
 
