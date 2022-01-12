@@ -10,14 +10,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Echoes Qliro One Checkout iframe snippet.
+ * Create or update the qliro order
  *
  * @return array|void
  */
 function qliro_one_create_or_update_order() {
+	$cart    = WC()->cart;
 	$session = WC()->session;
 	// try to get id from session.
 	$qliro_one_order_id = $session->get( 'qliro_one_order_id' );
+	$cart->calculate_fees();
+	$cart->calculate_shipping();
+	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
 		return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 	}
