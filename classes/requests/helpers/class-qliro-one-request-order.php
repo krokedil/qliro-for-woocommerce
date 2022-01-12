@@ -275,4 +275,76 @@ class Qliro_One_Request_Order {
 	public function generate_request_id() {
 		return sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) );
 	}
+
+
+	/**
+	 * Gets the formatted order line.
+	 *
+	 * @param WC_Order_Item_Product $order_item The WooCommerce order line item.
+	 * @return array
+	 */
+	public function get_order_line_items_for_capture( $order_item ) {
+		$order_id = $order_item->get_order_id();
+		$order    = wc_get_order( $order_id );
+		return array(
+			'MerchantReference'  => $order_item->get_name(),
+			'Type'               => 'Product',
+			'Quantity'           => $order_item->get_quantity(),
+			'PricePerItemIncVat' => $this->get_item_unit_price( $order, $order_item ),
+		);
+	}
+
+
+	/**
+	 * Gets the formated order line shipping.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @return array
+	 */
+	public function get_order_line_shipping_for_capture( $order ) {
+		return array(
+			'MerchantReference'  => $order->get_order_number(),
+			'Type'               => 'Shipping',
+			'Quantity'           => 1,
+			'PricePerItemIncVat' => $this->get_shipping_total_amount( $order ),
+		);
+	}
+
+	/**
+	 * Gets the formatted order line fees.
+	 *
+	 * @param WC_Order_Item_Fee $order_fee The order item fee.
+	 * @return array
+	 */
+	public function get_order_line_fees_for_capture( $order_fee ) {
+		return array(
+			'MerchantReference'  => $order_fee->get_id(),
+			'Type'               => 'Fee',
+			'Quantity'           => 1,
+			'PricePerItemIncVat' => $order_fee->get_amount(),
+		);
+	}
+
+	/**
+	 * Gets the order lines for the order.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return array
+	 */
+	public function get_order_lines_for_capture( $order_id ) {
+		$order       = wc_get_order( $order_id );
+		$order_lines = array();
+
+		foreach ( $order->get_items() as $item ) {
+			$order_lines[] = $this->get_order_line_items_for_capture( $item );
+		}
+		foreach ( $order->get_fees() as $fee ) {
+			$order_lines[] = $this->get_order_line_fees_for_capture( $fee );
+		}
+		if ( ! empty( $order->get_shipping_method() ) ) {
+			$order_lines[] = $this->get_order_line_shipping_for_capture( $order );
+		}
+
+		return array_values( $order_lines );
+	}
 }
