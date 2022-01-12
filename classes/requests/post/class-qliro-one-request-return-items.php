@@ -38,18 +38,22 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		// todo change request id and order id.
+		$order_data             = new Qliro_One_Request_Order();
+		$request_id             = $order_data->generate_request_id(); // todo save to post meta ?
+		$order_id               = $this->arguments['order_id'];
+		$qliro_one_order_id     = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$payment_transaction_id = get_post( $order_id, '_payment_transaction_id', true );
 		return array(
-			'RequestId'      => sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) ),
+			'RequestId'      => $request_id,
 			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderId'        => 5452321,
+			'OrderId'        => $qliro_one_order_id,
 			'Currency'       => get_woocommerce_currency(),
 			'Returns'        =>
 				array(
 					array(
-						'PaymentTransactionId' => 5451215,
+						'PaymentTransactionId' => $payment_transaction_id,
 						'OrderItems'           =>
 							array(
-
 								array(
 									'MerchantReference'  => 'Fancy RedHat from HM',
 									'Type'               => 'Product',
@@ -59,7 +63,6 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 							),
 						'Fees'                 =>
 							array(
-
 								array(
 									'MerchantReference'  => 'ReturnFee',
 									'Description'        => 'Return Fee',
