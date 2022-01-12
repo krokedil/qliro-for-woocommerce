@@ -39,17 +39,10 @@ class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 	 */
 	protected function get_body() {
 		// todo get order details from post_meta.
+		$order_data = new Qliro_One_Request_Order();
 		return array(
 			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderItems'     => array(
-				array(
-					'MerchantReference'  => 'XXX',
-					'Description'        => 'ZZZ',
-					'Quantity'           => 4,
-					'PricePerItemIncVat' => 450,
-					'PricePerItemExVat'  => 450,
-				),
-			),
+			'OrderItems'     => $order_data->get_order_lines( $this->arguments['order_id'] ),
 		);
 	}
 }
