@@ -23,7 +23,10 @@ function qliro_one_create_or_update_order() {
 	$cart->calculate_shipping();
 	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
-		return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		$update_response = QOC_WC()->api->update_qliro_one_order( $qliro_one_order_id );
+		if ( ! is_wp_error( $update_response ) ) {
+			return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		}
 	}
 	// create.
 	$response = QOC_WC()->api->create_qliro_one_order();
