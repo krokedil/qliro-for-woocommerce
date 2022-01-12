@@ -37,15 +37,17 @@ class Qliro_One_Update_Merchant_Reference extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-		// todo change request id and order id.
 		$order_id       = $this->arguments['order_id'];
 		$order          = wc_get_order( $order_id );
 		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id' );
+		$order_data     = new Qliro_One_Request_Order();
+		$request_id     = $order_data->generate_request_id();
+
 		return array(
-			'RequestId'            => sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) ),
-			'MerchantApiKey'       => $this->get_qliro_key(),
+			'RequestId'            => $request_id,
+			'MerchantApiKey'       => $this->get_qliro_key(),   
 			'OrderId'              => $qliro_order_id,
-			'NewMerchantReference' => $order->get_id(),
+			'NewMerchantReference' => $order->get_order_number(),
 		);
 	}
 }
