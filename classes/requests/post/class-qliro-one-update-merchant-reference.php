@@ -45,7 +45,7 @@ class Qliro_One_Update_Merchant_Reference extends Qliro_One_Request_Post {
 
 		return array(
 			'RequestId'            => $request_id,
-			'MerchantApiKey'       => $this->get_qliro_key(),   
+			'MerchantApiKey'       => $this->get_qliro_key(),
 			'OrderId'              => $qliro_order_id,
 			'NewMerchantReference' => $order->get_order_number(),
 		);
