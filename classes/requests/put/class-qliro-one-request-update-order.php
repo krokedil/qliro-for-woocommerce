@@ -38,10 +38,9 @@ class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 	 * @return array
 	 */
 	protected function get_body() {
-		$order_data = new Qliro_One_Request_Order();
 		return array(
 			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderItems'     => $order_data->get_order_lines( $this->arguments['order_id'] ),
+			'OrderItems'     => Qliro_One_Helper_Cart::get_cart_items(),
 		);
 	}
 }
