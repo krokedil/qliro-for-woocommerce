@@ -39,6 +39,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'process_admin_options',
 			)
 		);
+		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
 	}
 
 
@@ -87,5 +88,19 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		return QOC_WC()->order_management->refund( $order_id, $amount );
+	}
+
+	/**
+	 * Print the iframe on the thankyou page.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return void
+	 */
+	public function show_thank_you_snippet( $order_id = null ) {
+		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		if ( $qliro_order ) {
+			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.
+		}
 	}
 }
