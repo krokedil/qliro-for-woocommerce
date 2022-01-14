@@ -28,6 +28,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 			'qliro_one_wc_change_payment_method' => true,
 			'qliro_one_get_order'                => true,
 			'qliro_one_wc_log_js'                => true,
+			'qliro_one_wc_update_order'          => true,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_woocommerce_' . $ajax_event, array( __CLASS__, $ajax_event ) );
@@ -98,6 +99,23 @@ class Qliro_One_Ajax extends WC_AJAX {
 			)
 		);
 		wp_die();
+	}
+
+	/**
+	 * Updates qliro order.
+	 */
+	public static function qliro_one_wc_update_order() {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_wc_update_order' ) ) {
+			wp_send_json_error( 'bad_nonce' );
+			exit;
+		}
+		$order_id        = WC()->session->get( 'qliro_one_order_id' );
+		$update_response = QOC_WC()->api->update_qliro_one_order( $order_id );
+		if ( ! is_wp_error( $update_response ) ) {
+			wp_send_json_success();
+		} else {
+			wp_send_json_error( 'Bad request' );
+		}
 	}
 }
 Qliro_One_Ajax::init();

@@ -63,8 +63,14 @@ class Qliro_One_API {
 	 */
 	public function cancel_qliro_one_order( $order_id ) {
 		// todo.
-		$request  = new Qliro_One_Cancel_Order( array( 'order_id' => $order_id ) );
-		$response = $request->request();
+		$request_id = ( new Qliro_One_Request_Order() )->generate_request_id();
+		$request    = new Qliro_One_Cancel_Order(
+			array(
+				'order_id'   => $order_id,
+				'request_id' => $request_id,
+			)
+		);
+		$response   = $request->request();
 		return $this->check_for_api_error( $response );
 	}
 

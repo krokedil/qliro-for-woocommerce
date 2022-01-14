@@ -19,8 +19,11 @@ jQuery( function( $ ) {
 			qliroOneForWooCommerce.bodyEl.on( 'click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne );
 			window.q1Ready = function(q1) {
 				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
+				// todo.
+				// q1.onShippingMethodChanged(qliroOneForWooCommerce.updateShipping);
 			}
 			qliroOneForWooCommerce.bodyEl.on('test_update_checkout', qliroOneForWooCommerce.getQliroOneOrder);
+			qliroOneForWooCommerce.bodyEl.on('change', "input[name='shipping_method[0]']", qliroOneForWooCommerce.updateShipping);
 		},
 		/**
 		 * Triggers on document ready.
@@ -221,6 +224,26 @@ jQuery( function( $ ) {
 
 			qliroOneForWooCommerce.submitOrder();
 
+		},
+		updateShipping: function( e ) {
+			console.log('444', e);
+			$.ajax({
+				type: 'POST',
+				data: {
+					nonce: qliroOneParams.update_order_nonce,
+				},
+				dataType: 'json',
+				url: qliroOneParams.update_order_url,
+				success: function (data) {
+					// console.log(data);
+				},
+				error: function (data) {
+					// console.log(data);
+				},
+				complete: function (data) {
+					window.location.reload();
+				}
+			});
 		},
 		/**
 		 * Submit the order using the WooCommerce AJAX function.

@@ -44,7 +44,6 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 		$mer_ref            = null;
 		$session            = WC()->session;
 
-		//
 		$billing_country = WC()->checkout()->get_value( 'billing_country' );
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
@@ -73,15 +72,7 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
 			'PrimaryColor'                         => $this->get_primary_color(),
 			'CallToActionColor'                    => $this->get_call_to_action_color(),
-			'OrderItems'                           => array(
-				array(
-					'MerchantReference'  => 'XXX',
-					'Description'        => 'ZZZ',
-					'Quantity'           => 4,
-					'PricePerItemIncVat' => 450,
-					'PricePerItemExVat'  => 450,
-				),
-			),
+			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 		);
 	}
