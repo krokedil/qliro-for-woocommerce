@@ -25,10 +25,10 @@ class Qliro_One_Merchant_URLS {
 	public function get_urls( $order_id = null ) {
 		$merchant_urls = array(
 			'terms'        => $this->get_terms_url(),                   // Required.
-//			'checkout'     => $this->get_checkout_url(),                // Required.
+		// 'checkout'     => $this->get_checkout_url(),                // Required.
 			'confirmation' => $this->get_confirmation_url( $order_id ), // Required.
-//			'push'         => $this->get_push_url(),                    // Required.
-//			'notification' => $this->get_notification_url(),
+		// 'push'         => $this->get_push_url(),                    // Required.
+		// 'notification' => $this->get_notification_url(),
 		);
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
@@ -78,9 +78,25 @@ class Qliro_One_Merchant_URLS {
 	 * @return string
 	 */
 	private function get_confirmation_url( $order_id ) {
+		$rand_string = strtolower(
+			sprintf(
+				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 16384, 20479 ),
+				random_int( 32768, 49151 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 )
+			)
+		);
+
+		WC()->session->set( 'qliro_order_confirmation_id', $rand_string );
+
 		$confirmation_url = add_query_arg(
 			array(
-				'qliro_one_confirm' => 'yes',
+				'qliro_one_confirm' => $rand_string,
 			),
 			wc_get_checkout_url()
 		);

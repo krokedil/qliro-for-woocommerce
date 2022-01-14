@@ -83,21 +83,26 @@ abstract class Qliro_One_Request {
 	/**
 	 * Get the request headers.
 	 *
+	 * @param string $body json_encoded body.
 	 * @return array
 	 */
-	protected function get_request_headers() {
+	protected function get_request_headers( $body = '' ) {
 		return array(
 			'Content-type'  => 'application/json',
-			'Authorization' => $this->calculate_auth(),
+			'Authorization' => $this->calculate_auth( $body ),
 		);
 	}
 
 	/**
 	 * Calculates the basic auth.
 	 *
+	 * @param string $body json_encoded body.
 	 * @return string
 	 */
-	abstract protected function calculate_auth();
+	protected function calculate_auth( $body ) {
+		$secret = 'yes' === $this->settings['testmode'] ? 'test_api_secret' : 'api_secret';
+		return 'Qliro ' . base64_encode( hex2bin( hash( 'sha256', $body . $this->settings[ $secret ] ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions -- Base64 used to calculate auth header.
+	}
 
 	/**
 	 * Get the user agent.

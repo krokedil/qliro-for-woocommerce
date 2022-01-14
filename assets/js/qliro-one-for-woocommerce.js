@@ -19,10 +19,14 @@ jQuery( function( $ ) {
 			qliroOneForWooCommerce.bodyEl.on( 'click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne );
 			window.q1Ready = function(q1) {
 				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
+				q1.onValidateOrder(qliroOneForWooCommerce.getQliroOneOrder);
+				/*q1.onValidateOrder(function callback(data, callback) {
+
+					callback({shouldProceed: false, errorMessage: "testing"});
+				});*/
 				// todo.
 				// q1.onShippingMethodChanged(qliroOneForWooCommerce.updateShipping);
 			}
-			qliroOneForWooCommerce.bodyEl.on('test_update_checkout', qliroOneForWooCommerce.getQliroOneOrder);
 			qliroOneForWooCommerce.bodyEl.on('change', "input[name='shipping_method[0]']", qliroOneForWooCommerce.updateShipping);
 		},
 		/**
@@ -129,7 +133,6 @@ jQuery( function( $ ) {
 			let form = $('form[name="checkout"] input, form[name="checkout"] select, textarea');
 			for (var i = 0; i < form.length; i++ ) {
 				let name = form[i].name;
-				console.log('wc input element ', name);
 				// Check if field is inside the order review.
 				if( $( 'table.woocommerce-checkout-review-order-table' ).find( form[i] ).length ) {
 					continue;
@@ -137,7 +140,6 @@ jQuery( function( $ ) {
 
 				// Check if this is a standard field.
 				if ( -1 === $.inArray( name, qliroOneParams.standardWooCheckoutFields ) ) {
-
 					// This is not a standard Woo field, move to our div.
 					if ( 0 < $( 'p#' + name + '_field' ).length ) {
 						$( 'p#' + name + '_field' ).appendTo( '#qliro-one-extra-checkout-fields' );
@@ -148,6 +150,7 @@ jQuery( function( $ ) {
 			}
 		},
 		updateAddress: function (customerInfo) {
+			console.log(customerInfo);
 			var billingEmail = (('email' in customerInfo) ? customerInfo.email : null);
 			var billingPhone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
 			var billingFirstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
@@ -166,7 +169,9 @@ jQuery( function( $ ) {
 
 			$("form.checkout").trigger('update_checkout');
 		},
-		getQliroOneOrder: function () {
+		getQliroOneOrder: function (data, callback) {
+			console.log("getQliroOneOrder");
+			console.log(callback);
 			$.ajax({
 				type: 'POST',
 				data: {
@@ -179,14 +184,14 @@ jQuery( function( $ ) {
 				error: function (data) {
 				},
 				complete: function (data) {
-					qliroOneForWooCommerce.setAddressData(data.responseJSON.data);
+					qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
 				}
 			});
 		},
 		/*
 		 * Sets the WooCommerce form field data.
 		 */
-		setAddressData: function (addressData) {
+		setAddressData: function (addressData, callback) {
 			if (0 < $('form.checkout #terms').length) {
 				$('form.checkout #terms').prop('checked', true);
 			}
@@ -222,7 +227,7 @@ jQuery( function( $ ) {
 				$('#shipping_country').val(addressData.shippingAddress.CountryCode);
 			}
 
-			qliroOneForWooCommerce.submitOrder();
+			qliroOneForWooCommerce.submitOrder(callback);
 
 		},
 		updateShipping: function( e ) {
@@ -248,7 +253,7 @@ jQuery( function( $ ) {
 		/**
 		 * Submit the order using the WooCommerce AJAX function.
 		 */
-		submitOrder: function () {
+		submitOrder: function (callback) {
 			$('.woocommerce-checkout-review-order-table').block({
 				message: null,
 				overlayCSS: {
@@ -264,9 +269,11 @@ jQuery( function( $ ) {
 				success: function (data) {
 					try {
 						if ('success' === data.result) {
+							callback({shouldProceed: true, errorMessage: "n/a"});
 							console.log('submit order success', data);
 						} else {
-							console.log(    data, 1111);
+							callback({shouldProceed: false, errorMessage: "data.result was not success"});
+							console.log( data, 1111);
 							throw 'Result failed';
 						}
 					} catch (err) {
@@ -274,10 +281,11 @@ jQuery( function( $ ) {
 						console.error(err);
 						if (data.messages) {
 							console.log('error ', data.messages);
+							callback({shouldProceed: false, errorMessage: "err message " + data.messages});
 							// qliroOneForWooCommerce.logToFile( 'Checkout error | ' + data.messages );
 							// qliroOneForWooCommerce.failOrder( 'submission', data.messages );
 						} else {
-							console.log('no message');
+							callback({shouldProceed: false, errorMessage: "err no message"});
 							// qliroOneForWooCommerce.logToFile( 'Checkout error | No message' );
 							// qliroOneForWooCommerce.failOrder( 'submission', '<div class="woocommerce-error">' + 'Checkout error' + '</div>' );
 						}
@@ -290,7 +298,5 @@ jQuery( function( $ ) {
 		},
 
 	};
-
 	qliroOneForWooCommerce.init();
-
 });

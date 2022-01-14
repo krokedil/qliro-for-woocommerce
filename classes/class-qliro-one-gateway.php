@@ -66,22 +66,11 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		// todo update merchant ref, and update thankyou url.
-		// todo set transaction id etc.
-
 		// try to get qliro order id from wc session.
-		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
-
-		// todo try to update qliro one merchant reference.
-		// QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
-
-		// $response = QOC_WC()->api->update_qliro_one_order();
-		// if ( is_wp_error( $response ) ) {
-		// return array(
-		// 'result' => 'error',
-		// );
-		// }
+		$qliro_order_id        = WC()->session->get( 'qliro_one_order_id' );
+		$qliro_confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
 		update_post_meta( $order_id, '_qliro_one_order_id', $qliro_order_id );
+		update_post_meta( $order_id, '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		return array(
 			'result' => 'success',
 		);

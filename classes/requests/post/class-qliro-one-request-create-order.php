@@ -40,9 +40,8 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	protected function get_body() {
 		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
 		// todo temp merchant ref. save merchant ref to the session.
-		$merchant_reference = uniqid( 'q1' );
-		$mer_ref            = null;
-		$session            = WC()->session;
+		$mer_ref = null;
+		$session = WC()->session;
 
 		$billing_country = WC()->checkout()->get_value( 'billing_country' );
 		$session->set( 'qliro_one_billing_country', $billing_country );

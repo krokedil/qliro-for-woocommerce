@@ -78,8 +78,10 @@ function qliro_one_print_error_message( $wp_error ) {
  * @return void
  */
 function qliro_one_unset_sessions() {
-	// todo unset qliro variables from session.
-	// todo clear qliro order id.
+	WC()->session->__unset( 'qliro_order_confirmation_id' );
+	WC()->session->__unset( 'qliro_one_billing_country' );
+	WC()->session->__unset( 'qliro_one_merchant_reference' );
+	WC()->session->__unset( 'qliro_one_order_id' );
 }
 
 /**

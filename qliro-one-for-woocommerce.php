@@ -176,6 +176,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-ajax.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-confirmation.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qlirro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
