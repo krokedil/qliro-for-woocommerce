@@ -99,6 +99,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	public function show_thank_you_snippet( $order_id = null ) {
 		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
 		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$order          = wc_get_order( $order_id );
+		qliro_confirm_order( $order );
+
 		if ( $qliro_order ) {
 			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.
 		}

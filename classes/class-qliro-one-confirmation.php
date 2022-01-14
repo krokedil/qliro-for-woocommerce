@@ -37,9 +37,7 @@ class Qliro_One_Confirmation {
 
 		qliro_one_unset_sessions();
 
-		QOC_WC()->api->update_qliro_one_merchant_reference( $order->get_id() );
-		$qliro_order_id = get_post_meta( $order->get_id(), '_qliro_one_order_id', true );
-		$order->payment_complete( $qliro_order_id );
+		qliro_confirm_order( $order );
 		header( 'Location:' . $order->get_checkout_order_received_url() );
 		exit;
 	}

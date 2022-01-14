@@ -103,3 +103,20 @@ function qliro_one_wc_show_another_gateway_button() {
 		<?php
 	}
 }
+
+/**
+ * Confirm a cliro order.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return void
+ */
+function qliro_confirm_order( $order ) {
+	// Check if the order has been confirmed already.
+	if ( ! empty( $order->get_date_paid() ) ) {
+		return;
+	}
+
+	QOC_WC()->api->update_qliro_one_merchant_reference( $order->get_id() );
+	$qliro_order_id = get_post_meta( $order->get_id(), '_qliro_one_order_id', true );
+	$order->payment_complete( $qliro_order_id );
+}
