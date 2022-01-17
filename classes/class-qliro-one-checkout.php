@@ -38,10 +38,21 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		// Check if the cart hash has been changed since last update.
+		$cart_hash  = WC()->cart->get_cart_hash();
+		$saved_hash = WC()->session->get( 'qliro_one_last_update_hash' );
+
+		// If they are the same, return.
+		if ( $cart_hash === $saved_hash ) {
+			return;
+		}
+
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
 			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
 		}
+
+		$saved_hash = WC()->session->set( 'qliro_one_last_update_hash', $cart_hash );
 	}
 } new Qliro_One_Checkout();

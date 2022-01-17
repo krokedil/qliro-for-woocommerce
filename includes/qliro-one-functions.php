@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array|void
  */
-function qliro_one_create_or_update_order() {
+function qliro_one_maybe_create_order() {
 	$cart    = WC()->cart;
 	$session = WC()->session;
 	// try to get id from session.
@@ -23,19 +23,23 @@ function qliro_one_create_or_update_order() {
 	$cart->calculate_shipping();
 	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
-		$update_response = QOC_WC()->api->update_qliro_one_order( $qliro_one_order_id );
-		if ( ! is_wp_error( $update_response ) ) {
-			return QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		// If error, create new order.
+		if ( is_wp_error( $qliro_order ) ) {
+			$session->__unset( 'qliro_one_order_id' );
+			return qliro_one_maybe_create_order();
 		}
+		return $qliro_order;
 	}
 	// create.
-	$response = QOC_WC()->api->create_qliro_one_order();
-	if ( is_wp_error( $response ) || ! isset( $response['OrderId'] ) ) {
+	$qliro_order = QOC_WC()->api->create_qliro_one_order();
+	if ( is_wp_error( $qliro_order ) || ! isset( $qliro_order['OrderId'] ) ) {
 		// If failed then bail.
 		return;
 	}
 	// store id.
-	$session->set( 'qliro_one_order_id', $response['OrderId'] );
+	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
+	$session->set( 'qliro_one_last_update_hash', WC()->cart->get_cart_hash() );
 	// get qliro order.
 	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }
@@ -44,10 +48,15 @@ function qliro_one_create_or_update_order() {
  * Echoes Qliro One Checkout iframe snippet.
  */
 function qliro_wc_show_snippet() {
-	$qliro_one_order = qliro_one_create_or_update_order();
-	if ( null !== $qliro_one_order ) {
-		do_action( 'qliro_one_wc_show_snippet', $qliro_one_order );
-		echo $qliro_one_order['OrderHtmlSnippet'];// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
+	$snippet = WC()->session->get( 'qliro_one_snippet' );
+
+	if ( empty( $snippet ) ) {
+		$qliro_one_order = qliro_one_maybe_create_order();
+		$snippet         = $qliro_one_order['OrderHtmlSnippet'];
+		WC()->session->set( 'qliro_one_snippet', $snippet );
+	}
+	if ( ! empty( $snippet ) ) {
+		echo $snippet;// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
 	}
 	// todo here order is null.
 }
@@ -82,6 +91,8 @@ function qliro_one_unset_sessions() {
 	WC()->session->__unset( 'qliro_one_billing_country' );
 	WC()->session->__unset( 'qliro_one_merchant_reference' );
 	WC()->session->__unset( 'qliro_one_order_id' );
+	WC()->session->__unset( 'qliro_one_last_update_hash' );
+	WC()->session->__unset( 'qliro_one_snippet' );
 }
 
 /**

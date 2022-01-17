@@ -187,7 +187,9 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/put/class-qliro-one-request-update-order.php';
-			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-update-merchant-reference.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-merchant-reference.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-cancel-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-templates.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';

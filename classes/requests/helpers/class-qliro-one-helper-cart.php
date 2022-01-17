@@ -71,7 +71,7 @@ class Qliro_One_Helper_Cart {
 		}
 		return array(
 			'MerchantReference'  => self::get_product_sku( $product ),
-			'Description'        => $product->get_description(),
+			'Description'        => self::get_product_name( $cart_item ),
 			'Quantity'           => $cart_item['quantity'],
 			'PricePerItemIncVat' => self::get_product_unit_price( $cart_item ),
 			'PricePerItemExVat'  => self::get_product_unit_price_no_tax( $cart_item ),

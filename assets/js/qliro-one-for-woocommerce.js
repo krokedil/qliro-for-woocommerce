@@ -35,7 +35,6 @@ jQuery( function( $ ) {
 			if( ! qliroOneParams.payForOrder && qliroOneForWooCommerce.paymentMethod === 'qliro_one' ) {
 				qliroOneForWooCommerce.moveExtraCheckoutFields();
 			}
-
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
 		},
@@ -59,7 +58,6 @@ jQuery( function( $ ) {
 		 */
 		changeFromQliroOne: function( e ) {
 			e.preventDefault();
-
 			$( qliroOneForWooCommerce.checkoutFormSelector ).block({
 				message: null,
 				overlayCSS: {
@@ -155,7 +153,6 @@ jQuery( function( $ ) {
 			}
 		},
 		updateAddress: function (customerInfo) {
-			console.log(customerInfo);
 			var billingEmail = (('email' in customerInfo) ? customerInfo.email : null);
 			var billingPhone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
 			var billingFirstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
@@ -175,8 +172,6 @@ jQuery( function( $ ) {
 			$("form.checkout").trigger('update_checkout');
 		},
 		getQliroOneOrder: function (data, callback) {
-			console.log("getQliroOneOrder");
-			console.log(callback);
 			$.ajax({
 				type: 'POST',
 				data: {
@@ -190,6 +185,7 @@ jQuery( function( $ ) {
 				},
 				complete: function (data) {
 					qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
+					console.log('getQliroOneOrder completed');
 				}
 			});
 		},
@@ -252,36 +248,66 @@ jQuery( function( $ ) {
 				data: $('form.checkout').serialize(),
 				dataType: 'json',
 				success: function (data) {
+					console.log(data);
 					try {
 						if ('success' === data.result) {
-							callback({shouldProceed: true, errorMessage: "n/a"});
+							callback({shouldProceed: true, errorMessage: ""});
 							console.log('submit order success', data);
 						} else {
-							callback({shouldProceed: false, errorMessage: "data.result was not success"});
-							console.log( data, 1111);
 							throw 'Result failed';
 						}
 					} catch (err) {
 						console.log('catch error');
 						console.error(err);
 						if (data.messages) {
-							console.log('error ', data.messages);
-							callback({shouldProceed: false, errorMessage: "err message " + data.messages});
-							// qliroOneForWooCommerce.logToFile( 'Checkout error | ' + data.messages );
-							// qliroOneForWooCommerce.failOrder( 'submission', data.messages );
+							// Strip HTML code from messages.
+							let messages = data.messages.replace(/<\/?[^>]+(>|$)/g, "");
+							console.log('error ', messages);
+							qliroOneForWooCommerce.logToFile( 'Checkout error | ' + messages );
+							qliroOneForWooCommerce.failOrder( 'submission', messages, callback );
 						} else {
-							callback({shouldProceed: false, errorMessage: "err no message"});
-							// qliroOneForWooCommerce.logToFile( 'Checkout error | No message' );
-							// qliroOneForWooCommerce.failOrder( 'submission', '<div class="woocommerce-error">' + 'Checkout error' + '</div>' );
+							qliroOneForWooCommerce.logToFile( 'Checkout error | No message' );
+							qliroOneForWooCommerce.failOrder( 'submission', 'Checkout error', callback );
 						}
 					}
 				},
 				error: function (data) {
-					console.log(data);
+					try {
+						qliroOneForWooCommerce.logToFile( 'AJAX error | ' + JSON.stringify(data) );
+					} catch( e ) {
+						qliroOneForWooCommerce.logToFile( 'AJAX error | Failed to parse error message.' );
+					}
+					qliroOneForWooCommerce.failOrder( 'ajax-error', 'Internal Server Error', callback )
 				}
 			});
 		},
+		failOrder: function( event, error_message, callback ) {
+			callback({shouldProceed: false, errorMessage: error_message});
 
+			// Renable the form.
+			$( 'body' ).trigger( 'updated_checkout' );
+			var className = 'form.checkout';
+			$( qliroOneForWooCommerce.checkoutFormSelector ).removeClass( 'processing' );
+			$( qliroOneForWooCommerce.checkoutFormSelector ).unblock();
+			$( '.woocommerce-checkout-review-order-table' ).unblock();
+		},
+		/**
+		 * Logs the message to the klarna checkout log in WooCommerce.
+		 * @param {string} message 
+		 */
+		logToFile: function( message ) {
+			$.ajax(
+				{
+					url: qliroOneParams.log_to_file_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						message: message,
+						nonce: qliroOneParams.log_to_file_nonce
+					}
+				}
+			);
+		},
 	};
 	qliroOneForWooCommerce.init();
 });

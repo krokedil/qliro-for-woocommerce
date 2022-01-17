@@ -102,10 +102,8 @@ class Qliro_One_Assets {
 				'get_order_url'               => WC_AJAX::get_endpoint( 'qliro_one_get_order' ),
 				'get_order_nonce'             => wp_create_nonce( 'qliro_one_get_order' ),
 				'log_to_file_url'             => WC_AJAX::get_endpoint( 'qliro_one_wc_log_js' ),
-				'get_log_nonce'               => wp_create_nonce( 'qliro_one_wc_log_js' ),
+				'log_to_file_nonce'           => wp_create_nonce( 'qliro_one_wc_log_js' ),
 				'payForOrder'                 => $pay_for_order,
-				'update_order_url'            => WC_AJAX::get_endpoint( 'qliro_one_wc_update_order' ),
-				'update_order_nonce'          => wp_create_nonce( 'qliro_one_wc_update_order' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );

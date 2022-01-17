@@ -120,7 +120,9 @@ class Qliro_One_API {
 	 */
 	private function check_for_api_error( $response ) {
 		if ( is_wp_error( $response ) ) {
-			qliro_one_print_error_message( $response );
+			if ( ! is_admin() ) {
+				qliro_one_print_error_message( $response );
+			}
 			return false;
 		}
 		return $response;
