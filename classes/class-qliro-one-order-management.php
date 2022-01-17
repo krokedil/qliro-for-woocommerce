@@ -94,17 +94,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		// Not going to do this for non Qliro One orders.
-		if ( 'qliro_one' !== $order->get_payment_method() ) {
-			return;
-		}
-
-		// todo get request id from post meta.
-		$args     = array(
-			'request_id' => get_post_meta( $order_id, '_qliro_request_id' ),
-			'order_id'   => $order,
-		);
-		$response = new Qliro_One_Cancel_Order( $args );
+		$response = QOC_WC()->api->cancel_qliro_one_order( $order_id );
 		if ( ! is_wp_error( $response ) ) {
 
 		}

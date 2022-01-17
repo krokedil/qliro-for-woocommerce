@@ -27,7 +27,6 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
-
 	}
 
 	/**
@@ -88,7 +87,7 @@ class Qliro_One_Assets {
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$pay_for_order = true;
 		}
-		wp_register_script( 'qliro-one-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, true );
+		wp_register_script( 'qliro-one-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, false );
 
 		wp_localize_script(
 			'qliro-one-for-woocommerce',

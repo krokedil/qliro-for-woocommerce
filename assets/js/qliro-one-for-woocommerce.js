@@ -2,7 +2,6 @@
  * @var qliroOneParams
  */
 jQuery( function( $ ) {
-
 	if ( typeof qliroOneParams === 'undefined' || qliroOneParams.isEnabled !== 'yes' ) {
 		return false;
 	}
