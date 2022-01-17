@@ -127,7 +127,16 @@ function qliro_confirm_order( $order ) {
 		return;
 	}
 
-	QOC_WC()->api->update_qliro_one_merchant_reference( $order->get_id() );
+	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order->get_id() );
+
+	if ( is_wp_error( $response ) ) {
+		return;
+	}
+
+	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
+		update_post_meta( $order->get_id(), '_payment_transaction_id', $response['PaymentTransactionId'] );
+	}
+
 	$qliro_order_id = get_post_meta( $order->get_id(), '_qliro_one_order_id', true );
 	$order->payment_complete( $qliro_order_id );
 }

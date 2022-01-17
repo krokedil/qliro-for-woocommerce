@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Qliro One for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro One for WooCommerce 2.6.3\n"
+"Project-Id-Version: Qliro One for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2022-01-14 10:06:47+00:00\n"
+"POT-Creation-Date: 2022-01-17 13:32:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -214,16 +214,30 @@ msgstr ""
 msgid "Qliro One replaces the standard WooCommerce checkout page."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:137
+#: classes/class-qliro-one-order-management.php:57
+msgid "The order has already been captured with Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:66
+msgid ""
+"The order has been successfully captured with Qliro. Payment transaction "
+"id: "
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:68
+msgid "The order failed to be captured with Qliro. Please try again."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:143
 msgid "Failed to refund the order with Qliro One"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:141
+#: classes/class-qliro-one-order-management.php:147
 #. translators: refund amount, refund id.
 msgid "%1$s successfully refunded in Qliro One.. RefundID: %2$s"
 msgstr ""
 
-#: includes/qliro-one-functions.php:93
+#: includes/qliro-one-functions.php:106
 msgid "Select another payment method"
 msgstr ""
 

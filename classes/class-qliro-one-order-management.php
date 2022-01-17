@@ -53,15 +53,21 @@ class Qliro_One_Order_Management {
 		}
 
 		// todo check if this reservation was already activated, do nothing.
+		if ( get_post_meta( $order_id, '_qliro_order_captured', true ) ) {
+			$order->add_order_note( __( 'The order has already been captured with Qliro.', 'qliro-one-for-woocommerce' ) );
+			return;
+		}
 
 		$response = QOC_WC()->api->capture_qliro_one_order( $order_id );
 		if ( ! is_wp_error( $response ) ) {
 			// all ok.
 			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
-			update_post_meta( $order_id, '_payment_transaction_id', $payment_transaction_id );
+			update_post_meta( $order_id, '_qliro_order_captured', true );
+			$order->add_order_note( __( 'The order has been successfully captured with Qliro. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id );
 		} else {
-			// todo add error on the capture.
+			$order->update_status( 'on-hold', __( 'The order failed to be captured with Qliro. Please try again.', 'qliro-one-for-woocommerce' ) );
 		}
+		$order->save();
 	}
 
 

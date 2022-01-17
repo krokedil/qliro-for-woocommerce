@@ -5,8 +5,8 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.6.3
- * Text Domain: qliro-one-for-woocommerce.php
+ * Version: 1.0.0
+ * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 4.0.0
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.6.3' );
+define( 'QLIRO_WC_VERSION', '1.0.0' );
 define( 'QLIRO_WC_MIN_PHP_VER', '5.6.0' );
 define( 'QLIRO_WC_MIN_WC_VER', '3.9.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
@@ -96,7 +96,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		private function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -106,7 +106,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -136,8 +136,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public function plugin_action_links( $links ) {
 			$setting_link = $this->get_setting_link();
 			$plugin_links = array(
-				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce.php' ) . '</a>',
-				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce.php' ) . '</a>',
+				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce' ) . '</a>',
+				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce' ) . '</a>',
 			);
 
 			return array_merge( $plugin_links, $links );
