@@ -96,7 +96,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price( $cart_item ) {
-		return ( $cart_item['line_total'] ) / $cart_item['quantity'];
+		return ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'];
 	}
 
 	/**
@@ -106,8 +106,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price_no_tax( $cart_item ) {
-		return ( $cart_item['line_total'] - $cart_item['line_tax'] ) / $cart_item['quantity'];
-
+		return ( $cart_item['line_total'] ) / $cart_item['quantity'];
 	}
 
 	/**
@@ -151,8 +150,8 @@ class Qliro_One_Helper_Cart {
 			'MerchantReference'  => 'fee|' . $fee->id,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
-			'PricePerItemIncVat' => $fee->amount,
-			'PricePerItemExVat'  => $fee->amount - $fee->tax,
+			'PricePerItemIncVat' => $fee->amount + $fee->tax,
+			'PricePerItemExVat'  => $fee->amount,
 		);
 
 	}
@@ -174,8 +173,8 @@ class Qliro_One_Helper_Cart {
 							'MerchantReference'  => $method->id,
 							'Description'        => $method->label,
 							'Quantity'           => 1,
-							'PricePerItemIncVat' => WC()->cart->get_shipping_total(),
-							'PricePerItemExVat'  => WC()->cart->get_shipping_total() - WC()->cart->get_total_tax(),
+							'PricePerItemIncVat' => WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(),
+							'PricePerItemExVat'  => WC()->cart->get_shipping_total(),
 						);
 					}
 

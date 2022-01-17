@@ -167,8 +167,9 @@ abstract class Qliro_One_Request {
 					$error_message .= ' ' . $error;
 				}
 			}
-			$code   = wp_remote_retrieve_response_code( $response );
-			$return = new WP_Error( $code, json_decode( $response['body'], true )['ErrorMessage'], $data );
+			$code          = wp_remote_retrieve_response_code( $response );
+			$error_message = empty( $response['body'] ) ? "API Error ${code}" : json_decode( $response['body'], true )['ErrorMessage'];
+			$return        = new WP_Error( $code, $error_message, $data );
 		} else {
 			$return = json_decode( wp_remote_retrieve_body( $response ), true );
 		}
