@@ -5,6 +5,8 @@
  * @package Qliro_One_For_WooCommerce/Classes/Requests/Helpers
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class Qliro_One_Helper_Cart
  */
