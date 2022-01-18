@@ -20,6 +20,11 @@ class Qliro_One_Fields {
 	 * Returns the fields.
 	 */
 	public static function fields() {
+		$order_statuses_trigger           = wc_get_order_statuses();
+		$order_statuses_trigger['manual'] = __( 'Manual trigger', 'qliro-one-for-woocommerce' );
+		$order_statuses                   = wc_get_order_statuses();
+		$order_statuses['none']           = __( 'None', 'qliro-one-for-woocommerce' );
+
 		$settings = array(
 			'enabled'                                    => array(
 				'title'       => __( 'Enable/Disable', 'qliro-one-for-woocommerce' ),
@@ -75,12 +80,6 @@ class Qliro_One_Fields {
 				),
 				'description' => __( 'Select juridical type', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => false,
-			),
-			'qliro_one_order_management'                 => array(
-				'title'   => __( 'Enable Order Management', 'qliro-one-for-woocommerce' ),
-				'type'    => 'checkbox',
-				'label'   => __( 'Enable Qliro One order capture on WooCommerce order completion.', 'qliro-one-for-woocommerce' ),
-				'default' => 'no',
 			),
 			'testmode'                                   => array(
 				'title'       => __( 'Test mode', 'qliro-one-for-woocommerce' ),
@@ -143,9 +142,62 @@ class Qliro_One_Fields {
 					'autocomplete' => 'new-password',
 				),
 			),
-			// Iframe customization.
-			'iframe_customization'                       => array(
-				'title' => 'iFrame Customization',
+			// Order Management.
+			'order_management'                           => array(
+				'title' => 'Order Management',
+				'type'  => 'title',
+			),
+			'capture_status'                             => array(
+				'title'       => __( 'Capture status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses_trigger,
+				'description' => __( 'Select what order status to use to initiate capturing the order in Qliros system.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'wc-completed',
+				'desc_tip'    => false,
+			),
+			'capture_pending_status'                     => array(
+				'title'       => __( 'Pending capture status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses,
+				'description' => __( 'Select what order status to set the order to while we wait for Qliro to tell us if the capture was successful or not.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'none',
+				'desc_tip'    => false,
+			),
+			'capture_ok_status'                          => array(
+				'title'       => __( 'OK capture status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses,
+				'description' => __( 'Select what order status to set the order to when we get notified of a successful order capture.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'none',
+				'desc_tip'    => false,
+			),
+			'cancel_status'                              => array(
+				'title'       => __( 'Cancel status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses_trigger,
+				'description' => __( 'Select what order status to use to initiate canceling the order in Qliros system.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'wc-cancelled',
+				'desc_tip'    => false,
+			),
+			'cancel_pending_status'                      => array(
+				'title'       => __( 'Pending cancel status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses,
+				'description' => __( 'Select what order status to set the order to while we wait for Qliro to tell us if the cancelation was successful or not.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'none',
+				'desc_tip'    => false,
+			),
+			'cancel_ok_status'                           => array(
+				'title'       => __( 'OK cancel status', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => $order_statuses,
+				'description' => __( 'Select what order status to set the order to when we get notified of a successful order cancelation.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'none',
+				'desc_tip'    => false,
+			),
+			// Checkout customization.
+			'checkout_customization'                     => array(
+				'title' => 'Checkout Customization',
 				'type'  => 'title',
 			),
 			'qliro_one_bg_color'                         => array(

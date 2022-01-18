@@ -24,11 +24,10 @@ class Qliro_One_Merchant_URLS {
 	 */
 	public function get_urls( $order_id = null ) {
 		$merchant_urls = array(
-			'terms'        => $this->get_terms_url(),                   // Required.
-		// 'checkout'     => $this->get_checkout_url(),                // Required.
-			'confirmation' => $this->get_confirmation_url( $order_id ), // Required.
-		// 'push'         => $this->get_push_url(),                    // Required.
-		// 'notification' => $this->get_notification_url(),
+			'terms'        => $this->get_terms_url(),
+			'confirmation' => $this->get_confirmation_url( $order_id ),
+			'push'         => $this->get_push_url(),
+			'om_push'      => $this->get_om_push_url(),
 		);
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
@@ -45,28 +44,6 @@ class Qliro_One_Merchant_URLS {
 		$terms_url = get_permalink( wc_get_page_id( 'terms' ) );
 
 		return apply_filters( 'qliro_one_wc_terms_url', $terms_url );
-	}
-
-	/**
-	 * @return mixed|void
-	 */
-	private function get_privacy_page() {
-		// todo double check.
-		$terms_url = get_permalink( wc_get_page_id( 'privacy' ) );
-
-		return apply_filters( 'qliro_one_wc_terms_url', $terms_url );
-	}
-
-	/**
-	 * Checkout URL.
-	 *
-	 * Required. URL of merchant checkout page. Should be different than terms, confirmation and push URLs.
-	 *
-	 * @return string
-	 */
-	private function get_checkout_url() {
-		$checkout_url = wc_get_checkout_url();
-		return apply_filters( 'qliro_one_wc_checkout_url', $checkout_url );
 	}
 
 	/**
@@ -106,26 +83,24 @@ class Qliro_One_Merchant_URLS {
 	/**
 	 * Push URL.
 	 *
-	 * Required. URL of merchant confirmation page. Should be different than checkout and confirmation URLs.
+	 * URL of the push callback page for Checkout status changes.
 	 *
 	 * @return string
 	 */
 	private function get_push_url() {
-		return '';
+		$om_push_url = home_url( '/wc-api/QOC_Checkout_Status/' );
+		return apply_filters( 'qliro_one_wc_push_url', $om_push_url );
 	}
 
-
-
 	/**
-	 * Notification URL.
+	 * Push URL.
 	 *
-	 * URL for notifications on pending orders.
+	 * URL of the push callback page for Order Management status changes.
 	 *
 	 * @return string
 	 */
-	private function get_notification_url() {
-		$notification_url = '';
-		return apply_filters( 'qliro_one_wc_notification_url', $notification_url );
+	private function get_om_push_url() {
+		$om_push_url = home_url( '/wc-api/QOC_OM_Status/' );
+		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
 	}
-
 }

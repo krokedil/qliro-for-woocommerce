@@ -22,7 +22,7 @@ class Qliro_One_API {
 	 * @return mixed
 	 */
 	public function create_qliro_one_order( $order_id = false ) {
-		$request  = new Qliro_One_Create_Order( array() );
+		$request  = new Qliro_One_Request_Create_Order( array() );
 		$response = $request->request();
 
 		return $this->check_for_api_error( $response );

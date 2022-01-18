@@ -8,9 +8,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro_One_Create_Order class.
+ * Qliro_One_Request_Create_Order class.
  */
-class Qliro_One_Create_Order extends Qliro_One_Request_Post {
+class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 
 	/**
 	 * Class constructor.
@@ -65,9 +65,9 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 			'Currency'                             => get_woocommerce_currency(),
 			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
-			'MerchantCheckoutStatusPushUrl'        => 'https://Merchant.com/push/',
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
-			'MerchantOrderManagementStatusPushUrl' => 'https://Merchant.com/push/',
+			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
+			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
 			'PrimaryColor'                         => $this->get_primary_color(),
 			'CallToActionColor'                    => $this->get_call_to_action_color(),
