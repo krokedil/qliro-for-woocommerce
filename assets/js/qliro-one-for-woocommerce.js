@@ -16,10 +16,7 @@ jQuery( function( $ ) {
 			$( document ).ready( qliroOneForWooCommerce.documentReady );
 			qliroOneForWooCommerce.bodyEl.on( 'change', 'input[name="payment_method"]', qliroOneForWooCommerce.maybeChangeToQliroOne );
 			qliroOneForWooCommerce.bodyEl.on( 'click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne );
-			window.q1Ready = function(q1) {
-				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
-				q1.onValidateOrder(qliroOneForWooCommerce.getQliroOneOrder);
-			}
+			qliroOneForWooCommerce.renderIframe();
 		},
 		/**
 		 * Triggers on document ready.
@@ -36,6 +33,14 @@ jQuery( function( $ ) {
 			}
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
+		},
+
+		renderIframe: function() {
+			window.q1Ready = function(q1) {
+				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
+				q1.onValidateOrder(qliroOneForWooCommerce.getQliroOneOrder);
+			}
+			$('#qliro-one-iframe').append( qliroOneParams.iframeSnippet );
 		},
 
 		updateCheckout: function() {

@@ -103,6 +103,7 @@ class Qliro_One_Assets {
 				'log_to_file_url'             => WC_AJAX::get_endpoint( 'qliro_one_wc_log_js' ),
 				'log_to_file_nonce'           => wp_create_nonce( 'qliro_one_wc_log_js' ),
 				'payForOrder'                 => $pay_for_order,
+				'iframeSnippet'               => qliro_wc_get_snippet(),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );

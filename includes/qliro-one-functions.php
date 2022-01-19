@@ -47,7 +47,7 @@ function qliro_one_maybe_create_order() {
 /**
  * Echoes Qliro One Checkout iframe snippet.
  */
-function qliro_wc_show_snippet() {
+function qliro_wc_get_snippet() {
 	$snippet = WC()->session->get( 'qliro_one_snippet' );
 
 	if ( empty( $snippet ) ) {
@@ -56,7 +56,7 @@ function qliro_wc_show_snippet() {
 		WC()->session->set( 'qliro_one_snippet', $snippet );
 	}
 	if ( ! empty( $snippet ) ) {
-		echo $snippet;// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
+		return $snippet;// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
 	}
 	// todo here order is null.
 }
@@ -116,7 +116,7 @@ function qliro_one_wc_show_another_gateway_button() {
 }
 
 /**
- * Confirm a cliro order.
+ * Confirm a qliro order.
  *
  * @param WC_Order $order The WooCommerce order.
  * @return void
