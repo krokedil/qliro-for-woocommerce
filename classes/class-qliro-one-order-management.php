@@ -149,7 +149,7 @@ class Qliro_One_Order_Management {
 
 		if ( is_wp_error( $response ) ) {
 			$order->add_order_note( __( 'Failed to refund the order with Qliro One', 'qliro-one-for-woocommerce' ) );
-			return false;
+			return $response;
 		}
 		// translators: refund amount, refund id.
 		$text           = __( '%1$s pending to be refunded by Qliro One', 'qliro-one-for-woocommerce' );
