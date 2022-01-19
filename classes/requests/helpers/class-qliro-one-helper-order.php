@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class for processing order lines from a WooCommerce order.
  */
-class Qliro_One_Request_Order {
+class Qliro_One_Helper_Order {
 	/**
 	 * Gets the order lines for the order.
 	 *
@@ -51,6 +51,28 @@ class Qliro_One_Request_Order {
 		}
 
 		return array_values( $order_lines );
+	}
+
+	/**
+	 * Formats the order lines for a refund request.
+	 *
+	 * @param int $order_id The WooCommerce Order ID.
+	 * @return array
+	 */
+	public static function get_return_items( $order_id ) {
+		$order_lines  = self::get_order_lines( $order_id );
+		$return_lines = array();
+
+		foreach ( $order_lines as $order_line ) {
+			$return_lines[] = array(
+				'MerchantReference'  => $order_line['MerchantReference'],
+				'Type'               => $order_line['Type'],
+				'Quantity'           => abs( $order_line['Quantity'] ),
+				'PricePerItemIncVat' => abs( $order_line['PricePerItemIncVat'] ),
+			);
+		}
+
+		return $return_lines;
 	}
 
 	/**

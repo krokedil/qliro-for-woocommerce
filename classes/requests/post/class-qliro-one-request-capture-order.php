@@ -40,7 +40,7 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 	protected function get_body() {
 		$order_id               = $this->arguments['order_id'];
 		$payment_transaction_id = get_post_meta( $order_id, '_payment_transaction_id', true );
-		$order_data             = new Qliro_One_Request_Order();
+		$order_data             = new Qliro_One_Helper_Order();
 		// todo update the params.
 		$body = array(
 			'RequestId'      => $order_data->generate_request_id(),

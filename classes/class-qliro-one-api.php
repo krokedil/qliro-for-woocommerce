@@ -63,7 +63,7 @@ class Qliro_One_API {
 	 */
 	public function cancel_qliro_one_order( $order_id ) {
 		// todo.
-		$request_id = ( new Qliro_One_Request_Order() )->generate_request_id();
+		$request_id = ( new Qliro_One_Helper_Order() )->generate_request_id();
 		$request    = new Qliro_One_Cancel_Order(
 			array(
 				'order_id'   => $order_id,
@@ -93,9 +93,14 @@ class Qliro_One_API {
 	 * @param int $order_id Order ID.
 	 * @return array
 	 */
-	public function refund_qliro_one_order( $order_id ) {
+	public function refund_qliro_one_order( $order_id, $refund_order_id ) {
 		// todo.
-		$request  = new Qliro_One_Request_Return_Items( array( 'order_id' => $order_id ) );
+		$request  = new Qliro_One_Request_Return_Items(
+			array(
+				'order_id'        => $order_id,
+				'refund_order_id' => $refund_order_id,
+			)
+		);
 		$response = $request->request();
 		return $this->check_for_api_error( $response );
 	}
@@ -123,7 +128,6 @@ class Qliro_One_API {
 			if ( ! is_admin() ) {
 				qliro_one_print_error_message( $response );
 			}
-			return false;
 		}
 		return $response;
 	}

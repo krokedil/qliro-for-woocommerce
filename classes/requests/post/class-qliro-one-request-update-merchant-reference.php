@@ -40,7 +40,7 @@ class Qliro_One_Update_Merchant_Reference extends Qliro_One_Request_Post {
 		$order_id       = $this->arguments['order_id'];
 		$order          = wc_get_order( $order_id );
 		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$order_data     = new Qliro_One_Request_Order();
+		$order_data     = new Qliro_One_Helper_Order();
 		$request_id     = $order_data->generate_request_id();
 
 		return array(
