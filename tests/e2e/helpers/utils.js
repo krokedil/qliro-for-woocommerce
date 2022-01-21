@@ -2,46 +2,35 @@ import API from "../api/API";
 import urls from "./urls";
 
 const timeOutTime = 2500;
-const KCOSettingsArray = {
-	woocommerce_kco_settings: {
-		enabled: "yes",
-		title: "Klarna",
-		description: "Klarna Checkout for WooCommerce Test",
-		select_another_method_text: "",
+const qliroOneSettings = {
+	woocommerce_qliro_one_settings: {
+		enabled :"yes",
+		title: "Qliro One",
+		description: "Payment method description.",
 		testmode: "yes",
 		logging: "yes",
-		credentials_eu: "",
-		merchant_id_eu: "",
-		shared_secret_eu: "",
-		test_merchant_id_eu: process.env.API_KEY,
-		test_shared_secret_eu: process.env.API_SECRET,
-		credentials_us: "",
-		merchant_id_us: "",
-		shared_secret_us: "",
-		test_merchant_id_us: "",
-		test_shared_secret_us: "",
-		shipping_section: "",
-		allow_separate_shipping: "no",
-		shipping_methods_in_iframe: "yes",
-		shipping_details: "",
-		checkout_section: "",
-		send_product_urls: "yes",
-		dob_mandatory: "no",
-		display_privacy_policy_text: "no",
-		add_terms_and_conditions_checkbox: "no",
-		allowed_customer_types: "B2CB",
-		title_mandatory: "yes",
-		prefill_consent: "yes",
-		quantity_fields: "yes",
-		color_settings_title: "",
-		color_button: "",
-		color_button_text: "",
-		color_checkbox: "",
-		color_checkbox_checkmark: "",
-		color_header: "",
-		color_link: "",
-		radius_border: "",
-		add_to_email: "no",
+		credentials: "",
+		api_key: "",
+		api_secret: "",
+		test_api_key: "",
+		test_api_secret: "",
+		other_payment_method_button_text: "",
+		qliro_one_button_ask_for_newsletter_signup: "no",
+		qliro_one_button_ask_for_newsletter_signup_checked: "no",
+		qliro_one_enforced_juridical_type: "Physical",
+		capture_status: "wc-completed",
+		capture_pending_status: "none",
+		capture_ok_status: "none",
+		cancel_status: "wc-cancelled",
+		cancel_pending_status: "none",
+		cancel_ok_status: "none",
+		qliro_one_bg_color: "",
+		qliro_one_primary_color: "",
+		qliro_one_call_action_color: "",
+		qliro_one_call_action_hover_color: "",
+		qliro_one_corner_radius: "",
+		qliro_one_button_corner_radius: "",
+		checkout_layout: "one_column_checkout"
 	},
 };
 
@@ -97,7 +86,7 @@ const addMultipleProductsToCart = async (page, products, data) => {
 		});
 	});
 
-	(async function addEachProduct() {
+	await (async function addEachProduct() {
 		for (let i = 0; i < ids.length + 1; i += 1) {
 			await addSingleProductToCart(page, ids[i]);
 		}
@@ -110,17 +99,15 @@ const setPricesIncludesTax = async (value) => {
 	await API.pricesIncludeTax(value);
 };
 
-const setIframeShipping = async (toggleSwitch) => {
-	KCOSettingsArray.woocommerce_kco_settings.shipping_methods_in_iframe =
-    toggleSwitch;
-	await API.updateOptions(KCOSettingsArray);
+const setOptions = async () => {
+	await API.updateOptions(qliroOneSettings);
 };
 
-const selectKco = async (page) => {
-	if (await page.$('input[id="payment_method_kco"]')) {
+const selectQliroOne = async (page) => {
+	if (await page.$('input[id="payment_method_qliro_one"]')) {
 		await page.evaluate(
 			(paymentMethod) => paymentMethod.click(),
-			await page.$('input[id="payment_method_kco"]')
+			await page.$('input[id="payment_method_qliro_one"]')
 		);
 	}
 };
@@ -131,6 +118,6 @@ export default {
 	addSingleProductToCart,
 	addMultipleProductsToCart,
 	setPricesIncludesTax,
-	setIframeShipping,
-	selectKco,
+	setOptions,
+	selectQliroOne,
 };

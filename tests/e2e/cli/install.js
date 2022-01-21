@@ -36,7 +36,7 @@ const installTheme = (themeName = "storefront") => {
 	executeCommand(`wp theme install ${themeName}`);
 };
 
-const activateKCO = () => executeCommand(`wp plugin activate ${PLUGIN_NAME}`);
+const activatePlugin = () => executeCommand(`wp plugin activate ${PLUGIN_NAME}`);
 
 const importDb = () =>
 	executeCommand(
@@ -51,8 +51,9 @@ waitOn({
 		installWP();
 		installWC();
 		installTheme();
-		activateKCO();
+		activatePlugin();
 		importDb();
+		activatePlugin();
 	} catch (error) {
 		console.log(error);
 	}
