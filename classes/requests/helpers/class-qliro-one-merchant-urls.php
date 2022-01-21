@@ -88,7 +88,7 @@ class Qliro_One_Merchant_URLS {
 	 * @return string
 	 */
 	private function get_push_url() {
-		$om_push_url = home_url( '/wc-api/QOC_Checkout_Status/' );
+		$om_push_url = 'https://krokedil.miki.ngrok.io/checkout/wc-api/QOC_Checkout_Status/';
 		return apply_filters( 'qliro_one_wc_push_url', $om_push_url );
 	}
 
@@ -100,7 +100,7 @@ class Qliro_One_Merchant_URLS {
 	 * @return string
 	 */
 	private function get_om_push_url() {
-		$om_push_url = home_url( '/wc-api/QOC_OM_Status/' );
+		$om_push_url = 'https://krokedil.miki.ngrok.io/checkout/wc-api/QOC_OM_Status/';
 		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
 	}
 }
