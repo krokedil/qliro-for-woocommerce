@@ -44,7 +44,10 @@ class Qliro_One_Assets {
 	 * Loads scripts for the plugin.
 	 */
 	public function qoc_load_js() {
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+		if ( empty( $settings ) ) {
+			return;
+		}
 		if ( 'yes' !== $settings['enabled'] ) {
 			return;
 		}
