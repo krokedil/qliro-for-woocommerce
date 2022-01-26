@@ -174,12 +174,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-checkout.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-callbacks.php';
 
-			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qlirro-one-logger.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-post.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-get.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-put.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-admin-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/put/class-qliro-one-request-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-merchant-reference.php';
@@ -188,12 +189,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-templates.php';
-			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-api.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-merchant-urls.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-cart.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-shipping-methods.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();

@@ -57,6 +57,13 @@ class Qliro_One_Fields {
 					'autocomplete' => 'off',
 				),
 			),
+			'shipping_in_iframe'                         => array(
+				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'Will display the shipping options inside of the Qliro One checkout iframe.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
 			'qliro_one_button_ask_for_newsletter_signup' => array(
 				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
@@ -67,7 +74,7 @@ class Qliro_One_Fields {
 			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
 				'title'       => __( 'Ask for newsletter signup checked', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'If true, Qliro One will set signup for newsletter as checked.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),

@@ -47,7 +47,8 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// Get cart shipping.
-		if ( WC()->cart->needs_shipping() ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		if ( WC()->cart->needs_shipping() && 'yes' !== $settings['shipping_in_iframe'] ) {
 			$shipping = self::get_shipping();
 			if ( null !== $shipping ) {
 				$formatted_cart_items[] = $shipping;
@@ -98,7 +99,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price( $cart_item ) {
-		return ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'];
+		return round( ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'], 2 );
 	}
 
 	/**
@@ -108,7 +109,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price_no_tax( $cart_item ) {
-		return ( $cart_item['line_total'] ) / $cart_item['quantity'];
+		return round( ( $cart_item['line_total'] ) / $cart_item['quantity'], 2 );
 	}
 
 	/**

@@ -16,6 +16,7 @@ jQuery( function( $ ) {
 			$( document ).ready( qliroOneForWooCommerce.documentReady );
 			qliroOneForWooCommerce.bodyEl.on( 'change', 'input[name="payment_method"]', qliroOneForWooCommerce.maybeChangeToQliroOne );
 			qliroOneForWooCommerce.bodyEl.on( 'click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne );
+			qliroOneForWooCommerce.bodyEl.on( 'updated_checkout', qliroOneForWooCommerce.maybeDisplayShippingPrice );
 			qliroOneForWooCommerce.renderIframe();
 		},
 		/**
@@ -34,28 +35,32 @@ jQuery( function( $ ) {
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
 		},
-
 		renderIframe: function() {
 			window.q1Ready = function(q1) {
 				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
 				q1.onValidateOrder(qliroOneForWooCommerce.getQliroOneOrder);
+				q1.onShippingMethodChanged(qliroOneForWooCommerce.shippingMethodChanged);
 			}
 			$('#qliro-one-iframe').append( qliroOneParams.iframeSnippet );
 		},
-
 		updateCheckout: function() {
+			console.log('update_checkout');
+			console.trace();
 			if(window.q1 !== undefined) {
 				window.q1.lock();
 			}
 		},
-
 		updatedCheckout: function() {
 			if(window.q1 !== undefined) {
 				window.q1.getOrderUpdates();
 				window.q1.unlock();
 			}
 		},
-
+		shippingMethodChanged: function (shipping) {
+			$('#qoc_shipping_data').val(JSON.stringify(shipping));
+			$( 'body' ).trigger( 'qoc_shipping_option_changed', [ shipping ]);
+			$( 'body' ).trigger( 'update_checkout' );
+		},
 		/**
 		 * When the customer changes from Qliro One to other payment methods.
 		 * @param {Event} e
@@ -85,7 +90,6 @@ jQuery( function( $ ) {
 				}
 			});
 		},
-
 		/**
 		 * When the customer changes to Qliro One from other payment methods.
 		 */
@@ -117,6 +121,32 @@ jQuery( function( $ ) {
 				}
 			}
 		},
+		/**
+		 * Display Shipping Price in order review if Display shipping methods in iframe settings is active.
+		 */
+		maybeDisplayShippingPrice: function() {
+		// Check if we already have set the price. If we have, return.
+		if( $('.qoc-shipping').length ) {
+			return;
+		}
+		if ( 'qliro_one' === qliroOneForWooCommerce.paymentMethod && 'yes' === qliroOneParams.shipping_in_iframe ) {
+			if ( $( '#shipping_method input[type=\'radio\']' ).length ) {
+				// Multiple shipping options available.
+				$( '#shipping_method input[type=\'radio\']:checked' ).each( function() {
+					var idVal = $( this ).attr( 'id' );
+					var shippingPrice = $( 'label[for=\'' + idVal + '\']' ).text();
+					$( '.woocommerce-shipping-totals td' ).html( shippingPrice );
+					$( '.woocommerce-shipping-totals td' ).addClass( 'qoc-shipping' );
+				});
+			} else {
+				// Only one shipping option available.
+				var idVal = $( '#shipping_method input[name=\'shipping_method[0]\']' ).attr( 'id' );
+				var shippingPrice = $( 'label[for=\'' + idVal + '\']' ).text();
+				$( '.woocommerce-shipping-totals td' ).html( shippingPrice );
+				$( '.woocommerce-shipping-totals td' ).addClass( 'qoc-shipping' );
+			}
+		}
+	},
 		/*
 		 * Check if Qliro One is the selected gateway.
 		 */
@@ -129,7 +159,6 @@ jQuery( function( $ ) {
 			}
 			return false;
 		},
-
 		/**
 		 * Moves all non standard fields to the extra checkout fields.
 		 */

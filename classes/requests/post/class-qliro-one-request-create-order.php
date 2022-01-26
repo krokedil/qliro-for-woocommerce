@@ -73,6 +73,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'CallToActionColor'                    => $this->get_call_to_action_color(),
 			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
+			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
 	}
 }

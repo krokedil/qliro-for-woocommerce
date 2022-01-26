@@ -161,7 +161,7 @@ class Qliro_One_Helper_Order {
 	 * @return int
 	 */
 	public static function get_unit_price_inc_vat( $order_item ) {
-		$unit_price = ( $order_item->get_total() + $order_item->get_total_tax() ) / $order_item->get_quantity();
+		$unit_price = round( ( $order_item->get_total() + $order_item->get_total_tax() ) / $order_item->get_quantity(), 2 );
 		return $unit_price;
 	}
 
@@ -172,7 +172,7 @@ class Qliro_One_Helper_Order {
 	 * @return int
 	 */
 	public static function get_unit_price_ex_vat( $order_item ) {
-		$unit_price = ( $order_item->get_total() ) / $order_item->get_quantity();
+		$unit_price = round( ( $order_item->get_total() ) / $order_item->get_quantity(), 2 );
 		return $unit_price;
 	}
 

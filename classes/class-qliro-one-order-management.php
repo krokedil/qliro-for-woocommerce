@@ -82,7 +82,7 @@ class Qliro_One_Order_Management {
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
 		update_post_meta( $order_id, '_qliro_order_captured', $payment_transaction_id );
-		$order_note = __( 'The order has been requested to be captured with Qliro and is pending. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		$order_note = __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
 		if ( 'none' !== $this->settings['capture_pending_status'] ) {
 			$order->update_status( $this->settings['capture_pending_status'], $order_note );
 		} else {
@@ -111,7 +111,7 @@ class Qliro_One_Order_Management {
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
 		update_post_meta( $order_id, '_qliro_order_canceled', true );
-		$order_note = __( 'The order has been requested to be cancelled with Qliro and is pending. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		$order_note = __( 'The order has been requested to be cancelled with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
 		if ( 'none' !== $this->settings['cancel_pending_status'] ) {
 			$order->update_status( $this->settings['cancel_pending_status'], $order_note );
 		} else {
@@ -152,7 +152,7 @@ class Qliro_One_Order_Management {
 			return $response;
 		}
 		// translators: refund amount, refund id.
-		$text           = __( '%1$s pending to be refunded by Qliro One', 'qliro-one-for-woocommerce' );
+		$text           = __( 'Processing a refund of %1$s with Qliro One', 'qliro-one-for-woocommerce' );
 		$formatted_text = sprintf( $text, wc_price( $amount ) );
 		$order->add_order_note( $formatted_text );
 		return true;

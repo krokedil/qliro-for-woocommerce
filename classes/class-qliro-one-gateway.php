@@ -100,7 +100,11 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
 		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
 		$order          = wc_get_order( $order_id );
-		qliro_confirm_order( $order );
+		// Check if the order has been confirmed already.
+		if ( ! empty( $order->get_date_paid() ) ) {
+			qliro_confirm_order( $order );
+			Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
+		}
 
 		if ( $qliro_order ) {
 			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.

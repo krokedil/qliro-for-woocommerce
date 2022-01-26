@@ -126,17 +126,57 @@ function qliro_confirm_order( $order ) {
 	if ( ! empty( $order->get_date_paid() ) ) {
 		return;
 	}
-
-	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order->get_id() );
+	$order_id = $order->get_id();
+	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
 	if ( is_wp_error( $response ) ) {
 		return;
 	}
 
 	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
-		update_post_meta( $order->get_id(), '_payment_transaction_id', $response['PaymentTransactionId'] );
+		update_post_meta( $order_id, '_payment_transaction_id', $response['PaymentTransactionId'] );
 	}
 
-	$qliro_order_id = get_post_meta( $order->get_id(), '_qliro_one_order_id', true );
+	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
 	$order->payment_complete( $qliro_order_id );
+
+	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	if ( is_wp_error( $qliro_order ) ) {
+		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
+	}
+
+	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
+		if ( 'Success' === $payment_transaction['Status'] ) {
+			$order->set_payment_method_title( "Qliro One - $payment_transaction[PaymentMethodSubtypeCode]" );
+			$order->save();
+		}
+	}
+}
+
+/**
+ * Undocumented function
+ *
+ * @param array|bool $data The shipping data from Qliro. False if not set.
+ * @return void
+ */
+function qoc_update_wc_shipping( $data ) {
+	// Set cart definition.
+	$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
+
+	// If we don't have a Klarna order, return void.
+	if ( empty( $qliro_order_id ) ) {
+		return;
+	}
+
+	// If the data is empty, return void.
+	if ( empty( $data ) ) {
+		return;
+	}
+
+	do_action( 'qoc_update_shipping_data', $data );
+
+	set_transient( 'qoc_shipping_data_' . $qliro_order_id, $data, HOUR_IN_SECONDS );
+	$chosen_shipping_methods   = array();
+	$chosen_shipping_methods[] = wc_clean( $data['method'] );
+	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qoc_chosen_shipping_method', $chosen_shipping_methods ) );
 }

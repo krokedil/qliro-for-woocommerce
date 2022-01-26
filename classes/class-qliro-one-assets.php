@@ -94,6 +94,7 @@ class Qliro_One_Assets {
 			'qliroOneParams',
 			array(
 				'isEnabled'                   => $settings['enabled'],
+				'shipping_in_iframe'          => $settings['shipping_in_iframe'],
 				'change_payment_method_url'   => WC_AJAX::get_endpoint( 'qliro_one_wc_change_payment_method' ),
 				'change_payment_method_nonce' => wp_create_nonce( 'qliro_one_wc_change_payment_method' ),
 				'standardWooCheckoutFields'   => $standard_woo_checkout_fields,
@@ -124,7 +125,8 @@ class Qliro_One_Assets {
 		wp_register_style(
 			'qliro-one-style',
 			QLIRO_WC_PLUGIN_URL . '/assets/css/qliro-one-for-woocommerce' . $style_version . '.css',
-			array()
+			array(),
+			QLIRO_WC_VERSION
 		);
 		wp_enqueue_style( 'qliro-one-style' );
 	}

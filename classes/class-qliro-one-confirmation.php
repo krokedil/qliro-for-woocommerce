@@ -35,9 +35,14 @@ class Qliro_One_Confirmation {
 			return;
 		}
 
+		$order_id = $order->get_id();
+
 		qliro_one_unset_sessions();
 
 		qliro_confirm_order( $order );
+		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		Qliro_One_Logger::log( "Order $order_id confirmed on the confirmation page. Qliro Order ID: $qliro_order_id." );
+
 		header( 'Location:' . $order->get_checkout_order_received_url() );
 		exit;
 	}
