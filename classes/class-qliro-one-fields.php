@@ -57,6 +57,20 @@ class Qliro_One_Fields {
 					'autocomplete' => 'off',
 				),
 			),
+			'minimum_age'                                => array(
+				'title'       => __( 'Minimum age', 'qliro-one-for-woocommerce' ),
+				'type'        => 'number',
+				'description' => __( 'The minimum customer age for all purchases. Can also be set on an individual product level.', 'qliro-one-for-woocommerce' ),
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'require_id_verification'                    => array(
+				'title'       => __( 'Require identity verification', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If checked and the customer is from Sweden, the customer will be required to verify their identity with BankID. Can also be set on an individial product leve.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',

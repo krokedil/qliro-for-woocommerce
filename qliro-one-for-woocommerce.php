@@ -173,6 +173,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-confirmation.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-checkout.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-callbacks.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
@@ -194,6 +195,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-cart.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-shipping-methods.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 

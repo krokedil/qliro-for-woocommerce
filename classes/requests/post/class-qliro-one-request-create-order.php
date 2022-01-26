@@ -60,7 +60,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 
 		// todo save country to the session.
 
-		return array(
+		$body = array(
 			'MerchantReference'                    => $mer_ref,
 			'Currency'                             => get_woocommerce_currency(),
 			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
@@ -75,5 +75,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
+
+		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }
