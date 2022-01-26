@@ -1,5 +1,5 @@
 {
-  "author": "Miodrag Stojanovic <miodrag@krokedil.se>",
+  "author": "Krokedil AB <info@krokedil.se>",
   "dependencies": {
     "axios": "^0.21.1",
     "axios-debug-log": "^0.8.4",

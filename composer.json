@@ -3,8 +3,8 @@
     "description": "Qliro One Checkout For WooCommerce",
     "authors": [
         {
-            "name": "Miodrag Stojanovic",
-            "email": "miodrag@krokedil.se"
+            "name": "Krokedil AB",
+            "email": "info@krokedil.se"
         }
     ],
     "require": {
