@@ -69,12 +69,40 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
-			'PrimaryColor'                         => $this->get_primary_color(),
-			'CallToActionColor'                    => $this->get_call_to_action_color(),
+			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
+			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
+
+		if ( ! empty( $this->get_enforced_juridicial_type() ) ) {
+			$body['EnforcedJuridicalType'] = $this->get_enforced_juridicial_type();
+		}
+
+		if ( ! empty( $this->get_primary_color() ) ) {
+			$body['PrimaryColor'] = $this->get_primary_color();
+		}
+
+		if ( ! empty( $this->get_call_to_action_color() ) ) {
+			$body['CallToActionColor'] = $this->get_call_to_action_color();
+		}
+
+		if ( ! empty( $this->get_call_to_action_hover_color() ) ) {
+			$body['CallToActionHoverColor'] = $this->get_call_to_action_hover_color();
+		}
+
+		if ( ! empty( $this->get_background_color() ) ) {
+			$body['BackgroundColor'] = $this->get_background_color();
+		}
+
+		if ( ! empty( $this->get_corder_radius() ) ) {
+			$body['CornerRadius'] = $this->get_corder_radius();
+		}
+
+		if ( ! empty( $this->get_button_corder_radius() ) ) {
+			$body['ButtonCornerRadius'] = $this->get_button_corder_radius();
+		}
 
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}

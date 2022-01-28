@@ -96,6 +96,7 @@ class Qliro_One_Fields {
 				'title'       => __( 'Enforced juridical type', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'options'     => array(
+					'None'     => __( 'None', 'qliro-one-for-woocommerce' ),
 					'Physical' => __( 'Physical', 'qliro-one-for-woocommerce' ),
 					'Company'  => __( 'Company', 'qliro-one-for-woocommerce' ),
 				),
