@@ -143,6 +143,12 @@ class Qliro_One_Callbacks {
 	 * @return WC_Order
 	 */
 	public function get_woocommerce_order( $order_number ) {
+		// Try to get order if we can.
+		$order = wc_get_order( $order_number );
+		if ( ! empty( $order ) ) {
+			return $order;
+		}
+
 		$query_args = array(
 			'fields'      => 'ids',
 			'post_type'   => wc_get_order_types(),
