@@ -25,8 +25,8 @@ function qliro_one_maybe_create_order() {
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		// If error, create new order.
-		if ( is_wp_error( $qliro_order ) ) {
-			$session->__unset( 'qliro_one_order_id' );
+		if ( is_wp_error( $qliro_order ) || 'InProcess' !== $qliro_order['CustomerCheckoutStatus'] ) {
+			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
 		return $qliro_order;
@@ -46,19 +46,16 @@ function qliro_one_maybe_create_order() {
 
 /**
  * Echoes Qliro One Checkout iframe snippet.
+ *
+ * @return string
  */
 function qliro_wc_get_snippet() {
-	$snippet = WC()->session->get( 'qliro_one_snippet' );
+	$qliro_one_order = qliro_one_maybe_create_order();
+	$snippet         = $qliro_one_order['OrderHtmlSnippet'];
 
-	if ( empty( $snippet ) ) {
-		$qliro_one_order = qliro_one_maybe_create_order();
-		$snippet         = $qliro_one_order['OrderHtmlSnippet'];
-		WC()->session->set( 'qliro_one_snippet', $snippet );
-	}
 	if ( ! empty( $snippet ) ) {
-		return $snippet;// phpcs:ignore WordPress -- Can not escape this, since its the iframe snippet.
+		return $snippet;
 	}
-	// todo here order is null.
 }
 
 
@@ -92,7 +89,6 @@ function qliro_one_unset_sessions() {
 	WC()->session->__unset( 'qliro_one_merchant_reference' );
 	WC()->session->__unset( 'qliro_one_order_id' );
 	WC()->session->__unset( 'qliro_one_last_update_hash' );
-	WC()->session->__unset( 'qliro_one_snippet' );
 }
 
 /**
