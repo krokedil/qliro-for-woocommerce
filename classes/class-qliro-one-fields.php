@@ -81,14 +81,14 @@ class Qliro_One_Fields {
 			'qliro_one_button_ask_for_newsletter_signup' => array(
 				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'If true, Qliro One will set signup newsletter as checked.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Will display an unchecked checkbox for newsletter sign-up in the Qliro One Checkout.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
 			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
 				'title'       => __( 'Ask for newsletter signup checked', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'If true, Qliro One will set signup for newsletter as checked.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Will display an already checked checkbox for newsletter sign-up on the Qliro One Checkout', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
