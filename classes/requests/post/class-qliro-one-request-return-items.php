@@ -37,47 +37,24 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-		// todo change request id and order id.
+		$order_data             = new Qliro_One_Helper_Order();
+		$request_id             = $order_data->generate_request_id();
+		$order_id               = $this->arguments['order_id'];
+		$refund_order_id        = $this->arguments['refund_order_id'];
+		$qliro_one_order_id     = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$capture_transaction_id = get_post_meta( $order_id, '_qliro_order_captured', true );
 		return array(
-			'RequestId'      => sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) ),
+			'RequestId'      => $request_id,
 			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderId'        => 5452321,
+			'OrderId'        => $qliro_one_order_id,
 			'Currency'       => get_woocommerce_currency(),
-			'Returns'        =>
+			'Returns'        => array(
 				array(
-					array(
-						'PaymentTransactionId' => 5451215,
-						'OrderItems'           =>
-							array(
-
-								array(
-									'MerchantReference'  => 'Fancy RedHat from HM',
-									'Type'               => 'Product',
-									'Quantity'           => 2,
-									'PricePerItemIncVat' => 375.55,
-								),
-							),
-						'Fees'                 =>
-							array(
-
-								array(
-									'MerchantReference'  => 'ReturnFee',
-									'Description'        => 'Return Fee',
-									'PricePerItemIncVat' => 100,
-									'PricePerItemExVat'  => 66.66,
-								),
-							),
-						'Discounts'            =>
-							array(
-								array(
-									'MerchantReference'  => 'DiscountItem_1',
-									'Description'        => 'Discount item',
-									'PricePerItemIncVat' => -20,
-									'PricePerItemExVat'  => -16,
-								),
-							),
-					),
+					'PaymentTransactionId' => $capture_transaction_id,
+					'OrderItems'           => $order_data->get_return_items( $refund_order_id ),
+					'Fees'                 => apply_filters( 'qliro_one_return_fees', array() ),
 				),
+			),
 		);
 	}
 }

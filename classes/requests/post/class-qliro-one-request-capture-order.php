@@ -39,35 +39,25 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		$order_id               = $this->arguments['order_id'];
-		$order                  = wc_get_order( $order_id );
-		$payment_transaction_id = get_post_meta( $order_id, '_payment_transaction_id' );
+		$payment_transaction_id = get_post_meta( $order_id, '_payment_transaction_id', true );
+		$order_data             = new Qliro_One_Helper_Order();
 		// todo update the params.
-		return array(
-			'RequestId'      => sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) ),
+		$body = array(
+			'RequestId'      => $order_data->generate_request_id(),
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'OrderId'        => get_post_meta( $order_id, '_qliro_one_order_id', true ),
-			'Currency'       => 'SEK',
+			'Currency'       => get_woocommerce_currency(),
 			'Shipments'      => array(
 				array(
-					'PaymentTransactionId' => $payment_transaction_id,
-					'OrderItems'           => array(
-						array(
-							'MerchantReference'  => 'Fancy RedHat from HM',
-							'Type'               => 'Product',
-							'Quantity'           => 2,
-							'PricePerItemIncVat' => 375.55,
-							'Metadata'           => array(
-								'HeaderLines' => array(
-									'string',
-								),
-								'FooterLines' => array(
-									'string',
-								),
-							),
-						),
-					),
+					'OrderItems' => $order_data::get_order_lines( $order_id ),
 				),
 			),
 		);
+
+		if ( ! empty( $payment_transaction_id ) ) {
+			$body['Shipments'][0]['PaymentTransactionId'] = $payment_transaction_id;
+		}
+
+		return $body;
 	}
 }

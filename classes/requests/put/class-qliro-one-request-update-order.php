@@ -2,7 +2,7 @@
 /**
  * Class for the request to create order.
  *
- * @package Qliro_One_Create_Order/Classes/Requests/PUT
+ * @package Qliro_One/Classes/Requests/PUT
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Class for the request to add an item to the Qliro One order.
  */
-class Qliro_One_Update_Order extends Qliro_One_Request_Put {
+class Qliro_One_Request_Update_Order extends Qliro_One_Request_Put {
 
 	/**
 	 * Class constructor.
@@ -38,18 +38,12 @@ class Qliro_One_Update_Order extends Qliro_One_Request_Put {
 	 * @return array
 	 */
 	protected function get_body() {
-		// todo get order details from post_meta.
-		return array(
-			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderItems'     => array(
-				array(
-					'MerchantReference'  => 'XXX',
-					'Description'        => 'ZZZ',
-					'Quantity'           => 4,
-					'PricePerItemIncVat' => 450,
-					'PricePerItemExVat'  => 450,
-				),
-			),
+		$body = array(
+			'MerchantApiKey'           => $this->get_qliro_key(),
+			'OrderItems'               => Qliro_One_Helper_Cart::get_cart_items(),
+			'AvailableShippingMethods' => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
+
+		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }

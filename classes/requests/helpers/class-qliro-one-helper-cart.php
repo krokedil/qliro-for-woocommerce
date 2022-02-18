@@ -5,6 +5,8 @@
  * @package Qliro_One_For_WooCommerce/Classes/Requests/Helpers
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class Qliro_One_Helper_Cart
  */
@@ -45,7 +47,8 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// Get cart shipping.
-		if ( WC()->cart->needs_shipping() ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		if ( WC()->cart->needs_shipping() && 'yes' !== $settings['shipping_in_iframe'] ) {
 			$shipping = self::get_shipping();
 			if ( null !== $shipping ) {
 				$formatted_cart_items[] = $shipping;
@@ -69,7 +72,7 @@ class Qliro_One_Helper_Cart {
 		}
 		return array(
 			'MerchantReference'  => self::get_product_sku( $product ),
-			'Description'        => $product->get_description(),
+			'Description'        => self::get_product_name( $cart_item ),
 			'Quantity'           => $cart_item['quantity'],
 			'PricePerItemIncVat' => self::get_product_unit_price( $cart_item ),
 			'PricePerItemExVat'  => self::get_product_unit_price_no_tax( $cart_item ),
@@ -96,7 +99,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price( $cart_item ) {
-		return ( $cart_item['line_total'] ) / $cart_item['quantity'];
+		return round( ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'], 2 );
 	}
 
 	/**
@@ -106,8 +109,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price_no_tax( $cart_item ) {
-		return ( $cart_item['line_total'] - $cart_item['line_tax'] ) / $cart_item['quantity'];
-
+		return round( ( $cart_item['line_total'] ) / $cart_item['quantity'], 2 );
 	}
 
 	/**
@@ -120,7 +122,7 @@ class Qliro_One_Helper_Cart {
 		if ( 0 === intval( $cart_item['line_total'] ) ) {
 			return 0;
 		}
-		return ( round( $cart_item['line_tax'] / $cart_item['line_total'], 2 ) * 10000 );
+		return ( round( $cart_item['line_tax'] / $cart_item['line_total'], 2 ) );
 	}
 
 	/**
@@ -151,8 +153,8 @@ class Qliro_One_Helper_Cart {
 			'MerchantReference'  => 'fee|' . $fee->id,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
-			'PricePerItemIncVat' => $fee->amount,
-			'PricePerItemExVat'  => $fee->amount - $fee->tax,
+			'PricePerItemIncVat' => $fee->amount + $fee->tax,
+			'PricePerItemExVat'  => $fee->amount,
 		);
 
 	}
@@ -174,8 +176,8 @@ class Qliro_One_Helper_Cart {
 							'MerchantReference'  => $method->id,
 							'Description'        => $method->label,
 							'Quantity'           => 1,
-							'PricePerItemIncVat' => WC()->cart->get_shipping_total(),
-							'PricePerItemExVat'  => WC()->cart->get_shipping_total() - WC()->cart->get_tax_amount(),
+							'PricePerItemIncVat' => WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(),
+							'PricePerItemExVat'  => WC()->cart->get_shipping_total(),
 						);
 					}
 

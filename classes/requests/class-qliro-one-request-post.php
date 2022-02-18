@@ -25,26 +25,18 @@ abstract class Qliro_One_Request_Post extends Qliro_One_Request {
 	}
 
 	/**
-	 * Calculates the Qliro One auth.
-	 *
-	 * @return string
-	 */
-	protected function calculate_auth() {
-		return 'Qliro ' . base64_encode( hex2bin( hash( 'sha256', wp_json_encode( $this->get_body() ) . $this->get_qliro_secret() ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions -- Base64 used to calculate auth header.
-	}
-
-	/**
 	 * Build and return proper request arguments for this request type.
 	 *
 	 * @return array Request arguments
 	 */
 	protected function get_request_args() {
+		$body = wp_json_encode( apply_filters( 'qliro_one_request_args', $this->get_body() ) );
 		return array(
-			'headers'    => $this->get_request_headers(),
+			'headers'    => $this->get_request_headers( $body ),
 			'user-agent' => $this->get_user_agent(),
 			'method'     => $this->method,
 			'timeout'    => apply_filters( 'qliro_one_request_timeout', 10 ),
-			'body'       => wp_json_encode( apply_filters( 'qliro_one_request_args', $this->get_body() ) ),
+			'body'       => $body,
 		);
 	}
 

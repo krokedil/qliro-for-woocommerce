@@ -25,61 +25,23 @@ class Qliro_One_Order_Management {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		// Capture an order.
-		add_action( 'woocommerce_order_status_completed', array( $this, 'capture_qliro_one_order' ) );
-		// Cancel order.
-		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_qliro_one_order' ) );
+		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed' ), 10, 4 );
 
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
-
 	/**
-	 * Captures a Qliro One order.
+	 * Maybe triggers capture or cancel order requests on order status changes.
 	 *
-	 * @param int $order_id The WooCommerce order ID.
+	 * @param int      $order_id The WooCommerce Order ID.
+	 * @param string   $status_from The status the order was originally.
+	 * @param string   $status_to The status the order is changing to.
+	 * @param WC_Order $order The WooCommerce order.
+	 * @return void
 	 */
-	public function capture_qliro_one_order( $order_id ) {
-		$order = wc_get_order( $order_id );
+	public function order_status_changed( $order_id, $status_from, $status_to, $order ) {
 		// If this order wasn't created using Qliro One payment method, bail.
 		if ( 'qliro_one' !== $order->get_payment_method() ) {
-			return;
-		}
-
-		// Check qliro settings to see if we have the order management enabled.
-		$order_management = 'yes' === $this->settings['qliro_one_order_management'];
-		if ( ! $order_management ) {
-			return;
-		}
-
-		// todo check if this reservation was already activated, do nothing.
-
-		$response = QOC_WC()->api->capture_qliro_one_order( $order_id );
-		if ( ! is_wp_error( $response ) ) {
-			// all ok.
-			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
-			update_post_meta( $order_id, '_payment_transaction_id', $payment_transaction_id );
-		} else {
-			// todo add error on the capture.
-		}
-	}
-
-
-	/**
-	 * Cancels a Qliro One order.
-	 *
-	 * @param int $order_id Order ID.
-	 */
-	public function cancel_qliro_one_order( $order_id ) {
-		$order = wc_get_order( $order_id );
-		// If this order wasn't created using Qliro One payment method, bail.
-		if ( 'qliro_one' !== $order->get_payment_method() ) {
-			return;
-		}
-
-		// Check settings to see if we have the order management enabled.
-		$order_management = 'yes' === $this->settings['qliro_one_order_management'];
-		if ( ! $order_management ) {
 			return;
 		}
 
@@ -88,24 +50,82 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		// Not going to do this for non Qliro One orders.
-		if ( 'qliro_one' !== $order->get_payment_method() ) {
-			return;
+		$cancel_status  = str_replace( 'wc-', '', $this->settings['cancel_status'] );
+		$capture_status = str_replace( 'wc-', '', $this->settings['capture_status'] );
+
+		if ( $cancel_status === $status_to ) {
+			$this->cancel_qliro_one_order( $order_id, $order );
 		}
 
-		// todo get request id from post meta.
-		$args     = array(
-			'request_id' => get_post_meta( $order_id, '_qliro_request_id' ),
-			'order_id'   => $order,
-		);
-		$response = new Qliro_One_Cancel_Order( $args );
-		if ( ! is_wp_error( $response ) ) {
-
+		if ( $capture_status === $status_to ) {
+			$this->capture_qliro_one_order( $order_id, $order );
 		}
 	}
 
 	/**
+	 * Captures a Qliro One order.
 	 *
+	 * @param int      $order_id The WooCommerce order ID.
+	 * @param WC_Order $order The WooCommerce order.
+	 */
+	public function capture_qliro_one_order( $order_id, $order ) {
+		if ( get_post_meta( $order_id, '_qliro_order_captured', true ) ) {
+			return;
+		}
+
+		$response = QOC_WC()->api->capture_qliro_one_order( $order_id );
+		if ( is_wp_error( $response ) ) {
+			$order->update_status( 'on-hold', __( 'The order failed to be captured with Qliro. Please try again.', 'qliro-one-for-woocommerce' ) );
+			$order->save();
+			return;
+		}
+
+		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
+		update_post_meta( $order_id, '_qliro_order_captured', $payment_transaction_id );
+		$order_note = __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		if ( 'none' !== $this->settings['capture_pending_status'] ) {
+			$order->update_status( $this->settings['capture_pending_status'], $order_note );
+		} else {
+			$order->add_order_note( $order_note );
+		}
+		$order->save();
+	}
+
+	/**
+	 * Cancels a Qliro One order.
+	 *
+	 * @param int      $order_id Order ID.
+	 * @param WC_Order $order The WooCommerce order.
+	 */
+	public function cancel_qliro_one_order( $order_id, $order ) {
+		if ( get_post_meta( $order_id, '_qliro_order_canceled', true ) ) {
+			return;
+		}
+
+		$response = QOC_WC()->api->cancel_qliro_one_order( $order_id );
+		if ( is_wp_error( $response ) ) {
+			$order->update_status( 'on-hold', __( 'The order failed to be cancelled with Qliro. Please try again.', 'qliro-one-for-woocommerce' ) );
+			$order->save();
+			return;
+		}
+
+		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
+		update_post_meta( $order_id, '_qliro_order_canceled', true );
+		$order_note = __( 'The order has been requested to be cancelled with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		if ( 'none' !== $this->settings['cancel_pending_status'] ) {
+			$order->update_status( $this->settings['cancel_pending_status'], $order_note );
+		} else {
+			$order->add_order_note( $order_note );
+		}
+		$order->save();
+	}
+
+	/**
+	 * Request for refunding a Qliro One Order.
+	 *
+	 * @param int   $order_id The WooCommerce order ID.
+	 * @param float $amount The refund amount.
+	 * @return bool
 	 */
 	public function refund( $order_id, $amount ) {
 		$query_args = array(
@@ -125,24 +145,16 @@ class Qliro_One_Order_Management {
 		}
 		$order = wc_get_order( $order_id );
 
-		// todo change args.
-		$args     = array(
-			'order_id'       => $refund_order_id,
-			'qliro_order_id' => get_post_meta( $order_id, '_qliro_order_id', true ),
-		);
-		$response = QOC_WC()->api->refund_qliro_one_order( $args );
+		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
 
 		if ( is_wp_error( $response ) ) {
-			// TODO add error handler.
 			$order->add_order_note( __( 'Failed to refund the order with Qliro One', 'qliro-one-for-woocommerce' ) );
-			return false;
+			return $response;
 		}
 		// translators: refund amount, refund id.
-		$text           = __( '%1$s successfully refunded in Qliro One.. RefundID: %2$s', 'qliro-one-for-woocommerce' );
-		$formatted_text = sprintf( $text, wc_price( $amount ), $response['refundid'] );
+		$text           = __( 'Processing a refund of %1$s with Qliro One', 'qliro-one-for-woocommerce' );
+		$formatted_text = sprintf( $text, wc_price( $amount ) );
 		$order->add_order_note( $formatted_text );
 		return true;
-
 	}
-
 }

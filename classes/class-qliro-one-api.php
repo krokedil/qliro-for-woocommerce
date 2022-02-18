@@ -22,7 +22,7 @@ class Qliro_One_API {
 	 * @return mixed
 	 */
 	public function create_qliro_one_order( $order_id = false ) {
-		$request  = new Qliro_One_Create_Order( array() );
+		$request  = new Qliro_One_Request_Create_Order( array() );
 		$response = $request->request();
 
 		return $this->check_for_api_error( $response );
@@ -40,6 +40,18 @@ class Qliro_One_API {
 		return $this->check_for_api_error( $response );
 	}
 
+	/**
+	 * Gets a Qliro One Admin order
+	 *
+	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @return mixed
+	 */
+	public function get_qliro_one_admin_order( $qliro_one_order_id ) {
+		$request  = new Qliro_One_Request_Admin_Get_Order( array( 'order_id' => $qliro_one_order_id ) );
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
 
 	/**
 	 * Updates a Qliro One Checkout order.
@@ -51,7 +63,7 @@ class Qliro_One_API {
 	 */
 	public function update_qliro_one_order( $qliro_one_order_id, $order_id = null, $force = false ) {
 		// todo add update request.
-		$request  = new Qliro_One_Update_Order( array( 'order_id' => $qliro_one_order_id ) );
+		$request  = new Qliro_One_Request_Update_Order( array( 'order_id' => $qliro_one_order_id ) );
 		$response = $request->request();
 		return $this->check_for_api_error( $response );
 	}
@@ -63,8 +75,14 @@ class Qliro_One_API {
 	 */
 	public function cancel_qliro_one_order( $order_id ) {
 		// todo.
-		$request  = new Qliro_One_Cancel_Order( array( 'order_id' => $order_id ) );
-		$response = $request->request();
+		$request_id = ( new Qliro_One_Helper_Order() )->generate_request_id();
+		$request    = new Qliro_One_Cancel_Order(
+			array(
+				'order_id'   => $order_id,
+				'request_id' => $request_id,
+			)
+		);
+		$response   = $request->request();
 		return $this->check_for_api_error( $response );
 	}
 
@@ -87,9 +105,14 @@ class Qliro_One_API {
 	 * @param int $order_id Order ID.
 	 * @return array
 	 */
-	public function refund_qliro_one_order( $order_id ) {
+	public function refund_qliro_one_order( $order_id, $refund_order_id ) {
 		// todo.
-		$request  = new Qliro_One_Request_Return_Items( array( 'order_id' => $order_id ) );
+		$request  = new Qliro_One_Request_Return_Items(
+			array(
+				'order_id'        => $order_id,
+				'refund_order_id' => $refund_order_id,
+			)
+		);
 		$response = $request->request();
 		return $this->check_for_api_error( $response );
 	}
@@ -114,8 +137,9 @@ class Qliro_One_API {
 	 */
 	private function check_for_api_error( $response ) {
 		if ( is_wp_error( $response ) ) {
-			qliro_one_print_error_message( $response );
-			return false;
+			if ( ! is_admin() ) {
+				qliro_one_print_error_message( $response );
+			}
 		}
 		return $response;
 	}

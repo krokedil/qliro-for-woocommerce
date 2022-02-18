@@ -5,8 +5,8 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.6.3
- * Text Domain: qliro-one-for-woocommerce.php
+ * Version: 0.0.1
+ * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 4.0.0
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.6.3' );
+define( 'QLIRO_WC_VERSION', '0.0.1' );
 define( 'QLIRO_WC_MIN_PHP_VER', '5.6.0' );
 define( 'QLIRO_WC_MIN_WC_VER', '3.9.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
@@ -71,12 +71,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public $api;
 
 		/**
-		 * @var Qliro_One_Order_Management
-		 */
-		public $order_management;
-
-
-		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -96,7 +90,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		private function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -106,7 +100,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce.php' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -136,8 +130,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public function plugin_action_links( $links ) {
 			$setting_link = $this->get_setting_link();
 			$plugin_links = array(
-				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce.php' ) . '</a>',
-				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce.php' ) . '</a>',
+				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce' ) . '</a>',
+				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce' ) . '</a>',
 			);
 
 			return array_merge( $plugin_links, $links );
@@ -176,22 +170,34 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-ajax.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-confirmation.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-checkout.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-callbacks.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
 
-			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qlirro-one-logger.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-post.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-get.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-put.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-admin-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/get/class-qliro-one-request-get-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/put/class-qliro-one-request-update-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-merchant-reference.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-cancel-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-templates.php';
-			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-api.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-merchant-urls.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-cart.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-shipping-methods.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();

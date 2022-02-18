@@ -1,187 +1,332 @@
-# Copyright (C) 2021 Krokedil
+# Copyright (C) 2022 Krokedil
 # This file is distributed under the same license as the Qliro One for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro One for WooCommerce 2.6.3\n"
+"Project-Id-Version: Qliro One for WooCommerce 0.0.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2021-12-19 22:36:25+00:00\n"
+"POT-Creation-Date: 2022-01-26 15:06:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2021-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: classes/class-qliro-one-fields.php:25
-msgid "Enable/Disable"
+#: classes/class-qliro-one-callbacks.php:67
+msgid "The order failed to be captured by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:72
+#: classes/class-qliro-one-callbacks.php:76
+msgid "The order has been successfully captured by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:89
+msgid "The order failed to be cancelled by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:94
+#: classes/class-qliro-one-callbacks.php:98
+msgid "The order has been successfully cancelled by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:111
+msgid "The order failed to be refunded by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:115
+msgid "The order has been successfully refunded by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:24
+msgid "Manual trigger"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:26
+msgid "None"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:30
+msgid "Enable/Disable"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:31
 msgid "Enable Qliro One payment"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:32
+#: classes/class-qliro-one-fields.php:37
 msgid "Title"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:34
+#: classes/class-qliro-one-fields.php:39
 msgid "Payment method title."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:39
+#: classes/class-qliro-one-fields.php:44
 msgid "Description"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:41
+#: classes/class-qliro-one-fields.php:46
 msgid "Payment method description."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:46
+#: classes/class-qliro-one-fields.php:51
 msgid "Other payment method button text"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:48
+#: classes/class-qliro-one-fields.php:53
 msgid ""
 "Customize the <em>Select another payment method</em> button text that is "
 "displayed in checkout if using other payment methods than Qliro One. Leave "
 "blank to use the default (and translatable) text."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:56
-msgid "Test mode"
+#: classes/class-qliro-one-fields.php:61
+msgid "Minimum age"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:57
-msgid "Enable Test Mode"
+#: classes/class-qliro-one-fields.php:63
+msgid ""
+"The minimum customer age for all purchases. Can also be set on an "
+"individual product level."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:59
-msgid "Place the payment gateway in test mode using test API keys."
+#: classes/class-qliro-one-fields.php:68
+msgid "Require identity verification"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:64
-msgid "Logging"
+#: classes/class-qliro-one-fields.php:70
+msgid ""
+"If checked and the customer is from Sweden, the customer will be required "
+"to verify their identity with BankID. Can also be set on an individial "
+"product leve."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:65
-msgid "Log debug messages"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:67
-msgid "Save debug messages to the WooCommerce System Status log."
+#: classes/class-qliro-one-fields.php:75
+msgid "Display Shipping in the iframe"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:77
+msgid "Will display the shipping options inside of the Qliro One checkout iframe."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:82
+msgid "Ask for newsletter signup"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:84
+msgid "If true, Qliro One will set signup newsletter as checked."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:89
+msgid "Ask for newsletter signup checked"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:91
+msgid "If true, Qliro One will set signup for newsletter as checked."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:96
+msgid "Enforced juridical type"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:99
+msgid "Physical"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:100
+msgid "Company"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:102
+msgid "Select juridical type"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:106
+msgid "Test mode"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:107
+msgid "Enable Test Mode"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:109
+msgid "Place the payment gateway in test mode using test API keys."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:114
+msgid "Logging"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:115
+msgid "Log debug messages"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:117
+msgid "Save debug messages to the WooCommerce System Status log."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:127
 msgid "Production Qliro One API key"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:79 classes/class-qliro-one-fields.php:89
-#: classes/class-qliro-one-fields.php:99 classes/class-qliro-one-fields.php:109
+#: classes/class-qliro-one-fields.php:129
+#: classes/class-qliro-one-fields.php:139
+#: classes/class-qliro-one-fields.php:149
+#: classes/class-qliro-one-fields.php:159
 msgid ""
 "Use API key and API secret you downloaded in the Qliro One Merchant Portal. "
 "Don’t use your email address."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:87
+#: classes/class-qliro-one-fields.php:137
 msgid "Production Qliro One API Secret"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:97
+#: classes/class-qliro-one-fields.php:147
 msgid "Test Qliro One API key"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:107
+#: classes/class-qliro-one-fields.php:157
 msgid "Test Qliro One API Secret"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:118
-msgid "Background color"
+#: classes/class-qliro-one-fields.php:172
+msgid "Capture status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:120
-msgid "Hex color code to use as background color in Qliro One."
+#: classes/class-qliro-one-fields.php:175
+msgid ""
+"Select what order status to use to initiate capturing the order in Qliros "
+"system."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:126
-msgid "Primary color"
+#: classes/class-qliro-one-fields.php:180
+msgid "Pending capture status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:128
-msgid "Define the color for the selected options throughout the checkout."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:134
-msgid "Call to action color"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:136
-msgid "Define the color for the CTA buttons throughout the checkout."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:142
-msgid "Call to action hover color"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:144
-msgid "Define the color for the CTA buttons hoovered throughout the checkout."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:150
-msgid "Corner radius"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:152
-msgid "A pixel value to be used on corners throughout Qliro One."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:159
-msgid "Button corner radius"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:161
-msgid "Define the corners for the CTA buttons. Can be either boxy or rounded."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:168
-msgid "Ask for newsletter signup"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:170
-#: classes/class-qliro-one-fields.php:178
-msgid "If true, Qliro One will set signup newsletter as checked."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:176
-msgid "Ask for newsletter signup checked"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:184
-msgid "Enforced juridical type"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:187
-msgid "Physical"
+#: classes/class-qliro-one-fields.php:183
+msgid ""
+"Select what order status to set the order to while we wait for Qliro to "
+"tell us if the capture was successful or not."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:188
-msgid "Company"
+msgid "OK capture status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:190
-msgid "Select juridical type"
+#: classes/class-qliro-one-fields.php:191
+msgid ""
+"Select what order status to set the order to when we get notified of a "
+"successful order capture."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:195
-msgid "Enable Order Management"
+#: classes/class-qliro-one-fields.php:196
+msgid "Cancel status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:197
-msgid "Enable Qliro One order capture on WooCommerce order completion."
+#: classes/class-qliro-one-fields.php:199
+msgid ""
+"Select what order status to use to initiate canceling the order in Qliros "
+"system."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:204
+msgid "Pending cancel status"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:207
+msgid ""
+"Select what order status to set the order to while we wait for Qliro to "
+"tell us if the cancelation was successful or not."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:212
+msgid "OK cancel status"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:215
+msgid ""
+"Select what order status to set the order to when we get notified of a "
+"successful order cancelation."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:225
+msgid "Background color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:227
+msgid "Hex color code to use as background color in Qliro One."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:232
+msgid "Primary color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:234
+msgid "Define the color for the selected options throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:239
+msgid "Call to action color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:241
+msgid "Define the color for the CTA buttons throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:246
+msgid "Call to action hover color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:248
+msgid "Define the color for the CTA buttons hoovered throughout the checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:253
+msgid "Corner radius"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:255
+msgid "A pixel value to be used on corners throughout Qliro One."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:261
+msgid "Button corner radius"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:263
+msgid "Define the corners for the CTA buttons. Can be either boxy or rounded."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:269
+msgid "Checkout layout"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:272
+msgid "One column checkout"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:273
+msgid "Two column checkout (Qliro One in right column)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:274
+msgid "Two column checkout (Qliro One in left column)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:275
+msgid "Two column checkout (Qliro One in left column) - Storefront light"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:277
+msgid "Select the Checkout layout."
 msgstr ""
 
 #: classes/class-qliro-one-gateway.php:18
+#: classes/class-qliro-one-product-tab.php:30
 msgid "Qliro One"
 msgstr ""
 
@@ -189,19 +334,56 @@ msgstr ""
 msgid "Qliro One replaces the standard WooCommerce checkout page."
 msgstr ""
 
-#: includes/qliro-one-functions.php:90
+#: classes/class-qliro-one-order-management.php:78
+msgid "The order failed to be captured with Qliro. Please try again."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:85
+msgid ""
+"The order has been requested to be captured with Qliro and is in process. "
+"Payment transaction id: "
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:107
+msgid "The order failed to be cancelled with Qliro. Please try again."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:114
+msgid ""
+"The order has been requested to be cancelled with Qliro and is in process. "
+"Payment transaction id: "
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:151
+msgid "Failed to refund the order with Qliro One"
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:155
+#. translators: refund amount, refund id.
+msgid "Processing a refund of %1$s with Qliro One"
+msgstr ""
+
+#: classes/class-qliro-one-product-tab.php:55
+msgid "Minimum customer age"
+msgstr ""
+
+#: classes/class-qliro-one-product-tab.php:63
+msgid "Require ID verification"
+msgstr ""
+
+#: includes/qliro-one-functions.php:106
 msgid "Select another payment method"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:94 qliro-one-for-woocommerce.php:104
+#: qliro-one-for-woocommerce.php:93 qliro-one-for-woocommerce.php:103
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:134
+#: qliro-one-for-woocommerce.php:133
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:135
+#: qliro-one-for-woocommerce.php:134
 msgid "Support"
 msgstr ""
 

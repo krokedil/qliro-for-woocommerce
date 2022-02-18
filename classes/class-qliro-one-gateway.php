@@ -39,6 +39,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'process_admin_options',
 			)
 		);
+		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
 	}
 
 
@@ -66,22 +67,11 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		// todo update merchant ref, and update thankyou url.
-		// todo set transaction id etc.
-
 		// try to get qliro order id from wc session.
-		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
-
-		// todo try to update qliro one merchant reference.
-//		QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
-
-//		$response = QOC_WC()->api->update_qliro_one_order();
-//		if ( is_wp_error( $response ) ) {
-//			return array(
-//				'result' => 'error',
-//			);
-//		}
+		$qliro_order_id        = WC()->session->get( 'qliro_one_order_id' );
+		$qliro_confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
 		update_post_meta( $order_id, '_qliro_one_order_id', $qliro_order_id );
+		update_post_meta( $order_id, '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		return array(
 			'result' => 'success',
 		);
@@ -98,5 +88,26 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		return QOC_WC()->order_management->refund( $order_id, $amount );
+	}
+
+	/**
+	 * Print the iframe on the thankyou page.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return void
+	 */
+	public function show_thank_you_snippet( $order_id = null ) {
+		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$order          = wc_get_order( $order_id );
+		// Check if the order has been confirmed already.
+		if ( ! empty( $order->get_date_paid() ) ) {
+			qliro_confirm_order( $order );
+			Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
+		}
+
+		if ( $qliro_order ) {
+			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.
+		}
 	}
 }

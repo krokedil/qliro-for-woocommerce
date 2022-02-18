@@ -83,21 +83,26 @@ abstract class Qliro_One_Request {
 	/**
 	 * Get the request headers.
 	 *
+	 * @param string $body json_encoded body.
 	 * @return array
 	 */
-	protected function get_request_headers() {
+	protected function get_request_headers( $body = '' ) {
 		return array(
 			'Content-type'  => 'application/json',
-			'Authorization' => $this->calculate_auth(),
+			'Authorization' => $this->calculate_auth( $body ),
 		);
 	}
 
 	/**
 	 * Calculates the basic auth.
 	 *
+	 * @param string $body json_encoded body.
 	 * @return string
 	 */
-	abstract protected function calculate_auth();
+	protected function calculate_auth( $body ) {
+		$secret = 'yes' === $this->settings['testmode'] ? 'test_api_secret' : 'api_secret';
+		return 'Qliro ' . base64_encode( hex2bin( hash( 'sha256', $body . $this->settings[ $secret ] ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions -- Base64 used to calculate auth header.
+	}
 
 	/**
 	 * Get the user agent.
@@ -162,8 +167,9 @@ abstract class Qliro_One_Request {
 					$error_message .= ' ' . $error;
 				}
 			}
-			$code   = wp_remote_retrieve_response_code( $response );
-			$return = new WP_Error( $code, json_decode( $response['body'], true )['ErrorMessage'], $data );
+			$code          = wp_remote_retrieve_response_code( $response );
+			$error_message = empty( $response['body'] ) ? "API Error ${code}" : json_decode( $response['body'], true )['ErrorMessage'];
+			$return        = new WP_Error( $code, $error_message, $data );
 		} else {
 			$return = json_decode( wp_remote_retrieve_body( $response ), true );
 		}
@@ -219,8 +225,7 @@ abstract class Qliro_One_Request {
 	 * @return string
 	 */
 	public function get_primary_color() {
-		// todo maybe option.
-		$default_value = '#00FF00';
+		$default_value = '';
 		if ( empty( $this->settings['qliro_one_primary_color'] ) ) {
 			return $default_value;
 		}
@@ -229,17 +234,114 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
+	 * Get the primary color.
+	 *
+	 * @return string
+	 */
+	public function get_background_color() {
+		$default_value = '';
+		if ( empty( $this->settings['qliro_one_bg_color'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_bg_color'];
+	}
+
+	/**
 	 * Get the call to action color.
 	 *
 	 * @return string
 	 */
 	public function get_call_to_action_color() {
-		// todo maybe option.
-		$default_value = '#0000FF';
+		$default_value = '';
 		if ( empty( $this->settings['qliro_one_call_action_color'] ) ) {
 			return $default_value;
 		}
 
 		return $this->settings['qliro_one_call_action_color'];
+	}
+
+	/**
+	 * Get the call to action hover color.
+	 *
+	 * @return string
+	 */
+	public function get_call_to_action_hover_color() {
+		$default_value = '';
+		if ( empty( $this->settings['qliro_one_call_action_hover_color'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_call_action_hover_color'];
+	}
+
+	/**
+	 * Get the corner radius.
+	 *
+	 * @return int
+	 */
+	public function get_corder_radius() {
+		$default_value = 0;
+		if ( empty( $this->settings['qliro_one_corner_radius'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_corner_radius'];
+	}
+
+	/**
+	 * Get the button corner radius.
+	 *
+	 * @return int
+	 */
+	public function get_button_corder_radius() {
+		$default_value = 0;
+		if ( empty( $this->settings['qliro_one_button_corner_radius'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_button_corner_radius'];
+	}
+
+	/**
+	 * Get the enforced juridicial type.
+	 *
+	 * @return string
+	 */
+	public function get_enforced_juridicial_type() {
+		$default_value = '';
+		if ( empty( $this->settings['qliro_one_enforced_juridical_type'] ) || 'None' === $this->settings['qliro_one_enforced_juridical_type'] ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_enforced_juridical_type'];
+	}
+
+	/**
+	 * Get if we should ask for newsletter signup.
+	 *
+	 * @return bool
+	 */
+	public function get_ask_for_newsletter() {
+		$default_value = false;
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup'] ) ) {
+			return $default_value;
+		}
+
+		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
+	}
+
+	/**
+	 * Get if newsletter signup should be checked by default.
+	 *
+	 * @return bool
+	 */
+	public function get_asked_for_newsletter_checked() {
+		$default_value = false;
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup'] ) ) {
+			return $default_value;
+		}
+
+		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
 	}
 }

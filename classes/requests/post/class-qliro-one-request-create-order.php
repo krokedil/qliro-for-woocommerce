@@ -8,9 +8,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro_One_Create_Order class.
+ * Qliro_One_Request_Create_Order class.
  */
-class Qliro_One_Create_Order extends Qliro_One_Request_Post {
+class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 
 	/**
 	 * Class constructor.
@@ -40,11 +40,9 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 	protected function get_body() {
 		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
 		// todo temp merchant ref. save merchant ref to the session.
-		$merchant_reference = uniqid( 'q1' );
-		$mer_ref            = null;
-		$session            = WC()->session;
+		$mer_ref = null;
+		$session = WC()->session;
 
-		//
 		$billing_country = WC()->checkout()->get_value( 'billing_country' );
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
@@ -62,27 +60,50 @@ class Qliro_One_Create_Order extends Qliro_One_Request_Post {
 
 		// todo save country to the session.
 
-		return array(
+		$body = array(
 			'MerchantReference'                    => $mer_ref,
 			'Currency'                             => get_woocommerce_currency(),
 			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
-			'MerchantCheckoutStatusPushUrl'        => 'https://Merchant.com/push/',
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
-			'MerchantOrderManagementStatusPushUrl' => 'https://Merchant.com/push/',
+			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
+			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
-			'PrimaryColor'                         => $this->get_primary_color(),
-			'CallToActionColor'                    => $this->get_call_to_action_color(),
-			'OrderItems'                           => array(
-				array(
-					'MerchantReference'  => 'XXX',
-					'Description'        => 'ZZZ',
-					'Quantity'           => 4,
-					'PricePerItemIncVat' => 450,
-					'PricePerItemExVat'  => 450,
-				),
-			),
+			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
+			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
+			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
+			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
+
+		if ( ! empty( $this->get_enforced_juridicial_type() ) ) {
+			$body['EnforcedJuridicalType'] = $this->get_enforced_juridicial_type();
+		}
+
+		if ( ! empty( $this->get_primary_color() ) ) {
+			$body['PrimaryColor'] = $this->get_primary_color();
+		}
+
+		if ( ! empty( $this->get_call_to_action_color() ) ) {
+			$body['CallToActionColor'] = $this->get_call_to_action_color();
+		}
+
+		if ( ! empty( $this->get_call_to_action_hover_color() ) ) {
+			$body['CallToActionHoverColor'] = $this->get_call_to_action_hover_color();
+		}
+
+		if ( ! empty( $this->get_background_color() ) ) {
+			$body['BackgroundColor'] = $this->get_background_color();
+		}
+
+		if ( ! empty( $this->get_corder_radius() ) ) {
+			$body['CornerRadius'] = $this->get_corder_radius();
+		}
+
+		if ( ! empty( $this->get_button_corder_radius() ) ) {
+			$body['ButtonCornerRadius'] = $this->get_button_corder_radius();
+		}
+
+		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }

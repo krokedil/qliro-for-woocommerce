@@ -36,11 +36,19 @@ class Qliro_One_Templates {
 	 * Plugin actions.
 	 */
 	public function __construct() {
+		$qliro_settings        = get_option( 'woocommerce_qliro_one_settings' );
+		$this->checkout_layout = ( isset( $qliro_settings['checkout_layout'] ) ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
+
 		// Override template if Qliro One Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
+
+		// Template hooks.
 		add_action( 'qliro_one_wc_after_order_review', 'qliro_one_wc_show_another_gateway_button', 20 );
 		add_action( 'qliro_one_wc_after_order_review', array( $this, 'add_extra_checkout_fields' ), 10 );
 		add_action( 'qliro_one_wc_before_snippet', array( $this, 'add_wc_form' ), 10 );
+
+		// Body class modifications. For checkout layout setting.
+		add_filter( 'body_class', array( $this, 'add_body_class' ) );
 	}
 
 	/**
@@ -180,7 +188,50 @@ class Qliro_One_Templates {
 		<?php
 	}
 
+	/**
+	 * Add checkout page body class, depending on checkout page layout settings.
+	 *
+	 * @param array $class CSS classes used in body tag.
+	 *
+	 * @return array
+	 */
+	public function add_body_class( $class ) {
+		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
+			// Don't display Collector body classes if we have a cart that doesn't needs payment.
+			if ( method_exists( WC()->cart, 'needs_payment' ) && ! WC()->cart->needs_payment() ) {
+				return $class;
+			}
+
+			$first_gateway = '';
+			if ( WC()->session->get( 'chosen_payment_method' ) ) {
+				$first_gateway = WC()->session->get( 'chosen_payment_method' );
+			} else {
+				$available_payment_gateways = WC()->payment_gateways->get_available_payment_gateways();
+				reset( $available_payment_gateways );
+				$first_gateway = key( $available_payment_gateways );
+			}
+
+			if ( 'qliro_one' === $first_gateway && 'two_column_left' === $this->checkout_layout ) {
+				$class[] = 'qliro-one-selected';
+				$class[] = 'qliro-two-column-left';
+			}
+			if ( 'qliro_one' === $first_gateway && 'two_column_left_sf' === $this->checkout_layout ) {
+				$class[] = 'qliro-one-selected';
+				$class[] = 'qliro-two-column-left-sf';
+			}
+
+			if ( 'qliro_one' === $first_gateway && 'two_column_right' === $this->checkout_layout ) {
+				$class[] = 'qliro-one-selected';
+				$class[] = 'qliro-two-column-right';
+			}
+
+			if ( 'qliro_one' === $first_gateway && 'one_column_checkout' === $this->checkout_layout ) {
+				$class[] = 'qliro-one-selected';
+			}
+		}
+		return $class;
+	}
 
 
 }

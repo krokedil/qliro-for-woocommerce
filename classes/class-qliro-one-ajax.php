@@ -27,6 +27,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$ajax_events = array(
 			'qliro_one_wc_change_payment_method' => true,
 			'qliro_one_get_order'                => true,
+			'qliro_one_wc_update_order'          => true,
 			'qliro_one_wc_log_js'                => true,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -79,7 +80,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 	 * Gets the Qliro One order.
 	 */
 	public static function qliro_one_get_order() {
-
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
 			wp_send_json_error( 'bad_nonce' );
 			exit;
@@ -97,6 +97,25 @@ class Qliro_One_Ajax extends WC_AJAX {
 				'customer'        => $customer,
 			)
 		);
+		wp_die();
+	}
+
+	 /**
+	  * Logs messages from the JavaScript to the server log.
+	  *
+	  * @return void
+	  */
+	public static function qliro_one_wc_log_js() {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_log_js' ) ) {
+			wp_send_json_error( 'bad_nonce' );
+			exit;
+		}
+		$posted_message = isset( $_POST['message'] ) ? sanitize_text_field( wp_unslash( $_POST['message'] ) ) : '';
+		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
+		$message        = "Frontend JS $qliro_order_id: $posted_message";
+		Qliro_One_Logger::log( $message );
+		wp_send_json_success();
 		wp_die();
 	}
 }
