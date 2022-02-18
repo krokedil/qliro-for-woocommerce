@@ -203,6 +203,8 @@ jQuery( function( $ ) {
 			(billingCity !== null && billingCity !== undefined) ? $('#billing_city').val(customerInfo.address.city) : null;
 
 			$("form.checkout").trigger('update_checkout');
+			$('#billing_email').change();
+			$('#billing_email').blur();
 		},
 		getQliroOneOrder: function (data, callback) {
 			$.ajax({
