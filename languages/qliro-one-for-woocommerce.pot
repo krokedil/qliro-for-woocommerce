@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Qliro One for WooCommerce 0.0.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2022-02-18 13:27:38+00:00\n"
+"POT-Creation-Date: 2022-02-18 14:50:45+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -379,7 +379,11 @@ msgstr ""
 msgid "Select another payment method"
 msgstr ""
 
-#: includes/qliro-one-functions.php:134
+#: includes/qliro-one-functions.php:136
+msgid "The Qliro order is on-hold and awaiting a status update from Qliro."
+msgstr ""
+
+#: includes/qliro-one-functions.php:150
 msgid "Qliro One order successfully placed. Payment transaction id: "
 msgstr ""
 

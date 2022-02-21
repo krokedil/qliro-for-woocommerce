@@ -122,7 +122,23 @@ function qliro_confirm_order( $order ) {
 	if ( ! empty( $order->get_date_paid() ) ) {
 		return;
 	}
-	$order_id = $order->get_id();
+	$order_id       = $order->get_id();
+	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+
+	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+
+	if ( is_wp_error( $qliro_order ) ) {
+		return;
+	}
+
+	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
+		if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
+			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->save();
+			return;
+		}
+	}
+
 	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
 	if ( is_wp_error( $response ) ) {
