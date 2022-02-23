@@ -14,6 +14,7 @@ class Qliro_One_Callbacks {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_api_qoc_om_status', array( $this, 'om_push_cb' ) );
+		add_action( 'woocommerce_api_qoc_checkout_status', array( $this, 'checkout_push_cb' ) );
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -26,7 +27,7 @@ class Qliro_One_Callbacks {
 		$body = file_get_contents( 'php://input' );
 		$data = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Callback recieved: ${body}." );
+		Qliro_One_Logger::log( "OM Callback recieved: ${body}." );
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
@@ -49,6 +50,21 @@ class Qliro_One_Callbacks {
 					break;
 			}
 		}
+		header( 'HTTP/1.1 200 OK' );
+		echo '{ "CallbackResponse": "received" }';
+		die();
+	}
+
+	/**
+	 * Handles the Checkout push callback.
+	 *
+	 * @return void
+	 */
+	public function checkout_push_cb() {
+		$body = file_get_contents( 'php://input' );
+
+		Qliro_One_Logger::log( "Checkout Callback recieved: ${body}." );
+
 		header( 'HTTP/1.1 200 OK' );
 		echo '{ "CallbackResponse": "received" }';
 		die();
