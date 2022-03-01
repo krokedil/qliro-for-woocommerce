@@ -23,7 +23,7 @@ class Qliro_One_Confirmation {
 	 * @return void
 	 */
 	public function confirm_order() {
-		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm', FILTER_SANITIZE_STRING );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_page', FILTER_SANITIZE_STRING );
 
 		if ( empty( $confirmation_id ) ) {
 			return;

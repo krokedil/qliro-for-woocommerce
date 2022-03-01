@@ -23,11 +23,27 @@ class Qliro_One_Merchant_URLS {
 	 * @return array
 	 */
 	public function get_urls( $order_id = null ) {
+		$rand_string = strtolower(
+			sprintf(
+				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 16384, 20479 ),
+				random_int( 32768, 49151 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 )
+			)
+		);
+
+		WC()->session->set( 'qliro_order_confirmation_id', $rand_string );
+
 		$merchant_urls = array(
 			'terms'        => $this->get_terms_url(),
-			'confirmation' => $this->get_confirmation_url( $order_id ),
-			'push'         => $this->get_push_url(),
-			'om_push'      => $this->get_om_push_url(),
+			'confirmation' => $this->get_confirmation_url( $rand_string ),
+			'push'         => $this->get_push_url( $rand_string ),
+			'om_push'      => $this->get_om_push_url( $rand_string ),
 		);
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
@@ -51,29 +67,13 @@ class Qliro_One_Merchant_URLS {
 	 *
 	 * Required. URL of merchant confirmation page. Should be different than checkout and confirmation URLs.
 	 *
-	 * @param string $order_id The WooCommerce order id.
+	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
-	private function get_confirmation_url( $order_id ) {
-		$rand_string = strtolower(
-			sprintf(
-				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 16384, 20479 ),
-				random_int( 32768, 49151 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 )
-			)
-		);
-
-		WC()->session->set( 'qliro_order_confirmation_id', $rand_string );
-
+	private function get_confirmation_url( $rand_string ) {
 		$confirmation_url = add_query_arg(
 			array(
-				'qliro_one_confirm' => $rand_string,
+				'qliro_one_confirm_page' => $rand_string,
 			),
 			wc_get_checkout_url()
 		);
@@ -85,11 +85,17 @@ class Qliro_One_Merchant_URLS {
 	 *
 	 * URL of the push callback page for Checkout status changes.
 	 *
+	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
-	private function get_push_url() {
-		$om_push_url = home_url( '/wc-api/QOC_Checkout_Status/' );
-		return apply_filters( 'qliro_one_wc_push_url', $om_push_url );
+	private function get_push_url( $rand_string ) {
+		$checkout_push_url = add_query_arg(
+			array(
+				'qliro_one_confirm_id' => $rand_string,
+			),
+			home_url( '/wc-api/QOC_Checkout_Status/' )
+		);
+		return apply_filters( 'qliro_one_wc_push_url', $checkout_push_url );
 	}
 
 	/**
@@ -97,9 +103,16 @@ class Qliro_One_Merchant_URLS {
 	 *
 	 * URL of the push callback page for Order Management status changes.
 	 *
+	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
-	private function get_om_push_url() {
+	private function get_om_push_url( $rand_string ) {
+		$om_push_url = add_query_arg(
+			array(
+				'qliro_one_confirm_id' => $rand_string,
+			),
+			home_url( '/wc-api/QOC_OM_Status/' )
+		);
 		$om_push_url = home_url( '/wc-api/QOC_OM_Status/' );
 		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
 	}
