@@ -45,7 +45,7 @@ class Qliro_One_Checkout {
 	}
 
 	/**
-	 * Update the shipping method in WooCommerce based on what Klarna has sent us.
+	 * Update the shipping method in WooCommerce based on what Qliro has sent us.
 	 *
 	 * @return void
 	 */
@@ -53,6 +53,17 @@ class Qliro_One_Checkout {
 		if ( ! is_checkout() ) {
 			return;
 		}
+
+		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return;
+		}
+
+		// Check Setting.
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		if ( 'yes' !== $settings['shipping_in_iframe'] ) {
+			return;
+		}
+
 		if ( isset( $_POST['post_data'] ) ) { // phpcs:ignore
 			parse_str( $_POST['post_data'], $post_data ); // phpcs:ignore
 			if ( isset( $post_data['qoc_shipping_data'] ) ) {
@@ -86,7 +97,6 @@ class Qliro_One_Checkout {
 
 		if ( WC()->session->get( 'qoc_shipping_data_set' ) ) {
 			WC()->session->__unset( 'qoc_shipping_data_set' );
-			return;
 		}
 
 		// Check if the cart hash has been changed since last update.
