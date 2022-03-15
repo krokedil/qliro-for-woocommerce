@@ -150,7 +150,7 @@ class Qliro_One_Helper_Cart {
 	public static function get_fee( $fee ) {
 		// todo.
 		return array(
-			'MerchantReference'  => 'fee|' . $fee->id,
+			'MerchantReference'  => 'fee:' . $fee->id,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
 			'PricePerItemIncVat' => $fee->amount + $fee->tax,
