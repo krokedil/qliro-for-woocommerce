@@ -7,7 +7,7 @@ Tested up to: 5.9.2
 Requires PHP: 7.0
 WC requires at least: 4.0.0
 WC tested up to: 6.3.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2022.03.22    - version 0.2.1 =
+* Tweak         - Readme changes.
+
 = 2022.03.22    - version 0.2.0 =
 * Tweak         - Readme changes.
 
