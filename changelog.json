@@ -4,5 +4,11 @@
             "requires" : "5.9.0",
             "tested" : "5.9.2",
             "upgrade_notice" : ""
+      },
+      "0.2.0" : {
+            "description" : "<ul><li>Tweak - Readme changes.</li></ul>",
+            "requires" : "5.9.0",
+            "tested" : "5.9.2",
+            "upgrade_notice" : ""
       }
 }
