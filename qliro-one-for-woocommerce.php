@@ -5,7 +5,7 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 0.0.1
+ * Version: 0.1.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
@@ -110,6 +110,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -221,6 +222,20 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$methods[] = 'Qliro_One_Gateway';
 
 			return $methods;
+		}
+
+		/**
+		 * Checks the plugin version.
+		 *
+		 * @return void
+		 */
+		public function check_version() {
+			require QLIRO_WC_PLUGIN_PATH . '/kernl-update-checker/kernl-update-checker.php';
+			$update_checker = Puc_v4_Factory::buildUpdateChecker(
+				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
+				__FILE__,
+				'qliro-one-for-woocommerce'
+			);
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
