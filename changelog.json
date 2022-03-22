@@ -1,0 +1,8 @@
+{
+      "0.1.0" : {
+            "description" : "<ul><li>Initial release.</li></ul>",
+            "requires" : "5.9.0",
+            "tested" : "5.9.2",
+            "upgrade_notice" : ""
+      }
+}

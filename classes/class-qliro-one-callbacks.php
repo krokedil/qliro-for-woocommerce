@@ -14,6 +14,9 @@ class Qliro_One_Callbacks {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_api_qoc_om_status', array( $this, 'om_push_cb' ) );
+		add_action( 'woocommerce_api_qoc_checkout_status', array( $this, 'checkout_push_cb' ) );
+		add_action( 'qliro_complete_checkout', array( $this, 'complete_checkout' ), 10 );
+		add_action( 'qliro_fail_checkout', array( $this, 'fail_checkout' ), 10 );
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -23,25 +26,26 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function om_push_cb() {
-		$body = file_get_contents( 'php://input' );
-		$data = json_decode( $body, true );
+		$body            = file_get_contents( 'php://input' );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_STRING );
+		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Callback recieved: ${body}." );
+		Qliro_One_Logger::log( "OM Callback recieved: ${body}." );
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
 			switch ( $data['PaymentType'] ) {
 				case 'Capture':
 					Qliro_One_Logger::log( "Processing capture callback for order ${order_number}." );
-					$this->complete_capture( $order_number, $data );
+					$this->complete_capture( $confirmation_id, $data );
 					break;
 				case 'Reversal':
 					Qliro_One_Logger::log( "Processing cancel callback for order ${order_number}." );
-					$this->complete_cancel( $order_number, $data );
+					$this->complete_cancel( $confirmation_id, $data );
 					break;
 				case 'Refund':
 					Qliro_One_Logger::log( "Processing refund callback for order ${order_number}." );
-					$this->complete_refund( $order_number, $data );
+					$this->complete_refund( $confirmation_id, $data );
 					break;
 				default:
 					$status = $data['PaymentType'];
@@ -55,14 +59,47 @@ class Qliro_One_Callbacks {
 	}
 
 	/**
+	 * Handles the Checkout push callback.
+	 *
+	 * @return void
+	 */
+	public function checkout_push_cb() {
+		$body            = file_get_contents( 'php://input' );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_STRING );
+		$data            = json_decode( $body, true );
+
+		Qliro_One_Logger::log( "Checkout Callback recieved: ${body}." );
+
+		if ( isset( $data['Status'] ) ) {
+			switch ( $data['Status'] ) {
+				case 'Completed':
+					Qliro_One_Logger::log( "Scheduling completed checkout callback for order with confirmation_id ${confirmation_id}." );
+					as_schedule_single_action( time() + 30, 'qliro_complete_checkout', array( $confirmation_id ) );
+					break;
+				case 'Refused':
+					Qliro_One_Logger::log( "Scheduling refused callback for order with confirmation_id ${confirmation_id}." );
+					as_schedule_single_action( time() + 30, 'qliro_fail_checkout', array( $confirmation_id ) );
+					break;
+				default:
+					Qliro_One_Logger::log( "Unknown Qliro One checkout callback status: {$data['Status']}" );
+					break;
+			}
+		}
+
+		header( 'HTTP/1.1 200 OK' );
+		echo '{ "CallbackResponse": "received" }';
+		die();
+	}
+
+	/**
 	 * Process the Capture callback notification.
 	 *
-	 * @param string $order_number The WooCommerce Order Number.
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
 	 * @param array  $data The data from the callback from Qliro.
 	 * @return void
 	 */
-	public function complete_capture( $order_number, $data ) {
-		$order = $this->get_woocommerce_order( $order_number );
+	public function complete_capture( $confirmation_id, $data ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -87,12 +124,12 @@ class Qliro_One_Callbacks {
 	/**
 	 * Process the Cancel callback notification.
 	 *
-	 * @param string $order_number The WooCommerce Order Number.
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
 	 * @param array  $data The data from the callback from Qliro.
 	 * @return void
 	 */
-	public function complete_cancel( $order_number, $data ) {
-		$order = $this->get_woocommerce_order( $order_number );
+	public function complete_cancel( $confirmation_id, $data ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -117,12 +154,12 @@ class Qliro_One_Callbacks {
 	/**
 	 * Process the Refund callback notification.
 	 *
-	 * @param string $order_number The WooCommerce Order Number.
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
 	 * @param array  $data The data from the callback from Qliro.
 	 * @return void
 	 */
-	public function complete_refund( $order_number, $data ) {
-		$order = $this->get_woocommerce_order( $order_number );
+	public function complete_refund( $confirmation_id, $data ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -137,32 +174,60 @@ class Qliro_One_Callbacks {
 	}
 
 	/**
-	 * Gets an order by order number.
+	 * Process the successful callback from the checkout push.
 	 *
-	 * @param string $order_number The WooCommerce Order Number.
-	 * @return WC_Order
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
+	 * @return void
 	 */
-	public function get_woocommerce_order( $order_number ) {
-		// Try to get order if we can.
-		$order = wc_get_order( $order_number );
-		if ( ! empty( $order ) ) {
-			return $order;
+	public function complete_checkout( $confirmation_id ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
+
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when completing the checkout" );
+			return;
 		}
 
+		qliro_confirm_order( $order );
+	}
+
+	/**
+	 * Process the successful callback from the checkout push.
+	 *
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
+	 * @return void
+	 */
+	public function fail_checkout( $confirmation_id ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
+
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when failing the checkout" );
+			return;
+		}
+
+		$order->update_status( 'failed', __( 'The Qliro one order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->save();
+	}
+
+	/**
+	 * Gets an order by order number.
+	 *
+	 * @param string $confirmation_id The Confirmation ID set when we create the order.
+	 * @return WC_Order
+	 */
+	public function get_woocommerce_order( $confirmation_id ) {
 		$query_args = array(
 			'fields'      => 'ids',
 			'post_type'   => wc_get_order_types(),
 			'post_status' => array_keys( wc_get_order_statuses() ),
-			'meta_key'    => '_order_number', // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
-			'meta_value'  => $order_number, // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
+			'meta_key'    => '_qliro_one_order_confirmation_id', // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
+			'meta_value'  => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
 		);
 
 		$order_ids = get_posts( $query_args );
 
 		// If zero matching orders were found, log error.
 		if ( empty( $order_ids ) ) {
-			// Backup order creation.
-			Qliro_One_Logger::log( 'Callback Error. No order found with the order number ' . stripslashes_deep( wp_json_encode( $order_number ) ) );
+			Qliro_One_Logger::log( "Callback Error. No order found with the confirmation id $confirmation_id" );
 			return;
 		}
 
