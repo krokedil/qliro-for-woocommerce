@@ -130,6 +130,24 @@ class Qliro_One_API {
 	}
 
 	/**
+	 * Upsell a Qliro one order.
+	 *
+	 * @param int    $order_id Order ID.
+	 * @param string $upsell_request_id Id that upsell order lines is tagged with.
+	 * @return array
+	 */
+	public function upsell_qliro_one_order( $order_id, $upsell_request_id ) {
+		$request  = new Qliro_One_Request_Upsell_Order(
+			array(
+				'order_id'          => $order_id,
+				'upsell_request_id' => $upsell_request_id,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
 	 * Checks for WP Errors and returns either the response as array or a false.
 	 *
 	 * @param array $response The response from the request.
