@@ -22,6 +22,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			array(
 				'products',
 				'refunds',
+				'upsell',
 			)
 		);
 		$this->has_fields         = false;
@@ -112,5 +113,59 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		if ( $qliro_order ) {
 			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.
 		}
+	}
+
+	/**
+	 * Check the qliro order if upsell should be available.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return bool
+	 */
+	public function upsell_available( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		// If the order has not been paid for, and is in for example on-hold. We can not do a upsell.
+		if ( empty( $order->get_date_paid() ) ) {
+			return false;
+		}
+
+		// Get the Qliro order.
+		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			return false;
+		}
+
+		if ( ! isset( $qliro_order['Upsell'] ) || ! $qliro_order['Upsell']['EligibleForUpsell'] ) {
+			return false;
+		}
+
+		if ( ! isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) || strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) < strtotime( 'now' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Handles a upsell request.
+	 *
+	 * @param int    $order_id The WooCommerce order id.
+	 * @param string $upsell_uuid The UUID for the Upsell request.
+	 * @return bool
+	 */
+	public function upsell( $order_id, $upsell_uuid ) {
+		$upsell_order = QOC_WC()->api->upsell_qliro_one_order( $order_id, $upsell_uuid );
+
+		if ( is_wp_error( $upsell_order ) ) {
+			return false;
+		}
+
+		$order = wc_get_order( $order_id );
+		update_post_meta( $order_id, '_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
+		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
+
+		return true;
 	}
 }

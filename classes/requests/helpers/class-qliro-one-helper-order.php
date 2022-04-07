@@ -70,7 +70,7 @@ class Qliro_One_Helper_Order {
 		 * @var WC_Order_Item_Product $order_item WooCommerce order item product.
 		 */
 		foreach ( $order->get_items() as $order_item ) {
-			if ( $upsell_request_id === $order_item->get_meta( 'qliro_upsell_id' ) ) {
+			if ( $upsell_request_id === $order_item->get_meta( '_ppu_upsell_id' ) ) {
 				$order_lines[] = self::get_order_line_items( $order_item, $order );
 			}
 		}

@@ -38,7 +38,6 @@ class Qliro_One_Request_Upsell_Order extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-
 		$order_id          = $this->arguments['order_id'];
 		$order             = wc_get_order( $order_id );
 		$upsell_request_id = $this->arguments['upsell_request_id'];
