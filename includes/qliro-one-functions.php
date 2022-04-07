@@ -162,6 +162,9 @@ function qliro_confirm_order( $order ) {
 		if ( 'Success' === $payment_transaction['Status'] ) {
 			update_post_meta( $order_id, 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
 			update_post_meta( $order_id, 'qliro_one_payment_method_subtype_code', $payment_transaction['PaymentMethodSubtypeCode'] );
+			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
+				update_post_meta( $order_id, '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+			}
 		}
 	}
 }

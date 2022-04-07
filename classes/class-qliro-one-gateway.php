@@ -130,18 +130,10 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		// Get the Qliro order.
-		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$qliro_order_id   = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$urgency_deadline = get_post_meta( $order_id, '_ppu_upsell_urgency_deadline', true );
 
-		if ( is_wp_error( $qliro_order ) ) {
-			return false;
-		}
-
-		if ( ! isset( $qliro_order['Upsell'] ) || ! $qliro_order['Upsell']['EligibleForUpsell'] ) {
-			return false;
-		}
-
-		if ( ! isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) || strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) < strtotime( 'now' ) ) {
+		if ( empty( $urgency_deadline ) ) {
 			return false;
 		}
 
