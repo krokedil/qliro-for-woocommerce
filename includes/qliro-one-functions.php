@@ -170,7 +170,7 @@ function qliro_confirm_order( $order ) {
 }
 
 /**
- * Undocumented function
+ * Update WooCommerce shipping when shipping is controlled in the iframe.
  *
  * @param array|bool $data The shipping data from Qliro. False if not set.
  * @return void
@@ -195,4 +195,26 @@ function qoc_update_wc_shipping( $data ) {
 	$chosen_shipping_methods   = array();
 	$chosen_shipping_methods[] = wc_clean( $data['method'] );
 	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qoc_chosen_shipping_method', $chosen_shipping_methods ) );
+}
+
+/**
+ * Get the Qliro order for the thankyou page. Helper function due to caching.
+ *
+ * @param string $qliro_order_id The Qliro Order id.
+ * @return array
+ */
+function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
+	$qliro_order = json_decode( get_transient( "qliro_thankyou_order_$qliro_order_id" ), true );
+
+	if ( empty( $qliro_order ) ) {
+		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			return $qliro_order;
+		}
+
+		set_transient( "qliro_thankyou_order_$qliro_order_id", json_encode( $qliro_order ), 10 );
+	}
+
+	return $qliro_order;
 }

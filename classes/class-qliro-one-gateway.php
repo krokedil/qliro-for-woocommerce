@@ -28,11 +28,12 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$this->has_fields         = false;
 		$this->init_form_fields();
 		$this->init_settings();
-		$this->title       = $this->get_option( 'title' );
-		$this->description = $this->get_option( 'description' );
-		$this->enabled     = $this->get_option( 'enabled' );
-		$this->testmode    = 'yes' === $this->get_option( 'testmode' );
-		$this->logging     = 'yes' === $this->get_option( 'logging' );
+		$this->title             = $this->get_option( 'title' );
+		$this->description       = $this->get_option( 'description' );
+		$this->enabled           = $this->get_option( 'enabled' );
+		$this->testmode          = 'yes' === $this->get_option( 'testmode' );
+		$this->logging           = 'yes' === $this->get_option( 'logging' );
+		$this->upsell_percentage = $this->get_option( 'upsell_percentage', 10 );
 		add_action(
 			'woocommerce_update_options_payment_gateways_qliro_one',
 			array(
@@ -102,7 +103,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function show_thank_you_snippet( $order_id = null ) {
 		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$qliro_order    = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$qliro_order    = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
 		$order          = wc_get_order( $order_id );
 		// Check if the order has been confirmed already.
 		if ( ! empty( $order->get_date_paid() ) ) {
@@ -129,11 +130,18 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return false;
 		}
 
-		// Get the Qliro order.
-		$qliro_order_id   = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$qliro_order    = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
+
+		// Check if we have a urgency time.
 		$urgency_deadline = get_post_meta( $order_id, '_ppu_upsell_urgency_deadline', true );
 
 		if ( empty( $urgency_deadline ) ) {
+			return false;
+		}
+
+		// Check if the urgency time has passed.
+		if ( $urgency_deadline < strtotime( 'now' ) ) {
 			return false;
 		}
 
@@ -159,5 +167,41 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
 
 		return true;
+	}
+
+	/**
+	 * Get the limits for the upsell order.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return array
+	 */
+	public function get_upsell_limitations( $order_id ) {
+		$limits              = array(
+			'amount' => 0,
+			'type'   => 'percent',
+		);
+		$order               = wc_get_order( $order_id );
+		$payment_method_type = get_post_meta( $order_id, 'qliro_one_payment_method_name', true );
+		$is_qliro_method     = str_contains( $payment_method_type, 'QLIRO' );
+		$is_card_method      = str_contains( $payment_method_type, 'CARD' );
+
+		if ( $is_qliro_method && ! $is_card_method ) {
+			$limits['amount'] = $this->upsell_percentage;
+		}
+
+		if ( ! $is_qliro_method && $is_card_method ) {
+			$amount = 300;
+			switch ( $order->get_currency() ) {
+				case 'EUR':
+				case 'USD':
+				case 'GBP':
+					$amount = 30;
+					break;
+			}
+			$limits['amount'] = $amount;
+			$limits['type']   = 'fixed';
+		}
+
+		return $limits;
 	}
 }

@@ -280,6 +280,23 @@ class Qliro_One_Fields {
 				'desc_tip'    => false,
 			),
 		);
+
+		// Add upsell section if plugin is installed.
+		if ( class_exists( 'PPU' ) ) {
+			$settings['upsell']            = array(
+				'title' => 'Upsell',
+				'type'  => 'title',
+			);
+			$settings['upsell_percentage'] = array(
+				'title'       => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
+				'type'        => 'number',
+				'description' => __( 'Set the max amount above the order value a customer can upsell a Qliro order paid with a After Delivery payment. The default is 10%, if you want higher then that you will first need to contact Qliro.', 'qliro-one-for-woocommerce' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'default'     => 10,
+			);
+		}
+
 		return apply_filters( 'qliro_one_gateway_settings', $settings );
 	}
 }
