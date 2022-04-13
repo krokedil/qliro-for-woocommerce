@@ -290,7 +290,7 @@ class Qliro_One_Fields {
 			$settings['upsell_percentage'] = array(
 				'title'             => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
 				'type'              => 'number',
-				'description'       => __( 'Set the max amount above the order value a customer can upsell a Qliro order paid with a After Delivery payment. The default is 10%, if you want higher then that you will first need to contact Qliro.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment. The default is 10%, if you want higher than that you will first need to contact Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'default'           => 10,
