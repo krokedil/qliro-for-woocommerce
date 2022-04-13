@@ -178,7 +178,6 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	public function get_upsell_limitations( $order_id ) {
 		$limits              = array(
 			'amount' => 0,
-			'type'   => 'percent',
 		);
 		$order               = wc_get_order( $order_id );
 		$payment_method_type = get_post_meta( $order_id, 'qliro_one_payment_method_name', true );
@@ -186,7 +185,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$is_card_method      = str_contains( $payment_method_type, 'CARD' );
 
 		if ( $is_qliro_method && ! $is_card_method ) {
-			$limits['amount'] = $this->upsell_percentage;
+			$limits['amount'] = $order->get_total() * ( $this->upsell_percentage / 100 );
 		}
 
 		if ( ! $is_qliro_method && $is_card_method ) {
@@ -199,7 +198,6 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 					break;
 			}
 			$limits['amount'] = $amount;
-			$limits['type']   = 'fixed';
 		}
 
 		return $limits;
