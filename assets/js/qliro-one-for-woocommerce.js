@@ -44,8 +44,6 @@ jQuery( function( $ ) {
 			$('#qliro-one-iframe').append( qliroOneParams.iframeSnippet );
 		},
 		updateCheckout: function() {
-			console.log('update_checkout');
-			console.trace();
 			if(window.q1 !== undefined) {
 				window.q1.lock();
 			}
@@ -186,25 +184,38 @@ jQuery( function( $ ) {
 			}
 		},
 		updateAddress: function (customerInfo) {
-			var billingEmail = (('email' in customerInfo) ? customerInfo.email : null);
-			var billingPhone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
-			var billingFirstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
-			var billingLastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
-			var billingStreet = (('street' in customerInfo.address) ? customerInfo.address.street : null);
-			var billingPostalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
-			var billingCity = (('city' in customerInfo.address) ? customerInfo.address.city : null);
-
-			(billingEmail !== null && billingEmail !== undefined) ? $('#billing_email').val(customerInfo.email) : null;
-			(billingPhone !== null && billingPhone !== undefined) ? $('#billing_phone').val(customerInfo.mobileNumber) : null;
-			(billingFirstName !== null && billingFirstName !== undefined) ? $('#billing_first_name').val(customerInfo.address.firstName) : null;
-			(billingLastName !== null && billingLastName !== undefined) ? $('#billing_last_name').val(customerInfo.address.lastName) : null;
-			(billingStreet !== null && billingStreet !== undefined) ? $('#billing_address_1').val(customerInfo.address.street) : null;
-			(billingPostalCode !== null && billingPostalCode !== undefined) ? $('#billing_postcode').val(customerInfo.address.postalCode) : null;
-			(billingCity !== null && billingCity !== undefined) ? $('#billing_city').val(customerInfo.address.city) : null;
-
-			$("form.checkout").trigger('update_checkout');
-			$('#billing_email').change();
-			$('#billing_email').blur();
+			var email = (('email' in customerInfo) ? customerInfo.email : null);
+			var phone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
+			var firstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
+			var lastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
+			var street = (('street' in customerInfo.address) ? street : null);
+			var postalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
+			var city = (('city' in customerInfo.address) ? customerInfo.address.city : null);
+			
+			// Check if shipping fields or billing fields are to be used.
+			if( ! $('#ship-to-different-address-checkbox').is(":checked") ) {
+				(email !== null && email !== undefined) ? $('#billing_email').val(email) : null;
+				(phone !== null && phone !== undefined) ? $('#billing_phone').val(phone) : null;
+				(firstName !== null && firstName !== undefined) ? $('#billing_first_name').val(firstName) : null;
+				(lastName !== null && lastName !== undefined) ? $('#billing_last_name').val(lastName) : null;
+				(street !== null && street !== undefined) ? $('#billing_address_1').val(street) : null;
+				(postalCode !== null && postalCode !== undefined) ? $('#billing_postcode').val(postalCode) : null;
+				(city !== null && city !== undefined) ? $('#billing_city').val(city) : null;
+				$("form.checkout").trigger('update_checkout');
+				$('#billing_email').change();
+				$('#billing_email').blur();
+			} else {
+				(email !== null && email !== undefined) ? $('#shipping_email').val(email) : null;
+				(phone !== null && phone !== undefined) ? $('#shipping_phone').val(phone) : null;
+				(firstName !== null && firstName !== undefined) ? $('#shipping_first_name').val(firstName) : null;
+				(lastName !== null && lastName !== undefined) ? $('#shipping_last_name').val(lastName) : null;
+				(street !== null && street !== undefined) ? $('#shipping_address_1').val(street) : null;
+				(postalCode !== null && postalCode !== undefined) ? $('#shipping_postcode').val(postalCode) : null;
+				(city !== null && city !== undefined) ? $('#shipping_city').val(city) : null;
+				$("form.checkout").trigger('update_checkout');
+				$('#shipping_email').change();
+				$('#shipping_email').blur();
+			}
 		},
 		getQliroOneOrder: function (data, callback) {
 			$.ajax({

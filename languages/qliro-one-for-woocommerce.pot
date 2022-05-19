@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Qliro One for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro One for WooCommerce 0.0.1\n"
+"Project-Id-Version: Qliro One for WooCommerce 0.2.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2022-02-18 14:50:45+00:00\n"
+"POT-Creation-Date: 2022-05-19 14:01:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,30 +14,34 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: classes/class-qliro-one-callbacks.php:72
+#: classes/class-qliro-one-callbacks.php:109
 msgid "The order failed to be captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:78
-#: classes/class-qliro-one-callbacks.php:83
+#: classes/class-qliro-one-callbacks.php:115
+#: classes/class-qliro-one-callbacks.php:120
 msgid "The order has been successfully captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:102
+#: classes/class-qliro-one-callbacks.php:139
 msgid "The order failed to be cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:108
-#: classes/class-qliro-one-callbacks.php:113
+#: classes/class-qliro-one-callbacks.php:145
+#: classes/class-qliro-one-callbacks.php:150
 msgid "The order has been successfully cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:132
+#: classes/class-qliro-one-callbacks.php:169
 msgid "The order failed to be refunded by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:136
+#: classes/class-qliro-one-callbacks.php:173
 msgid "The order has been successfully refunded by Qliro."
+msgstr ""
+
+#: classes/class-qliro-one-callbacks.php:207
+msgid "The Qliro one order was rejected by Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:24
@@ -329,6 +333,17 @@ msgstr ""
 msgid "Select the Checkout layout."
 msgstr ""
 
+#: classes/class-qliro-one-fields.php:291
+msgid "Upsell Percentage"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:293
+msgid ""
+"Set the max amount above the order value a customer can add to a Qliro "
+"order paid with a After Delivery payment. The default is 10%, if you want "
+"higher than that you will first need to contact Qliro."
+msgstr ""
+
 #: classes/class-qliro-one-gateway.php:18
 #: classes/class-qliro-one-product-tab.php:30
 msgid "Qliro One"
@@ -336,6 +351,10 @@ msgstr ""
 
 #: classes/class-qliro-one-gateway.php:19
 msgid "Qliro One replaces the standard WooCommerce checkout page."
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:167
+msgid "Qliro order was upsold with transaction id"
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:78
@@ -387,15 +406,35 @@ msgstr ""
 msgid "Qliro One order successfully placed. Payment transaction id: "
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:93 qliro-one-for-woocommerce.php:103
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:54
+msgid "View details"
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:77
+msgid "More information about %s"
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:128
+msgid "Check for updates"
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:223
+msgid "Unknown update checker status \"%s\""
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Vcs/PluginUpdateChecker.php:98
+msgid "There is no changelog available."
+msgstr ""
+
+#: qliro-one-for-woocommerce.php:91 qliro-one-for-woocommerce.php:101
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:133
+#: qliro-one-for-woocommerce.php:132
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:134
+#: qliro-one-for-woocommerce.php:133
 msgid "Support"
 msgstr ""
 
@@ -421,4 +460,19 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "https://krokedil.com/"
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:213
+msgctxt "the plugin title"
+msgid "The %s plugin is up to date."
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:215
+msgctxt "the plugin title"
+msgid "A new version of the %s plugin is available."
+msgstr ""
+
+#: kernl-update-checker/Puc/v4p10/Plugin/Ui.php:217
+msgctxt "the plugin title"
+msgid "Could not determine if updates are available for %s."
 msgstr ""

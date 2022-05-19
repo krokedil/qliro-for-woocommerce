@@ -111,7 +111,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
 		}
 
-		if ( $qliro_order ) {
+		if ( $qliro_order && ! is_wp_error( $qliro_order ) ) {
 			echo $qliro_order['OrderHtmlSnippet']; // phpcs:ignore WordPress.Security.EscapeOutput -- Cant escape since this is the iframe snippet.
 		}
 	}
@@ -159,7 +159,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$upsell_order = QOC_WC()->api->upsell_qliro_one_order( $order_id, $upsell_uuid );
 
 		if ( is_wp_error( $upsell_order ) ) {
-			return false;
+			return $upsell_order;
 		}
 
 		$order = wc_get_order( $order_id );
