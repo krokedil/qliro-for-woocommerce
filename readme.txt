@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2022.05.23    - version 0.3.0 =
+* Feature       - Add support for the Post Purchase Upsell for WooCommerce plugin.
+* Tweak         - Changed the ID of the order review in our checkout template.
+
 = 2022.03.22    - version 0.2.1 =
 * Tweak         - Readme changes.
 

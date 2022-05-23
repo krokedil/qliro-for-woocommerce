@@ -16,5 +16,11 @@
             "requires" : "5.9.0",
             "tested" : "5.9.2",
             "upgrade_notice" : ""
+      },
+      "0.3.0" : {
+            "description" : "<ul><li>Feature - Add support for the Post Purchase Upsell for WooCommerce plugin.</li><li>Tweak - Changed the ID of the order review in our checkout template.</li></ul>",
+            "requires" : "5.9.0",
+            "tested" : "5.9.2",
+            "upgrade_notice" : ""
       }
 }
