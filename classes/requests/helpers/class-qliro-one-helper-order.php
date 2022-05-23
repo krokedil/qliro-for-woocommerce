@@ -54,6 +54,31 @@ class Qliro_One_Helper_Order {
 	}
 
 	/**
+	 * Gets the upsell order lines for the order.
+	 *
+	 * @param int    $order_id The WooCommerce order id.
+	 * @param string $upsell_request_id The order line upsell id.
+	 * @return array
+	 */
+	public static function get_upsell_order_lines( $order_id, $upsell_request_id ) {
+		$order       = wc_get_order( $order_id );
+		$order_lines = array();
+
+		/**
+		 * Process order item products.
+		 *
+		 * @var WC_Order_Item_Product $order_item WooCommerce order item product.
+		 */
+		foreach ( $order->get_items() as $order_item ) {
+			if ( $upsell_request_id === $order_item->get_meta( '_ppu_upsell_id' ) ) {
+				$order_lines[] = self::get_order_line_items( $order_item, $order );
+			}
+		}
+
+		return array_values( $order_lines );
+	}
+
+	/**
 	 * Formats the order lines for a refund request.
 	 *
 	 * @param int $order_id The WooCommerce Order ID.
