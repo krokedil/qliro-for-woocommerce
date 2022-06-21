@@ -22,5 +22,11 @@
             "requires" : "5.9.0",
             "tested" : "5.9.2",
             "upgrade_notice" : ""
+      },
+      "0.3.1" : {
+            "description" : "<ul><li>Fix - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.</li></ul>",
+            "requires" : "5.9.0",
+            "tested" : "6.0.0",
+            "upgrade_notice" : ""
       }
 }
