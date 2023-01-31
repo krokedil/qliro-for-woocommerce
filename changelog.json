@@ -28,5 +28,11 @@
             "requires" : "5.9.0",
             "tested" : "6.0.0",
             "upgrade_notice" : ""
+      },
+      "0.4.0": {
+            "description": "<ul><li>Feature - Added support for OnHold callbacks from Qliro.</li><li>Tweak - Minor change to style to make the order review take up the space its allowed to take up</li><li>Fix - Fixed an issue with adminapi endpoints containing a extra backslash causing 404 errors.</li><li>Fix - Fixed sending a incorrect field name for MinimumCustomerAge.</li><li>Fix - Fixed some error handling on the order confirmation page.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.1.1",
+            "upgrade_notice": ""
       }
 }
