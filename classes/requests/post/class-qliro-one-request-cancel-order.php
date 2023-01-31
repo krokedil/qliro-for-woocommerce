@@ -28,7 +28,7 @@ class Qliro_One_Cancel_Order extends Qliro_One_Request_Post {
 	 * @return string
 	 */
 	protected function get_request_url() {
-		return $this->get_api_url_base() . '/checkout/adminapi/v2/cancelOrder';
+		return $this->get_api_url_base() . 'checkout/adminapi/v2/cancelOrder';
 	}
 
 	/**

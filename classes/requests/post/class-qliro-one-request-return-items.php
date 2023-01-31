@@ -28,7 +28,7 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 	 * @return string
 	 */
 	protected function get_request_url() {
-		return $this->get_api_url_base() . '/checkout/adminapi/v2/ReturnItems';
+		return $this->get_api_url_base() . 'checkout/adminapi/v2/ReturnItems';
 	}
 
 	/**

@@ -29,7 +29,7 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 	 * @return string
 	 */
 	protected function get_request_url() {
-		return $this->get_api_url_base() . '/checkout/adminapi/v2/MarkItemsAsShipped';
+		return $this->get_api_url_base() . 'checkout/adminapi/v2/MarkItemsAsShipped';
 	}
 
 	/**
