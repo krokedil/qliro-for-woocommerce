@@ -49,7 +49,7 @@ class Qliro_One_API {
 	public function get_qliro_one_admin_order( $qliro_one_order_id ) {
 		$request  = new Qliro_One_Request_Admin_Get_Order( array( 'order_id' => $qliro_one_order_id ) );
 		$response = $request->request();
-		return $this->check_for_api_error( $response );
+		return $response;
 	}
 
 
@@ -161,6 +161,4 @@ class Qliro_One_API {
 		}
 		return $response;
 	}
-
-
 }

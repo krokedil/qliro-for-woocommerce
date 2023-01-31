@@ -75,7 +75,22 @@ function qliro_one_wc_calculate_totals() {
  * @return void
  */
 function qliro_one_print_error_message( $wp_error ) {
-	wc_print_notice( $wp_error->get_error_message(), 'error' );
+	$error_message = $wp_error->get_error_message();
+
+	if ( is_array( $error_message ) ) {
+		// Rather than assuming the first element is a string, we'll force a string conversion instead.
+		$error_message = implode( ' ', $error_message );
+	}
+
+	if ( is_ajax() ) {
+		if ( function_exists( 'wc_add_notice' ) ) {
+			wc_add_notice( $error_message, 'error' );
+		}
+	} else {
+		if ( function_exists( 'wc_print_notice' ) ) {
+			wc_print_notice( $error_message, 'error' );
+		}
+	}
 }
 
 /**
@@ -115,7 +130,7 @@ function qliro_one_wc_show_another_gateway_button() {
  * Confirm a qliro order.
  *
  * @param WC_Order $order The WooCommerce order.
- * @return void
+ * @return bool
  */
 function qliro_confirm_order( $order ) {
 	// Check if the order has been confirmed already.
@@ -128,21 +143,21 @@ function qliro_confirm_order( $order ) {
 	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
 	if ( is_wp_error( $qliro_order ) ) {
-		return;
+		return false;
 	}
 
 	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
 		if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
 			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
 			$order->save();
-			return;
+			return false;
 		}
 	}
 
 	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
 	if ( is_wp_error( $response ) ) {
-		return;
+		return false;
 	}
 
 	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
@@ -167,6 +182,8 @@ function qliro_confirm_order( $order ) {
 			}
 		}
 	}
+
+	return true;
 }
 
 /**

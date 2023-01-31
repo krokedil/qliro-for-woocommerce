@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.0.0
+Tested up to: 6.1.1
 Requires PHP: 7.0
 WC requires at least: 4.0.0
-WC tested up to: 6.6.0
-Stable tag: 0.3.1
+WC tested up to: 7.3.0
+Stable tag: 0.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.01.31    - version 0.4.0 =
+* Feature       - Added support for OnHold callbacks from Qliro.
+* Tweak         - Minor change to style to make the order review take up the space its allowed to take up
+* Fix           - Fixed an issue with adminapi endpoints containing a extra backslash causing 404 errors.
+* Fix           - Fixed sending a incorrect field name for MinimumCustomerAge.
+* Fix           - Fixed some error handling on the order confirmation page.
+
 = 2022.06.21    - version 0.3.1 =
 * Fix           - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.
 

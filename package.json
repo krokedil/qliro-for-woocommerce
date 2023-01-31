@@ -22,6 +22,6 @@
     "makepot": "npx grunt makepot",
     "cssmin": "npx grunt cssmin",
     "jsmin": "npx webpack",
-    "build": "yarn makepot && yarn cssmin && yarn jsmin"
+    "build": "npx makepot && npx cssmin && npx jsmin"
   }
 }

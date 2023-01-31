@@ -17,6 +17,7 @@ class Qliro_One_Callbacks {
 		add_action( 'woocommerce_api_qoc_checkout_status', array( $this, 'checkout_push_cb' ) );
 		add_action( 'qliro_complete_checkout', array( $this, 'complete_checkout' ), 10 );
 		add_action( 'qliro_fail_checkout', array( $this, 'fail_checkout' ), 10 );
+		add_action( 'qliro_onhold_checkout', array( $this, 'onhold_checkout' ), 10 );
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -27,29 +28,29 @@ class Qliro_One_Callbacks {
 	 */
 	public function om_push_cb() {
 		$body            = file_get_contents( 'php://input' );
-		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_STRING );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "OM Callback recieved: ${body}." );
+		Qliro_One_Logger::log( "OM Callback recieved: {$body}." );
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
 			switch ( $data['PaymentType'] ) {
 				case 'Capture':
-					Qliro_One_Logger::log( "Processing capture callback for order ${order_number}." );
+					Qliro_One_Logger::log( "Processing capture callback for order {$order_number}." );
 					$this->complete_capture( $confirmation_id, $data );
 					break;
 				case 'Reversal':
-					Qliro_One_Logger::log( "Processing cancel callback for order ${order_number}." );
+					Qliro_One_Logger::log( "Processing cancel callback for order {$order_number}." );
 					$this->complete_cancel( $confirmation_id, $data );
 					break;
 				case 'Refund':
-					Qliro_One_Logger::log( "Processing refund callback for order ${order_number}." );
+					Qliro_One_Logger::log( "Processing refund callback for order {$order_number}." );
 					$this->complete_refund( $confirmation_id, $data );
 					break;
 				default:
 					$status = $data['PaymentType'];
-					Qliro_One_Logger::log( "Unhandled callback for order ${order_number}. Callback type: ${status}" );
+					Qliro_One_Logger::log( "Unhandled callback for order {$order_number}. Callback type: {$status}" );
 					break;
 			}
 		}
@@ -65,20 +66,24 @@ class Qliro_One_Callbacks {
 	 */
 	public function checkout_push_cb() {
 		$body            = file_get_contents( 'php://input' );
-		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_STRING );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Checkout Callback recieved: ${body}." );
+		Qliro_One_Logger::log( "Checkout Callback recieved: {$body}." );
 
 		if ( isset( $data['Status'] ) ) {
 			switch ( $data['Status'] ) {
 				case 'Completed':
-					Qliro_One_Logger::log( "Scheduling completed checkout callback for order with confirmation_id ${confirmation_id}." );
+					Qliro_One_Logger::log( "Scheduling completed checkout callback for order with confirmation_id {$confirmation_id}." );
 					as_schedule_single_action( time() + 30, 'qliro_complete_checkout', array( $confirmation_id ) );
 					break;
 				case 'Refused':
-					Qliro_One_Logger::log( "Scheduling refused callback for order with confirmation_id ${confirmation_id}." );
+					Qliro_One_Logger::log( "Scheduling refused callback for order with confirmation_id {$confirmation_id}." );
 					as_schedule_single_action( time() + 30, 'qliro_fail_checkout', array( $confirmation_id ) );
+					break;
+				case 'OnHold':
+					Qliro_One_Logger::log( "Scheduling onhold callback for order with confirmation_id {$confirmation_id}." );
+					as_schedule_single_action( time() + 30, 'qliro_onhold_checkout', array( $confirmation_id ) );
 					break;
 				default:
 					Qliro_One_Logger::log( "Unknown Qliro One checkout callback status: {$data['Status']}" );
@@ -191,7 +196,7 @@ class Qliro_One_Callbacks {
 	}
 
 	/**
-	 * Process the successful callback from the checkout push.
+	 * Process the failed callback from the checkout push.
 	 *
 	 * @param string $confirmation_id The confirmation ID generated in the create call.
 	 * @return void
@@ -205,6 +210,24 @@ class Qliro_One_Callbacks {
 		}
 
 		$order->update_status( 'failed', __( 'The Qliro one order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->save();
+	}
+
+	/**
+	 * Process the onhold callback from the checkout push.
+	 *
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
+	 * @return void
+	 */
+	public function onhold_checkout( $confirmation_id ) {
+		$order = $this->get_woocommerce_order( $confirmation_id );
+
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when failing the checkout" );
+			return;
+		}
+
+		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-checkout-for-woocommerce' ) );
 		$order->save();
 	}
 

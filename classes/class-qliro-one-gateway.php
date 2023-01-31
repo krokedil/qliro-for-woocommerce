@@ -107,8 +107,11 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$order          = wc_get_order( $order_id );
 		// Check if the order has been confirmed already.
 		if ( ! empty( $order->get_date_paid() ) ) {
-			qliro_confirm_order( $order );
-			Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
+			$result = qliro_confirm_order( $order );
+
+			if( $result ) {
+				Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
+			}
 		}
 
 		if ( $qliro_order && ! is_wp_error( $qliro_order ) ) {

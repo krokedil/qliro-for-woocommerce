@@ -4,8 +4,8 @@
 }
 
 /* Checkout design */
-.qliro-one-selected textarea[name="order_comments"] { 
-    resize: vertical; 
+.qliro-one-selected textarea[name="order_comments"] {
+    resize: vertical;
 }
 
 /* Storefront light */
@@ -29,7 +29,7 @@
 .qliro-two-column-left-sf .woocommerce-checkout-review-order-table thead {
     display: none;
 }
-.qliro-two-column-left-sf .woocommerce-checkout-review-order-table:not( .has-background ) th, 
+.qliro-two-column-left-sf .woocommerce-checkout-review-order-table:not( .has-background ) th,
 .qliro-two-column-left-sf .woocommerce-checkout-review-order-table:not( .has-background ) tbody td {
     background-color: #fdfdfd;
 }
@@ -50,14 +50,14 @@
 
     .qliro-two-column-right #qliro-one-wrapper {
         display: grid;
-        grid-template-columns: 4fr 6fr;	
+        grid-template-columns: 4fr 6fr;
         grid-column-gap: 70px;
     }
 
     .qliro-two-column-left #qliro-one-wrapper,
     .qliro-two-column-left-sf #qliro-one-wrapper {
         display: grid;
-        grid-template-columns: 6fr 4fr;	
+        grid-template-columns: 6fr 4fr;
         grid-column-gap: 70px;
     }
 
@@ -70,4 +70,8 @@
     .qliro-two-column-left-sf #qliro-one-iframe {
         order: 1;
     }
+}
+
+#qliro-one-wrapper #order_review {
+    width: 100%;
 }

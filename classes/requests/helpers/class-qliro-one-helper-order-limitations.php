@@ -46,7 +46,7 @@ class Qliro_One_Helper_Order_Limitations {
 		}
 
 		if ( 0 !== $minimum_age ) {
-			$body['MinimumAge'] = $minimum_age;
+			$body['MinimumCustomerAge'] = (int)$minimum_age;
 		}
 
 		return $body;

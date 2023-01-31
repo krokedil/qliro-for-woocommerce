@@ -31,5 +31,4 @@ class Qliro_One_Request_Get_Order extends Qliro_One_Request_Get {
 		$order_id = $this->arguments['order_id'];
 		return $this->get_api_url_base() . 'checkout/merchantapi/orders/' . $order_id;
 	}
-
 }

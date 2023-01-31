@@ -23,7 +23,7 @@ class Qliro_One_Confirmation {
 	 * @return void
 	 */
 	public function confirm_order() {
-		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_page', FILTER_SANITIZE_STRING );
+		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_page', FILTER_SANITIZE_SPECIAL_CHARS );
 
 		if ( empty( $confirmation_id ) ) {
 			return;
@@ -39,9 +39,12 @@ class Qliro_One_Confirmation {
 
 		qliro_one_unset_sessions();
 
-		qliro_confirm_order( $order );
-		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		Qliro_One_Logger::log( "Order $order_id confirmed on the confirmation page. Qliro Order ID: $qliro_order_id." );
+		$result = qliro_confirm_order( $order );
+
+		if( $result ) {
+			$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+			Qliro_One_Logger::log( "Order $order_id confirmed on the confirmation page. Qliro Order ID: $qliro_order_id." );
+		}
 
 		header( 'Location:' . $order->get_checkout_order_received_url() );
 		exit;
