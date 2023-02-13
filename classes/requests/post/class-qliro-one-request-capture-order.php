@@ -38,9 +38,15 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		$order_id               = $this->arguments['order_id'];
-		$payment_transaction_id = get_post_meta( $order_id, '_payment_transaction_id', true );
-		$order_data             = new Qliro_One_Helper_Order();
-		$this->qliro_order_id   = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$payment_transaction_id = get_post_meta( $order_id, '_qliro_payment_transaction_id', true );
+
+		// Check if the transaction id is empty. If it is we need to get it from the old transaction id meta.
+		if ( empty( $payment_transaction_id ) ) {
+			$payment_transaction_id = get_post_meta( $order_id, '_payment_transaction_id', true );
+		}
+
+		$order_data           = new Qliro_One_Helper_Order();
+		$this->qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
 
 
 		$body = array(

@@ -170,7 +170,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = wc_get_order( $order_id );
-		update_post_meta( $order_id, '_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
+		update_post_meta( $order_id, '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
 		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
 
 		return true;
