@@ -28,8 +28,7 @@ class Qliro_One_Request_Admin_Get_Order extends Qliro_One_Request_Get {
 	 * @return string
 	 */
 	protected function get_request_url() {
-		$order_id = $this->arguments['order_id'];
-		return $this->get_api_url_base() . 'checkout/adminapi/v2/orders/' . $order_id;
+		return $this->get_api_url_base() . 'checkout/adminapi/v2/orders/' . $this->qliro_order_id;
 	}
 
 }
