@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.02.13    - version 0.5.0 =
+* Feature       - Added support for Table Rate Shipping plugin.
+* Fix           - Fixed an issue caused by relying on the WooCommece cart hash if we should update an order to Qliro or not. This caused issues with anything that did not change the totals or the contents of the cart.
+* Fix           - Fixed so the Qliro order id is logged with each request, making log parsing easier.
+* Enhancement   - The Qliro HTML snippet is now stripped from the request logs.
+* Enhancement   - Add order note to WooCommerce orders when a Qliro order has been placed that contain the Qliro order id.
+
 = 2023.01.31    - version 0.4.0 =
 * Feature       - Added support for OnHold callbacks from Qliro.
 * Tweak         - Minor change to style to make the order review take up the space its allowed to take up

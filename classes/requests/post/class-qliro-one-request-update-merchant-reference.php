@@ -37,16 +37,16 @@ class Qliro_One_Update_Merchant_Reference extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-		$order_id       = $this->arguments['order_id'];
-		$order          = wc_get_order( $order_id );
-		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$order_data     = new Qliro_One_Helper_Order();
-		$request_id     = $order_data->generate_request_id();
+		$order_id             = $this->arguments['order_id'];
+		$order                = wc_get_order( $order_id );
+		$this->qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$order_data           = new Qliro_One_Helper_Order();
+		$request_id           = $order_data->generate_request_id();
 
 		return array(
 			'RequestId'            => $request_id,
 			'MerchantApiKey'       => $this->get_qliro_key(),
-			'OrderId'              => $qliro_order_id,
+			'OrderId'              => $this->qliro_order_id,
 			'NewMerchantReference' => $order->get_order_number(),
 		);
 	}

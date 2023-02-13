@@ -39,26 +39,19 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
-		// todo temp merchant ref. save merchant ref to the session.
-		$mer_ref = null;
-		$session = WC()->session;
+		$mer_ref       = null;
+		$session       = WC()->session;
 
 		$billing_country = WC()->checkout()->get_value( 'billing_country' );
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
-		// todo if order is null do the else part.
-
-		// merchant reference.
+		// Merchant reference.
 		if ( $session->get( 'qliro_one_merchant_reference' ) ) {
 			$mer_ref = $session->get( 'qliro_one_merchant_reference' );
 		} else {
 			$mer_ref = uniqid( 'q1' );
 			$session->set( 'qliro_one_merchant_reference', $mer_ref );
 		}
-
-		// todo check if billing_country is null.
-
-		// todo save country to the session.
 
 		$body = array(
 			'MerchantReference'                    => $mer_ref,

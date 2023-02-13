@@ -55,6 +55,11 @@ abstract class Qliro_One_Request {
 	 */
 	public function __construct( $arguments = array() ) {
 		$this->arguments = $arguments;
+
+		if( $arguments['qliro_order_id'] ?? false ) {
+			$this->qliro_order_id = $arguments['qliro_order_id'];
+		}
+
 		$this->load_settings();
 	}
 
@@ -190,8 +195,10 @@ abstract class Qliro_One_Request {
 		$method   = $this->method;
 		$title    = "{$this->log_title} - URL: {$request_url}";
 		$code     = wp_remote_retrieve_response_code( $response );
-		$order_id = $response['OrderID'] ?? null;
-		$log      = Qliro_One_Logger::format_log( $order_id, $method, $title, $request_args, $response, $code, $request_url );
+		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		$qliro_order_id = $this->qliro_order_id ?? $response_body['OrderId'] ?? null; // Get the qliro order id if its set, else get it from the response body if possible. Else set it to null.
+		$log      = Qliro_One_Logger::format_log( $qliro_order_id, $method, $title, $request_args, $response, $code, $request_url );
 		Qliro_One_Logger::log( $log );
 	}
 

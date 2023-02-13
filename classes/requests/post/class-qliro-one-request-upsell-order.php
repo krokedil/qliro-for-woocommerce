@@ -42,6 +42,8 @@ class Qliro_One_Request_Upsell_Order extends Qliro_One_Request_Post {
 		$order             = wc_get_order( $order_id );
 		$upsell_request_id = $this->arguments['upsell_request_id'];
 
+		$this->qliro_order_id = $order->get_transaction_id(); // TODO: Test if this can use the meta data _qliro_one_order_id like all other requests.
+
 		$body = array(
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'RequestId'      => $upsell_request_id,

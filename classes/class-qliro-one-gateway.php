@@ -69,13 +69,17 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		// try to get qliro order id from wc session.
+		// Try to get qliro order id from wc session.
 		$qliro_order_id           = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
 		$qliro_merchant_reference = WC()->session->get( 'qliro_one_merchant_reference' );
+		$chosen_shipping_method   = WC()->session->get( 'chosen_shipping_methods', null );
 		update_post_meta( $order_id, '_qliro_one_order_id', $qliro_order_id );
 		update_post_meta( $order_id, '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		update_post_meta( $order_id, '_qliro_one_merchant_reference', $qliro_merchant_reference );
+		// We need to save the shipping reference to the order as well, since table rate shipping can add a 3rd param to the instance id which is not saved to the order.
+		update_post_meta( $order_id, '_qliro_one_shipping_reference', $chosen_shipping_method[0] );
+
 
 		return array(
 			'result' => 'success',
@@ -166,7 +170,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = wc_get_order( $order_id );
-		update_post_meta( $order_id, '_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
+		update_post_meta( $order_id, '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
 		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
 
 		return true;

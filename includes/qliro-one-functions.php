@@ -135,8 +135,9 @@ function qliro_one_wc_show_another_gateway_button() {
 function qliro_confirm_order( $order ) {
 	// Check if the order has been confirmed already.
 	if ( ! empty( $order->get_date_paid() ) ) {
-		return;
+		return false;
 	}
+
 	$order_id       = $order->get_id();
 	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
 
@@ -161,11 +162,14 @@ function qliro_confirm_order( $order ) {
 	}
 
 	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
-		update_post_meta( $order_id, '_payment_transaction_id', $response['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] );
+		update_post_meta( $order_id, '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
+		$order->add_order_note( __( 'Qliro One order successfully placed. ( Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ' )' );
 	}
 
 	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+	$note           = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+
+	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
 
 	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );

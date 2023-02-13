@@ -100,11 +100,11 @@ class Qliro_One_Checkout {
 		}
 
 		// Check if the cart hash has been changed since last update.
-		$cart_hash  = WC()->cart->get_cart_hash();
+		$hash       = $this->calculate_hash();
 		$saved_hash = WC()->session->get( 'qliro_one_last_update_hash' );
 
 		// If they are the same, return.
-		if ( $cart_hash === $saved_hash ) {
+		if ( $hash === $saved_hash ) {
 			return;
 		}
 
@@ -114,6 +114,19 @@ class Qliro_One_Checkout {
 			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
 		}
 
-		$saved_hash = WC()->session->set( 'qliro_one_last_update_hash', $cart_hash );
+		WC()->session->set( 'qliro_one_last_update_hash', $hash );
+	}
+
+	public function calculate_hash() {
+		// Get values to use for the combined hash calculation.
+		$total            = array_sum( WC()->cart->get_totals() );
+		$billing_address  = WC()->customer->get_billing();
+		$shipping_address = WC()->customer->get_shipping();
+		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
+
+		// Calculate a hash from the values.
+		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method ) ) );
+
+		return $hash;
 	}
 } new Qliro_One_Checkout();
