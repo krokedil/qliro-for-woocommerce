@@ -34,5 +34,11 @@
             "requires": "5.9.0",
             "tested": "6.1.1",
             "upgrade_notice": ""
+      },
+      "0.5.0": {
+            "description": "<ul><li>Feature - Added support for Table Rate Shipping plugin.</li><li>Fix - Fixed an issue caused by relying on the WooCommece cart hash if we should update an order to Qliro or not. This caused issues with anything that did not change the totals or the contents of the cart.</li><li>Fix - Fixed so the Qliro order id is logged with each request, making log parsing easier.</li><li>Enhancement - The Qliro HTML snippet is now stripped from the request logs.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.1.1",
+            "upgrade_notice": ""
       }
 }
