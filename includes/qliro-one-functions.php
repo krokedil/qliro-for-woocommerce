@@ -135,7 +135,7 @@ function qliro_one_wc_show_another_gateway_button() {
 function qliro_confirm_order( $order ) {
 	// Check if the order has been confirmed already.
 	if ( ! empty( $order->get_date_paid() ) ) {
-		return;
+		return false;
 	}
 
 	$order_id       = $order->get_id();
@@ -167,7 +167,7 @@ function qliro_confirm_order( $order ) {
 	}
 
 	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-	$note           = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $order_id ) );
+	$note           = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
