@@ -171,7 +171,11 @@ class Qliro_One_Helper_Order {
 				$reference = $product->get_id();
 			}
 		} elseif ( 'shipping' === $order_item->get_type() ) {
-			$reference = $order_item->get_method_id() . ':' . $order_item->get_instance_id();
+			// We need to get any potential shipping reference from the order if possible.
+			$shipping_reference = get_post_meta( $order_item->get_order_id(), '_qliro_one_shipping_reference', true );
+
+			// If the shipping reference is an empty value, use the method id and instance id.
+			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
 		} else {
 			$reference = $order_item->get_id();
 		}
