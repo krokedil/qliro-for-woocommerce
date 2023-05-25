@@ -57,13 +57,12 @@ class Qliro_One_Helper_Shipping_Methods {
 					$options['Descriptions'] = array_slice( $description, 0, 3 );
 				}
 
-				// The category name is not predefined, however, we've limited it to HOME DELIVERY and PICKUP. Accordingly, Qliro will display the category name on the checkout as-is. For this reason, we replace the underscore with a space.
-				$category_display_name = isset( $method_settings['categoryDisplayName'] ) ? $method_settings['categoryDisplayName'] : 'none';
+				$category_display_name = isset( $method_settings['category_display_name'] ) ? $method_settings['category_display_name'] : 'none';
 				if ( 'none' !== $category_display_name ) {
-					$options['CategoryDisplayName'] = str_replace( '_', ' ', $category_display_name );
+					$options['CategoryDisplayName'] = $category_display_name;
 				}
 
-				$label_display_name = isset( $method_settings['labelDisplayName'] ) ? $method_settings['labelDisplayName'] : 'none';
+				$label_display_name = isset( $method_settings['label_display_name'] ) ? $method_settings['label_display_name'] : 'none';
 				if ( 'none' !== $label_display_name ) {
 					$options['LabelDisplayName'] = $label_display_name;
 				}
@@ -71,11 +70,6 @@ class Qliro_One_Helper_Shipping_Methods {
 				$brand = isset( $method_settings['brand'] ) ? $method_settings['brand'] : 'none';
 				if ( 'none' !== $brand ) {
 					$options['Brand'] = $brand;
-				}
-
-				$eco_friendly = isset( $method_settings['isEcoFriendly'] ) ? $method_settings['isEcoFriendly'] : 'no';
-				if ( 'no' !== $eco_friendly ) {
-					$options['IsEcoFriendly'] = true;
 				}
 
 				$option_labels = array();
