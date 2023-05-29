@@ -290,6 +290,76 @@ class Qliro_One_Fields {
 				'default'     => '',
 				'desc_tip'    => true,
 			),
+			'banner_widget_section'                      => array(
+				'title' => __( 'Banner widget', 'qliro-one-for-woocommerce' ),
+				'type'  => 'title',
+			),
+			'banner_widget_enabled'                      => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Enable banner widget', 'qliro-one-for-woocommerce' ),
+			),
+			'banner_widget_placement_location'           => array(
+				'title'   => __( 'Banner widget placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'4'  => __( 'Above Title', 'qliro-one-for-woocommerce' ),
+					'7'  => __( 'Between Title and Price', 'qliro-one-for-woocommerce' ),
+					'15' => __( 'Between Price and Excerpt', 'qliro-one-for-woocommerce' ),
+					'25' => __( 'Between Excerpt and Add to cart button', 'qliro-one-for-woocommerce' ),
+					'35' => __( 'Between Add to cart button and Product meta', 'qliro-one-for-woocommerce' ),
+					'45' => __( 'Between Product meta and Product sharing buttons', 'qliro-one-for-woocommerce' ),
+					'55' => __( 'After Product sharing-buttons', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => '15',
+				'desc'    => __( 'Select where to display the widget in your product pages.', 'qliro-one-for-woocommerce' ),
+			),
+			'banner_widget_data_method'                  => array(
+				'type'        => 'select',
+				'default'     => 'campaign',
+				'title'       => __( 'Payment method', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'The payment method to be presented in the banner . ', 'woocommerce' ),
+				'options'     => array(
+					'campaign'     => __( 'Campaign', 'qliro-one-for-woocommerce' ),
+					'invoice'      => __( 'Invoice', 'qliro-one-for-woocommerce' ),
+					'part_payment' => __( 'Part payment', 'qliro-one-for-woocommerce' ),
+				),
+			),
+			'banner_widget_data_shadow'                  => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Display with a Qliro style shadow', 'qliro-one-for-woocommerce' ),
+			),
+
+			'payment_widget_section'                     => array(
+				'title' => __( 'Payment widget', 'qliro-one-for-woocommerce' ),
+				'type'  => 'title',
+			),
+			'payment_widget_enabled'                     => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Enable payment widget', 'qliro-one-for-woocommerce' ),
+			),
+			'payment_widget_placement_location'          => array(
+				'title'   => __( 'Payment widget placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'4'  => __( 'Above Title', 'qliro-one-for-woocommerce' ),
+					'7'  => __( 'Between Title and Price', 'qliro-one-for-woocommerce' ),
+					'15' => __( 'Between Price and Excerpt', 'qliro-one-for-woocommerce' ),
+					'25' => __( 'Between Excerpt and Add to cart button', 'qliro-one-for-woocommerce' ),
+					'35' => __( 'Between Add to cart button and Product meta', 'qliro-one-for-woocommerce' ),
+					'45' => __( 'Between Product meta and Product sharing buttons', 'qliro-one-for-woocommerce' ),
+					'55' => __( 'After Product sharing-buttons', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => '15',
+				'desc'    => __( 'Select where to display the widget in your product pages.', 'qliro-one-for-woocommerce' ),
+			),
+			'payment_widget_data_condensed'              => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Display in a condensed (shorter) style', 'qliro-one-for-woocommerce' ),
+			),
 		);
 
 		// Add upsell section if plugin is installed.
@@ -301,7 +371,7 @@ class Qliro_One_Fields {
 			$settings['upsell_percentage'] = array(
 				'title'             => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
 				'type'              => 'number',
-				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment. The default is 10%, if you want higher than that you will first need to contact Qliro.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment . The default is 10 % , if you want higher than that you will first need to contact Qliro . ', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'default'           => 10,

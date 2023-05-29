@@ -200,6 +200,9 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-payment-widget.php';
+
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
