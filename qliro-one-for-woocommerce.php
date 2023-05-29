@@ -173,6 +173,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-checkout.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-callbacks.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method-instance.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
