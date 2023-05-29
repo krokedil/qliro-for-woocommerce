@@ -99,7 +99,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price( $cart_item ) {
-		return round( ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'], 2 );
+		return floatval( wc_format_decimal( round( ( $cart_item['line_total'] + $cart_item['line_tax'] ) / $cart_item['quantity'], 2 ), min( wc_get_price_decimals(), 2 ) ) );
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Qliro_One_Helper_Cart {
 	 * @return float
 	 */
 	public static function get_product_unit_price_no_tax( $cart_item ) {
-		return round( ( $cart_item['line_total'] ) / $cart_item['quantity'], 2 );
+		return floatval( wc_format_decimal( round( ( $cart_item['line_total'] ) / $cart_item['quantity'], 2 ), min( wc_get_price_decimals(), 2 ) ) );
 	}
 
 	/**
@@ -153,8 +153,8 @@ class Qliro_One_Helper_Cart {
 			'MerchantReference'  => 'fee:' . $fee->id,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
-			'PricePerItemIncVat' => $fee->amount + $fee->tax,
-			'PricePerItemExVat'  => $fee->amount,
+			'PricePerItemIncVat' => floatval( wc_format_decimal( $fee->amount + $fee->tax, min( wc_get_price_decimals(), 2 ) ) ),
+			'PricePerItemExVat'  => floatval( wc_format_decimal( $fee->amount, min( wc_get_price_decimals(), 2 ) ) ),
 		);
 
 	}
@@ -176,8 +176,8 @@ class Qliro_One_Helper_Cart {
 							'MerchantReference'  => $method->id,
 							'Description'        => $method->label,
 							'Quantity'           => 1,
-							'PricePerItemIncVat' => WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(),
-							'PricePerItemExVat'  => WC()->cart->get_shipping_total(),
+							'PricePerItemIncVat' => floatval( wc_format_decimal( WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(), min( wc_get_price_decimals(), 2 ) ) ),
+							'PricePerItemExVat'  => floatval( wc_format_decimal( WC()->cart->get_shipping_total(), min( wc_get_price_decimals(), 2 ) ) ),
 						);
 					}
 
