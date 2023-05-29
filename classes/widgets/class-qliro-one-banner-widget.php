@@ -21,27 +21,18 @@ class Qliro_One_Banner_Widget {
 	private $settings;
 
 	/**
-	 * The payment method to be presented in the banner.
-	 *
-	 * @var string
-	 */
-	private $data_method;
-
-	/**
-	 * The Qliro style shadow.
-	 *
-	 * @var string
-	 */
-	private $data_shadow;
-
-
-	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->settings    = get_option( 'woocommerce_qliro_one_settings' );
-		$this->data_method = $this->settings['banner_widget_data_method'];
-		$this->data_shadow = $this->settings['banner_widget_data_shadow'];
+		$this->settings = wp_parse_args(
+			get_option( 'woocommerce_qliro_one_settings', array() ),
+			array(
+				'banner_widget_enabled'            => 'no',
+				'banner_widget_data_shadow'        => 'no',
+				'banner_widget_data_method'        => 'campaign',
+				'banner_widget_placement_location' => '15',
+			)
+		);
 
 		// Hooks.
 		add_shortcode(
@@ -112,7 +103,7 @@ class Qliro_One_Banner_Widget {
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
 
-		$widget = '<div class="qliro-banner" data-method="' . esc_attr( $this->data_method ) . '" data-color="mint"' . ( 'yes' === $this->data_shadow ? ' data-shadow' : '' ) . '></div>';
+		$widget = '<div class="qliro-banner" data-method="' . esc_attr( $this->settings['banner_widget_data_method'] ) . '" data-color="mint"' . ( 'yes' === $this->settings['banner_widget_data_shadow'] ? ' data-shadow' : '' ) . '></div>';
 
 		return $widget;
 	}

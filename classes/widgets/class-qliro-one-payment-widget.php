@@ -24,7 +24,14 @@ class Qliro_One_Payment_Widget {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
+		$this->settings = wp_parse_args(
+			get_option( 'woocommerce_qliro_one_settings', array() ),
+			array(
+				'payment_widget_enabled'            => 'no',
+				'payment_widget_condensed'          => 'no',
+				'payment_widget_placement_location' => '15',
+			)
+		);
 
 		// Hooks.
 		add_shortcode(
@@ -59,9 +66,11 @@ class Qliro_One_Payment_Widget {
 
 	/**
 	 * Add banner widget via shortcode.
+	 *
+	 * @param array $atts The attributes for the shortcode.
 	 */
-	public function qliro_one_payment_widget() {
-		return $this->get_payment_widget_html();
+	public function qliro_one_payment_widget( $atts ) {
+		return $this->get_payment_widget_html( $atts );
 	}
 
 	/**
@@ -82,17 +91,25 @@ class Qliro_One_Payment_Widget {
 
 	/**
 	 * HTML for banner widget.
+	 *
+	 * @param array|null $atts The attributes for the shortcode. null if called via hook.
 	 */
-	private function get_payment_widget_html() {
-		$product = wc_get_product();
-		if ( ! $product ) {
-			return;
-		}
+	private function get_payment_widget_html( $atts = null ) {
 
-		if ( $product->is_type( 'variable' ) ) {
-			$price = $product->get_variation_price( 'min' );
+		// If called via shortcode, use the amount attribute.
+		if ( isset( $atts['amount'] ) ) {
+			$price = max( 0, $atts['amount'] );
 		} else {
-			$price = wc_get_price_to_display( $product );
+			$product = wc_get_product();
+			if ( ! $product ) {
+				return;
+			}
+
+			if ( $product->is_type( 'variable' ) ) {
+				$price = $product->get_variation_price( 'min' );
+			} else {
+				$price = wc_get_price_to_display( $product );
+			}
 		}
 
 		$price = round( $price * 100 );
