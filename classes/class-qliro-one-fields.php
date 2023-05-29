@@ -279,6 +279,17 @@ class Qliro_One_Fields {
 				'default'     => 'one_column_checkout',
 				'desc_tip'    => false,
 			),
+			'shipping_settings'                          => array(
+				'title' => 'Shipping',
+				'type'  => 'title',
+			),
+			'shipping_additional_header'                 => array(
+				'title'       => __( 'Shipping additional header', 'qliro-one-for-woocommerce' ),
+				'type'        => 'text',
+				'description' => __( "An introductory text to be displayed in the payment form's shipping section. Up to 300 characters.", 'qliro-one-for-woocommerce' ),
+				'default'     => '',
+				'desc_tip'    => true,
+			),
 		);
 
 		// Add upsell section if plugin is installed.
