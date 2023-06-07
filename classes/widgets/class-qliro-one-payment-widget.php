@@ -112,8 +112,6 @@ class Qliro_One_Payment_Widget {
 			}
 		}
 
-		$price = round( $price * 100 );
-
 		$data_condensed = 'yes' === $this->settings['payment_widget_condensed'] ? ' data-condensed' : '';
 
 		$lang = substr( get_locale(), 0, 2 );
