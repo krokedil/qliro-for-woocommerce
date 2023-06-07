@@ -47,12 +47,16 @@ class Qliro_One_Banner_Widget {
 			add_action( 'woocommerce_single_product_summary', array( $this, 'banner_widget_hook' ), 1 );
 		}
 
+		if ( 'yes' === $this->settings['banner_widget_cart_enabled'] ) {
+			add_action( $this->settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals', array( $this, 'add_banner_widget_to_page' ), apply_filters( 'qliro_banner_widget_cart_priority', 5 ) );
+		}
+
 	}
 
 	/**
 	 * Add banner widget via hook.
 	 */
-	public function add_banner_widget_to_product_page() {
+	public function add_banner_widget_to_page() {
 		echo wp_kses(
 			$this->get_banner_widget_html(),
 			array(
@@ -83,7 +87,7 @@ class Qliro_One_Banner_Widget {
 			'woocommerce_single_product_summary',
 			array(
 				$this,
-				'add_banner_widget_to_product_page',
+				'add_banner_widget_to_page',
 			),
 			absint( $this->settings['banner_widget_placement_location'] )
 		);
