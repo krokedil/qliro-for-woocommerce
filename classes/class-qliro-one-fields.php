@@ -305,10 +305,10 @@ class Qliro_One_Fields {
 			'banner_widget_enabled'                      => array(
 				'type'    => 'checkbox',
 				'default' => 'no',
-				'title'   => __( 'Enable banner widget', 'qliro-one-for-woocommerce' ),
+				'title'   => __( 'Enable banner widget on product page', 'qliro-one-for-woocommerce' ),
 			),
 			'banner_widget_placement_location'           => array(
-				'title'   => __( 'Banner widget placement', 'qliro-one-for-woocommerce' ),
+				'title'   => __( 'Banner widget product page placement', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'options' => array(
 					'4'  => __( 'Above Title', 'qliro-one-for-woocommerce' ),
@@ -321,6 +321,24 @@ class Qliro_One_Fields {
 				),
 				'default' => '15',
 				'desc'    => __( 'Select where to display the widget in your product pages.', 'qliro-one-for-woocommerce' ),
+			),
+			'banner_widget_cart_enabled'                 => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Enable banner widget on cart page', 'qliro-one-for-woocommerce' ),
+			),
+			'banner_widget_cart_placement_location'      => array(
+				'title'   => __( 'Banner widget cart placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'woocommerce_cart_collaterals'    => __( 'Above cross-sell', 'qliro-one-for-woocommerce' ),
+					'woocommerce_before_cart_totals'  => __( 'Above cart totals', 'qliro-one-for-woocommerce' ),
+					'woocommerce_proceed_to_checkout' => __( 'Between cart totals and proceed to checkout button', 'qliro-one-for-woocommerce' ),
+					'woocommerce_after_cart_totals'   => __( 'After proceed to checkout button', 'qliro-one-for-woocommerce' ),
+					'woocommerce_after_cart'          => __( 'Bottom of the page', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => 'woocommerce_cart_collaterals',
+				'desc'    => __( 'Select where to display the widget on the cart page.', 'qliro-one-for-woocommerce' ),
 			),
 			'banner_widget_data_method'                  => array(
 				'type'        => 'select',
