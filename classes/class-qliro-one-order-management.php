@@ -75,7 +75,11 @@ class Qliro_One_Order_Management {
 
 		$response = QOC_WC()->api->capture_qliro_one_order( $order_id );
 		if ( is_wp_error( $response ) ) {
-			$order->update_status( 'on-hold', __( 'The order failed to be captured with Qliro. Please try again.', 'qliro-one-for-woocommerce' ) );
+			$prefix        = 'Evaluation, ';
+			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
+
+			// translators: %s is the error message from Qliro.
+			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
 			$order->save();
 			return;
 		}
@@ -104,7 +108,11 @@ class Qliro_One_Order_Management {
 
 		$response = QOC_WC()->api->cancel_qliro_one_order( $order_id );
 		if ( is_wp_error( $response ) ) {
-			$order->update_status( 'on-hold', __( 'The order failed to be cancelled with Qliro. Please try again.', 'qliro-one-for-woocommerce' ) );
+			$prefix        = 'Evaluation, ';
+			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
+
+			// translators: %s is the error message from Qliro.
+			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be cancelled with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
 			$order->save();
 			return;
 		}
@@ -125,30 +133,21 @@ class Qliro_One_Order_Management {
 	 *
 	 * @param int   $order_id The WooCommerce order ID.
 	 * @param float $amount The refund amount.
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
 	public function refund( $order_id, $amount ) {
-		$query_args = array(
-			'fields'         => 'id=>parent',
-			'post_type'      => 'shop_order_refund',
-			'post_status'    => 'any',
-			'posts_per_page' => - 1,
-		);
-
-		$refunds         = get_posts( $query_args );
-		$refund_order_id = array_search( $order_id, $refunds, true );
-		if ( is_array( $refund_order_id ) ) {
-			foreach ( $refund_order_id as $key => $value ) {
-				$refund_order_id = $value;
-				break;
-			}
-		}
-		$order = wc_get_order( $order_id );
+		$order           = wc_get_order( $order_id );
+		$refund_order_id = $order->get_refunds()[0]->get_id();
 
 		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
 
 		if ( is_wp_error( $response ) ) {
-			$order->add_order_note( __( 'Failed to refund the order with Qliro One', 'qliro-one-for-woocommerce' ) );
+			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );
+
+			// translators: %s is the error message from Qliro (if any).
+			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : '' );
+			$order->add_order_note( $note );
+			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
 		}
 		// translators: refund amount, refund id.

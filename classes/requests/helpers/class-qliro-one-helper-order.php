@@ -92,7 +92,7 @@ class Qliro_One_Helper_Order {
 			$return_lines[] = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
-				'Quantity'           => wc_format_decimal( abs( $order_line['Quantity'] ), min( wc_get_price_decimals(), 2 ) ),
+				'Quantity'           => abs( $order_line['Quantity'] ),
 				'PricePerItemIncVat' => wc_format_decimal( abs( $order_line['PricePerItemIncVat'] ), min( wc_get_price_decimals(), 2 ) ),
 			);
 		}
