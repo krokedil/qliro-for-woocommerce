@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Requires PHP: 7.0
 WC requires at least: 4.0.0
-WC tested up to: 7.3.0
-Stable tag: 0.4.0
+WC tested up to: 7.8.0
+Stable tag: 0.6.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,15 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.06.08    - version 0.6.0 =
+* Feature       - You now have the ability to personalize the shipping section on the checkout page by using shipping labels. You can find these settings by navigating to WooCommerce → Shipping → Select a shipping method.
+* Feature       - You now have the option to show a brief introductory text in the shipping section of the payment form on the checkout page.
+* Feature       - You now have the convenience of placing a payment widget on the product page or any other location using the shortcode 'qliro_one_payment_widget'.
+* Feature       - You are now able to place a banner widget on the shopping cart page or anywhere else using the shortcode 'qliro_one_banner_widget'.
+* Fix           - We've resolved an issue where a JavaScript error would be triggered if a customer fails to identify themselves using the PNO after having used it for identification previously.
+* Tweak         - We have reorganized the settings page of Qliro One to streamline navigation and improve user experience.
+* Enhancement   - We have incorporated more detailed error messages to provide better clarity in case an order management action is unsuccessful.
+
 = 2023.02.13    - version 0.5.0 =
 * Feature       - Added support for Table Rate Shipping plugin.
 * Fix           - Fixed an issue caused by relying on the WooCommece cart hash if we should update an order to Qliro or not. This caused issues with anything that did not change the totals or the contents of the cart.

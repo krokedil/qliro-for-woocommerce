@@ -40,5 +40,11 @@
             "requires": "5.9.0",
             "tested": "6.1.1",
             "upgrade_notice": ""
+      },
+      "0.6.0": {
+            "description": "<ul><li>Feature - You now have the ability to personalize the shipping section on the checkout page by using shipping labels. You can find these settings by navigating to WooCommerce → Shipping → Select a shipping method.</li><li>Feature - You now have the option to show a brief introductory text in the shipping section of the payment form on the checkout page.</li><li>Feature - You now have the convenience of placing a payment widget on the product page or any other location using the shortcode 'qliro_one_payment_widget'.</li><li>You are now able to place a banner widget on the shopping cart page or anywhere else using the shortcode 'qliro_one_banner_widget'.</li><li>Fix - We've resolved an issue where a JavaScript error would be triggered if a customer fails to identify themselves using the PNO after having used it for identification previously.</li><li>Tweak - We have reorganized the settings page of Qliro One to streamline navigation and improve user experience.</li><li>Enhancement - We have incorporated more detailed error messages to provide better clarity in case an order management action is unsuccessful.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.2.2",
+            "upgrade_notice": ""
       }
 }
