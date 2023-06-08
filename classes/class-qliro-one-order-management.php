@@ -128,22 +128,8 @@ class Qliro_One_Order_Management {
 	 * @return bool
 	 */
 	public function refund( $order_id, $amount ) {
-		$query_args = array(
-			'fields'         => 'id=>parent',
-			'post_type'      => 'shop_order_refund',
-			'post_status'    => 'any',
-			'posts_per_page' => - 1,
-		);
-
-		$refunds         = get_posts( $query_args );
-		$refund_order_id = array_search( $order_id, $refunds, true );
-		if ( is_array( $refund_order_id ) ) {
-			foreach ( $refund_order_id as $key => $value ) {
-				$refund_order_id = $value;
-				break;
-			}
-		}
-		$order = wc_get_order( $order_id );
+		$order           = wc_get_order( $order_id );
+		$refund_order_id = $order->get_refunds()[0]->get_id();
 
 		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
 
