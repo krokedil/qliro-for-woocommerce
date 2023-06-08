@@ -163,7 +163,7 @@ function qliro_confirm_order( $order ) {
 
 	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
 		update_post_meta( $order_id, '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. ( Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ' )' );
+		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
