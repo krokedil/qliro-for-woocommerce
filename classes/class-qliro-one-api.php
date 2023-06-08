@@ -88,7 +88,7 @@ class Qliro_One_API {
 	 * Capture a Qliro one order.
 	 *
 	 * @param int $order_id Order ID.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function capture_qliro_one_order( $order_id ) {
 		$request  = new Qliro_One_Capture_Order( array( 'order_id' => $order_id ) );
@@ -100,7 +100,7 @@ class Qliro_One_API {
 	 * Refund a Qliro one order.
 	 *
 	 * @param int $order_id Order ID.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function refund_qliro_one_order( $order_id, $refund_order_id ) {
 		$request  = new Qliro_One_Request_Return_Items(

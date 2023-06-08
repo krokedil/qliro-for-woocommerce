@@ -93,7 +93,7 @@ class Qliro_One_Helper_Order {
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
 				'Quantity'           => abs( $order_line['Quantity'] ),
-				'PricePerItemIncVat' => abs( $order_line['PricePerItemIncVat'] ),
+				'PricePerItemIncVat' => wc_format_decimal( abs( $order_line['PricePerItemIncVat'] ), min( wc_get_price_decimals(), 2 ) ),
 			);
 		}
 
@@ -187,10 +187,10 @@ class Qliro_One_Helper_Order {
 	 * Get the unit price.
 	 *
 	 * @param WC_Order_Item_Product|WC_Order_Item_Shipping|WC_Order_Item_Fee $order_item The WooCommerce order item.
-	 * @return int
+	 * @return string
 	 */
 	public static function get_unit_price_inc_vat( $order_item ) {
-		$unit_price = round( ( $order_item->get_total() + $order_item->get_total_tax() ) / $order_item->get_quantity(), 2 );
+		$unit_price = wc_format_decimal( ( $order_item->get_total() + $order_item->get_total_tax() ) / $order_item->get_quantity(), min( wc_get_price_decimals(), 2 ) );
 		return $unit_price;
 	}
 
@@ -198,10 +198,10 @@ class Qliro_One_Helper_Order {
 	 * Get the unit price.
 	 *
 	 * @param WC_Order_Item_Product|WC_Order_Item_Shipping|WC_Order_Item_Fee $order_item The WooCommerce order item.
-	 * @return int
+	 * @return string
 	 */
 	public static function get_unit_price_ex_vat( $order_item ) {
-		$unit_price = round( ( $order_item->get_total() ) / $order_item->get_quantity(), 2 );
+		$unit_price = wc_format_decimal( ( $order_item->get_total() ) / $order_item->get_quantity(), min( wc_get_price_decimals(), 2 ) );
 		return $unit_price;
 	}
 

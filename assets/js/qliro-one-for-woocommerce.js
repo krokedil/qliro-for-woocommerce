@@ -185,12 +185,16 @@ jQuery( function( $ ) {
 		},
 		updateAddress: function (customerInfo) {
 			var email = (('email' in customerInfo) ? customerInfo.email : null);
-			var phone  = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
-			var firstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
-			var lastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
-			var street = (('street' in customerInfo.address) ? street : null);
-			var postalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
-			var city = (('city' in customerInfo.address) ? customerInfo.address.city : null);
+			var phone = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
+
+			var firstName, lastName, street, postalCode, city;
+			if (customerInfo.address) {
+				firstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
+				lastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
+				street = (('street' in customerInfo.address) ? street : null);
+				postalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
+				city = (('city' in customerInfo.address) ? customerInfo.address.city : null);
+			}
 			
 			// Check if shipping fields or billing fields are to be used.
 			if( ! $('#ship-to-different-address-checkbox').is(":checked") ) {

@@ -43,6 +43,11 @@ class Qliro_One_Request_Update_Order extends Qliro_One_Request_Put {
 			'AvailableShippingMethods' => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
 		);
 
+		$additional_header = $this->settings['shipping_additional_header'];
+		if ( ! empty( $additional_header ) ) {
+			$body['shippingadditionalheader'] = trim( mb_substr( $additional_header, 0, 300 ) );
+		}
+
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }
