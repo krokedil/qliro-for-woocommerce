@@ -142,9 +142,10 @@ class Qliro_One_Order_Management {
 		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
 
 		if ( is_wp_error( $response ) ) {
-			preg_match( '/Message:\s*(.+)/', $response->get_error_message(), $matches );
+			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );
+
 			// translators: %s is the error message from Qliro (if any).
-			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( $matches[1] ) : '' );
+			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : '' );
 			$order->add_order_note( $note );
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
