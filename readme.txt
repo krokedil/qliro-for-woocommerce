@@ -7,7 +7,7 @@ Tested up to: 6.2.2
 Requires PHP: 7.0
 WC requires at least: 4.0.0
 WC tested up to: 7.8.0
-Stable tag: 0.6.0
+Stable tag: 0.6.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.06.09    - version 0.6.1 =
+* Fix           - Fixed an undefined index notice that happened due to missing a default value.
+
 = 2023.06.08    - version 0.6.0 =
 * Feature       - You now have the ability to personalize the shipping section on the checkout page by using shipping labels. You can find these settings by navigating to WooCommerce → Shipping → Select a shipping method.
 * Feature       - You now have the option to show a brief introductory text in the shipping section of the payment form on the checkout page.
