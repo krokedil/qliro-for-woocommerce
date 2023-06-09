@@ -46,5 +46,11 @@
             "requires": "5.9.0",
             "tested": "6.2.2",
             "upgrade_notice": ""
+      },
+      "0.6.1": {
+            "description": "<ul><li>Fix - Fixed an undefined index notice that happened due to missing a default value.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.2.2",
+            "upgrade_notice": ""
       }
 }
