@@ -27,10 +27,12 @@ class Qliro_One_Banner_Widget {
 		$this->settings = wp_parse_args(
 			get_option( 'woocommerce_qliro_one_settings', array() ),
 			array(
-				'banner_widget_enabled'            => 'no',
-				'banner_widget_data_shadow'        => 'no',
-				'banner_widget_data_method'        => 'campaign',
-				'banner_widget_placement_location' => '15',
+				'banner_widget_enabled'                 => 'no',
+				'banner_widget_data_shadow'             => 'no',
+				'banner_widget_data_method'             => 'campaign',
+				'banner_widget_placement_location'      => '15',
+				'banner_widget_cart_enabled'            => 'no',
+				'banner_widget_cart_placement_location' => 'woocommerce_cart_collaterals',
 			)
 		);
 
