@@ -52,5 +52,11 @@
             "requires": "5.9.0",
             "tested": "6.2.2",
             "upgrade_notice": ""
+      },
+      "0.6.2": {
+            "description": "<ul><li>Fix - Updated our JavaScript to no longer use the deprecated getOrderUpdates function from Qliros JavaScript API, but rather use the onOrderUpdated function. Resolves issues with postcode based shipping.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.2.2",
+            "upgrade_notice": ""
       }
 }

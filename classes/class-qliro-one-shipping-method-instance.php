@@ -38,6 +38,7 @@ class Qliro_One_Shipping_Method_Instance {
 				'title'       => __( 'Qliro shipping settings', 'qliro-one-for-woocommerce' ),
 				'type'        => 'title',
 				'description' => __( 'These settings let you customize the shipping methods in Qliro One checkout, and only apply when you show the shipping options in the iframe. ', 'qliro-one-for-woocommerce' ),
+				'default'     => '',
 			),
 			'description'             => array(
 				'title'       => __( 'Description', 'qliro-one-for-woocommerce' ),
