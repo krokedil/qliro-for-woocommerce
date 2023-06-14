@@ -58,5 +58,11 @@
             "requires": "5.9.0",
             "tested": "6.2.2",
             "upgrade_notice": ""
+      },
+      "0.6.3": {
+            "description": "<ul><li>Fix - Fixed issues with Table Rate shipping caused by settings introduced in 0.6.0. If you personalized the shipping section using the feature added in 0.6.0 you may need to reapply those settings.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.2.2",
+            "upgrade_notice": ""
       }
 }
