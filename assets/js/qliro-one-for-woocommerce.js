@@ -44,14 +44,15 @@ jQuery( function( $ ) {
 			$('#qliro-one-iframe').append( qliroOneParams.iframeSnippet );
 		},
 		updateCheckout: function() {
-			if(window.q1 !== undefined) {
+			if (window.q1 !== undefined) {
 				window.q1.lock();
 			}
 		},
 		updatedCheckout: function() {
-			if(window.q1 !== undefined) {
-				window.q1.getOrderUpdates();
-				window.q1.unlock();
+			if (window.q1 !== undefined) {
+				window.q1.onOrderUpdated(function (order) {
+					window.q1.unlock();
+				});
 			}
 		},
 		shippingMethodChanged: function (shipping) {
@@ -195,9 +196,9 @@ jQuery( function( $ ) {
 				postalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
 				city = (('city' in customerInfo.address) ? customerInfo.address.city : null);
 			}
-			
+
 			// Check if shipping fields or billing fields are to be used.
-			if( ! $('#ship-to-different-address-checkbox').is(":checked") ) {
+			if (!$('#ship-to-different-address-checkbox').is(":checked")) {
 				(email !== null && email !== undefined) ? $('#billing_email').val(email) : null;
 				(phone !== null && phone !== undefined) ? $('#billing_phone').val(phone) : null;
 				(firstName !== null && firstName !== undefined) ? $('#billing_first_name').val(firstName) : null;
@@ -343,7 +344,7 @@ jQuery( function( $ ) {
 		},
 		/**
 		 * Logs the message to the klarna checkout log in WooCommerce.
-		 * @param {string} message 
+		 * @param {string} message
 		 */
 		logToFile: function( message ) {
 			$.ajax(
