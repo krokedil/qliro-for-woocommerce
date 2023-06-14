@@ -47,7 +47,7 @@ class Qliro_One_Shipping_Method_Instance {
 				'description' => __( 'These settings let you customize the shipping methods in Qliro One checkout, and only apply when you show the shipping options in the iframe. ', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 			),
-			'description'             => array(
+			'qliro_description'             => array(
 				'title'       => __( 'Description', 'qliro-one-for-woocommerce' ),
 				'type'        => 'textarea',
 				'default'     => '',
@@ -55,7 +55,7 @@ class Qliro_One_Shipping_Method_Instance {
 				'placeholder' => __( 'Maximum length is 100 characters per line and up to 3 lines.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
 			),
-			'category_display_name'   => array(
+			'qliro_category_display_name'   => array(
 				'title'   => __( 'Category Display Name', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'default' => 'none',
@@ -65,7 +65,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'PICKUP'        => __( 'Pickup Point', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'label_display_name'      => array(
+			'qliro_label_display_name'      => array(
 				'title'   => __( 'Label Display Name', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'default' => 'none',
@@ -76,7 +76,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'free'    => __( 'Free', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'brand'                   => array(
+			'qliro_brand'                   => array(
 				'title'       => __( 'Brand', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -105,7 +105,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'Ups'         => 'UPS',
 				),
 			),
-			'option_label_eco'        => array(
+			'qliro_option_label_eco'        => array(
 				'title'       => __( 'ECO friendly label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -118,7 +118,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_express'    => array(
+			'qliro_option_label_express'    => array(
 				'title'       => __( 'Express shipping label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -131,7 +131,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_evening'    => array(
+			'qliro_option_label_evening'    => array(
 				'title'       => __( 'Evening delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -144,7 +144,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_morning'    => array(
+			'qliro_option_label_morning'    => array(
 				'title'       => __( 'Morning delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -157,7 +157,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_home'       => array(
+			'qliro_option_label_home'       => array(
 				'title'       => __( 'Home delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -169,7 +169,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_box'        => array(
+			'qliro_option_label_box'        => array(
 				'title'       => __( 'Box delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -181,7 +181,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'option_label_pickup'     => array(
+			'qliro_option_label_pickup'     => array(
 				'title'       => __( 'Pickup label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
