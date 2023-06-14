@@ -40,7 +40,7 @@ class Qliro_One_Helper_Shipping_Methods {
 					'PriceExVat'        => $method_price_ex_tax,
 				);
 
-				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings" );
+				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
 				$description     = isset( $method_settings['description'] ) ? $method_settings['description'] : '';
 				if ( ! empty( $description ) ) {
 					// The trim is necessary to remove invisible characters (even when printed) such as "\n", otherwise, we'll end up with "empty" elements. The array_filter without arguments removes empty lines.
