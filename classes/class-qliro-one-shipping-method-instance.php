@@ -18,6 +18,13 @@ class Qliro_One_Shipping_Method_Instance {
 	 * Constructor.
 	 */
 	public function __construct() {
+		add_action( 'init', array( $this, 'register_shipping_instance_settings' ) );
+	}
+
+	/**
+	 * Register the shipping instance settings for Qliro for each shipping method that exists.
+	 */
+	public function register_shipping_instance_settings() {
 		$available_shipping_methods = WC()->shipping()->load_shipping_methods();
 		foreach ( $available_shipping_methods as $shipping_method ) {
 			$shipping_method_id = $shipping_method->id;
