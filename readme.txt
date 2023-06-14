@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.06.14    - version 0.6.2 =
+* Fix           - Updated our JavaScript to no longer use the deprecated getOrderUpdates function from Qliros JavaScript API, but rather use the onOrderUpdated function. Resolves issues with postcode based shipping.
+
 = 2023.06.09    - version 0.6.1 =
 * Fix           - Fixed an undefined index notice that happened due to missing a default value.
 
