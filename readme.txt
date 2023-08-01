@@ -7,7 +7,7 @@ Tested up to: 6.2.2
 Requires PHP: 7.0
 WC requires at least: 4.0.0
 WC tested up to: 7.9.0
-Stable tag: 0.6.3
+Stable tag: 0.6.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.08.01    - version 0.6.4 =
+* Fix           - Resolved an issue where the currency was incorrectly fetched from the store settings instead of the available order currency. This issue led to discrepancies when using a multi-currency plugin.
+
 = 2023.06.14    - version 0.6.3 =
 * Fix           - Fixed issues with Table Rate shipping caused by shipping settings introduced in 0.6.0. If you personalized the shipping section using the feature added in 0.6.0 you may need to reapply those settings.
 
