@@ -40,14 +40,15 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 		$order_data             = new Qliro_One_Helper_Order();
 		$request_id             = $order_data->generate_request_id();
 		$order_id               = $this->arguments['order_id'];
+		$order                  = wc_get_order( $order_id );
 		$refund_order_id        = $this->arguments['refund_order_id'];
-		$this->qliro_order_id   = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$capture_transaction_id = get_post_meta( $order_id, '_qliro_order_captured', true );
+		$this->qliro_order_id   = $order->get_meta( '_qliro_one_order_id' );
+		$capture_transaction_id = $order->get_meta( '_qliro_order_captured' );
 		return array(
 			'RequestId'      => $request_id,
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'OrderId'        => $this->qliro_order_id,
-			'Currency'       => get_woocommerce_currency(),
+			'Currency'       => $order->get_currency(),
 			'Returns'        => array(
 				array(
 					'PaymentTransactionId' => $capture_transaction_id,
