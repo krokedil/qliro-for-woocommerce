@@ -1,14 +1,15 @@
 <?php
-use Krokedil\Shipping\PickupPoints;
 /**
  * Helper class to get availabe shipping methods for the Qliro One order.
  *
  * @package Qliro_One/Classes/Requests/Helpers
  */
 
- /**
-  * Helper class to get available shipping methods for the Qliro One order.
-  */
+use Krokedil\Shipping\PickupPoints;
+
+/**
+ * Helper class to get available shipping methods for the Qliro One order.
+ */
 class Qliro_One_Helper_Shipping_Methods {
 	/**
 	 * Get the available shipping methods.
