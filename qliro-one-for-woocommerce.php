@@ -165,6 +165,11 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				return;
 			}
 
+			// Include the autoloader from composer. If it fails, we'll just return and not load the plugin. But an admin notice will show to the merchant.
+			if ( ! self::init_composer() ) {
+				return;
+			}
+
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-assets.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
@@ -210,7 +215,52 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+		}
 
+		/**
+		 * Initialize composers autoloader. If it does not exist, bail and show an error.
+		 * @return mixed
+		 */
+		private static function init_composer() {
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/autoload.php';
+
+			if ( ! is_readable( $autoloader ) ) {
+				self::missing_autoloader();
+				return false;
+			}
+
+			$autoloader_result = require $autoloader;
+			if ( ! $autoloader_result ) {
+				return false;
+			}
+
+			return $autoloader_result;
+		}
+
+		/**
+		 * Print error message for missing autoloader.
+		 *
+		 * @return void
+		 */
+		private static function missing_autoloader() {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( // phpcs:ignore
+					esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' )
+				);
+			}
+
+			add_action(
+				'admin_notices',
+				function () {
+					?>
+																													<div class="notice notice-error">
+																														<p>
+																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ) ?>
+																														</p>
+																													</div>
+																												<?php
+				}
+			);
 		}
 
 		/**
@@ -233,7 +283,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function check_version() {
-			require QLIRO_WC_PLUGIN_PATH . '/kernl-update-checker/kernl-update-checker.php';
 			$update_checker = Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
