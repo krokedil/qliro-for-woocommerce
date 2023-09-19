@@ -1,6 +1,7 @@
 {
     "name": "krokedil/qliro-one-for-woocommerce",
     "description": "Qliro One Checkout For WooCommerce",
+    "type": "wordpress-plugin",
     "authors": [
         {
             "name": "Krokedil AB",
@@ -8,19 +9,41 @@
         }
     ],
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.4",
+        "krokedil/shipping": "^1.0",
+        "kernl/kernl-update-checker": "dev-master"
     },
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-        "phpcompatibility/phpcompatibility-wp": "^2.1",
-        "squizlabs/php_codesniffer": "^3.5.4",
-        "wp-coding-standards/wpcs": "^2.2.1"
+        "php-stubs/woocommerce-stubs": "dev-master",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "object-calisthenics/phpcs-calisthenics-rules": "*",
+        "phpcompatibility/php-compatibility": "*",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "wp-coding-standards/wpcs": "*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/shipping.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "scripts": {
         "lint": "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
         "lint-fix": "./vendor/bin/phpcbf --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
         "install-codestandards": [
-            "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+            "PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+        ],
+        "post-install-cmd": [
+            "@install-codestandards"
         ]
     }
 }
