@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "krokedil/shipping": "^1.0",
+        "krokedil/shipping": "dev-develop-selected-pickup-point as 1.1",
         "kernl/kernl-update-checker": "dev-master"
     },
     "require-dev": {

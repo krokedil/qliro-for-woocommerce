@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fdc447d0b639d4efc5762031f651722f",
+    "content-hash": "a5ac038fb338dd630c1f0c8416e32ef0",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "1.0.0",
+            "version": "dev-develop-selected-pickup-point",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "6032f270d0471e67f138a893094db6f60d33da1e"
+                "reference": "637586d6d633afc5cb1fece96ee3587166c27ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/6032f270d0471e67f138a893094db6f60d33da1e",
-                "reference": "6032f270d0471e67f138a893094db6f60d33da1e",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/637586d6d633afc5cb1fece96ee3587166c27ed6",
+                "reference": "637586d6d633afc5cb1fece96ee3587166c27ed6",
                 "shasum": ""
             },
             "require": {
@@ -103,10 +103,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/1.0.0",
+                "source": "https://github.com/krokedil/shipping/tree/develop-selected-pickup-point",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2023-09-19T09:03:36+00:00"
+            "time": "2023-10-03T14:52:44+00:00"
         }
     ],
     "packages-dev": [
@@ -116,12 +116,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "a7027aad54c539e752e3d6873d4119f97fd845e7"
+                "reference": "b49fdb59dd34284bd347435a959f2093894d1ac8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/a7027aad54c539e752e3d6873d4119f97fd845e7",
-                "reference": "a7027aad54c539e752e3d6873d4119f97fd845e7",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/b49fdb59dd34284bd347435a959f2093894d1ac8",
+                "reference": "b49fdb59dd34284bd347435a959f2093894d1ac8",
                 "shasum": ""
             },
             "require": {
@@ -154,9 +154,9 @@
             "authors": [
                 {
                     "name": "Franck Nijhof",
-                    "email": "franck.nijhof@dealerdirect.com",
-                    "homepage": "http://www.frenck.nl",
-                    "role": "Developer / IT Manager"
+                    "email": "opensource@frenck.dev",
+                    "homepage": "https://frenck.dev",
+                    "role": "Open source developer"
                 },
                 {
                     "name": "Contributors",
@@ -164,7 +164,6 @@
                 }
             ],
             "description": "PHP_CodeSniffer Standards Composer Installer Plugin",
-            "homepage": "http://www.dealerdirect.com",
             "keywords": [
                 "PHPCodeSniffer",
                 "PHP_CodeSniffer",
@@ -187,7 +186,7 @@
                 "issues": "https://github.com/PHPCSStandards/composer-installer/issues",
                 "source": "https://github.com/PHPCSStandards/composer-installer"
             },
-            "time": "2023-09-17T19:23:33+00:00"
+            "time": "2023-09-22T07:48:18+00:00"
         },
         {
             "name": "nette/utils",
@@ -540,12 +539,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "96bce8776a2a83c6bad3a7e1ae75b2598b660197"
+                "reference": "1708fc935ceeff3ec57dca5b1b18666403e53fba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/96bce8776a2a83c6bad3a7e1ae75b2598b660197",
-                "reference": "96bce8776a2a83c6bad3a7e1ae75b2598b660197",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/1708fc935ceeff3ec57dca5b1b18666403e53fba",
+                "reference": "1708fc935ceeff3ec57dca5b1b18666403e53fba",
                 "shasum": ""
             },
             "require": {
@@ -588,7 +587,7 @@
                 "issues": "https://github.com/PHPCompatibility/PHPCompatibilityWP/issues",
                 "source": "https://github.com/PHPCompatibility/PHPCompatibilityWP"
             },
-            "time": "2023-08-18T03:16:17+00:00"
+            "time": "2023-09-27T11:31:40+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -814,9 +813,17 @@
             "time": "2020-05-13T23:57:56+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "krokedil/shipping",
+            "version": "dev-develop-selected-pickup-point",
+            "alias": "1.1",
+            "alias_normalized": "1.1.0.0"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "krokedil/shipping": 20,
         "kernl/kernl-update-checker": 20,
         "php-stubs/woocommerce-stubs": 20
     },
