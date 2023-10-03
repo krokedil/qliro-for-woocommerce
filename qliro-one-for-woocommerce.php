@@ -1,4 +1,6 @@
-<?php // phpcs:ignore
+<?php
+use Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use Krokedil\Shipping\PickupPoints; // phpcs:ignore
 /**
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
@@ -67,6 +69,20 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @var Qliro_One_API
 		 */
 		public $api;
+
+		/**
+		 * Reference to order management class.
+		 *
+		 * @var Qliro_One_Order_Management
+		 */
+		public $order_management;
+
+		/**
+		 * Pickup points service.
+		 *
+		 * @var PickupPointServiceInterface $pickup_points_service
+		 */
+		private $pickup_points_service;
 
 		/**
 		 * Returns the *Singleton* instance of this class.
@@ -212,6 +228,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
 
+			$this->pickup_points_service = new PickupPoints();
+
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
@@ -275,6 +293,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$methods[] = 'Qliro_One_Gateway';
 
 			return $methods;
+		}
+
+		/**
+		 * Get the pickup points service.
+		 *
+		 * @return PickupPointServiceInterface
+		 */
+		public function pickup_points_service() {
+			return $this->pickup_points_service;
 		}
 
 		/**

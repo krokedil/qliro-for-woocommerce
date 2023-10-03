@@ -105,11 +105,11 @@ class Qliro_One_Helper_Shipping_Methods {
 	 */
 	private static function set_pickup_points( &$options, $method ) {
 		// Get any pickup points for the shipping method.
-		$pickup_points = new PickupPoints( $method );
+		$pickup_points = QOC_WC()->pickup_points_service()->get_pickup_points_from_rate( $method ) ?? array();
 
 		// Loop through the pickup points and set the pickup point data for the Qliro api.
 		$secondary_options = array();
-		foreach ( $pickup_points->get_pickup_points() as $pickup_point ) {
+		foreach ( $pickup_points as $pickup_point ) {
 			// If the id is empty, skip.
 			if ( empty( $pickup_point->get_id() ) ) {
 				continue;

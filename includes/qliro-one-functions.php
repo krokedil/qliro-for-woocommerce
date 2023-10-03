@@ -1,4 +1,6 @@
 <?php
+use Krokedil\Shipping\PickupPoints;
+
 /**
  * Functions file for the plugin.
  *
