@@ -70,6 +70,16 @@
                 "reference": "637586d6d633afc5cb1fece96ee3587166c27ed6",
                 "shasum": ""
             },
+            "archive": {
+                "exclude": [
+                    "tests/*",
+                    "phpunit.xml",
+                    ".phpdoc-md",
+                    "composer-lock.json",
+                    ".gitignore",
+                    ".gitattributes"
+                ]
+            },
             "require": {
                 "php": "~7.4 || ~8.0"
             },
@@ -85,16 +95,6 @@
                 "psr-4": {
                     "Krokedil\\Shipping\\": "src/"
                 }
-            },
-            "archive": {
-                "exclude": [
-                    "tests/*",
-                    "phpunit.xml",
-                    ".phpdoc-md",
-                    "composer-lock.json",
-                    ".gitignore",
-                    ".gitattributes"
-                ]
             },
             "scripts": {
                 "phpunit": [
@@ -836,5 +836,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.0.0"
 }
