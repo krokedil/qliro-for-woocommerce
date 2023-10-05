@@ -100,7 +100,7 @@ class Qliro_One_Helper_Shipping_Methods {
 	/**
 	 * Set pickup points for the shipping method.
 	 *
-	 * @param array $options The shipping options for the Qliro api.
+	 * @param array            $options The shipping options for the Qliro api.
 	 * @param WC_Shipping_Rate $method The shipping method rate from WooCommerce.
 	 */
 	private static function set_pickup_points( &$options, $method ) {
@@ -119,9 +119,9 @@ class Qliro_One_Helper_Shipping_Methods {
 				'MerchantReference' => $pickup_point->get_id(),
 				'DisplayName'       => $pickup_point->get_name(),
 				'Descriptions'      => array( // Can max have 3 lines.
-					$pickup_point->get_address()->get_street(),
-					$pickup_point->get_address()->get_postcode() . ' ' . $pickup_point->get_address()->get_city(),
-					$pickup_point->get_description(),
+					trim( mb_substr( $pickup_point->get_address()->get_street(), 0, 100 ) ),
+					trim( mb_substr( $pickup_point->get_address()->get_postcode() . ' ' . $pickup_point->get_address()->get_city(), 0, 100 ) ),
+					trim( mb_substr( $pickup_point->get_description(), 0, 100 ) ),
 				),
 				'Coordinates'       => array(
 					'Lat' => $pickup_point->get_coordinates()->get_latitude(),
