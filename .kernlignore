@@ -20,3 +20,4 @@ composer.lock
 readme.dev.txt
 webpack.config.js
 yarn.lock
+readme.dev.md

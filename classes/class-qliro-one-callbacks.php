@@ -10,6 +10,13 @@
  */
 class Qliro_One_Callbacks {
 	/**
+	 * The settings for the plugin.
+	 *
+	 * @var array
+	 */
+	private $settings;
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {

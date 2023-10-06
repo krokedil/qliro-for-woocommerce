@@ -11,6 +11,27 @@
 class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 	/**
+	 * If test mode is enabled.
+	 *
+	 * @var bool
+	 */
+	public $testmode;
+
+	/**
+	 * If logging is enabled.
+	 *
+	 * @var bool
+	 */
+	public $logging;
+
+	/**
+	 * The upsell percentage.
+	 *
+	 * @var int
+	 */
+	public $upsell_percentage;
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
