@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5ac038fb338dd630c1f0c8416e32ef0",
+    "content-hash": "1f258ed86d14a1b0f40a7ee0dbb19b25",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,27 +58,17 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "dev-develop-selected-pickup-point",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "637586d6d633afc5cb1fece96ee3587166c27ed6"
+                "reference": "d13cc51f218f711f794bd97ac2929edb8c9bf3cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/637586d6d633afc5cb1fece96ee3587166c27ed6",
-                "reference": "637586d6d633afc5cb1fece96ee3587166c27ed6",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/d13cc51f218f711f794bd97ac2929edb8c9bf3cd",
+                "reference": "d13cc51f218f711f794bd97ac2929edb8c9bf3cd",
                 "shasum": ""
-            },
-            "archive": {
-                "exclude": [
-                    "tests/*",
-                    "phpunit.xml",
-                    ".phpdoc-md",
-                    "composer-lock.json",
-                    ".gitignore",
-                    ".gitattributes"
-                ]
             },
             "require": {
                 "php": "~7.4 || ~8.0"
@@ -96,6 +86,16 @@
                     "Krokedil\\Shipping\\": "src/"
                 }
             },
+            "archive": {
+                "exclude": [
+                    "tests/*",
+                    "phpunit.xml",
+                    ".phpdoc-md",
+                    "composer-lock.json",
+                    ".gitignore",
+                    ".gitattributes"
+                ]
+            },
             "scripts": {
                 "phpunit": [
                     "phpunit --bootstrap vendor/autoload.php tests/"
@@ -103,10 +103,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/develop-selected-pickup-point",
+                "source": "https://github.com/krokedil/shipping/tree/2.0.0",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2023-10-03T14:52:44+00:00"
+            "time": "2023-10-06T07:25:14+00:00"
         }
     ],
     "packages-dev": [
@@ -813,17 +813,9 @@
             "time": "2020-05-13T23:57:56+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "krokedil/shipping",
-            "version": "dev-develop-selected-pickup-point",
-            "alias": "1.1",
-            "alias_normalized": "1.1.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "krokedil/shipping": 20,
         "kernl/kernl-update-checker": 20,
         "php-stubs/woocommerce-stubs": 20
     },
@@ -836,5 +828,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
