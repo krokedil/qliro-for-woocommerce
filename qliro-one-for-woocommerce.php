@@ -1,16 +1,18 @@
-<?php // phpcs:ignore
+<?php
+use Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use Krokedil\Shipping\PickupPoints; // phpcs:ignore
 /**
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 0.6.4
+ * Version: 1.0.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
- * WC requires at least: 4.0.0
- * WC tested up to: 7.9.0
+ * WC requires at least: 5.0.0
+ * WC tested up to: 8.2.0
  *
  * Copyright (c) 2021-2023 Krokedil
  *
@@ -35,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '0.6.4' );
+define( 'QLIRO_WC_VERSION', '1.0.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -67,6 +69,20 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @var Qliro_One_API
 		 */
 		public $api;
+
+		/**
+		 * Reference to order management class.
+		 *
+		 * @var Qliro_One_Order_Management
+		 */
+		public $order_management;
+
+		/**
+		 * Pickup points service.
+		 *
+		 * @var PickupPointServiceInterface $pickup_points_service
+		 */
+		private $pickup_points_service;
 
 		/**
 		 * Returns the *Singleton* instance of this class.
@@ -165,6 +181,11 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				return;
 			}
 
+			// Include the autoloader from composer. If it fails, we'll just return and not load the plugin. But an admin notice will show to the merchant.
+			if ( ! self::init_composer() ) {
+				return;
+			}
+
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-assets.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-fields.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-gateway.php';
@@ -207,10 +228,58 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
 
+			$this->pickup_points_service = new PickupPoints();
+
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+		}
 
+		/**
+		 * Initialize composers autoloader. If it does not exist, bail and show an error.
+		 *
+		 * @return mixed
+		 */
+		private static function init_composer() {
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/autoload.php';
+
+			if ( ! is_readable( $autoloader ) ) {
+				self::missing_autoloader();
+				return false;
+			}
+
+			$autoloader_result = require $autoloader;
+			if ( ! $autoloader_result ) {
+				return false;
+			}
+
+			return $autoloader_result;
+		}
+
+		/**
+		 * Print error message for missing autoloader.
+		 *
+		 * @return void
+		 */
+		private static function missing_autoloader() {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( // phpcs:ignore
+					esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' )
+				);
+			}
+
+			add_action(
+				'admin_notices',
+				function () {
+					?>
+																													<div class="notice notice-error">
+																														<p>
+																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+																														</p>
+																													</div>
+																												<?php
+				}
+			);
 		}
 
 		/**
@@ -228,12 +297,20 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		}
 
 		/**
+		 * Get the pickup points service.
+		 *
+		 * @return PickupPointServiceInterface
+		 */
+		public function pickup_points_service() {
+			return $this->pickup_points_service;
+		}
+
+		/**
 		 * Checks the plugin version.
 		 *
 		 * @return void
 		 */
 		public function check_version() {
-			require QLIRO_WC_PLUGIN_PATH . '/kernl-update-checker/kernl-update-checker.php';
 			$update_checker = Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,

@@ -1,4 +1,6 @@
 <?php
+use Krokedil\Shipping\PickupPoints;
+
 /**
  * Class for managing actions during the checkout process.
  *
@@ -16,6 +18,8 @@ class Qliro_One_Checkout {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_shipping_data_input' ) );
+		add_filter( 'woocommerce_shipping_packages', array( $this, 'maybe_set_selected_pickup_point' ) );
+
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'update_shipping_method' ), 1 );
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'update_qliro_order' ), 9999 );
 	}
@@ -129,4 +133,37 @@ class Qliro_One_Checkout {
 
 		return $hash;
 	}
-} new Qliro_One_Checkout();
+
+	/**
+	 * Maybe set the selected pickup point in the shipping method.
+	 *
+	 * @param array $packages The shipping packages.
+	 * @return array
+	 */
+	function maybe_set_selected_pickup_point( $packages ) {
+		$data            = get_transient( 'qoc_shipping_data_' . WC()->session->get( 'qliro_one_order_id' ) );
+		$selected_option = $data['secondaryOption'] ?? '';
+
+		if ( empty( $selected_option ) ) {
+			return $packages;
+		}
+
+		// Loop each package.
+		foreach ( $packages as $package ) {
+			// Loop each rate in the package.
+			foreach ( $package['rates'] as $rate ) {
+				/** @var WC_Shipping_Rate $rate */
+				$pickup_point = QOC_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
+
+				if ( ! $pickup_point ) {
+					continue;
+				}
+
+				QOC_WC()->pickup_points_service()->save_selected_pickup_point_to_rate( $rate, $pickup_point );
+			}
+		}
+
+		return $packages;
+	}
+}
+new Qliro_One_Checkout();

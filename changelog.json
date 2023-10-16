@@ -70,5 +70,11 @@
             "requires": "5.9.0",
             "tested": "6.2.2",
             "upgrade_notice": ""
+      },
+      "1.0.0": {
+            "description": "<ul><li>Feature - Adds support for sending pickup points to Qliro when displaying shipping methods in the Qliro One checkout. Needs to be supported by the individual shipping method.</li><li>Enhancement - Improved logging related to events during checkout process, when customer places the order.</li><li>Enhancement - Improved logging related to order management & callbacks.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.2.2",
+            "upgrade_notice": ""
       }
 }

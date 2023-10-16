@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.2.2
-Requires PHP: 7.0
-WC requires at least: 4.0.0
-WC tested up to: 7.9.0
-Stable tag: 0.6.4
+Tested up to: 6.3.2
+Requires PHP: 7.4
+WC requires at least: 5.0.0
+WC tested up to: 8.2.0
+Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.10.16    - version 1.0.0 =
+* Feature       - Adds support for sending pickup points to Qliro when displaying shipping methods in the Qliro One checkout. Needs to be supported by the individual shipping method.
+* Enhancement   - Improved logging related to events during checkout process, when customer places the order.
+* Enhancement   - Improved logging related to order management & callbacks.
+
 = 2023.08.01    - version 0.6.4 =
 * Fix           - Resolved an issue where the currency was incorrectly fetched from the store settings instead of the available order currency. This issue led to discrepancies when using a multi-currency plugin.
 

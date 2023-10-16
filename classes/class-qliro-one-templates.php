@@ -21,6 +21,13 @@ class Qliro_One_Templates {
 	protected static $instance;
 
 	/**
+	 * Checkout layout setting.
+	 *
+	 * @var string
+	 */
+	protected $checkout_layout;
+
+	/**
 	 * Returns the *Singleton* instance of this class.
 	 *
 	 * @return self::$instance The *Singleton* instance.
@@ -61,7 +68,7 @@ class Qliro_One_Templates {
 	 */
 	public function override_template( $template, $template_name ) {
 		if ( is_checkout() ) {
-			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_STRING );
+			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			// Don't display Qliro One template if we have a cart that doesn't needs payment.
 			if ( apply_filters( 'qliro_one_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) ) {
 				if ( ! WC()->cart->needs_payment() ) {
