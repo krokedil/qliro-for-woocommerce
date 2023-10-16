@@ -19,7 +19,7 @@ tests/**/*
 tests
 
 yarn.lock
-.phpcs.xml.dist
+phpcs.xml.dist
 .travis.yml
 *.DS_Store
 gruntfile.js
