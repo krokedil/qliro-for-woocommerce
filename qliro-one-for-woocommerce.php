@@ -7,12 +7,12 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 0.6.4
+ * Version: 1.0.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
- * WC requires at least: 4.0.0
- * WC tested up to: 8.1.1
+ * WC requires at least: 5.0.0
+ * WC tested up to: 8.2.0
  *
  * Copyright (c) 2021-2023 Krokedil
  *
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '0.6.4' );
+define( 'QLIRO_WC_VERSION', '1.0.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -237,6 +237,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 		/**
 		 * Initialize composers autoloader. If it does not exist, bail and show an error.
+		 *
 		 * @return mixed
 		 */
 		private static function init_composer() {
@@ -273,7 +274,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 					?>
 																													<div class="notice notice-error">
 																														<p>
-																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ) ?>
+																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
 																														</p>
 																													</div>
 																												<?php
