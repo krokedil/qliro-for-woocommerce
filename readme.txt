@@ -24,7 +24,6 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Enhancement   - Improved logging related to events during checkout process, when customer places the order.
 * Enhancement   - Improved logging related to order management & callbacks.
 
-
 = 2023.08.01    - version 0.6.4 =
 * Fix           - Resolved an issue where the currency was incorrectly fetched from the store settings instead of the available order currency. This issue led to discrepancies when using a multi-currency plugin.
 
