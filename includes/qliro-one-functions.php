@@ -137,6 +137,8 @@ function qliro_one_wc_show_another_gateway_button() {
 function qliro_confirm_order( $order ) {
 	// Check if the order has been confirmed already.
 	if ( ! empty( $order->get_date_paid() ) ) {
+		// translators: %s - WooCommerce order number.
+		Qliro_One_Logger::log( sprintf( __( 'Aborting qliro_confirm_order function. WooCommerce order %s already confirmed.', 'qliro-one-for-woocommerce' ), $order->get_order_number() ) );
 		return false;
 	}
 
@@ -160,6 +162,9 @@ function qliro_confirm_order( $order ) {
 	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
 	if ( is_wp_error( $response ) ) {
+		// translators: %s - Response error message.
+		$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $response->get_error_message() );
+		$order->add_order_note( $note );
 		return false;
 	}
 
