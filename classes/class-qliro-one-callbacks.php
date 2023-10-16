@@ -192,6 +192,9 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function complete_checkout( $confirmation_id ) {
+
+		Qliro_One_Logger::log( "Execute completed checkout callback for order with confirmation_id {$confirmation_id}." );
+
 		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {
@@ -209,6 +212,9 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function fail_checkout( $confirmation_id ) {
+
+		Qliro_One_Logger::log( "Execute refused callback for order with confirmation_id {$confirmation_id}." );
+
 		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {
@@ -227,6 +233,9 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function onhold_checkout( $confirmation_id ) {
+
+		Qliro_One_Logger::log( "Execute onhold callback for order with confirmation_id {$confirmation_id}." );
+
 		$order = $this->get_woocommerce_order( $confirmation_id );
 
 		if ( empty( $order ) ) {

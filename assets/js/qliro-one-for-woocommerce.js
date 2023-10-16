@@ -223,6 +223,7 @@ jQuery( function( $ ) {
 			}
 		},
 		getQliroOneOrder: function (data, callback) {
+			qliroOneForWooCommerce.logToFile( 'onValidateOrder from Qliro triggered' );
 			$.ajax({
 				type: 'POST',
 				data: {
@@ -302,8 +303,9 @@ jQuery( function( $ ) {
 					console.log(data);
 					try {
 						if ('success' === data.result) {
-							callback({shouldProceed: true, errorMessage: ""});
 							console.log('submit order success', data);
+							qliroOneForWooCommerce.logToFile( 'Successfully placed order. Sending "shouldProceed: true" to Qliro.' );
+							callback({shouldProceed: true, errorMessage: ""});
 						} else {
 							throw 'Result failed';
 						}
