@@ -297,6 +297,7 @@ jQuery( function( $ ) {
 			$.ajax({
 				type: 'POST',
 				url: qliroOneParams.submitOrder,
+				timeout:  4500,
 				data: $('form.checkout').serialize(),
 				dataType: 'json',
 				success: function (data) {
@@ -306,7 +307,14 @@ jQuery( function( $ ) {
 							console.log('submit order success', data);
 							qliroOneForWooCommerce.logToFile( 'Successfully placed order. Sending "shouldProceed: true" to Qliro.' );
 							callback({shouldProceed: true, errorMessage: ""});
+
+							// Clear the interval.
+							clearInterval(qliroOneForWooCommerce.interval);
+							// Remove the timeout.
+							clearTimeout( qliroOneForWooCommerce.timeout );
+
 						} else {
+							console.log('submit order - missing success', data);
 							throw 'Result failed';
 						}
 					} catch (err) {
@@ -335,9 +343,15 @@ jQuery( function( $ ) {
 			});
 		},
 		failOrder: function( event, error_message, callback ) {
+
+			// Clear the interval.
+			clearInterval(qliroOneForWooCommerce.interval);
+			// Remove the timeout.
+			clearTimeout( qliroOneForWooCommerce.timeout );
+
 			callback({shouldProceed: false, errorMessage: error_message});
 
-			// Renable the form.
+			// Re-enable the form.
 			$( 'body' ).trigger( 'updated_checkout' );
 			var className = 'form.checkout';
 			$( qliroOneForWooCommerce.checkoutFormSelector ).removeClass( 'processing' );
