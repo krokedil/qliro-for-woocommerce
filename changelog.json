@@ -76,5 +76,11 @@
             "requires": "5.9.0",
             "tested": "6.2.2",
             "upgrade_notice": ""
+      },
+      "1.0.1": {
+            "description": "<ul><li>Tweak - Adds timer to allow max 4.5 seconds for order creation in Woo when customer completes purchase in Qliro One. If time limit exceeds, the purchase is denied. Avoids payments in Qliro where the order is missing in Woo.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.3.2",
+            "upgrade_notice": ""
       }
 }

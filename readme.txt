@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.3.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 8.2.0
-Stable tag: 1.0.0
+WC tested up to: 8.2.1
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2023.10.19    - version 1.0.1 =
+* Tweak         - Adds timer to allow max 4.5 seconds for order creation in Woo when customer completes purchase in Qliro One. If time limit exceeds, the purchase is denied. Avoids payments in Qliro where the order is missing in Woo.
+
 = 2023.10.16    - version 1.0.0 =
 * Feature       - Adds support for sending pickup points to Qliro when displaying shipping methods in the Qliro One checkout. Needs to be supported by the individual shipping method.
 * Enhancement   - Improved logging related to events during checkout process, when customer places the order.
