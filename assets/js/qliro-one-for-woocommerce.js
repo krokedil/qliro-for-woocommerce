@@ -38,7 +38,7 @@ jQuery( function( $ ) {
 		renderIframe: function() {
 			window.q1Ready = function(q1) {
 				q1.onCustomerInfoChanged(qliroOneForWooCommerce.updateAddress);
-				q1.onValidateOrder(qliroOneForWooCommerce.getQliroOneOrder);
+				q1.onValidateOrder(qliroOneForWooCommerce.placeWooOrder);
 				q1.onShippingMethodChanged(qliroOneForWooCommerce.shippingMethodChanged);
 			}
 			$('#qliro-one-iframe').append( qliroOneParams.iframeSnippet );
@@ -297,7 +297,6 @@ jQuery( function( $ ) {
 			$.ajax({
 				type: 'POST',
 				url: qliroOneParams.submitOrder,
-				timeout:  4500,
 				data: $('form.checkout').serialize(),
 				dataType: 'json',
 				success: function (data) {
@@ -308,8 +307,6 @@ jQuery( function( $ ) {
 							qliroOneForWooCommerce.logToFile( 'Successfully placed order. Sending "shouldProceed: true" to Qliro.' );
 							callback({shouldProceed: true, errorMessage: ""});
 
-							// Clear the interval.
-							clearInterval(qliroOneForWooCommerce.interval);
 							// Remove the timeout.
 							clearTimeout( qliroOneForWooCommerce.timeout );
 
@@ -344,8 +341,6 @@ jQuery( function( $ ) {
 		},
 		failOrder: function( event, error_message, callback ) {
 
-			// Clear the interval.
-			clearInterval(qliroOneForWooCommerce.interval);
 			// Remove the timeout.
 			clearTimeout( qliroOneForWooCommerce.timeout );
 
@@ -357,6 +352,16 @@ jQuery( function( $ ) {
 			$( qliroOneForWooCommerce.checkoutFormSelector ).removeClass( 'processing' );
 			$( qliroOneForWooCommerce.checkoutFormSelector ).unblock();
 			$( '.woocommerce-checkout-review-order-table' ).unblock();
+		},
+
+		placeWooOrder: function( data, callback ) {
+
+			qliroOneForWooCommerce.timeout = setTimeout( () => {
+				qliroOneForWooCommerce.failOrder( 'timeout-error', 'Timeout error', callback );
+			}, 4500 );
+
+			qliroOneForWooCommerce.getQliroOneOrder( data, callback );
+
 		},
 		/**
 		 * Logs the message to the klarna checkout log in WooCommerce.
