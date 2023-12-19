@@ -41,13 +41,13 @@ class Qliro_One_Shipping_Method_Instance {
 	 */
 	public function add_shipping_method_fields( $shipping_method_fields ) {
 		$settings_fields = array(
-			'qliro_shipping_settings' => array(
+			'qliro_shipping_settings'     => array(
 				'title'       => __( 'Qliro shipping settings', 'qliro-one-for-woocommerce' ),
 				'type'        => 'title',
 				'description' => __( 'These settings let you customize the shipping methods in Qliro One checkout, and only apply when you show the shipping options in the iframe. ', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 			),
-			'qliro_description'             => array(
+			'qliro_description'           => array(
 				'title'       => __( 'Description', 'qliro-one-for-woocommerce' ),
 				'type'        => 'textarea',
 				'default'     => '',
@@ -55,7 +55,43 @@ class Qliro_One_Shipping_Method_Instance {
 				'placeholder' => __( 'Maximum length is 100 characters per line and up to 3 lines.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
 			),
-			'qliro_category_display_name'   => array(
+			'qliro_delivery_date_start'   => array(
+				'title'   => __( 'Delivery start date', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'default' => 'none',
+				'options' => array(
+					'none' => __( 'None', 'qliro-one-for-woocommerce' ),
+					'1'    => __( 'Tomorrow', 'qliro-one-for-woocommerce' ),
+					'2'    => __( 'In 2 days', 'qliro-one-for-woocommerce' ),
+					'3'    => __( 'In 3 days', 'qliro-one-for-woocommerce' ),
+					'4'    => __( 'In 4 days', 'qliro-one-for-woocommerce' ),
+					'5'    => __( 'In 5 days', 'qliro-one-for-woocommerce' ),
+					'6'    => __( 'In 6 days', 'qliro-one-for-woocommerce' ),
+					'7'    => __( 'In 7 days', 'qliro-one-for-woocommerce' ),
+					'8'    => __( 'In 8 days', 'qliro-one-for-woocommerce' ),
+					'9'    => __( 'In 9 days', 'qliro-one-for-woocommerce' ),
+					'10'   => __( 'In 10 days', 'qliro-one-for-woocommerce' ),
+				),
+			),
+			'qliro_delivery_date_end'     => array(
+				'title'   => __( 'Delivery end date', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'default' => 'none',
+				'options' => array(
+					'none' => __( 'None', 'qliro-one-for-woocommerce' ),
+					'1'    => __( 'Tomorrow', 'qliro-one-for-woocommerce' ),
+					'2'    => __( 'In 2 days', 'qliro-one-for-woocommerce' ),
+					'3'    => __( 'In 3 days', 'qliro-one-for-woocommerce' ),
+					'4'    => __( 'In 4 days', 'qliro-one-for-woocommerce' ),
+					'5'    => __( 'In 5 days', 'qliro-one-for-woocommerce' ),
+					'6'    => __( 'In 6 days', 'qliro-one-for-woocommerce' ),
+					'7'    => __( 'In 7 days', 'qliro-one-for-woocommerce' ),
+					'8'    => __( 'In 8 days', 'qliro-one-for-woocommerce' ),
+					'9'    => __( 'In 9 days', 'qliro-one-for-woocommerce' ),
+					'10'   => __( 'In 10 days', 'qliro-one-for-woocommerce' ),
+				),
+			),
+			'qliro_category_display_name' => array(
 				'title'   => __( 'Category Display Name', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'default' => 'none',
@@ -65,7 +101,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'PICKUP'        => __( 'Pickup Point', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_label_display_name'      => array(
+			'qliro_label_display_name'    => array(
 				'title'   => __( 'Label Display Name', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'default' => 'none',
@@ -76,7 +112,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'free'    => __( 'Free', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_brand'                   => array(
+			'qliro_brand'                 => array(
 				'title'       => __( 'Brand', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -105,7 +141,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'Ups'         => 'UPS',
 				),
 			),
-			'qliro_option_label_eco'        => array(
+			'qliro_option_label_eco'      => array(
 				'title'       => __( 'ECO friendly label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -118,7 +154,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_express'    => array(
+			'qliro_option_label_express'  => array(
 				'title'       => __( 'Express shipping label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -131,7 +167,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_evening'    => array(
+			'qliro_option_label_evening'  => array(
 				'title'       => __( 'Evening delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -144,7 +180,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_morning'    => array(
+			'qliro_option_label_morning'  => array(
 				'title'       => __( 'Morning delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -157,7 +193,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_home'       => array(
+			'qliro_option_label_home'     => array(
 				'title'       => __( 'Home delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -169,7 +205,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_box'        => array(
+			'qliro_option_label_box'      => array(
 				'title'       => __( 'Box delivery label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
@@ -181,7 +217,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
-			'qliro_option_label_pickup'     => array(
+			'qliro_option_label_pickup'   => array(
 				'title'       => __( 'Pickup label', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'default'     => 'none',
