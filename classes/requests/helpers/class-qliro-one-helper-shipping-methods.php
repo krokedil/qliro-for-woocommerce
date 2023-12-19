@@ -44,7 +44,9 @@ class Qliro_One_Helper_Shipping_Methods {
 				);
 
 				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
-				$description     = isset( $method_settings['qliro_description'] ) ? $method_settings['qliro_description'] : '';
+
+				// Description.
+				$description = isset( $method_settings['qliro_description'] ) ? $method_settings['qliro_description'] : '';
 				if ( ! empty( $description ) ) {
 					// The trim is necessary to remove invisible characters (even when printed) such as "\n", otherwise, we'll end up with "empty" elements. The array_filter without arguments removes empty lines.
 					$lines = array_filter( array_map( 'trim', explode( "\n", $method_settings['qliro_description'] ) ) );
@@ -60,21 +62,25 @@ class Qliro_One_Helper_Shipping_Methods {
 					$options['Descriptions'] = array_slice( $description, 0, 3 );
 				}
 
+				// Category display name.
 				$category_display_name = isset( $method_settings['qliro_category_display_name'] ) ? $method_settings['qliro_category_display_name'] : 'none';
 				if ( 'none' !== $category_display_name ) {
 					$options['CategoryDisplayName'] = $category_display_name;
 				}
 
+				// Label display name.
 				$label_display_name = isset( $method_settings['qliro_label_display_name'] ) ? $method_settings['qliro_label_display_name'] : 'none';
 				if ( 'none' !== $label_display_name ) {
 					$options['LabelDisplayName'] = $label_display_name;
 				}
 
+				// Brand.
 				$brand = isset( $method_settings['qliro_brand'] ) ? $method_settings['qliro_brand'] : 'none';
 				if ( 'none' !== $brand ) {
 					$options['Brand'] = $brand;
 				}
 
+				// Option labels.
 				$option_labels = array();
 				foreach ( $method_settings as $key => $value ) {
 					if ( false !== strpos( $key, 'qliro_option_label_' ) && 'none' !== $value ) {
@@ -84,13 +90,23 @@ class Qliro_One_Helper_Shipping_Methods {
 						);
 					}
 				}
-
 				if ( ! empty( $option_labels ) ) {
 					$options['OptionLabels'] = $option_labels;
 				}
 
+				// Delivery date.
+				$delivery_date_start = isset( $method_settings['qliro_delivery_date_start'] ) ? $method_settings['qliro_delivery_date_start'] : 'none';
+				$delivery_date_end   = isset( $method_settings['qliro_delivery_date_end'] ) ? $method_settings['qliro_delivery_date_end'] : 'none';
+				if ( 'none' !== $delivery_date_start ) {
+					$options['DeliveryDateInfo']['DateStart'] = date( 'Y-m-d', strtotime( "+$delivery_date_start days" ) );
+				}
+				if ( 'none' !== $delivery_date_end ) {
+					$options['DeliveryDateInfo']['DateEnd'] = date( 'Y-m-d', strtotime( "+$delivery_date_end days" ) );
+				}
+
+				// Pickup points.
 				self::set_pickup_points( $options, $method );
-				$shipping_options[] = $options;
+				$shipping_options[] = apply_filters( 'qliro_one_shipping_option', $options, $method, $method_settings );
 
 			}
 		}
