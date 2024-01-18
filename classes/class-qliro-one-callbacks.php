@@ -243,6 +243,13 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
+		// Do not put the order to on on-hold if it has been processed. This can happen if the on-hold push happens too late, after the order is successfully completed.
+		if ( ! empty( $order->get_date_paid() ) ) {
+			// translators: %s - WooCommerce order number, %s - Qliro Confirmation ID.
+			Qliro_One_Logger::log( sprintf( __( 'Aborting onhold_checkout function. WooCommerce order %1$s with confirmation_id %2$s already confirmed.', 'qliro-one-for-woocommerce' ), $order->get_order_number(), $confirmation_id ) );
+			return;
+		}
+
 		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-checkout-for-woocommerce' ) );
 		$order->save();
 	}

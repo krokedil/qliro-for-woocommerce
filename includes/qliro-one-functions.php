@@ -53,7 +53,7 @@ function qliro_one_maybe_create_order() {
  */
 function qliro_wc_get_snippet() {
 	$qliro_one_order = qliro_one_maybe_create_order();
-	$snippet         = $qliro_one_order['OrderHtmlSnippet'];
+	$snippet         = $qliro_one_order['OrderHtmlSnippet'] ?? null;
 
 	if ( ! empty( $snippet ) ) {
 		return $snippet;
