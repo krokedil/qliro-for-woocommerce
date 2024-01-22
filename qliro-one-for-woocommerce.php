@@ -7,14 +7,14 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.0.1
+ * Version: 1.1.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 8.2.1
+ * WC tested up to: 8.5.1
  *
- * Copyright (c) 2021-2023 Krokedil
+ * Copyright (c) 2021-2024 Krokedil
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.0.1' );
+define( 'QLIRO_WC_VERSION', '1.1.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
