@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.4.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 8.5.0
-Stable tag: 1.0.1
+WC tested up to: 8.5.1
+Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,12 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.01.22    - version 1.1.0 =
+* Feature       - Adds support for delivery date (date start + date end) in shipping option displayed in checkout.
+* Tweak         - Adds filter qliro_one_shipping_option so other plugins can hook into shipping option about to be sent to Qliro.
+* Tweak         - Do not put the order to on-hold during callback handling if it already has been processed. Prevents possible issues where Trustly payments triggers two callbacks with different status simultaneously.
+* Fix           - Fix undefined index warning.
+
 = 2023.10.19    - version 1.0.1 =
 * Tweak         - Adds timer to allow max 4.5 seconds for order creation in Woo when customer completes purchase in Qliro One. If time limit exceeds, the purchase is denied. Avoids payments in Qliro where the order is missing in Woo.
 

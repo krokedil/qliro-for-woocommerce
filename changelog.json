@@ -82,5 +82,11 @@
             "requires": "5.9.0",
             "tested": "6.3.2",
             "upgrade_notice": ""
+      },
+      "1.1.0": {
+            "description": "<ul><li>Feature - Adds support for delivery date (date start + date end) in shipping option displayed in checkout.</li><li>Tweak - Adds filter qliro_one_shipping_option so other plugins can hook into shipping option about to be sent to Qliro.</li><li>Tweak - Do not put the order to on-hold during callback handling if it already has been processed. Prevents possible issues where Trustly payments triggers two callbacks with different status simultaneously.</li><li>Fix - Fix undefined index warning.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.4.2",
+            "upgrade_notice": ""
       }
 }
