@@ -258,27 +258,26 @@ class Qliro_One_Callbacks {
 	 * Gets an order by order number.
 	 *
 	 * @param string $confirmation_id The Confirmation ID set when we create the order.
-	 * @return WC_Order
+	 * @return WC_Order|int The WC_Order on success or 0 on failure.
 	 */
 	public function get_woocommerce_order( $confirmation_id ) {
-		$query_args = array(
-			'fields'      => 'ids',
-			'post_type'   => wc_get_order_types(),
-			'post_status' => array_keys( wc_get_order_statuses() ),
-			'meta_key'    => '_qliro_one_order_confirmation_id', // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
-			'meta_value'  => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
+		$key    = '_qliro_one_order_confirmation_id';
+		$orders = wc_get_orders(
+			array(
+				'meta_key'     => $key,
+				'meta_value'   => $confirmation_id,
+				'limit'        => 1,
+				'orderby'      => 'date',
+				'order'        => 'DESC',
+				'meta_compare' => '=',
+			)
 		);
 
-		$order_ids = get_posts( $query_args );
-
-		// If zero matching orders were found, log error.
-		if ( empty( $order_ids ) ) {
+		$order = reset( $orders );
+		if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
 			Qliro_One_Logger::log( "Callback Error. No order found with the confirmation id $confirmation_id" );
-			return;
+			return 0;
 		}
-
-		$order_id = $order_ids[0];
-		$order    = wc_get_order( $order_id );
 
 		return $order;
 	}

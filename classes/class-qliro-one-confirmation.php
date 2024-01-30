@@ -24,25 +24,22 @@ class Qliro_One_Confirmation {
 	 */
 	public function confirm_order() {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_page', FILTER_SANITIZE_SPECIAL_CHARS );
-
 		if ( empty( $confirmation_id ) ) {
 			return;
 		}
 
 		$order = $this->get_order_by_confirmation_id( $confirmation_id );
-
 		if ( empty( $order ) ) {
 			return;
 		}
 
 		$order_id = $order->get_id();
-
-		$result = qliro_confirm_order( $order );
+		$result   = qliro_confirm_order( $order );
 
 		qliro_one_unset_sessions();
 
 		if ( $result ) {
-			$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 			Qliro_One_Logger::log( "Order ID $order_id confirmed on the confirmation page. Qliro Order ID: $qliro_order_id." );
 		}
 
@@ -54,28 +51,26 @@ class Qliro_One_Confirmation {
 	 * Gets the order from the confirmation id doing a database query for the meta field saved in the order.
 	 *
 	 * @param string $confirmation_id The confirmation id saved in the meta field.
-	 * @return WC_Order
+	 * @return WC_Order|int WC_Order on success, otherwise 0.
 	 */
 	private function get_order_by_confirmation_id( $confirmation_id ) {
-		$query_args = array(
-			'fields'      => 'ids',
-			'post_type'   => wc_get_order_types(),
-			'post_status' => array_keys( wc_get_order_statuses() ),
-			'meta_key'    => '_qliro_one_order_confirmation_id', // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
-			'meta_value'  => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery -- Slow DB Query is ok here, we need to limit to our meta key.
-			'date_query'  => array(
-				array(
-					'after' => '1 day ago',
-				),
-			),
+		$key    = '_qliro_one_order_confirmation_id';
+		$orders = wc_get_orders(
+			array(
+				'meta_key'     => $key,
+				'meta_value'   => $confirmation_id,
+				'limit'        => 1,
+				'orderby'      => 'date',
+				'order'        => 'DESC',
+				'meta_compare' => '=',
+			)
 		);
 
-		$orders = get_posts( $query_args );
-		if ( empty( $orders ) ) {
-			return null;
+		$order = reset( $orders );
+		if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
+			return 0;
 		}
 
-		$order = $orders[0]; // Get the first one in the array since it will be the newest. Good incase something goes wrong and multiple WC orders generate per Qliro order.
-		return wc_get_order( $order );
+		return $order;
 	}
 } new Qliro_One_Confirmation();

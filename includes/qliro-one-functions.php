@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+
 /**
  * Create or update the qliro order
  *
@@ -143,7 +145,7 @@ function qliro_confirm_order( $order ) {
 	}
 
 	$order_id       = $order->get_id();
-	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
 	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
@@ -169,12 +171,13 @@ function qliro_confirm_order( $order ) {
 	}
 
 	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
-		update_post_meta( $order_id, '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
+		$order->update_meta_data( '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
 		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ')' );
 	}
 
-	$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-	$note           = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+	// translators: %s - the Qliro order ID.
+	$note = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
@@ -186,14 +189,15 @@ function qliro_confirm_order( $order ) {
 
 	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
 		if ( 'Success' === $payment_transaction['Status'] ) {
-			update_post_meta( $order_id, 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
-			update_post_meta( $order_id, 'qliro_one_payment_method_subtype_code', $payment_transaction['PaymentMethodSubtypeCode'] );
+			$order->update_meta_data( 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
+			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $payment_transaction['PaymentMethodSubtypeCode'] );
 			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
-				update_post_meta( $order_id, '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
 			}
 		}
 	}
 
+	$order->save();
 	return true;
 }
 
@@ -245,4 +249,34 @@ function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
 	}
 
 	return $qliro_order;
+}
+
+/**
+ * Equivalent to WP's get_the_ID() with HPOS support.
+ *
+ * @return int|false the order ID or false.
+ */
+//phpcs:ignore -- ignore snake-case here to match get_the_ID().
+function qoc_get_the_ID() { 					
+	$hpos_enabled = qoc_is_hpos_enabled();
+	$order_id     = $hpos_enabled ? filter_input( INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT ) : get_the_ID();
+	if ( empty( $order_id ) ) {
+		return false;
+	}
+
+	return $order_id;
+}
+
+/**
+ * Whether HPOS is enabled.
+ *
+ * @return bool true if HPOS is enabled, otherwise false.
+ */
+function qoc_is_hpos_enabled() {
+	// CustomOrdersTableController was introduced in WC 6.4.
+	if ( class_exists( CustomOrdersTableController::class ) ) {
+		return wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
+	}
+
+	return false;
 }

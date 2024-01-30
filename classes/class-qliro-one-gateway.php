@@ -95,12 +95,14 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
 		$qliro_merchant_reference = WC()->session->get( 'qliro_one_merchant_reference' );
 		$chosen_shipping_method   = WC()->session->get( 'chosen_shipping_methods', null );
-		update_post_meta( $order_id, '_qliro_one_order_id', $qliro_order_id );
-		update_post_meta( $order_id, '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
-		update_post_meta( $order_id, '_qliro_one_merchant_reference', $qliro_merchant_reference );
-		// We need to save the shipping reference to the order as well, since table rate shipping can add a 3rd param to the instance id which is not saved to the order.
-		update_post_meta( $order_id, '_qliro_one_shipping_reference', $chosen_shipping_method[0] );
 
+		$order = wc_get_order( $order_id );
+		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
+		$order->update_meta_data( '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
+		$order->update_meta_data( '_qliro_one_merchant_reference', $qliro_merchant_reference );
+		// We need to save the shipping reference to the order as well, since table rate shipping can add a 3rd param to the instance id which is not saved to the order.
+		$order->update_meta_data( '_qliro_one_shipping_reference', $chosen_shipping_method[0] );
+		$order->save();
 
 		return array(
 			'result' => 'success',
@@ -127,14 +129,15 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function show_thank_you_snippet( $order_id = null ) {
-		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
+		$order          = wc_get_order( $order_id );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 		$qliro_order    = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
 		$order          = wc_get_order( $order_id );
 		// Check if the order has been confirmed already.
 		if ( ! empty( $order->get_date_paid() ) ) {
 			$result = qliro_confirm_order( $order );
 
-			if( $result ) {
+			if ( $result ) {
 				Qliro_One_Logger::log( "Order $order_id confirmed on the thankyou page. Qliro Order ID: $qliro_order_id." );
 			}
 		}
@@ -158,11 +161,12 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return false;
 		}
 
-		$qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$qliro_order    = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+		// Unused variable. What for?
+		$qliro_order = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
 
 		// Check if we have a urgency time.
-		$urgency_deadline = get_post_meta( $order_id, '_ppu_upsell_urgency_deadline', true );
+		$urgency_deadline = $order->get_meta( '_ppu_upsell_urgency_deadline' );
 
 		if ( empty( $urgency_deadline ) ) {
 			return false;
@@ -181,7 +185,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @param int    $order_id The WooCommerce order id.
 	 * @param string $upsell_uuid The UUID for the Upsell request.
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
 	public function upsell( $order_id, $upsell_uuid ) {
 		$upsell_order = QOC_WC()->api->upsell_qliro_one_order( $order_id, $upsell_uuid );
@@ -191,8 +195,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = wc_get_order( $order_id );
-		update_post_meta( $order_id, '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
+		$order->update_meta_data( '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
 		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
+		$order->save();
 
 		return true;
 	}
@@ -208,7 +213,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			'amount' => 0,
 		);
 		$order               = wc_get_order( $order_id );
-		$payment_method_type = get_post_meta( $order_id, 'qliro_one_payment_method_name', true );
+		$payment_method_type = $order->get_meta( 'qliro_one_payment_method_name' );
 		$is_qliro_method     = str_contains( $payment_method_type, 'QLIRO' );
 		$is_card_method      = str_contains( $payment_method_type, 'CARD' );
 
