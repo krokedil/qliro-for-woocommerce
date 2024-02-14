@@ -257,14 +257,18 @@ function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
  * @return int|false the order ID or false.
  */
 //phpcs:ignore -- ignore snake-case here to match get_the_ID().
-function qoc_get_the_ID() { 					
+function qoc_get_the_ID() {
 	$hpos_enabled = qoc_is_hpos_enabled();
 	$order_id     = $hpos_enabled ? filter_input( INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT ) : get_the_ID();
 	if ( empty( $order_id ) ) {
+		if ( ! $hpos_enabled ) {
+			$order_id = absint( filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT ) );
+			return empty( $order_id ) ? false : $order_id;
+		}
 		return false;
 	}
 
-	return $order_id;
+	return absint( $order_id );
 }
 
 /**
