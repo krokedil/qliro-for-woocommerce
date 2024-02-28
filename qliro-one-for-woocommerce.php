@@ -12,7 +12,7 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 8.5.1
+ * WC tested up to: 8.6.1
  *
  * Copyright (c) 2021-2024 Krokedil
  *
