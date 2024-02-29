@@ -88,5 +88,11 @@
             "requires": "5.9.0",
             "tested": "6.4.2",
             "upgrade_notice": ""
+      },
+      "1.1.1": {
+            "description": "<ul><li>Enhancement - Adds a log message when a timeout occurs during the order creation process.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.4.3",
+            "upgrade_notice": ""
       }
 }

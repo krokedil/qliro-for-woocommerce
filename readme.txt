@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.4.2
+Tested up to: 6.4.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 8.5.1
-Stable tag: 1.1.0
+WC tested up to: 8.6.1
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.02.29    - version 1.1.1 =
+* Enhancement   - Adds a log message when a timeout occurs during the order creation process.
+
 = 2024.01.22    - version 1.1.0 =
 * Feature       - Adds support for delivery date (date start + date end) in shipping option displayed in checkout.
 * Tweak         - Adds filter qliro_one_shipping_option so other plugins can hook into shipping option about to be sent to Qliro.
