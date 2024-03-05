@@ -1,6 +1,4 @@
 <?php
-use Krokedil\Shipping\PickupPoints;
-
 /**
  * Functions file for the plugin.
  *
@@ -51,7 +49,7 @@ function qliro_one_maybe_create_order() {
 /**
  * Echoes Qliro One Checkout iframe snippet.
  *
- * @return string
+ * @return string|null
  */
 function qliro_wc_get_snippet() {
 	$qliro_one_order = qliro_one_maybe_create_order();
@@ -233,7 +231,7 @@ function qoc_update_wc_shipping( $data ) {
  * Get the Qliro order for the thankyou page. Helper function due to caching.
  *
  * @param string $qliro_order_id The Qliro Order id.
- * @return array
+ * @return array|WP_Error
  */
 function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
 	$qliro_order = json_decode( get_transient( "qliro_thankyou_order_$qliro_order_id" ), true );
@@ -283,4 +281,32 @@ function qoc_is_hpos_enabled() {
 	}
 
 	return false;
+}
+
+
+/**
+ * Gets the order from the confirmation id doing a database query for the meta field saved in the order.
+ *
+ * @param string $confirmation_id The confirmation id saved in the meta field.
+ * @return WC_Order|int WC_Order on success, otherwise 0.
+ */
+function qoc_get_order_by_confirmation_id( $confirmation_id ) {
+	$key    = '_qliro_one_order_confirmation_id';
+	$orders = wc_get_orders(
+		array(
+			'meta_key'     => $key,
+			'meta_value'   => $confirmation_id,
+			'limit'        => 1,
+			'orderby'      => 'date',
+			'order'        => 'DESC',
+			'meta_compare' => '=',
+		)
+	);
+
+	$order = reset( $orders );
+	if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
+		Qliro_One_Logger::log( "No order found with the confirmation id $confirmation_id" );
+		return 0;
+	}
+	return $order;
 }

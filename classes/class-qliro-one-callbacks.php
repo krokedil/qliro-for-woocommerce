@@ -111,7 +111,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function complete_capture( $confirmation_id, $data ) {
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -141,7 +141,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function complete_cancel( $confirmation_id, $data ) {
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -171,7 +171,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function complete_refund( $confirmation_id, $data ) {
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			return;
@@ -195,7 +195,7 @@ class Qliro_One_Callbacks {
 
 		Qliro_One_Logger::log( "Execute completed checkout callback for order with confirmation_id {$confirmation_id}." );
 
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when completing the checkout" );
@@ -215,7 +215,7 @@ class Qliro_One_Callbacks {
 
 		Qliro_One_Logger::log( "Execute refused callback for order with confirmation_id {$confirmation_id}." );
 
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when failing the checkout" );
@@ -236,7 +236,7 @@ class Qliro_One_Callbacks {
 
 		Qliro_One_Logger::log( "Execute onhold callback for order with confirmation_id {$confirmation_id}." );
 
-		$order = $this->get_woocommerce_order( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when failing the checkout" );
@@ -252,33 +252,5 @@ class Qliro_One_Callbacks {
 
 		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-checkout-for-woocommerce' ) );
 		$order->save();
-	}
-
-	/**
-	 * Gets an order by order number.
-	 *
-	 * @param string $confirmation_id The Confirmation ID set when we create the order.
-	 * @return WC_Order|int The WC_Order on success or 0 on failure.
-	 */
-	public function get_woocommerce_order( $confirmation_id ) {
-		$key    = '_qliro_one_order_confirmation_id';
-		$orders = wc_get_orders(
-			array(
-				'meta_key'     => $key,
-				'meta_value'   => $confirmation_id,
-				'limit'        => 1,
-				'orderby'      => 'date',
-				'order'        => 'DESC',
-				'meta_compare' => '=',
-			)
-		);
-
-		$order = reset( $orders );
-		if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
-			Qliro_One_Logger::log( "Callback Error. No order found with the confirmation id $confirmation_id" );
-			return 0;
-		}
-
-		return $order;
 	}
 } new Qliro_One_Callbacks();

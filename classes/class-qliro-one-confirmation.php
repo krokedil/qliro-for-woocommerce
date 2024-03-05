@@ -18,7 +18,7 @@ class Qliro_One_Confirmation {
 	}
 
 	/**
-	 * Confrims the order with Qliro and redirects the customer to the thankyou page.
+	 * Confirms the order with Qliro and redirects the customer to the thankyou page.
 	 *
 	 * @return void
 	 */
@@ -28,7 +28,7 @@ class Qliro_One_Confirmation {
 			return;
 		}
 
-		$order = $this->get_order_by_confirmation_id( $confirmation_id );
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
 		if ( empty( $order ) ) {
 			return;
 		}
@@ -47,30 +47,4 @@ class Qliro_One_Confirmation {
 		exit;
 	}
 
-	/**
-	 * Gets the order from the confirmation id doing a database query for the meta field saved in the order.
-	 *
-	 * @param string $confirmation_id The confirmation id saved in the meta field.
-	 * @return WC_Order|int WC_Order on success, otherwise 0.
-	 */
-	private function get_order_by_confirmation_id( $confirmation_id ) {
-		$key    = '_qliro_one_order_confirmation_id';
-		$orders = wc_get_orders(
-			array(
-				'meta_key'     => $key,
-				'meta_value'   => $confirmation_id,
-				'limit'        => 1,
-				'orderby'      => 'date',
-				'order'        => 'DESC',
-				'meta_compare' => '=',
-			)
-		);
-
-		$order = reset( $orders );
-		if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
-			return 0;
-		}
-
-		return $order;
-	}
 } new Qliro_One_Confirmation();
