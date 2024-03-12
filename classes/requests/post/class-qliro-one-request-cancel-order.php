@@ -37,9 +37,10 @@ class Qliro_One_Cancel_Order extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
-		$order_id           = $this->arguments['order_id'];
-		$this->qliro_order_id = get_post_meta( $order_id, '_qliro_one_order_id', true );
-		$request_id         = $this->arguments['request_id'];
+		$order_id             = $this->arguments['order_id'];
+		$order                = wc_get_order( $order_id );
+		$this->qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+		$request_id           = $this->arguments['request_id'];
 
 		return array(
 			'RequestId'      => $request_id,
