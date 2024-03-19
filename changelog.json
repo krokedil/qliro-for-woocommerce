@@ -94,5 +94,11 @@
             "requires": "5.9.0",
             "tested": "6.4.3",
             "upgrade_notice": ""
+      },
+      "1.2.0": {
+            "description": "<ul><li>Feature - The plugin now supports WooCommerce's \"High-Performance Order Storage\" (\"HPOS\") feature.</li><li>Tweak - Adjusted the timeout timer (4.5 → 29 seconds).</li><li>Fix - Resolved string interpolation deprecation warning.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.4.3",
+            "upgrade_notice": ""
       }
 }

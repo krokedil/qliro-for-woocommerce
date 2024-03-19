@@ -7,7 +7,7 @@ Tested up to: 6.4.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 8.6.1
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.03.19    - version 1.2.0 =
+* Feature       - The plugin now supports WooCommerce's "High-Performance Order Storage" ("HPOS") feature.
+* Tweak         - Adjusted the timeout timer (4.5 → 29 seconds).
+* Fix           - Resolved string interpolation deprecation warning.
+
 = 2024.02.29    - version 1.1.1 =
 * Enhancement   - Adds a log message when a timeout occurs during the order creation process.
 
