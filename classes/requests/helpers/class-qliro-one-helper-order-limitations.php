@@ -34,7 +34,9 @@ class Qliro_One_Helper_Order_Limitations {
 		$minimum_age = ( ! empty( $settings['minimum_age'] ) ) ? $settings['minimum_age'] : 0;
 
 		foreach ( $body['OrderItems'] as $order_item ) {
-			$product_min_age = get_post_meta( wc_get_product_id_by_sku( $order_item['MerchantReference'] ), 'qoc_min_age', true );
+			$pid             = wc_get_product_id_by_sku( $order_item['MerchantReference'] );
+			$product         = wc_get_product( $pid );
+			$product_min_age = empty( $product ) ? false : $product->get_meta( 'qoc_min_age', true );
 			// If products min age is not set.
 			if ( empty( $product_min_age ) ) {
 				continue;
@@ -46,7 +48,7 @@ class Qliro_One_Helper_Order_Limitations {
 		}
 
 		if ( 0 !== $minimum_age ) {
-			$body['MinimumCustomerAge'] = (int)$minimum_age;
+			$body['MinimumCustomerAge'] = (int) $minimum_age;
 		}
 
 		return $body;
@@ -64,9 +66,11 @@ class Qliro_One_Helper_Order_Limitations {
 
 		if ( ! $require_id_verification ) {
 			foreach ( $body['OrderItems'] as $order_item ) {
-				$product_require_id_verification = 'yes' === get_post_meta( wc_get_product_id_by_sku( $order_item['MerchantReference'] ), 'qoc_require_id_verification', true );
+				$pid                             = wc_get_product_id_by_sku( $order_item['MerchantReference'] );
+				$product                         = wc_get_product( $pid );
+				$product_require_id_verification = empty( $product ) ? false : $product->get_meta( 'qoc_require_id_verification' );
 				// If products require id verification is not set or false, continue.
-				if ( empty( $product_require_id_verification ) || ! $product_require_id_verification ) {
+				if ( empty( $product_require_id_verification ) || 'yes' !== $product_require_id_verification ) {
 					continue;
 				}
 

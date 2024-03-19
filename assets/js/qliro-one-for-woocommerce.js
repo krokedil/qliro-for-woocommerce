@@ -355,11 +355,10 @@ jQuery( function( $ ) {
 		},
 
 		placeWooOrder: function( data, callback ) {
-
 			qliroOneForWooCommerce.timeout = setTimeout( () => {
 				qliroOneForWooCommerce.logToFile( 'Timeout error | Timeout when placing the WooCommerce order' );
 				qliroOneForWooCommerce.failOrder( 'timeout-error', 'Timeout error', callback );
-			}, 4500 );
+			}, 29000 ); // 29 seconds.
 
 			qliroOneForWooCommerce.getQliroOneOrder( data, callback );
 

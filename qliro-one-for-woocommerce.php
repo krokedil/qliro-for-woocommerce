@@ -7,7 +7,7 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.1.1
+ * Version: 1.2.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.1.1' );
+define( 'QLIRO_WC_VERSION', '1.2.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -233,7 +233,23 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+
+			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
+
 		}
+
+		/**
+		 * Declare compatibility with WooCommerce features.
+		 *
+		 * @return void
+		 */
+		public function declare_wc_compatibility() {
+			// Declare HPOS compatibility.
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			}
+		}
+
 
 		/**
 		 * Initialize composers autoloader. If it does not exist, bail and show an error.

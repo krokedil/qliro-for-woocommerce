@@ -69,7 +69,7 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $order The WooCommerce order.
 	 */
 	public function capture_qliro_one_order( $order_id, $order ) {
-		if ( get_post_meta( $order_id, '_qliro_order_captured', true ) ) {
+		if ( $order->get_meta( '_qliro_order_captured' ) ) {
 			return;
 		}
 
@@ -80,13 +80,13 @@ class Qliro_One_Order_Management {
 
 			// translators: %s is the error message from Qliro.
 			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
-			$order->save();
 			return;
 		}
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
-		update_post_meta( $order_id, '_qliro_order_captured', $payment_transaction_id );
-		$order_note = __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		$order->update_meta_data( '_qliro_order_captured', $payment_transaction_id );
+		// translators: %s is transaction ID.
+		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
 		if ( 'none' !== $this->settings['capture_pending_status'] ) {
 			$order->update_status( $this->settings['capture_pending_status'], $order_note );
 		} else {
@@ -102,7 +102,7 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $order The WooCommerce order.
 	 */
 	public function cancel_qliro_one_order( $order_id, $order ) {
-		if ( get_post_meta( $order_id, '_qliro_order_canceled', true ) ) {
+		if ( $order->get_meta( '_qliro_order_canceled' ) ) {
 			return;
 		}
 
@@ -118,7 +118,7 @@ class Qliro_One_Order_Management {
 		}
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
-		update_post_meta( $order_id, '_qliro_order_canceled', true );
+		$order->update_meta_data( '_qliro_order_canceled', true );
 		$order_note = __( 'The order has been requested to be cancelled with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
 		if ( 'none' !== $this->settings['cancel_pending_status'] ) {
 			$order->update_status( $this->settings['cancel_pending_status'], $order_note );
