@@ -12,7 +12,7 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 8.6.1
+ * WC tested up to: 8.7.0
  *
  * Copyright (c) 2021-2024 Krokedil
  *
@@ -235,7 +235,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
-
 		}
 
 		/**
