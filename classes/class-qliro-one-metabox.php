@@ -7,96 +7,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+use Krokedil\WooCommerce\OrderMetabox;
 
 /**
  * Qliro_One_Metabox class.
  */
-class Qliro_One_Metabox {
-
+class Qliro_One_Metabox extends OrderMetabox {
 	/**
-	 * Constructor
-	 *
-	 * @return void
+	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-	}
-
-	/**
-	 * Is HPOS enabled.
-	 *
-	 * @return bool
-	 */
-	public static function is_hpos_enabled() {
-		if ( class_exists( CustomOrdersTableController::class ) ) {
-			return wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check if the current screen is the edit order screen.
-	 *
-	 * @param string $post_type The post type to check.
-	 *
-	 * @return bool
-	 */
-	public static function is_edit_order_screen( $post_type ) {
-		$valid_screens = array( 'shop_order', 'woocommerce_page_wc-orders' );
-
-		return in_array( $post_type, $valid_screens, true );
-	}
-
-	/**
-	 * Get the order ID from the current screen.
-	 *
-	 * @return int|null
-	 */
-	public static function get_order_id() {
-		$hpos_enabled = self::is_hpos_enabled();
-		$order_id     = $hpos_enabled ? filter_input( INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT ) : get_the_ID();
-		if ( empty( $order_id ) ) {
-			return false;
-		}
-
-		return $order_id;
-	}
-
-	/**
-	 * Add metabox to order edit screen.
-	 *
-	 * @param string $post_type
-	 *
-	 * @return void
-	 */
-	public function add_metabox( $post_type ) {
-		if ( ! self::is_edit_order_screen( $post_type ) ) {
-			return;
-		}
-
-		// Ensure we are on a order page.
-		$order_id = self::get_order_id();
-		$order    = $order_id ? wc_get_order( $order_id ) : false;
-		if ( ! $order_id || ! $order ) {
-			return;
-		}
-
-		// Ensure the order has a Qliro One payment method.
-		$payment_method = $order->get_payment_method();
-		if ( 'qliro_one' !== $payment_method ) {
-			return;
-		}
-
-		add_meta_box(
-			'qliro-one',
-			__( 'Qliro', 'qliro-one' ),
-			array( $this, 'render_metabox' ),
-			$post_type,
-			'side',
-			'core'
-		);
+		parent::__construct( 'qliro-one', __( 'Qliro', 'qliro-one' ), 'qliro_one' );
 	}
 
 	/**
@@ -212,37 +133,5 @@ class Qliro_One_Metabox {
 
 		// Return the method but ensure only the first letter is uppercase.
 		return ucfirst( strtolower( $payment_method ) ) . wc_help_tip( $subtype );
-	}
-
-	/**
-	 * Print a error message into the metabox.
-	 *
-	 * @param string $message
-	 *
-	 * @return void
-	 */
-	private static function output_error( $message ) {
-		?>
-		<p class="error">
-			<?php echo esc_html( $message ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Output labeled text info for the metabox.
-	 *
-	 * @param string $label
-	 * @param string $text
-	 *
-	 * @return void
-	 */
-	private static function output_info( $label, $text ) {
-		?>
-		<p>
-			<strong><?php echo esc_html( $label ); ?>:</strong>
-			<span><?php echo wp_kses_post( $text ); ?></span>
-		</p>
-		<?php
 	}
 }
