@@ -85,6 +85,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		private $pickup_points_service;
 
 		/**
+		 * Reference to metabox class.
+		 *
+		 * @var Qliro_One_Metabox
+		 */
+		private $metabox;
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -195,6 +202,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-callbacks.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method-instance.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-metabox.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
@@ -227,10 +235,10 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
+			$this->metabox          = new Qliro_One_Metabox();
 
 			$this->pickup_points_service = new PickupPoints();
 
-			// todo include files.
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
@@ -318,6 +326,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function pickup_points_service() {
 			return $this->pickup_points_service;
+		}
+
+		/**
+		 * Get the metabox instance.
+		 *
+		 * @return Qliro_One_Metabox
+		 */
+		public function metabox() {
+			return $this->metabox;
 		}
 
 		/**
