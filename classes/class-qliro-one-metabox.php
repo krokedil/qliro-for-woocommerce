@@ -197,7 +197,7 @@ class Qliro_One_Metabox {
 	 *
 	 * @return string
 	 */
-	public static function get_payment_method_name( $order ) {
+	private static function get_payment_method_name( $order ) {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 		$subtype        = $order->get_meta( 'qliro_one_payment_method_subtype_code' );
 
@@ -221,7 +221,7 @@ class Qliro_One_Metabox {
 	 *
 	 * @return void
 	 */
-	public static function output_error( $message ) {
+	private static function output_error( $message ) {
 		?>
 		<p class="error">
 			<?php echo esc_html( $message ); ?>
