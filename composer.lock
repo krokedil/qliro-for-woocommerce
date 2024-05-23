@@ -121,12 +121,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "2468dc1f6d14542b2c315ce60fe2c3d5a09e03d4"
+                "reference": "4652746cff42d9007e5bf2754864a4c4379f0a7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/2468dc1f6d14542b2c315ce60fe2c3d5a09e03d4",
-                "reference": "2468dc1f6d14542b2c315ce60fe2c3d5a09e03d4",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/4652746cff42d9007e5bf2754864a4c4379f0a7a",
+                "reference": "4652746cff42d9007e5bf2754864a4c4379f0a7a",
                 "shasum": ""
             },
             "require-dev": {
@@ -160,7 +160,7 @@
                 "source": "https://github.com/krokedil/woocommerce/tree/develop-order-metabox",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2024-05-22T14:58:16+00:00"
+            "time": "2024-05-23T06:38:33+00:00"
         },
         {
             "name": "psr/container",
@@ -865,12 +865,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "3361ff206b08f27dd4a982bc4f43ace3c44fb177"
+                "reference": "870843bc25ecb3a9a192983d2fd617d93749d65c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/3361ff206b08f27dd4a982bc4f43ace3c44fb177",
-                "reference": "3361ff206b08f27dd4a982bc4f43ace3c44fb177",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/870843bc25ecb3a9a192983d2fd617d93749d65c",
+                "reference": "870843bc25ecb3a9a192983d2fd617d93749d65c",
                 "shasum": ""
             },
             "require": {
@@ -938,7 +938,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-05-22T12:57:21+00:00"
+            "time": "2024-05-22T22:13:22+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
