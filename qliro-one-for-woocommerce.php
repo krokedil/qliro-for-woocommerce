@@ -1,6 +1,4 @@
-<?php
-use Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
-use Krokedil\Shipping\PickupPoints; // phpcs:ignore
+<?php // phpcs:ignore
 /**
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
@@ -30,9 +28,11 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
+
+use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
+use KrokedilQliroDeps\Puc_v4_Factory;
 
 /**
  * Required minimums and constants
@@ -265,7 +265,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return mixed
 		 */
 		private static function init_composer() {
-			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/autoload.php';
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/dependencies/autoload.php';
 
 			if ( ! is_readable( $autoloader ) ) {
 				self::missing_autoloader();
@@ -296,12 +296,12 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				'admin_notices',
 				function () {
 					?>
-																													<div class="notice notice-error">
-																														<p>
-																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
-																														</p>
-																													</div>
-																												<?php
+						<div class="notice notice-error">
+							<p>
+								<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+							</p>
+						</div>
+					<?php
 				}
 			);
 		}

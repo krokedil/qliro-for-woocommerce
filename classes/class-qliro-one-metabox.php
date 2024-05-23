@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Krokedil\WooCommerce\OrderMetabox;
+use KrokedilQliroDeps\Krokedil\WooCommerce\OrderMetabox;
 
 /**
  * Qliro_One_Metabox class.

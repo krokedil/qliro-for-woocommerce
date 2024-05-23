@@ -1,5 +1,5 @@
 <?php
-use Krokedil\Shipping\PickupPoints;
+use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
 
 /**
  * Class for managing actions during the checkout process.
