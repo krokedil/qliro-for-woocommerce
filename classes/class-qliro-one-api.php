@@ -68,6 +68,27 @@ class Qliro_One_API {
 	}
 
 	/**
+	 * Updates a Qliro One order during order management.
+	 *
+	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @param int    $order_id The WooCommerce order id.
+	 *
+	 * @return mixed
+	 */
+	public function om_update_qliro_one_order( $qliro_one_order_id, $order_id ) {
+		$request_id = ( new Qliro_One_Helper_Order() )->generate_request_id();
+		$request    = new Qliro_One_Request_OM_Update_Order(
+			array(
+				'order_id'       => $order_id,
+				'qliro_order_id' => $qliro_one_order_id,
+				'request_id'     => $request_id,
+			)
+		);
+		$response   = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
 	 * Cancels a Qliro One order.
 	 *
 	 * @param int $order_id Order ID.
