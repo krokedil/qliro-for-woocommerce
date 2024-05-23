@@ -10,10 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
-        "krokedil/shipping": "^2.0.0",
-        "krokedil/woocommerce": "dev-develop-order-metabox",
-        "kernl/kernl-update-checker": "dev-master"
+        "php": ">=7.4"
     },
     "require-dev": {
         "php-stubs/woocommerce-stubs": "dev-master",
@@ -21,7 +18,8 @@
         "object-calisthenics/phpcs-calisthenics-rules": "*",
         "phpcompatibility/php-compatibility": "*",
         "phpcompatibility/phpcompatibility-wp": "*",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "wpify/scoper": "3.1.3"
     },
     "repositories": [
         {
@@ -39,11 +37,24 @@
             "php": "7.4"
         },
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "wpify/scoper": true
         }
     },
     "scripts": {
         "lint": "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
-        "lint-fix": "./vendor/bin/phpcbf --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`"
+        "lint-fix": "./vendor/bin/phpcbf --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
+        "wpify-scoper": "wpify-scoper"
+    },
+    "extra": {
+        "wpify-scoper": {
+            "prefix": "KrokedilQliroDeps",
+            "folder": "dependencies",
+            "autorun": true,
+            "globals": [
+                "wordpress",
+                "woocommerce"
+            ]
+        }
     }
 }

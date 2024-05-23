@@ -1,0 +1,25 @@
+{
+    "require": {
+        "php": ">=7.4",
+        "krokedil/shipping": "^2.0.0",
+        "krokedil/woocommerce": "dev-develop-order-metabox",
+        "kernl/kernl-update-checker": "dev-master"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/shipping.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/woocommerce.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
