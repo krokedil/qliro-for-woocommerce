@@ -5,6 +5,7 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
  * Description: Qliro One Checkout payment gateway for WooCommerce.
+ * Requires Plugins: woocommerce
  * Author: Krokedil
  * Author URI: https://krokedil.com/
  * Version: 1.2.0
