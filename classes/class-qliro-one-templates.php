@@ -240,7 +240,7 @@ class Qliro_One_Templates {
 			}
 
 			// If the setting for shipping in iframe is yes, then add the class.
-			if ( 'yes' === $settings['shipping_in_iframe'] ) {
+			if ( 'qliro_one' === $first_gateway && 'yes' === $settings['shipping_in_iframe'] ) {
 				$class[] = 'qliro-shipping-display';
 			}
 		}
