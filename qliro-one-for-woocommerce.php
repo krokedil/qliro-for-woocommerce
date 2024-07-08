@@ -1,6 +1,4 @@
-<?php
-use Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
-use Krokedil\Shipping\PickupPoints; // phpcs:ignore
+<?php // phpcs:ignore
 /**
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
@@ -29,6 +27,9 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -256,7 +257,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return mixed
 		 */
 		private static function init_composer() {
-			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/autoload.php';
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/dependencies/autoload.php';
 
 			if ( ! is_readable( $autoloader ) ) {
 				self::missing_autoloader();
@@ -287,12 +288,12 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				'admin_notices',
 				function () {
 					?>
-																													<div class="notice notice-error">
-																														<p>
-																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
-																														</p>
-																													</div>
-																												<?php
+						<div class="notice notice-error">
+							<p>
+								<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+							</p>
+						</div>
+					<?php
 				}
 			);
 		}
@@ -326,7 +327,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function check_version() {
-			$update_checker = Puc_v4_Factory::buildUpdateChecker(
+			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
 				'qliro-one-for-woocommerce'
