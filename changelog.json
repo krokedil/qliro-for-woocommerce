@@ -100,5 +100,11 @@
             "requires": "5.9.0",
             "tested": "6.4.3",
             "upgrade_notice": ""
+      },
+      "1.3.0": {
+            "description": "<ul><li>Feature - Support for integrated shipping with nShift using the Krokedil Shipping Connector plugin.</li><li>Enhancement - The shipping methods in WooCommerce will be hidden until Qliro has retrieved the selected shipping option from Qliro when showing shipping options in the Qliro iFrame.</li><li>Enhancement - Scoped the plugin dependencies for the plugin to avoid conflicts with other plugins using the same dependencies with different versions.</li><li>Fix - Fixed support for syncing the area returned by Qliro with the region field in WooCommerce.</li><li>Fix - Fixed an issue where some plugins used the same dependencies as Qliro but with different versions, causing a conflict and potential PHP errors.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.5.5",
+            "upgrade_notice": ""
       }
 }

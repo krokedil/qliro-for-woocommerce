@@ -7,7 +7,7 @@ Tested up to: 6.5.5
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.0.2
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.07.08    - version 1.3.0 =
+* Feature       - Support for integrated shipping with nShift using the Krokedil Shipping Connector plugin.
+* Enhancement   - The shipping methods in WooCommerce will be hidden until Qliro has retrieved the selected shipping option from Qliro when showing shipping options in the Qliro iFrame.
+* Enhancement   - Scoped the plugin dependencies for the plugin to avoid conflicts with other plugins using the same dependencies with different versions.
+* Fix           - Fixed support for syncing the area returned by Qliro with the region field in WooCommerce.
+* Fix           - Fixed an issue where some plugins used the same dependencies as Qliro but with different versions, causing a conflict and potential PHP errors.
+
 = 2024.03.19    - version 1.2.0 =
 * Feature       - The plugin now supports WooCommerce's "High-Performance Order Storage" ("HPOS") feature.
 * Tweak         - Adjusted the timeout timer (4.5 → 29 seconds).
