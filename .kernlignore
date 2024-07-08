@@ -23,3 +23,11 @@ phpcs.xml.dist
 .travis.yml
 *.DS_Store
 gruntfile.js
+
+scoper.custom.php
+composer-dependencies.json
+composer-dependencies.lock
+vendor
+vendor/**/*
+tests/**/*
+tmp*

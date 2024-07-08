@@ -1,18 +1,16 @@
-<?php
-use Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
-use Krokedil\Shipping\PickupPoints; // phpcs:ignore
+<?php // phpcs:ignore
 /**
  * Plugin Name: Qliro One for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.2.0
+ * Version: 1.3.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 8.6.1
+ * WC tested up to: 9.0.2
  *
  * Copyright (c) 2021-2024 Krokedil
  *
@@ -30,6 +28,9 @@ use Krokedil\Shipping\PickupPoints; // phpcs:ignore
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -37,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.2.0' );
+define( 'QLIRO_WC_VERSION', '1.3.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -235,7 +236,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
-
 		}
 
 		/**
@@ -257,7 +257,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return mixed
 		 */
 		private static function init_composer() {
-			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/autoload.php';
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/dependencies/autoload.php';
 
 			if ( ! is_readable( $autoloader ) ) {
 				self::missing_autoloader();
@@ -288,12 +288,12 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				'admin_notices',
 				function () {
 					?>
-																													<div class="notice notice-error">
-																														<p>
-																															<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
-																														</p>
-																													</div>
-																												<?php
+						<div class="notice notice-error">
+							<p>
+								<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+							</p>
+						</div>
+					<?php
 				}
 			);
 		}
@@ -327,7 +327,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function check_version() {
-			$update_checker = Puc_v4_Factory::buildUpdateChecker(
+			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
 				'qliro-one-for-woocommerce'

@@ -124,28 +124,28 @@ jQuery( function( $ ) {
 		 * Display Shipping Price in order review if Display shipping methods in iframe settings is active.
 		 */
 		maybeDisplayShippingPrice: function() {
-		// Check if we already have set the price. If we have, return.
-		if( $('.qoc-shipping').length ) {
-			return;
-		}
-		if ( 'qliro_one' === qliroOneForWooCommerce.paymentMethod && 'yes' === qliroOneParams.shipping_in_iframe ) {
-			if ( $( '#shipping_method input[type=\'radio\']' ).length ) {
-				// Multiple shipping options available.
-				$( '#shipping_method input[type=\'radio\']:checked' ).each( function() {
-					var idVal = $( this ).attr( 'id' );
+			// Check if we already have set the price. If we have, return.
+			if( $('.qoc-shipping').length ) {
+				return;
+			}
+			if ( 'qliro_one' === qliroOneForWooCommerce.paymentMethod && 'yes' === qliroOneParams.shipping_in_iframe ) {
+				if ( $( '#shipping_method input[type=\'radio\']' ).length ) {
+					// Multiple shipping options available.
+					$( '#shipping_method input[type=\'radio\']:checked' ).each( function() {
+						var idVal = $( this ).attr( 'id' );
+						var shippingPrice = $( 'label[for=\'' + idVal + '\']' ).text();
+						$( '.woocommerce-shipping-totals td' ).html( shippingPrice );
+						$( '.woocommerce-shipping-totals td' ).addClass( 'qoc-shipping' );
+					});
+				} else {
+					// Only one shipping option available.
+					var idVal = $( '#shipping_method input[name=\'shipping_method[0]\']' ).attr( 'id' );
 					var shippingPrice = $( 'label[for=\'' + idVal + '\']' ).text();
 					$( '.woocommerce-shipping-totals td' ).html( shippingPrice );
 					$( '.woocommerce-shipping-totals td' ).addClass( 'qoc-shipping' );
-				});
-			} else {
-				// Only one shipping option available.
-				var idVal = $( '#shipping_method input[name=\'shipping_method[0]\']' ).attr( 'id' );
-				var shippingPrice = $( 'label[for=\'' + idVal + '\']' ).text();
-				$( '.woocommerce-shipping-totals td' ).html( shippingPrice );
-				$( '.woocommerce-shipping-totals td' ).addClass( 'qoc-shipping' );
+				}
 			}
-		}
-	},
+		},
 		/*
 		 * Check if Qliro One is the selected gateway.
 		 */
@@ -195,6 +195,7 @@ jQuery( function( $ ) {
 				street = (('street' in customerInfo.address) ? street : null);
 				postalCode = (('postalCode' in customerInfo.address) ? customerInfo.address.postalCode : null);
 				city = (('city' in customerInfo.address) ? customerInfo.address.city : null);
+				area = (('area' in customerInfo.address) ? customerInfo.address.area : null);
 			}
 
 			// Check if shipping fields or billing fields are to be used.
@@ -206,6 +207,7 @@ jQuery( function( $ ) {
 				(street !== null && street !== undefined) ? $('#billing_address_1').val(street) : null;
 				(postalCode !== null && postalCode !== undefined) ? $('#billing_postcode').val(postalCode) : null;
 				(city !== null && city !== undefined) ? $('#billing_city').val(city) : null;
+				(area !== null && area !== undefined) ? qliroOneForWooCommerce.setStateField( 'billing', area ) : null;
 				$("form.checkout").trigger('update_checkout');
 				$('#billing_email').change();
 				$('#billing_email').blur();
@@ -217,6 +219,7 @@ jQuery( function( $ ) {
 				(street !== null && street !== undefined) ? $('#shipping_address_1').val(street) : null;
 				(postalCode !== null && postalCode !== undefined) ? $('#shipping_postcode').val(postalCode) : null;
 				(city !== null && city !== undefined) ? $('#shipping_city').val(city) : null;
+				(area !== null && area !== undefined) ? qliroOneForWooCommerce.setStateField("shipping", area) : null;
 				$("form.checkout").trigger('update_checkout');
 				$('#shipping_email').change();
 				$('#shipping_email').blur();
@@ -258,6 +261,7 @@ jQuery( function( $ ) {
 			$('#billing_address_2').val(addressData.billingAddress.Street2);
 			$('#billing_city').val(addressData.billingAddress.City);
 			$('#billing_postcode').val(addressData.billingAddress.PostalCode);
+			qliroOneForWooCommerce.setStateField('billing', addressData.billingAddress.Area);
 			$('#billing_phone').val(addressData.customer.MobileNumber);
 			$('#billing_email').val(addressData.customer.Email);
 
@@ -270,6 +274,7 @@ jQuery( function( $ ) {
 			$('#shipping_address_2').val(addressData.shippingAddress.Street2);
 			$('#shipping_city').val(addressData.shippingAddress.City);
 			$('#shipping_postcode').val(addressData.shippingAddress.PostalCode);
+			qliroOneForWooCommerce.setStateField('shipping', addressData.shippingAddress.Area);
 			// todo country
 
 			// Only set country fields if we have data in them.
@@ -281,8 +286,43 @@ jQuery( function( $ ) {
 			}
 
 			qliroOneForWooCommerce.submitOrder(callback);
-
 		},
+
+		/**
+		 *
+		 * @param {"billing" | "shipping"} type The type of field to set.
+		 * @param {string | null | undefined} area The value to set the field to.
+		 *
+		 * @returns
+		 */
+		setStateField: function (type, area) {
+			// Ignore if area is null or undefined.
+			if (area === null || area === undefined) {
+				return;
+			}
+
+			// Get the field.
+			const $field = $(`#${type}_state`);
+
+			// If the field does not exist, return.
+			if ($field.length === 0) {
+				return;
+			}
+
+			// If its a select field, we need to select the correct option where the option label is the same as the area.
+			if ($field.is("select")) {
+				$field.find("option").each(function () {
+					if ($(this).text() === area) {
+						$field.val($(this).val());
+					}
+				});
+				return;
+			}
+
+			// If its an input field, we just need to set the value.
+			$field.val(area);
+		},
+
 		/**
 		 * Submit the order using the WooCommerce AJAX function.
 		 */

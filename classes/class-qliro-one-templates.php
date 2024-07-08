@@ -210,6 +210,8 @@ class Qliro_One_Templates {
 				return $class;
 			}
 
+			$settings = get_option( 'woocommerce_qliro_one_settings' );
+
 			$first_gateway = '';
 			if ( WC()->session->get( 'chosen_payment_method' ) ) {
 				$first_gateway = WC()->session->get( 'chosen_payment_method' );
@@ -236,11 +238,14 @@ class Qliro_One_Templates {
 			if ( 'qliro_one' === $first_gateway && 'one_column_checkout' === $this->checkout_layout ) {
 				$class[] = 'qliro-one-selected';
 			}
+
+			// If the setting for shipping in iframe is yes, then add the class.
+			if ( 'qliro_one' === $first_gateway && 'yes' === $settings['shipping_in_iframe'] ) {
+				$class[] = 'qliro-shipping-display';
+			}
 		}
 		return $class;
 	}
-
-
 }
 
 Qliro_One_Templates::get_instance();
