@@ -24,10 +24,10 @@ phpcs.xml.dist
 *.DS_Store
 gruntfile.js
 
-vendor
-vendor/**/*
-
 scoper.custom.php
 composer-dependencies.json
 composer-dependencies.lock
+vendor
+vendor/**/*
+tests/**/*
 tmp*
