@@ -1,0 +1,20 @@
+{
+    "require": {
+        "php": ">=7.4",
+        "krokedil/shipping": "^2.0.0",
+        "kernl/kernl-update-checker": "dev-master"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/shipping.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
