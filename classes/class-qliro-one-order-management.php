@@ -50,6 +50,11 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		// Skip the order is order sync is not enabled for it.
+		if ( ! self::is_order_sync_enabled( $order ) ) {
+			return;
+		}
+
 		$cancel_status  = str_replace( 'wc-', '', $this->settings['cancel_status'] );
 		$capture_status = str_replace( 'wc-', '', $this->settings['capture_status'] );
 
@@ -136,7 +141,13 @@ class Qliro_One_Order_Management {
 	 * @return bool|WP_Error
 	 */
 	public function refund( $order_id, $amount ) {
-		$order           = wc_get_order( $order_id );
+		$order = wc_get_order( $order_id );
+
+		// Skip the order is order sync is not enabled for it, and return an error.
+		if ( ! self::is_order_sync_enabled( $order ) ) {
+			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order synchronization with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
+		}
+
 		$refund_order_id = $order->get_refunds()[0]->get_id();
 
 		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
@@ -155,5 +166,19 @@ class Qliro_One_Order_Management {
 		$formatted_text = sprintf( $text, wc_price( $amount ) );
 		$order->add_order_note( $formatted_text );
 		return true;
+	}
+
+	/**
+	 * Check if the order has order sync enabled on it or not.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return bool
+	 */
+	public static function is_order_sync_enabled( $order ) {
+		$sync_enabled = $order->get_meta( '_qliro_order_sync_enabled' );
+
+		// Return true if the value is not set to no, since empty metadata is considered as enabled and will be returned as an empty string.
+		return 'no' !== $sync_enabled;
 	}
 }
