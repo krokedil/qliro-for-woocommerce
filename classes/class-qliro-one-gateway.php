@@ -107,7 +107,6 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		return array(
 			'result' => 'success',
 		);
-
 	}
 
 	/** Process refund request.
@@ -234,5 +233,21 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		return $limits;
+	}
+
+	/**
+	 * Check if the order can be refunded with Qliro or not.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return bool
+	 */
+	public function can_refund_order( $order ) {
+		// Check that the order has order sync enabled.
+		if ( ! Qliro_One_Order_Management::is_order_sync_enabled( $order ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
