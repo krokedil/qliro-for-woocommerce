@@ -20,6 +20,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 		parent::__construct( 'qliro-one', __( 'Qliro', 'qliro-one' ), 'qliro_one' );
 
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
+
+		$this->scripts[] = 'qliro-one-metabox';
 	}
 
 	/**
@@ -29,7 +31,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 *
 	 * @return void
 	 */
-	public function render_metabox( $post ) {
+	public function metabox_content( $post ) {
 		// Get the WC Order from the post.
 		$order = null;
 		if ( is_a( $post, WC_Order::class ) ) {
@@ -42,12 +44,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		$qliro_order_id       = $order->get_meta( '_qliro_one_order_id' );
-		$qliro_reference      = $order->get_meta( '_qliro_one_merchant_reference' );
-		$qliro_payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
-		$is_captured          = $order->get_meta( '_qliro_order_captured' );
-
-		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+		$qliro_order_id  = $order->get_meta( '_qliro_one_order_id' );
+		$qliro_reference = $order->get_meta( '_qliro_one_merchant_reference' );
+		$qliro_order     = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			self::output_error( $qliro_order->get_error_message() );
@@ -56,12 +55,61 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 		$last_transaction = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
 
-		self::output_info( __( 'Payment method', 'qliro-one' ), self::get_payment_method_name( $order ) );
+		self::output_info( __( 'Payment method', 'qliro-one' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
 		self::output_info( __( 'Qliro order id', 'qliro-one' ), $qliro_order_id );
 		self::output_info( __( 'Qliro reference', 'qliro-one' ), $qliro_reference );
-		self::output_info( __( 'Qliro order status', 'qliro-one' ), self::get_order_status( $last_transaction ) );
+		self::output_info( __( 'Qliro order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
 		self::output_info( __( 'Amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
-		self::output_sync_order_button( $order, $qliro_order_id );
+		echo '<br />';
+		self::output_sync_order_button( $order, $qliro_order, $last_transaction );
+		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
+	}
+
+	/**
+	 * Maybe localize the script with data.
+	 *
+	 * @param string $handle The script handle.
+	 *
+	 * @return void
+	 */
+	public function maybe_localize_script( $handle ) {
+		if ( 'qliro-one-metabox' === $handle ) {
+			$localize_data = array(
+				'ajax'    => array(
+					'setOrderSync' => array(
+						'url'    => admin_url( 'admin-ajax.php' ),
+						'action' => 'woocommerce_qliro_one_wc_set_order_sync',
+						'nonce'  => wp_create_nonce( 'qliro_one_wc_set_order_sync' ),
+					),
+				),
+				'orderId' => $this->get_id(),
+			);
+			wp_localize_script( 'qliro-one-metabox', 'qliroMetaboxParams', $localize_data );
+		}
+	}
+
+	/**
+	 * Get the advanced section content.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return string
+	 */
+	private static function get_advanced_section_content( $order ) {
+		$order_sync = $order->get_meta( '_qliro_order_sync_enabled' );
+
+		// Default the order sync to be enabled. Unset metadata is returned as a empty string.
+		if ( empty( $order_sync ) ) {
+			$order_sync = 'yes';
+		}
+
+		$title   = __( 'Order synchronization', 'qliro-one' );
+		$tip     = __( 'Disable this to turn off the automatic synchronization with the Qliro Merchant Portal. When disabled, any changes in either system have to be done manually.', 'qliro-one' );
+		$enabled = 'yes' === $order_sync;
+
+		ob_start();
+		self::output_toggle_switch( $title, $enabled, $tip, 'qliro-toggle-order-sync', array( 'qliro-order-sync' => $order_sync ) );
+		return ob_get_clean();
 	}
 
 	/**
@@ -186,6 +234,23 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 */
 	private static function get_payment_method_name( $order ) {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
+
+		// Replace any _ with a space.
+		$payment_method = str_replace( '_', ' ', $payment_method );
+
+		// Return the method but ensure only the first letter is uppercase.
+		return ucfirst( strtolower( $payment_method ) );
+	}
+
+	/**
+	 * Get the subtype of the Qliro payment method.
+	 *
+	 * @param WC_Order $order
+	 *
+	 * @return string
+	 */
+	private static function get_payment_method_subtype( $order ) {
+		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 		$subtype        = $order->get_meta( 'qliro_one_payment_method_subtype_code' );
 
 		// If the payment method starts with QLIRO_, it is a Qliro One payment method.
@@ -194,22 +259,19 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$subtype        = __( 'Qliro payment method', 'qliro-one' );
 		}
 
-		// Replace any _ with a space.
-		$payment_method = str_replace( '_', ' ', $payment_method );
-
-		// Return the method but ensure only the first letter is uppercase.
-		return ucfirst( strtolower( $payment_method ) ) . wc_help_tip( $subtype );
+		return $subtype;
 	}
 
 	/**
 	 * Output the sync order action button.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
-	 * @param string   $qliro_order_id The Qliro order id.
+	 * @param array    $qliro_order The Qliro order.
+	 * @param array    $last_transaction The last transaction from the Qliro order.
 	 *
 	 * @return void
 	 */
-	private static function output_sync_order_button( $order, $qliro_order_id ) {
+	private static function output_sync_order_button( $order, $qliro_order, $last_transaction ) {
 		$is_captured    = $order->get_meta( '_qliro_order_captured' );
 		$is_cancelled   = $order->get_meta( '_qliro_order_cancelled' );
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
@@ -227,7 +289,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$query_args = array(
 			'action'         => 'qliro_one_sync_order',
 			'order_id'       => $order->get_id(),
-			'qliro_order_id' => $qliro_order_id,
+			'qliro_order_id' => $qliro_order['OrderId'] ?? '',
 		);
 
 		$action_url = wp_nonce_url(
@@ -235,11 +297,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_one_sync_order'
 		);
 
+		$classes = ( floatval( $order->get_total() ) === $last_transaction['Amount'] ) ? 'button-secondary' : 'button-primary';
+
 		self::output_action_button(
 			__( 'Sync order with Qliro', 'qliro-one' ),
 			$action_url,
 			false,
-			'button-primary'
+			$classes
 		);
 	}
 }
