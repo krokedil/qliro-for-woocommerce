@@ -121,12 +121,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "4652746cff42d9007e5bf2754864a4c4379f0a7a"
+                "reference": "c014dad493ccd125e3b0b4b4b18fae36f0c4b444"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/4652746cff42d9007e5bf2754864a4c4379f0a7a",
-                "reference": "4652746cff42d9007e5bf2754864a4c4379f0a7a",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/c014dad493ccd125e3b0b4b4b18fae36f0c4b444",
+                "reference": "c014dad493ccd125e3b0b4b4b18fae36f0c4b444",
                 "shasum": ""
             },
             "require-dev": {
@@ -160,7 +160,7 @@
                 "source": "https://github.com/krokedil/woocommerce/tree/develop-order-metabox",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2024-05-23T06:38:33+00:00"
+            "time": "2024-07-09T10:43:52+00:00"
         },
         {
             "name": "psr/container",
