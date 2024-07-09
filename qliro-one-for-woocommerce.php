@@ -5,12 +5,12 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.2.0
+ * Version: 1.3.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 8.8.3
+ * WC tested up to: 9.0.2
  *
  * Copyright (c) 2021-2024 Krokedil
  *
@@ -28,16 +28,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-defined( 'ABSPATH' ) || exit;
-
 use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
-use KrokedilQliroDeps\Puc_v4_Factory;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.2.0' );
+define( 'QLIRO_WC_VERSION', '1.3.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -344,7 +345,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function check_version() {
-			$update_checker = Puc_v4_Factory::buildUpdateChecker(
+			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
 				'qliro-one-for-woocommerce'

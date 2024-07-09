@@ -5,8 +5,6 @@
  * @package Qliro_One/Classes/Requests/Helpers
  */
 
-use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
-
 /**
  * Helper class to get available shipping methods for the Qliro One order.
  */
