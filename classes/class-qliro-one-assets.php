@@ -27,6 +27,7 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
+		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
 	}
 
 	/**
@@ -130,6 +131,14 @@ class Qliro_One_Assets {
 			QLIRO_WC_VERSION
 		);
 		wp_enqueue_style( 'qliro-one-style' );
+	}
+
+	/**
+	 * Register admin assets.
+	 */
+	public function register_admin_assets() {
+		$script_version = $this->qoc_is_script_debug_enabled();
+		wp_register_script( 'qliro-one-metabox', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-metabox' . $script_version . '.js', array( 'jquery', 'jquery-blockui' ), QLIRO_WC_VERSION, false );
 	}
 }
 new Qliro_One_Assets();
