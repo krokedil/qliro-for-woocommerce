@@ -47,7 +47,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_change_payment_method' ) ) {
 			wp_send_json_error( 'bad_nonce' );
-			exit;
 		}
 		$available_gateways  = WC()->payment_gateways()->get_available_payment_gateways();
 		$switch_to_qliro_one = isset( $_POST['qliro_one'] ) ? sanitize_text_field( wp_unslash( $_POST['qliro_one'] ) ) : '';
@@ -72,7 +71,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 		);
 
 		wp_send_json_success( $data );
-		wp_die();
 	}
 
 
@@ -108,14 +106,12 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_log_js' ) ) {
 			wp_send_json_error( 'bad_nonce' );
-			exit;
 		}
 		$posted_message = isset( $_POST['message'] ) ? sanitize_text_field( wp_unslash( $_POST['message'] ) ) : '';
 		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 		$message        = "Frontend JS $qliro_order_id: $posted_message";
 		Qliro_One_Logger::log( $message );
 		wp_send_json_success();
-		wp_die();
 	}
 }
 Qliro_One_Ajax::init();
