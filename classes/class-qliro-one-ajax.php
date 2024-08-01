@@ -82,22 +82,21 @@ class Qliro_One_Ajax extends WC_AJAX {
 	public static function qliro_one_get_order() {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
 			wp_send_json_error( 'bad_nonce' );
-			exit;
 		}
+
 		$order_id        = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_one_order = QOC_WC()->api->get_qliro_one_order( $order_id );
-		$billing_data    = $qliro_one_order['BillingAddress'];
-		$shipping_data   = $qliro_one_order['ShippingAddress'];
-		$customer        = $qliro_one_order['Customer'];
+		if ( is_wp_error($qliro_one_order)) {
+			wp_send_json_error( $qliro_one_order->get_error_message() );
+		}
 
 		wp_send_json_success(
 			array(
-				'billingAddress'  => $billing_data,
-				'shippingAddress' => $shipping_data,
-				'customer'        => $customer,
+				'billingAddress'  => $qliro_one_order['BillingAddress'],
+				'shippingAddress' => $qliro_one_order['ShippingAddress'],
+				'customer'        => $qliro_one_order['Customer'],
 			)
 		);
-		wp_die();
 	}
 
 	 /**
