@@ -188,7 +188,7 @@ jQuery( function( $ ) {
 			var email = (('email' in customerInfo) ? customerInfo.email : null);
 			var phone = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
 
-			var firstName, lastName, street, postalCode, city;
+			var firstName, lastName, street, postalCode, city, area;
 			if (customerInfo.address) {
 				firstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
 				lastName = (('lastName' in customerInfo.address) ? customerInfo.address.lastName : null);
