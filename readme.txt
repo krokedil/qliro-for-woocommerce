@@ -7,7 +7,7 @@ Tested up to: 6.6.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.2.0
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.08.20    - version 1.3.1 =
+* Fix           - Sometimes the session ID would be missing, this would result in a critical error in the AJAX when attempting to retrieve the order from Qliro. This has now been fixed.
+* Fix           - Fixed an issue due to undefined variable in the JavaScript.
+
 = 2024.07.08    - version 1.3.0 =
 * Feature       - Support for integrated shipping with nShift using the Krokedil Shipping Connector plugin.
 * Enhancement   - The shipping methods in WooCommerce will be hidden until Qliro has retrieved the selected shipping option from Qliro when showing shipping options in the Qliro iFrame.

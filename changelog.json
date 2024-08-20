@@ -106,5 +106,11 @@
             "requires": "5.9.0",
             "tested": "6.5.5",
             "upgrade_notice": ""
+      },
+      "1.3.1": {
+            "description": "<ul><li>Fix - Sometimes the session ID would be missing, this would result in a critical error in the AJAX when attempting to retrieve the order from Qliro. This has now been fixed.</li><li>Fixed an issue due to undefined variable in the JavaScript.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.1",
+            "upgrade_notice": ""
       }
 }
