@@ -135,8 +135,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 			exit;
 		}
 
-		error_log( 'order_id: ' . $order_id );
-
 		if ( ! $order_id ) {
 			wp_send_json_error( 'no_order_id' );
 			exit;
