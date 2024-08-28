@@ -111,6 +111,14 @@ class Qliro_One_Checkout {
 		}
 
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		if ( is_wp_error( $qliro_order ) ) {
+			if ( function_exists( 'wc_add_notice' ) ) {
+				wc_add_notice( __( "The session could't be updated. Please try reloading the page.", 'qliro-one-for-woocommerce' ), 'error' );
+			}
+
+			Qliro_One_Logger::log( sprintf( 'Failed to get Qliro One order in update_qliro_order. Qliro One order ID: %s', $qliro_order_id ) );
+			return;
+		}
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
 			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
