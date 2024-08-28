@@ -38,7 +38,15 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "OM Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "OM Callback received: {$body}." );
+
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when processing the 'om push' callback" );
+			header( 'HTTP/1.1 404 Not Found' );
+			echo '{ "CallbackResponse": "received" }';
+			die();
+		}
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
@@ -76,7 +84,15 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Checkout Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "Checkout Callback received: {$body}." );
+
+		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when processing the 'checkout push' callback" );
+			header( 'HTTP/1.1 404 Not Found' );
+			echo '{ "CallbackResponse": "received" }';
+			die();
+		}
 
 		if ( isset( $data['Status'] ) ) {
 			switch ( $data['Status'] ) {
