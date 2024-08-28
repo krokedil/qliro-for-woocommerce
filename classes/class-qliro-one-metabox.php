@@ -17,7 +17,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'qliro-one', __( 'Qliro', 'qliro-one' ), 'qliro_one' );
+		parent::__construct( 'qliro-one', __( 'Qliro order data', 'qliro-one' ), 'qliro_one' );
 
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
 
@@ -46,22 +46,30 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 		$qliro_order_id  = $order->get_meta( '_qliro_one_order_id' );
 		$qliro_reference = $order->get_meta( '_qliro_one_merchant_reference' );
-		$qliro_order     = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+		$order_sync      = $order->get_meta( '_qliro_order_sync_enabled' );
+
+		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			self::output_error( $qliro_order->get_error_message() );
 			return;
 		}
 
-		$last_transaction = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
+		$last_transaction    = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
+		$order_sync_disabled = 'no' === $order_sync;
 
 		self::output_info( __( 'Payment method', 'qliro-one' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
-		self::output_info( __( 'Qliro order id', 'qliro-one' ), $qliro_order_id );
-		self::output_info( __( 'Qliro reference', 'qliro-one' ), $qliro_reference );
-		self::output_info( __( 'Qliro order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
-		self::output_info( __( 'Amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
+		self::output_info( __( 'Order id', 'qliro-one' ), $qliro_order_id );
+		self::output_info( __( 'Reference', 'qliro-one' ), $qliro_reference );
+		self::output_info( __( 'Order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
+		self::output_info( __( 'Total amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
+		if ( $order_sync_disabled ) {
+			self::output_info( __( 'Order synchronization', 'qliro-one' ), __( 'Disabled', 'qliro-one' ) );
+		}
 		echo '<br />';
-		self::output_sync_order_button( $order, $qliro_order, $last_transaction );
+		if ( ! $order_sync_disabled ) {
+			self::output_sync_order_button( $order, $qliro_order, $last_transaction );
+		}
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
 
