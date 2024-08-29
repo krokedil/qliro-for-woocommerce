@@ -30,13 +30,21 @@ abstract class Qliro_One_Request_Post extends Qliro_One_Request {
 	 * @return array Request arguments
 	 */
 	protected function get_request_args() {
-		$body = wp_json_encode( apply_filters( 'qliro_one_request_args', $this->get_body() ) );
+		$body = $this->get_body();
+
+		// Format exception. Finnish needs to be formated to fi-fi.
+		if ( 'fi' === wc_get_var( $body['Language'] ) ) {
+			$body['Language'] = 'fi-fi';
+		}
+
+		$encoded_body = wp_json_encode( apply_filters( 'qliro_one_request_args', $body ) );
+
 		return array(
-			'headers'    => $this->get_request_headers( $body ),
+			'headers'    => $this->get_request_headers( $encoded_body ),
 			'user-agent' => $this->get_user_agent(),
 			'method'     => $this->method,
 			'timeout'    => apply_filters( 'qliro_one_request_timeout', 10 ),
-			'body'       => $body,
+			'body'       => $encoded_body,
 		);
 	}
 
