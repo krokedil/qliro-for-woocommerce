@@ -112,5 +112,11 @@
             "requires": "5.9.0",
             "tested": "6.6.1",
             "upgrade_notice": ""
+      },
+      "1.4.0": {
+            "description": "<ul><li>Feature - Added a metabox to Qliro order pages to show information about the Qliro order in WooCommerce.</li><li>Feature - Added a toggle to detach specific orders from the automatic order management. This is useful if you want to manually handle specific orders in WooCommerce.</li><li>Feature - Added a sync order with Qliro button that allows you to manually sync an order with Qliro if any changes have been made to it in WooCommerce. This is not available for card payments.</li><li>Fix - Fixed support for Finish localization by passing it correctly to Qliro's API.</li><li>Fix - Fixed not properly clearing the current session with Qliro when the currency is changed in the store.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2",
+            "upgrade_notice": ""
       }
 }

@@ -2,7 +2,7 @@
     "require": {
         "php": ">=7.4",
         "krokedil/shipping": "^2.0.0",
-        "krokedil/woocommerce": "dev-develop-order-metabox",
+        "krokedil/woocommerce": "^1.7.0",
         "kernl/kernl-update-checker": "dev-master"
     },
     "config": {

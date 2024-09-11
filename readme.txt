@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.2.0
-Stable tag: 1.3.1
+WC tested up to: 9.2.3
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.09.11    - version 1.4.0 =
+* Feature       - Added a metabox to Qliro order pages to show information about the Qliro order in WooCommerce.
+* Feature       - Added a toggle to detach specific orders from the automatic order management. This is useful if you want to manually handle specific orders in WooCommerce.
+* Feature       - Added a sync order with Qliro button that allows you to manually sync an order with Qliro if any changes have been made to it in WooCommerce. This is not available for card payments.
+* Fix           - Fixed support for Finish localization by passing it correctly to Qliro's API.
+* Fix           - Fixed not properly clearing the current session with Qliro when the currency is changed in the store.
+
 = 2024.08.20    - version 1.3.1 =
 * Fix           - Sometimes the session ID would be missing, this would result in a critical error in the AJAX when attempting to retrieve the order from Qliro. This has now been fixed.
 * Fix           - Fixed an issue due to undefined variable in the JavaScript.
