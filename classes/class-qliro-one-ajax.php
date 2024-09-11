@@ -29,6 +29,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 			'qliro_one_get_order'                => true,
 			'qliro_one_wc_update_order'          => true,
 			'qliro_one_wc_log_js'                => true,
+			'qliro_one_wc_set_order_sync'        => false,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_woocommerce_' . $ajax_event, array( __CLASS__, $ajax_event ) );
@@ -97,11 +98,11 @@ class Qliro_One_Ajax extends WC_AJAX {
 		);
 	}
 
-	 /**
-	  * Logs messages from the JavaScript to the server log.
-	  *
-	  * @return void
-	  */
+	/**
+	 * Logs messages from the JavaScript to the server log.
+	 *
+	 * @return void
+	 */
 	public static function qliro_one_wc_log_js() {
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_log_js' ) ) {
@@ -111,6 +112,39 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 		$message        = "Frontend JS $qliro_order_id: $posted_message";
 		Qliro_One_Logger::log( $message );
+		wp_send_json_success();
+	}
+
+	/**
+	 * Set order sync status.
+	 *
+	 * @return void
+	 */
+	public static function qliro_one_wc_set_order_sync() {
+		$nonce    = filter_input( INPUT_POST, 'nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_id = filter_input( INPUT_POST, 'order_id', FILTER_SANITIZE_NUMBER_INT );
+		$enabled  = filter_input( INPUT_POST, 'enabled', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_set_order_sync' ) ) {
+			wp_send_json_error( 'bad_nonce' );
+			exit;
+		}
+
+		if ( ! $order_id ) {
+			wp_send_json_error( 'no_order_id' );
+			exit;
+		}
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			wp_send_json_error( 'no_order' );
+			exit;
+		}
+
+		$order->update_meta_data( '_qliro_order_sync_enabled', $enabled );
+		$order->save();
+
 		wp_send_json_success();
 	}
 }

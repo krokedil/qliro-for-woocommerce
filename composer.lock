@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "075144b1addb55ccfd2f18f5f1d4fccd278d3890"
+                "reference": "026a90d8ca32603c5bacc0d89292937fb53adb67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/075144b1addb55ccfd2f18f5f1d4fccd278d3890",
-                "reference": "075144b1addb55ccfd2f18f5f1d4fccd278d3890",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/026a90d8ca32603c5bacc0d89292937fb53adb67",
+                "reference": "026a90d8ca32603c5bacc0d89292937fb53adb67",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-05-07T13:54:23+00:00"
+            "time": "2024-08-26T10:00:24+00:00"
         },
         {
             "name": "nette/utils",
@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "ccfc447c39a48886146fd3cef66d0e6f2db7fa2b"
+                "reference": "8dc04f7198e31be7c6f2dfef8739379b3c7dfb26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/ccfc447c39a48886146fd3cef66d0e6f2db7fa2b",
-                "reference": "ccfc447c39a48886146fd3cef66d0e6f2db7fa2b",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/8dc04f7198e31be7c6f2dfef8739379b3c7dfb26",
+                "reference": "8dc04f7198e31be7c6f2dfef8739379b3c7dfb26",
                 "shasum": ""
             },
             "require": {
@@ -278,33 +278,34 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.0.0"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.2.1"
             },
-            "time": "2024-06-18T15:46:13+00:00"
+            "time": "2024-08-21T18:36:51+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v6.5.3",
+            "version": "v6.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "e611a83292d02055a25f83291a98fadd0c21e092"
+                "reference": "86e8753e89d59849276dcdd91b9a7dd78bb4abe2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/e611a83292d02055a25f83291a98fadd0c21e092",
-                "reference": "e611a83292d02055a25f83291a98fadd0c21e092",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/86e8753e89d59849276dcdd91b9a7dd78bb4abe2",
+                "reference": "86e8753e89d59849276dcdd91b9a7dd78bb4abe2",
                 "shasum": ""
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
                 "nikic/php-parser": "^4.13",
-                "php": "^7.4 || ~8.0.0",
+                "php": "^7.4 || ^8.0",
                 "php-stubs/generator": "^0.8.3",
-                "phpdocumentor/reflection-docblock": "5.3",
+                "phpdocumentor/reflection-docblock": "^5.4.1",
                 "phpstan/phpstan": "^1.10.49",
                 "phpunit/phpunit": "^9.5",
-                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^0.11"
+                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^1.0",
+                "wp-coding-standards/wpcs": "3.1.0 as 2.3.0"
             },
             "suggest": {
                 "paragonie/sodium_compat": "Pure PHP implementation of libsodium",
@@ -325,9 +326,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.5.3"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.6.0"
             },
-            "time": "2024-05-08T02:12:31+00:00"
+            "time": "2024-07-17T08:50:38+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -654,12 +655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "71326b414d4b0ab6e4b12e993b98849126531dd9"
+                "reference": "c0e8f4de2884a52af95ee4f516e247ff1048413b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/71326b414d4b0ab6e4b12e993b98849126531dd9",
-                "reference": "71326b414d4b0ab6e4b12e993b98849126531dd9",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/c0e8f4de2884a52af95ee4f516e247ff1048413b",
+                "reference": "c0e8f4de2884a52af95ee4f516e247ff1048413b",
                 "shasum": ""
             },
             "require": {
@@ -727,7 +728,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-07-04T21:25:09+00:00"
+            "time": "2024-09-09T20:17:06+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
