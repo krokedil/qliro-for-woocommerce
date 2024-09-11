@@ -5,7 +5,7 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.3.1
+ * Version: 1.4.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
