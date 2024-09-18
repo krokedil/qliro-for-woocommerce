@@ -16,9 +16,11 @@ class Qliro_One_Helper_Order_Limitations {
 	 * @return array
 	 */
 	public static function set_limitations( $body ) {
-		return self::maybe_set_minimum_age(
-			self::maybe_set_require_id_verification(
-				$body
+		return self::maybe_set_has_risk(
+			self::maybe_set_minimum_age(
+				self::maybe_set_require_id_verification(
+					$body
+				)
 			)
 		);
 	}
@@ -81,6 +83,36 @@ class Qliro_One_Helper_Order_Limitations {
 		}
 
 		$body['RequireIdentityVerification'] = $require_id_verification;
+		return $body;
+	}
+
+	/**
+	 * Maybe sets has risk for the Qliro order.
+	 *
+	 * @param array $body The request body.
+	 * @return array
+	 */
+	public static function maybe_set_has_risk( $body ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		$has_risk = 'yes' === $settings['has_risk'];
+
+		if ( ! $has_risk ) {
+			foreach ( $body['OrderItems'] as $order_item ) {
+				$pid              = wc_get_product_id_by_sku( $order_item['MerchantReference'] );
+				$product          = wc_get_product( $pid );
+				$product_has_risk = empty( $product ) ? false : $product->get_meta( 'qoc_has_risk' );
+				// If products has risk is not set or false, continue.
+				if ( empty( $product_has_risk ) || 'yes' !== $product_has_risk ) {
+					continue;
+				}
+
+				// If order item sets the flag to true, break.
+				$has_risk = true;
+				break;
+			}
+		}
+
+		$body['HasRisk'] = $has_risk;
 		return $body;
 	}
 }
