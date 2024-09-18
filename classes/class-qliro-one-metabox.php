@@ -67,9 +67,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			self::output_info( __( 'Order synchronization', 'qliro-one' ), __( 'Disabled', 'qliro-one' ) );
 		}
 		echo '<br />';
-		if ( ! $order_sync_disabled ) {
-			self::output_sync_order_button( $order, $qliro_order, $last_transaction );
-		}
+
+		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
 
@@ -279,7 +278,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 *
 	 * @return void
 	 */
-	private static function output_sync_order_button( $order, $qliro_order, $last_transaction ) {
+	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
 		$is_captured    = $order->get_meta( '_qliro_order_captured' );
 		$is_cancelled   = $order->get_meta( '_qliro_order_cancelled' );
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
@@ -306,6 +305,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 		);
 
 		$classes = ( floatval( $order->get_total() ) === $last_transaction['Amount'] ) ? 'button-secondary' : 'button-primary';
+
+		if ( $order_sync_disabled ) {
+			$classes .= ' disabled';
+		}
 
 		self::output_action_button(
 			__( 'Sync order with Qliro', 'qliro-one' ),
