@@ -26,12 +26,11 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
-		// If error, create new order.
-		if ( is_wp_error( $qliro_order ) || 'InProcess' !== $qliro_order['CustomerCheckoutStatus'] || $qliro_order['Currency'] !== get_woocommerce_currency() ) {
+		// Validate the order.
+		if ( ! qliro_one_validate_order( $qliro_order ) ) {
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
-		return $qliro_order;
 	}
 	// create.
 	$qliro_order = QOC_WC()->api->create_qliro_one_order();
@@ -307,4 +306,21 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 		return 0;
 	}
 	return $order;
+}
+
+/**
+ * Validate qliro order's status, currency, and country settings.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return bool
+ */
+function qliro_one_validate_order( $order ) {
+
+	error_log( 'qliro_one_validate_order' );
+	error_log( print_r( $order, true ) );
+	if ( is_wp_error( $order ) || 'InProcess' !== $order['CustomerCheckoutStatus'] || $order['Currency'] !== get_woocommerce_currency() || $order['Country'] !== WC()->customer->get_billing_country() ) {
+		return false;
+	}
+
+	return true;
 }

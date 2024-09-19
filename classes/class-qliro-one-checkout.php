@@ -111,6 +111,12 @@ class Qliro_One_Checkout {
 		}
 
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		// Validate the order.
+		if ( ! qliro_one_validate_order( $qliro_order ) ) {
+			qliro_one_unset_sessions();
+			$qliro_order = qliro_one_maybe_create_order();
+
+		}
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
 			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
