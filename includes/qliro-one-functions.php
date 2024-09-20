@@ -27,10 +27,12 @@ function qliro_one_maybe_create_order() {
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		// Validate the order.
-		if ( ! qliro_one_validate_order( $qliro_order ) ) {
+		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
+
+		return $qliro_order;
 	}
 	// create.
 	$qliro_order = QOC_WC()->api->create_qliro_one_order();
@@ -314,13 +316,9 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
  * @param WC_Order $order The WooCommerce order.
  * @return bool
  */
-function qliro_one_validate_order( $order ) {
-
-	error_log( 'qliro_one_validate_order' );
-	error_log( print_r( $order, true ) );
+function qliro_one_is_valid_order( $order ) {
 	if ( is_wp_error( $order ) || 'InProcess' !== $order['CustomerCheckoutStatus'] || $order['Currency'] !== get_woocommerce_currency() || $order['Country'] !== WC()->customer->get_billing_country() ) {
 		return false;
 	}
-
 	return true;
 }
