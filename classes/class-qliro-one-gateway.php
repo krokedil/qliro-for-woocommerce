@@ -5,6 +5,9 @@
  * @package Qliro_One_For_WooCommerce/Classes
  */
 
+use KrokedilQliroDeps\Krokedil\SettingsPage\SettingsPage;
+use KrokedilQliroDeps\Krokedil\SettingsPage\Gateway;
+
 /**
  * Class Qliro_One_Gateway
  */
@@ -249,5 +252,52 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Add settings page extension for Qliro Checkout.
+	 *
+	 * @return void
+	 */
+	public function admin_options() {
+		$args = $this->get_settings_page_args();
+
+		if ( empty( $args ) ) {
+			parent::admin_options();
+			return;
+		}
+
+		$gateway_page = new Gateway( $this, $args );
+
+		$args['general_content'] = array( $gateway_page, 'output' );
+		$settings_page           = ( SettingsPage::get_instance() )
+			->set_plugin_name( 'Avarda Checkout' )
+			->register_page( $this->id, $args, $this )
+			->output( $this->id );
+	}
+
+	/**
+	 * Read the settings page arguments from remote or local storage.
+	 * If the args are stored locally, they are fetched from the transient cache.
+	 * If they are not available locally, they are fetched from the remote source and stored in the transient cache.
+	 * If the remote source is not available, the function returns null, and default settings page will be used instead.
+	 *
+	 * @return array|null
+	 */
+	private function get_settings_page_args() {
+		$args = get_transient( 'qliro_checkout_settings_page_config' );
+		if ( ! $args ) {
+			$args = wp_remote_get( 'https://kroconnect.blob.core.windows.net/krokedil/plugin-settings/avarda-checkout.json' );
+
+			if ( is_wp_error( $args ) ) {
+				ACO_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.', WC_Log_Levels::ERROR );
+				return null;
+			}
+
+			$args = wp_remote_retrieve_body( $args );
+			set_transient( 'qliro_checkout_settings_page_config', $args, 60 * 60 * 24 ); // 24 hours lifetime.
+		}
+
+		return json_decode( $args, true );
 	}
 }
