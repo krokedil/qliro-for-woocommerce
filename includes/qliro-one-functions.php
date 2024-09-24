@@ -26,6 +26,11 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		if ( is_wp_error( $qliro_order ) ) {
+			qliro_one_print_error_message( $qliro_order );
+			return;
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 			qliro_one_unset_sessions();
@@ -317,8 +322,13 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
  * @return bool
  */
 function qliro_one_is_valid_order( $order ) {
-	if ( is_wp_error( $order ) || 'InProcess' !== $order['CustomerCheckoutStatus'] || $order['Currency'] !== get_woocommerce_currency() || $order['Country'] !== WC()->customer->get_billing_country() ) {
+	$is_in_process     = ( 'InProcess' === $order['CustomerCheckoutStatus'] );
+	$is_currency_match = ( $order['Currency'] === get_woocommerce_currency() );
+	$is_country_match  = ( $order['Country'] === WC()->customer->get_billing_country() );
+
+	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
 	}
+
 	return true;
 }

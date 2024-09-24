@@ -111,6 +111,11 @@ class Qliro_One_Checkout {
 		}
 
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		if ( is_wp_error( $qliro_order ) ) {
+			qliro_one_print_error_message( $qliro_order );
+			return;
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 			qliro_one_unset_sessions();
