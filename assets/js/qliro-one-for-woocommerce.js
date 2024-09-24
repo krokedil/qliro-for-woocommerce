@@ -404,7 +404,7 @@ jQuery( function( $ ) {
 
 		},
 		/**
-		 * Logs the message to the klarna checkout log in WooCommerce.
+		 * Logs the message to the Qliro checkout log in WooCommerce.
 		 * @param {string} message
 		 */
 		logToFile: function( message ) {
