@@ -290,7 +290,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			$args = wp_remote_get( 'https://kroconnect.blob.core.windows.net/krokedil/plugin-settings/qliro-checkout.json' );
 
 			if ( is_wp_error( $args ) ) {
-				ACO_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.', WC_Log_Levels::ERROR );
+				Qliro_One_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.' );
 				return null;
 			}
 
