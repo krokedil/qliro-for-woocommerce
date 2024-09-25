@@ -271,7 +271,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		$args['general_content'] = array( $gateway_page, 'output' );
 		$settings_page           = ( SettingsPage::get_instance() )
-			->set_plugin_name( 'Avarda Checkout' )
+			->set_plugin_name( 'Qliro Checkout' )
 			->register_page( $this->id, $args, $this )
 			->output( $this->id );
 	}
@@ -287,7 +287,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	private function get_settings_page_args() {
 		$args = get_transient( 'qliro_checkout_settings_page_config' );
 		if ( ! $args ) {
-			$args = wp_remote_get( 'https://kroconnect.blob.core.windows.net/krokedil/plugin-settings/avarda-checkout.json' );
+			$args = wp_remote_get( 'https://kroconnect.blob.core.windows.net/krokedil/plugin-settings/qliro-checkout.json' );
 
 			if ( is_wp_error( $args ) ) {
 				ACO_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.', WC_Log_Levels::ERROR );
