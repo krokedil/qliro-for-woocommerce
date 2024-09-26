@@ -96,23 +96,24 @@ class Qliro_One_Helper_Order_Limitations {
 		$settings = get_option( 'woocommerce_qliro_one_settings' );
 		$has_risk = isset( $settings['has_risk'] ) && 'yes' === $settings['has_risk'];
 
-		if ( ! $has_risk ) {
-			foreach ( $body['OrderItems'] as $order_item ) {
-				$pid              = wc_get_product_id_by_sku( $order_item['MerchantReference'] );
-				$product          = wc_get_product( $pid );
-				$product_has_risk = empty( $product ) ? false : $product->get_meta( 'qoc_has_risk' );
-				// If products has risk is not set or false, continue.
-				if ( empty( $product_has_risk ) || 'yes' !== $product_has_risk ) {
-					continue;
-				}
-
-				// If order item sets the flag to true, break.
-				$has_risk = true;
-				break;
+		foreach ( $body['OrderItems'] as $key => $value ) {
+			// If the general has risk setting is checked, set the flag to true on all order items.
+			if ( 'yes' === $has_risk ) {
+				$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = true;
+				continue;
 			}
+			// Check if individual products has risk checked.
+			$pid              = wc_get_product_id_by_sku( $body['OrderItems'][ $key ]['MerchantReference'] );
+			$product          = wc_get_product( $pid );
+			$product_has_risk = empty( $product ) ? false : $product->get_meta( 'qoc_has_risk' );
+			if ( 'yes' === $product_has_risk ) {
+				$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = true;
+				continue;
+			}
+			// Default to has risk as false.
+			$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = false;
 		}
 
-		$body['HasRisk'] = $has_risk;
 		return $body;
 	}
 }
