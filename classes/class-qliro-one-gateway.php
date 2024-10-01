@@ -63,6 +63,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			)
 		);
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
+		add_filter( 'woocommerce_cart_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999 );
 	}
 
 
@@ -249,5 +250,18 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Allow 0 amount orders by setting needs payment to true, if the chosen payment method is Qliro.
+	 *
+	 * @return bool
+	 */
+	public function maybe_change_needs_payment() {
+
+		// Allow 0 amount orders for Qliro.
+		if ( 'qliro_one' === WC()->session->get( 'chosen_payment_method' ) ) {
+			return true;
+		}
 	}
 }
