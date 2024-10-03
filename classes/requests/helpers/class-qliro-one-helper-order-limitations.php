@@ -94,7 +94,7 @@ class Qliro_One_Helper_Order_Limitations {
 	 */
 	public static function maybe_set_has_risk( $body ) {
 		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		$has_risk = isset( $settings['has_risk'] ) && 'yes' === $settings['has_risk'];
+		$has_risk = $settings['has_risk'] ?? 'no';
 
 		foreach ( $body['OrderItems'] as $key => $value ) {
 			// If the general has risk setting is checked, set the flag to true on all order items.
