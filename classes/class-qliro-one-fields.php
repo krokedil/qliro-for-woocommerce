@@ -159,6 +159,13 @@ class Qliro_One_Fields {
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
+			'has_risk'                                   => array(
+				'title'       => __( 'Has risk', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If this box is checked, the product is a risk item.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
 			'qliro_one_button_ask_for_newsletter_signup' => array(
 				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
