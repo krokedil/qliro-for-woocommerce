@@ -63,7 +63,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			)
 		);
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
-		add_filter( 'woocommerce_cart_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999 );
+		add_filter( 'woocommerce_order_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999, 3 );
 	}
 
 
@@ -253,15 +253,25 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Allow 0 amount orders by setting needs payment to true, if the chosen payment method is Qliro.
+	 * Maybe change the needs payment for a WooCommerce order.
 	 *
+	 * @param bool     $wc_result The result WooCommerce had.
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param array    $valid_order_statuses The valid order statuses.
 	 * @return bool
 	 */
-	public function maybe_change_needs_payment() {
+	public function maybe_change_needs_payment( $wc_result, $order, $valid_order_statuses ) {
 
-		// Allow 0 amount orders for Qliro.
-		if ( 'qliro_one' === WC()->session->get( 'chosen_payment_method' ) ) {
-			return true;
+		// Only change for Qliro orders.
+		if ( 'qliro_one' !== $order->get_payment_method() ) {
+			return $wc_result;
 		}
+
+		// Only if our filter is active and is set to false.
+		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
+			return $wc_result;
+		}
+
+		return true;
 	}
 }
