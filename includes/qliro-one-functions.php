@@ -88,10 +88,8 @@ function qliro_one_print_error_message( $wp_error ) {
 		if ( function_exists( 'wc_add_notice' ) ) {
 			wc_add_notice( $error_message, 'error' );
 		}
-	} else {
-		if ( function_exists( 'wc_print_notice' ) ) {
+	} elseif ( function_exists( 'wc_print_notice' ) ) {
 			wc_print_notice( $error_message, 'error' );
-		}
 	}
 }
 
@@ -309,4 +307,91 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 		return 0;
 	}
 	return $order;
+}
+
+/**
+ * Checks if the order is partially captured.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return bool
+ */
+function qoc_is_partially_captured( $order ) {
+	$is_partially_captured = false;
+	foreach ( $order->get_items() as $order_item ) {
+		if ( ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) && $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+			$is_partially_captured = true;
+			break;
+		}
+	}
+
+	return $is_partially_captured;
+}
+
+/**
+ * Checks if the order is fully captured.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return bool
+ */
+function qoc_is_fully_captured( $order ) {
+
+	if ( $order->get_meta( '_qliro_order_captured' ) ) {
+		return true;
+	}
+
+	$is_fully_captured = true;
+
+	foreach ( $order->get_items() as $order_item ) {
+		// Iterate over the order items and make sure that all line items have been captured.
+		if ( $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+			$is_fully_captured = false;
+			break;
+		}
+	}
+
+	return $is_fully_captured;
+}
+
+function qoc_get_remaining_items_to_capture( $order ) {
+	$items = array();
+	foreach ( $order->get_items() as $order_item ) {
+		if ( $order_item->get_quantity() <= qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+			continue;
+		}
+		$items[ $order_item->get_id() ] = $order_item->get_quantity() - qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+	}
+
+	return $items;
+}
+
+/**
+ * Get the number of captured items from one order line.
+ *
+ * @param string $qliro_captured_data The WooCommerce order item meta data field _qliro_captured_data (each capture comma separated from the other and each capture gathered as {payment_transaction_id}:{amount_of_items}).
+ * @return int
+ */
+function qoc_get_captured_item_quantity( $qliro_captured_data ) {
+	$captured_items = 0;
+	$captured_data  = explode( ',', $qliro_captured_data );
+	foreach ( $captured_data as $capture ) {
+		$capture_data    = explode( ':', $capture );
+		$captured_items += (int) $capture_data[1];
+	}
+
+	return $captured_items;
+}
+
+/**
+ * Return captured items for an order.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return array
+ */
+function qoc_get_captured_items( $order ) {
+	$captured_items = array();
+	foreach ( $order->get_items() as $order_item ) {
+		$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+	}
+
+	return $captured_items;
 }

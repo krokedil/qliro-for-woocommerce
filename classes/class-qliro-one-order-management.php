@@ -74,11 +74,13 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $order The WooCommerce order.
 	 */
 	public function capture_qliro_one_order( $order_id, $order ) {
-		if ( $order->get_meta( '_qliro_order_captured' ) ) {
+		if ( qoc_is_fully_captured( $order ) ) {
 			return;
 		}
 
-		$response = QOC_WC()->api->capture_qliro_one_order( $order_id );
+		$items = qoc_is_partially_captured( $order ) ? qoc_get_remaining_items_to_capture( $order ) : '';
+
+		$response = QOC_WC()->api->capture_qliro_one_order( $order_id, $items );
 		if ( is_wp_error( $response ) ) {
 			$prefix        = 'Evaluation, ';
 			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
