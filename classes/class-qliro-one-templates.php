@@ -69,6 +69,12 @@ class Qliro_One_Templates {
 	public function override_template( $template, $template_name ) {
 		if ( is_checkout() ) {
 			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			// Don't display Qliro One template if we have a cart that doesn't needs payment.
+			if ( apply_filters( 'qliro_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) ) {
+				if ( ! WC()->cart->needs_payment() ) {
+					return $template;
+				}
+			}
 
 			// QLiro One Checkout.
 			if ( 'checkout/form-checkout.php' === $template_name ) {
