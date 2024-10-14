@@ -110,6 +110,13 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		// If cart doesn't need payment anymore - reload the checkout page.
+		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
+			if ( ! WC()->cart->needs_payment() ) {
+				WC()->session->reload_checkout = true;
+			}
+		}
+
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
 			qliro_one_print_error_message( $qliro_order );
