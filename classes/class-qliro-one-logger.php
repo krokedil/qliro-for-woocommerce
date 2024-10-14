@@ -107,9 +107,9 @@ class Qliro_One_Logger {
 			$extra_data = '';
 			if ( ! in_array( $data['function'], array( 'get_stack', 'format_log' ), true ) ) {
 				if ( in_array( $data['function'], array( 'do_action', 'apply_filters' ), true ) ) {
-					if ( isset( $data['object'] ) ) {
+					if ( isset( $data['object'] ) && $data['object'] instanceof WP_Hook ) {
 						$priority   = $data['object']->current_priority();
-						$name       = key( $data['object']->current() );
+						$name       = is_array( $data['object']->current() ) ? key( $data['object']->current() ) : '';
 						$extra_data = $name . ' : ' . $priority;
 					}
 				}
@@ -139,13 +139,14 @@ class Qliro_One_Logger {
 
 	/**
 	 * Removes the HTML snippet from the response body if its set.
+	 *
 	 * @param object $response
 	 * @return object
 	 */
 	public static function remove_html_snippet( $response ) {
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if( isset( $body['OrderHtmlSnippet'] ) ) {
+		if ( isset( $body['OrderHtmlSnippet'] ) ) {
 			unset( $body['OrderHtmlSnippet'] );
 		}
 
