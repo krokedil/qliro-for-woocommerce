@@ -7,7 +7,7 @@ Tested up to: 6.6.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.3.3
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.10.15    - version 1.5.0 =
+* Feature       - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.
+* Tweak         - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.
+* Tweak         - Adjusted the styling of the "Sync Order with Qliro" button.
+* Tweak         - Enabled the plugin to handle zero-sum orders, with an option to override via the 'qliro_check_if_needs_payment' filter.
+* Fix           - Resolved a critical error caused by the logger.
+
 = 2024.09.11    - version 1.4.0 =
 * Feature       - Added a metabox to Qliro order pages to show information about the Qliro order in WooCommerce.
 * Feature       - Added a toggle to detach specific orders from the automatic order management. This is useful if you want to manually handle specific orders in WooCommerce.
