@@ -91,7 +91,23 @@ class Qliro_One_Order_Management {
 		}
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
-		$order->update_meta_data( '_qliro_order_captured', $payment_transaction_id );
+
+		// Save the captured data to the order.
+		if ( empty( $items ) ) {
+			// Full order capture - save captured data to the order.
+			$order->update_meta_data( '_qliro_order_captured', $payment_transaction_id );
+		} else {
+			// Partial capture.
+			foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+				if ( isset( $items[ $order_item->get_id() ] ) ) {
+					// Save captured data to the order line.
+					$captured_history = ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) ? $order_item->get_meta( '_qliro_captured_data' ) . ',' : '';
+					$order_item->update_meta_data( '_qliro_captured_data', $captured_history . $payment_transaction_id . ':' . intval( $items[ $order_item->get_id() ] ) );
+					$order_item->save();
+				}
+			}
+		}
+
 		// translators: %s is transaction ID.
 		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
 		if ( 'none' !== $this->settings['capture_pending_status'] ) {

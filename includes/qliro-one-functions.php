@@ -341,7 +341,7 @@ function qoc_is_fully_captured( $order ) {
 
 	$is_fully_captured = true;
 
-	foreach ( $order->get_items() as $order_item ) {
+	foreach ( $order->get_items( 'line_item', 'shipping', 'fee' ) as $order_item ) {
 		// Iterate over the order items and make sure that all line items have been captured.
 		if ( $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			$is_fully_captured = false;
@@ -354,7 +354,7 @@ function qoc_is_fully_captured( $order ) {
 
 function qoc_get_remaining_items_to_capture( $order ) {
 	$items = array();
-	foreach ( $order->get_items() as $order_item ) {
+	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 		if ( $order_item->get_quantity() <= qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			continue;
 		}
@@ -371,8 +371,19 @@ function qoc_get_remaining_items_to_capture( $order ) {
  * @return int
  */
 function qoc_get_captured_item_quantity( $qliro_captured_data ) {
+
+	// If the captured data is empty, return 0.
+	if ( empty( $qliro_captured_data ) ) {
+		return 0;
+	}
 	$captured_items = 0;
 	$captured_data  = explode( ',', $qliro_captured_data );
+
+	// If the captured data is empty, return 0.
+	if ( empty( $captured_data ) ) {
+		return $captured_items;
+	}
+
 	foreach ( $captured_data as $capture ) {
 		$capture_data    = explode( ':', $capture );
 		$captured_items += (int) $capture_data[1];
@@ -389,7 +400,7 @@ function qoc_get_captured_item_quantity( $qliro_captured_data ) {
  */
 function qoc_get_captured_items( $order ) {
 	$captured_items = array();
-	foreach ( $order->get_items() as $order_item ) {
+	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 		$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
 	}
 

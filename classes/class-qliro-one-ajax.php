@@ -149,7 +149,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
 
-			foreach ( $order->get_items() as $order_item ) {
+			foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 				if ( isset( $items[ $order_item->get_id() ] ) ) {
 					// Save captured data to the order line.
 					$captured_history = ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) ? $order_item->get_meta( '_qliro_captured_data' ) . ',' : '';
