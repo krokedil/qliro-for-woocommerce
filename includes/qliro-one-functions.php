@@ -2,7 +2,7 @@
 /**
  * Functions file for the plugin.
  *
- * @package  Klarna_Checkout/Includes
+ * @package  Qliro_One_For_WooCommerce/Includes
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -213,7 +213,7 @@ function qoc_update_wc_shipping( $data ) {
 	// Set cart definition.
 	$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 
-	// If we don't have a Klarna order, return void.
+	// If we don't have a Qliro order, return void.
 	if ( empty( $qliro_order_id ) ) {
 		return;
 	}
