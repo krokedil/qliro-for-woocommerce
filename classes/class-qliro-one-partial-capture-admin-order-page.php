@@ -43,7 +43,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 
 		if ( in_array( $order->get_status(), $this->get_allowed_statuses(), true ) ) {
 			?>
-			<button type="button" class="button partial-capture"><?php esc_html_e( 'Capture', 'qliro-one-for-woocommerce' ); ?></button>
+			<button type="button" class="button partial-capture"><?php esc_html_e( 'Partial capture', 'qliro-one-for-woocommerce' ); ?></button>
 			<?php
 		}
 	}
@@ -105,12 +105,13 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 			return;
 		}
 
-		$captured_amount = '';
-		$order_id        = $order_item->get_order_id();
-		$captured_items  = json_decode( get_post_meta( $order_id, '_qoc_captured_items', true ), true );
-		if ( isset( $captured_items[ $order_item_id ] ) ) {
+		$captured_amount        = '';
+		$qliro_captured_data    = $order_item->get_meta( '_qliro_captured_data' );
+		$captured_item_quantity = qoc_get_captured_item_quantity( $qliro_captured_data );
+
+		if ( ! empty( $captured_item_quantity ) ) {
 			if ( $order_item->get_type() === 'line_item' ) {
-				$captured_amount = $captured_items[ $order_item_id ] . ' ' . __( 'of', 'qliro-one-for-woocommerce' ) . ' ' . $order_item->get_quantity();
+				$captured_amount = $captured_item_quantity . ' ' . __( 'of', 'qliro-one-for-woocommerce' ) . ' ' . $order_item->get_quantity();
 			} else {
 				$captured_amount = __( 'Yes', 'qliro-one-for-woocommerce' );
 			}
