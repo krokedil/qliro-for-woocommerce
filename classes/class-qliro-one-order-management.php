@@ -167,8 +167,149 @@ class Qliro_One_Order_Management {
 		}
 
 		$refund_order_id = $order->get_refunds()[0]->get_id();
+		$refund_order    = wc_get_order( $refund_order_id );
 
-		$response = QOC_WC()->api->refund_qliro_one_order( $order_id, $refund_order_id );
+		// If the order has been fully captured, we can refund the order based on the capture id stored in the order meta.
+		if ( $order->get_meta( '_qliro_order_captured' ) ) {
+			return $this->create_refund( $order, $amount, $refund_order_id );
+		}
+
+		// If the order has been partially captured, we need to get the capture id from the order item meta.
+		foreach ( $refund_order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+			$refunded_items[ $order_item->get_meta( '_refunded_item_id' ) ] = $order_item->get_quantity();
+		}
+
+		// Prepare the items to refund.
+		$prepped_items = $this->get_formatted_items_to_refund( $refunded_items, $order );
+
+		// If the prepped items array is empty, return false.
+		if ( empty( $prepped_items ) ) {
+			// translators: %s is the error message from Qliro.
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro One: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+			return false;
+		}
+
+		// Structure the prepped items array so that each capture id has its own array of items.
+		$prepped_items = array_reduce(
+			$prepped_items,
+			function ( $carry, $item ) {
+				$carry[ $item['capture_id'] ][] = array(
+					'item_id'  => $item['item_id'],
+					'quantity' => $item['quantity'],
+				);
+				return $carry;
+			},
+			array()
+		);
+
+		// Do not allow refunds with more than one capture id.
+		if ( count( $prepped_items ) > 1 ) {
+			// translators: %s is the error message from Qliro.
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro One: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+			return false;
+		}
+
+		// Create one or more refunds based on the prepped items array.
+		foreach ( $prepped_items as $capture_id => $items ) {
+			$response = $this->create_refund( $order, $amount, $refund_order_id, $capture_id, $items );
+			// If the response is an error, continue to the next capture id.
+			if ( is_wp_error( $response ) ) {
+				continue;
+			}
+			$this->save_refunded_data_to_order_lines( $order, $capture_id, $items );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get the items to refund.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param array    $refunded_items The refunded items.
+	 * @return array
+	 */
+	public function get_formatted_items_to_refund( $refunded_items, $order ) {
+		$prepped_items = array();
+		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+
+			if ( isset( $refunded_items[ $order_item->get_id() ] ) ) {
+				$captured_data                = explode( ',', $order_item->get_meta( '_qliro_captured_data' ) );
+				$qliro_previous_refunded_data = explode( ',', $order_item->get_meta( '_qliro_refunded_data' ) );
+
+				// Loop through the captured data to assign correct refund quantity to each capture_id.
+				foreach ( $captured_data as $key => $capture ) {
+					$capture = explode( ':', $capture );
+
+					// Check if the capture id is in the Qliro previous refunded data. If so, skip the capture id.
+					foreach ( $qliro_previous_refunded_data as $qliro_previous_refunded ) {
+						$qliro_previous_refunded = explode( ':', $qliro_previous_refunded );
+						if ( $capture[0] === $qliro_previous_refunded[0] ) {
+							continue 2;
+						}
+					}
+
+					// If the captured quantity is greater than or equal to the refunded quantity, add it to the prepped items array.
+					if ( $capture[1] >= abs( $refunded_items[ $order_item->get_id() ] ) ) {
+						$prepped_items[] = array(
+							'item_id'    => $order_item->get_id(),
+							'quantity'   => abs( $refunded_items[ $order_item->get_id() ] ),
+							'capture_id' => $capture[0],
+						);
+						break;
+					} else {
+						// If the captured quantity is less than the refunded quantity, add it to the prepped items array and subtract the captured quantity from the refunded quantity.
+						$prepped_items[]                          = array(
+							'item_id'    => $order_item->get_id(),
+							'quantity'   => $capture[1],
+							'capture_id' => $capture[0],
+						);
+						$refunded_items[ $order_item->get_id() ] -= $capture[1];
+					}
+				}
+			}
+		}
+
+		return $prepped_items;
+	}
+
+	/**
+	 * Save refunded data to the order lines.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param string   $capture_id The capture ID.
+	 * @param array    $items The refunded items.
+	 */
+	public function save_refunded_data_to_order_lines( $order, $capture_id, $items ) {
+
+		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+
+			// If the order item is in the refunded items (multidimensional) array, save the refunded data to the order line.
+			foreach ( $items as $item ) {
+				if ( isset( $item['item_id'] ) ) {
+					if ( $order_item->get_id() == $item['item_id'] ) {
+						// Save refunded data to the order line.
+						$refunded_history = ! empty( $order_item->get_meta( '_qliro_refunded_data' ) ) ? $order_item->get_meta( '_qliro_refunded_data' ) . ',' : '';
+						$order_item->update_meta_data( '_qliro_refunded_data', $refunded_history . $capture_id . ':' . intval( $item['quantity'] ) );
+						$order->save();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create the refund.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param float    $amount The refund amount.
+	 * @param int      $refund_order_id The refund order ID.
+	 * @param string   $capture_id The capture ID.
+	 * @param array    $items The items to refund.
+	 * @return bool|WP_Error
+	 */
+	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '' ) {
+		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items );
 
 		if ( is_wp_error( $response ) ) {
 			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );

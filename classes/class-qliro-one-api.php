@@ -129,11 +129,13 @@ class Qliro_One_API {
 	 * @param int $order_id Order ID.
 	 * @return array|WP_Error
 	 */
-	public function refund_qliro_one_order( $order_id, $refund_order_id ) {
+	public function refund_qliro_one_order( $order_id, $refund_order_id, $capture_id = '', $items = array() ) {
 		$request  = new Qliro_One_Request_Return_Items(
 			array(
 				'order_id'        => $order_id,
 				'refund_order_id' => $refund_order_id,
+				'capture_id'      => $capture_id,
+				'items'           => $items,
 			)
 		);
 		$response = $request->request();

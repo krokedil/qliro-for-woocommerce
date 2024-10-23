@@ -126,6 +126,28 @@ class Qliro_One_Helper_Order {
 	}
 
 	/**
+	 * Formats the order lines for a refund request.
+	 *
+	 * @param int $order_id The WooCommerce Order ID.
+	 * @return array
+	 */
+	public static function get_return_items_from_items( $items, $order_id ) {
+		$return_lines = array();
+		$order        = wc_get_order( $order_id );
+		foreach ( $items as $item ) {
+			$order_item = $order->get_item( $item['item_id'] );
+
+			if ( ! $order_item ) {
+				continue;
+			}
+			$return_lines[] = self::get_order_line_items( $order_item, $order, $item['quantity'] );
+
+		}
+
+		return $return_lines;
+	}
+
+	/**
 	 * Gets the formatted order line.
 	 *
 	 * @param WC_Order_Item_Product $order_item The WooCommerce order line item.
