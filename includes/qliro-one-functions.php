@@ -340,12 +340,27 @@ function qliro_one_is_valid_order( $order ) {
  * @return bool
  */
 function qoc_is_partially_captured( $order ) {
-	$is_partially_captured = false;
-	foreach ( $order->get_items() as $order_item ) {
+	$is_partially_captured             = false;
+	$order_line_count                  = 0;
+	$order_line_with_refund_data_count = 0;
+
+	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+		// Check if the order item has captured data and if the quantity is less than the captured quantity.
 		if ( ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) && $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			$is_partially_captured = true;
 			break;
 		}
+		// Count the order lines with refund data.
+		if ( ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+			++$order_line_with_refund_data_count;
+		}
+		// Count the order lines.
+		++$order_line_count;
+	}
+
+	// If the amount of order lines with refund data is less than the amount of order lines, the order is partially captured.
+	if ( $order_line_with_refund_data_count < $order_line_count ) {
+		$is_partially_captured = true;
 	}
 
 	return $is_partially_captured;
@@ -365,7 +380,7 @@ function qoc_is_fully_captured( $order ) {
 
 	$is_fully_captured = true;
 
-	foreach ( $order->get_items( 'line_item', 'shipping', 'fee' ) as $order_item ) {
+	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 		// Iterate over the order items and make sure that all line items have been captured.
 		if ( $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			$is_fully_captured = false;
@@ -376,6 +391,12 @@ function qoc_is_fully_captured( $order ) {
 	return $is_fully_captured;
 }
 
+/*
+ * Get the remaining items to capture for an order.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return array
+ */
 function qoc_get_remaining_items_to_capture( $order ) {
 	$items = array();
 	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
