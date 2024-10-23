@@ -424,8 +424,9 @@ function qoc_get_captured_item_quantity( $qliro_captured_data ) {
  */
 function qoc_get_captured_items( $order ) {
 	$captured_items = array();
-foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
-	$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
-}
+	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+		$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+	}
 
 	return $captured_items;
+}
