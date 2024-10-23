@@ -44,6 +44,7 @@ class Qliro_One_Product_Tab {
 		$product                 = wc_get_product( qoc_get_the_ID() );
 		$minimum_age             = $product->get_meta( 'qoc_min_age' );
 		$require_id_verification = $product->get_meta( 'qoc_require_id_verification' );
+		$has_risk                = $product->get_meta( 'qoc_has_risk' );
 
 		?>
 		<div id="qliro-product-settings" class="panel woocommerce_options_panel">
@@ -63,6 +64,13 @@ class Qliro_One_Product_Tab {
 					'value' => ( ! empty( $require_id_verification ) ) ? $require_id_verification : '',
 				)
 			);
+			woocommerce_wp_checkbox(
+				array(
+					'id'    => 'qoc_has_risk',
+					'label' => __( 'Has risk', 'qliro-one-for-woocommerce' ),
+					'value' => ( ! empty( $has_risk ) ) ? $has_risk : '',
+				)
+			);
 			?>
 		</div>
 		<?php
@@ -77,6 +85,7 @@ class Qliro_One_Product_Tab {
 	public function save_product_options( $post_id ) {
 		$minimum_age             = filter_input( INPUT_POST, 'qoc_min_age', FILTER_SANITIZE_NUMBER_INT );
 		$require_id_verification = filter_input( INPUT_POST, 'qoc_require_id_verification', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$has_risk                = filter_input( INPUT_POST, 'qoc_has_risk', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		$product = wc_get_product( $post_id );
 		if ( ! empty( $minimum_age ) ) {
@@ -85,6 +94,7 @@ class Qliro_One_Product_Tab {
 
 		// If the checkbox is unchecked, NULL will be returned, not "no" (in contrast to "yes"). Therefore, NULL is a valid value.
 		$product->update_meta_data( 'qoc_require_id_verification', $require_id_verification ?? 'no' );
+		$product->update_meta_data( 'qoc_has_risk', $has_risk ?? 'no' );
 		$product->save();
 	}
 } new Qliro_One_Product_Tab();

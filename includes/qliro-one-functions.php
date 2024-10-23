@@ -2,7 +2,7 @@
 /**
  * Functions file for the plugin.
  *
- * @package  Klarna_Checkout/Includes
+ * @package  Qliro_One_For_WooCommerce/Includes
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,11 +26,17 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_totals();
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
-		// If error, create new order.
-		if ( is_wp_error( $qliro_order ) || 'InProcess' !== $qliro_order['CustomerCheckoutStatus'] ) {
+		if ( is_wp_error( $qliro_order ) ) {
+			qliro_one_print_error_message( $qliro_order );
+			return;
+		}
+
+		// Validate the order.
+		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
+
 		return $qliro_order;
 	}
 	// create.
@@ -207,7 +213,7 @@ function qoc_update_wc_shipping( $data ) {
 	// Set cart definition.
 	$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 
-	// If we don't have a Klarna order, return void.
+	// If we don't have a Qliro order, return void.
 	if ( empty( $qliro_order_id ) ) {
 		return;
 	}
@@ -310,6 +316,24 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 }
 
 /**
+ * Validate qliro order's status, currency, and country settings.
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return bool
+ */
+function qliro_one_is_valid_order( $order ) {
+	$is_in_process     = ( 'InProcess' === $order['CustomerCheckoutStatus'] );
+	$is_currency_match = ( $order['Currency'] === get_woocommerce_currency() );
+	$is_country_match  = ( $order['Country'] === WC()->customer->get_billing_country() );
+
+	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Checks if the order is partially captured.
  *
  * @param WC_Order $order The WooCommerce order.
@@ -400,9 +424,8 @@ function qoc_get_captured_item_quantity( $qliro_captured_data ) {
  */
 function qoc_get_captured_items( $order ) {
 	$captured_items = array();
-	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
-		$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
-	}
+foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+	$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+}
 
 	return $captured_items;
-}

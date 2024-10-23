@@ -7,7 +7,7 @@ import woocommerce from "./woocommerce";
  * @param id
  * @returns {Promise<AxiosResponse<any>>}
  */
-const getKlarnaOrderById = async (page, endpoint, id) => {
+const getQliroOrderById = async (page, endpoint, id) => {
 	const encodedKey = await page.evaluate((auth) => {
 		const merchant = process.env.API_KEY;
 		const secret = process.env.API_SECRET;
@@ -32,7 +32,7 @@ const getWCProductById = async (id) => woocommerce.getProductById(id);
 const pricesIncludeTax = async (data) => woocommerce.pricesIncludeTax(data);
 
 export default {
-	getKlarnaOrderById,
+	getQliroOrderById,
 	getWCOrderById,
 	getWCCustomers,
 	createWCCustomer,

@@ -1,33 +1,33 @@
 {
-      "0.1.0" : {
-            "description" : "<ul><li>Initial release.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.1.0": {
+            "description": "<ul><li>Initial release.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.2.0" : {
-            "description" : "<ul><li>Tweak - Readme changes.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.2.0": {
+            "description": "<ul><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.2.1" : {
-            "description" : "<ul><li>Tweak - Readme changes.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.2.1": {
+            "description": "<ul><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.3.0" : {
-            "description" : "<ul><li>Feature - Add support for the Post Purchase Upsell for WooCommerce plugin.</li><li>Tweak - Changed the ID of the order review in our checkout template.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.3.0": {
+            "description": "<ul><li>Feature - Add support for the Post Purchase Upsell for WooCommerce plugin.</li><li>Tweak - Changed the ID of the order review in our checkout template.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.3.1" : {
-            "description" : "<ul><li>Fix - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "6.0.0",
-            "upgrade_notice" : ""
+      "0.3.1": {
+            "description": "<ul><li>Fix - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.0.0",
+            "upgrade_notice": ""
       },
       "0.4.0": {
             "description": "<ul><li>Feature - Added support for OnHold callbacks from Qliro.</li><li>Tweak - Minor change to style to make the order review take up the space its allowed to take up</li><li>Fix - Fixed an issue with adminapi endpoints containing a extra backslash causing 404 errors.</li><li>Fix - Fixed sending a incorrect field name for MinimumCustomerAge.</li><li>Fix - Fixed some error handling on the order confirmation page.</li></ul>",
@@ -112,5 +112,16 @@
             "requires": "5.9.0",
             "tested": "6.6.1",
             "upgrade_notice": ""
+      },
+      "1.4.0": {
+            "description": "<ul><li>Feature - Added a metabox to Qliro order pages to show information about the Qliro order in WooCommerce.</li><li>Feature - Added a toggle to detach specific orders from the automatic order management. This is useful if you want to manually handle specific orders in WooCommerce.</li><li>Feature - Added a sync order with Qliro button that allows you to manually sync an order with Qliro if any changes have been made to it in WooCommerce. This is not available for card payments.</li><li>Fix - Fixed support for Finish localization by passing it correctly to Qliro's API.</li><li>Fix - Fixed not properly clearing the current session with Qliro when the currency is changed in the store.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2",
+            "upgrade_notice": ""
+      },
+      "1.5.0": {
+            "description": "<ul><li>Feature - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.</li><li>Tweak - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.</li><li>Tweak - Adjusted the styling of the 'Sync Order with Qliro' button.</li><li>Tweak - Enabled the plugin to handle zero-sum orders, with an option to override via the 'qliro_check_if_needs_payment' filter.</li><li>Fix - Resolved a critical error caused by the logger.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
       }
 }

@@ -16,9 +16,11 @@ class Qliro_One_Helper_Order_Limitations {
 	 * @return array
 	 */
 	public static function set_limitations( $body ) {
-		return self::maybe_set_minimum_age(
-			self::maybe_set_require_id_verification(
-				$body
+		return self::maybe_set_has_risk(
+			self::maybe_set_minimum_age(
+				self::maybe_set_require_id_verification(
+					$body
+				)
 			)
 		);
 	}
@@ -81,6 +83,37 @@ class Qliro_One_Helper_Order_Limitations {
 		}
 
 		$body['RequireIdentityVerification'] = $require_id_verification;
+		return $body;
+	}
+
+	/**
+	 * Maybe sets has risk for the Qliro order.
+	 *
+	 * @param array $body The request body.
+	 * @return array
+	 */
+	public static function maybe_set_has_risk( $body ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings' );
+		$has_risk = $settings['has_risk'] ?? 'no';
+
+		foreach ( $body['OrderItems'] as $key => $value ) {
+			// If the general has risk setting is checked, set the flag to true on all order items.
+			if ( 'yes' === $has_risk ) {
+				$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = true;
+				continue;
+			}
+			// Check if individual products has risk checked.
+			$pid              = wc_get_product_id_by_sku( $body['OrderItems'][ $key ]['MerchantReference'] );
+			$product          = wc_get_product( $pid );
+			$product_has_risk = empty( $product ) ? false : $product->get_meta( 'qoc_has_risk' );
+			if ( 'yes' === $product_has_risk ) {
+				$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = true;
+				continue;
+			}
+			// Default to has risk as false.
+			$body['OrderItems'][ $key ]['Metadata']['HasRisk'] = false;
+		}
+
 		return $body;
 	}
 }
