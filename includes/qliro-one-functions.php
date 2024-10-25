@@ -358,8 +358,8 @@ function qoc_is_partially_captured( $order ) {
 		++$order_line_count;
 	}
 
-	// If the amount of order lines with refund data is less than the amount of order lines, the order is partially captured.
-	if ( $order_line_with_refund_data_count < $order_line_count ) {
+	// If the amount of order lines with refund data is larger than 0 but less than the amount of order lines, the order is partially captured.
+	if ( $order_line_with_refund_data_count > 0 && $order_line_with_refund_data_count < $order_line_count ) {
 		$is_partially_captured = true;
 	}
 
