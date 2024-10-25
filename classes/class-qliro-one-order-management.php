@@ -206,7 +206,7 @@ class Qliro_One_Order_Management {
 		if ( count( $prepped_items ) > 1 ) {
 			// translators: %s is the error message from Qliro.
 			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro One: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
-			return false;
+			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro One. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
 		}
 
 		// Create one or more refunds based on the prepped items array.
