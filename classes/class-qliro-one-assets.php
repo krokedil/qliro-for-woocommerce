@@ -107,6 +107,7 @@ class Qliro_One_Assets {
 				'log_to_file_nonce'           => wp_create_nonce( 'qliro_one_wc_log_js' ),
 				'payForOrder'                 => $pay_for_order,
 				'iframeSnippet'               => qliro_wc_get_snippet(),
+				'ctsCookieName'               => apply_filters( 'qliro_one_cts_cookie_name', 'ctsStatus' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );

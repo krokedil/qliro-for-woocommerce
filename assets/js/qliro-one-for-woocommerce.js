@@ -188,6 +188,8 @@ jQuery( function( $ ) {
 			var email = (('email' in customerInfo) ? customerInfo.email : null);
 			var phone = (('mobileNumber' in customerInfo) ? customerInfo.mobileNumber : null);
 
+			qliroOneForWooCommerce.setCustomerType(customerInfo);
+
 			var firstName, lastName, street, postalCode, city, area;
 			if (customerInfo.address) {
 				firstName = (('firstName' in customerInfo.address) ? customerInfo.address.firstName : null);
@@ -225,6 +227,20 @@ jQuery( function( $ ) {
 				$('#shipping_email').blur();
 			}
 		},
+
+		/*
+		 * Sets the customer type in the cookie.
+		 */
+		setCustomerType: function (customerInfo) {
+			if (customerInfo.organizationNumber ) {
+				// Business customer.
+				Cookies.set(qliroOneParams.ctsCookieName, 'business');
+			} else {
+				// Consumer customer.
+				Cookies.set(qliroOneParams.ctsCookieName, 'consumer');
+			}
+		},
+
 		getQliroOneOrder: function (data, callback) {
 			qliroOneForWooCommerce.logToFile( 'onValidateOrder from Qliro triggered' );
 			$.ajax({
