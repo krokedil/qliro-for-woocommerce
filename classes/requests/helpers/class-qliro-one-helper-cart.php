@@ -61,7 +61,7 @@ class Qliro_One_Helper_Cart {
 	/**
 	 * Gets formatted cart item.
 	 *
-	 * @param object $cart_item WooCommerce cart item object.
+	 * @param array $cart_item WooCommerce cart item object.
 	 * @return array Formatted cart item.
 	 */
 	public static function get_cart_item( $cart_item ) {
@@ -70,19 +70,26 @@ class Qliro_One_Helper_Cart {
 		} else {
 			$product = wc_get_product( $cart_item['product_id'] );
 		}
-		return array(
+
+		$formatted_cart_item = array(
 			'MerchantReference'  => self::get_product_sku( $product ),
 			'Description'        => self::get_product_name( $cart_item ),
 			'Quantity'           => $cart_item['quantity'],
 			'PricePerItemIncVat' => self::get_product_unit_price( $cart_item ),
 			'PricePerItemExVat'  => self::get_product_unit_price_no_tax( $cart_item ),
 		);
+
+		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+			$formatted_cart_item = self::get_ingrid_metadata( $formatted_cart_item, $cart_item, $product );
+		}
+
+		return $formatted_cart_item;
 	}
 
 	/**
 	 * Gets the product name.
 	 *
-	 * @param object $cart_item The cart item.
+	 * @param array $cart_item The cart item.
 	 * @return string
 	 */
 	public static function get_product_name( $cart_item ) {
@@ -95,7 +102,7 @@ class Qliro_One_Helper_Cart {
 	/**
 	 * Gets the products unit price.
 	 *
-	 * @param object $cart_item The cart item.
+	 * @param array $cart_item The cart item.
 	 * @return string
 	 */
 	public static function get_product_unit_price( $cart_item ) {
@@ -105,7 +112,7 @@ class Qliro_One_Helper_Cart {
 	/**
 	 * Gets the products unit price.
 	 *
-	 * @param object $cart_item The cart item.
+	 * @param array $cart_item The cart item.
 	 * @return string
 	 */
 	public static function get_product_unit_price_no_tax( $cart_item ) {
@@ -156,13 +163,12 @@ class Qliro_One_Helper_Cart {
 			'PricePerItemIncVat' => wc_format_decimal( $fee->amount + $fee->tax, min( wc_get_price_decimals(), 2 ) ),
 			'PricePerItemExVat'  => wc_format_decimal( $fee->amount, min( wc_get_price_decimals(), 2 ) ),
 		);
-
 	}
 
 	/**
 	 * Formats the shipping.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
 	public static function get_shipping() {
 		$packages        = WC()->shipping()->get_packages();
@@ -191,6 +197,8 @@ class Qliro_One_Helper_Cart {
 				}
 			}
 		}
+
+		return null;
 	}
 
 	/**
@@ -202,5 +210,154 @@ class Qliro_One_Helper_Cart {
 	 */
 	public static function get_product_type( $product ) {
 		return $product->is_virtual() ? 'digital' : 'physical';
+	}
+
+	/**
+	 * Set the ingrid metadata for an order item to the formatted cart item.
+	 *
+	 * @param array      $formatted_cart_item The formatted cart item.
+	 * @param array      $cart_item The cart item.
+	 * @param WC_Product $product The product.
+	 *
+	 * @return array
+	 */
+	public static function get_ingrid_metadata( $formatted_cart_item, $cart_item, $product ) {
+		$weight = $product->get_weight();
+
+		// Default empty values to 0.
+		$weight = empty( $weight ) ? 0 : $weight;
+
+		$metadata = array(
+			'Weight'     => self::get_product_weight( $product ),
+			'Sku'        => self::get_product_sku( $product ),
+			'Dimensions' => self::get_product_dimensions( $product ),
+			'OutOfStock' => ! $product->is_in_stock(),
+			'Discount'   => self::get_cart_item_discount_amount( $cart_item ),
+		);
+
+		// Add shipping attributes if there is any shipping class available.
+		$shipping_class = $product->get_shipping_class();
+
+		if ( ! empty( $shipping_class ) ) {
+			$metadata['Attributes'] = array( $shipping_class );
+		}
+
+		$formatted_cart_item['Metadata']['Ingrid'] = $metadata;
+
+		return $formatted_cart_item;
+	}
+
+	/**
+	 * Get the product weight.
+	 *
+	 * @param WC_Product $product The product.
+	 * @param string     $unit The unit to convert to, default is 'g'.
+	 *
+	 * @return int
+	 */
+	private static function get_product_weight( $product, $unit = 'g' ) {
+		$weight = $product->get_weight();
+
+		// Default empty value to 0.
+		$weight = empty( $weight ) ? 0 : $weight;
+
+		return round( wc_get_weight( $weight, $unit ) );
+	}
+
+	/**
+	 * Get the product dimensions in mm.
+	 *
+	 * @param WC_Product $product The product.
+	 * @param string     $unit The unit to convert to, default is 'mm'.
+	 *
+	 * @return array<string, int>
+	 */
+	private static function get_product_dimensions( $product, $unit = 'mm' ) {
+		$length = $product->get_length();
+		$width  = $product->get_width();
+		$height = $product->get_height();
+
+		// Default empty values to 0.
+		$length = empty( $length ) ? 0 : $length;
+		$width  = empty( $width ) ? 0 : $width;
+		$height = empty( $height ) ? 0 : $height;
+
+		return array(
+			'Length' => round( wc_get_dimension( $length, $unit ) ),
+			'Width'  => round( wc_get_dimension( $width, $unit ) ),
+			'Height' => round( wc_get_dimension( $height, $unit ) ),
+		);
+	}
+
+	/**
+	 * Get the discount amount for the cart item.
+	 *
+	 * @param array $cart_item The cart item.
+	 *
+	 * @return float
+	 */
+	private static function get_cart_item_discount_amount( $cart_item ) {
+		$line_total    = $cart_item['line_total'] + $cart_item['line_tax'];
+		$line_subtotal = $cart_item['line_subtotal'] + $cart_item['line_subtotal_tax'];
+
+		return round( $line_subtotal - $line_total, 2 );
+	}
+
+	/**
+	 * Get the merchant provided metadata for the cart for ingrid.
+	 *
+	 * @return array
+	 */
+	public static function get_ingrid_merchant_provided_metadata() {
+		$metadata = array();
+
+		self::set_ingrid_vouchers( $metadata );
+		self::set_ingrid_cart_attributes( $metadata );
+
+		return $metadata;
+	}
+
+	/**
+	 * Set the vouchers used in the cart to the metadata array for ingrid.
+	 *
+	 * @param array $metadata The metadata array.
+	 *
+	 * @return void
+	 */
+	private static function set_ingrid_vouchers( &$metadata ) {
+		foreach ( WC()->cart->get_applied_coupons() as $coupon ) {
+			$metadata[] = array(
+				'Key'   => 'Ingrid.Vouchers',
+				'Value' => $coupon,
+			);
+		}
+	}
+
+	/**
+	 * Set the cart item attributes to the metadata array for ingrid.
+	 *
+	 * @param array $metadata The metadata array.
+	 *
+	 * @return void
+	 */
+	private static function set_ingrid_cart_attributes( &$metadata ) {
+		$cart = WC()->cart->get_cart();
+
+		foreach ( $cart as $cart_item ) {
+			/**
+			 * Get the product from the cart item.
+			 *
+			 * @var WC_Product $product The product from the WooCommerce cart item.
+			 */
+			$product        = $cart_item['data'];
+			$shipping_class = $product->get_shipping_class();
+
+			if ( ! empty( $shipping_class ) ) {
+				$metadata[] = array(
+					'Key'   => 'Ingrid.CartAttributes',
+					'Value' => $shipping_class,
+				);
+			}
+		}
 	}
 }
