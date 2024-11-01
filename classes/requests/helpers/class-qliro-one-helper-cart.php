@@ -48,7 +48,7 @@ class Qliro_One_Helper_Cart {
 
 		// Get cart shipping.
 		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		if ( WC()->cart->needs_shipping() && 'yes' !== $settings['shipping_in_iframe'] ) {
+		if ( WC()->cart->needs_shipping() && ! QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			$shipping = self::get_shipping();
 			if ( null !== $shipping ) {
 				$formatted_cart_items[] = $shipping;
