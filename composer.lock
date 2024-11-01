@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c0b420a8bae6fe53a9d6762fd14c7ee",
+    "content-hash": "65e86d1e6dbd8989bebceb94510e3e63",
     "packages": [],
     "packages-dev": [
         {
@@ -470,12 +470,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "01c1ff2704a58e46f0cb1ca9d06aee07b3589082"
+                "reference": "fd4181347ee2b93e6e581acb48f8c271b763a738"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/01c1ff2704a58e46f0cb1ca9d06aee07b3589082",
-                "reference": "01c1ff2704a58e46f0cb1ca9d06aee07b3589082",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/fd4181347ee2b93e6e581acb48f8c271b763a738",
+                "reference": "fd4181347ee2b93e6e581acb48f8c271b763a738",
                 "shasum": ""
             },
             "require": {
@@ -533,7 +533,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-04-24T21:37:59+00:00"
+            "time": "2024-10-16T19:34:28+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -655,12 +655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "16c087f0e3ef52ec98be58150e4bc9a1e33ce166"
+                "reference": "9e60f9f8748736d3d06fea8ef26dccbdc5ba4902"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/16c087f0e3ef52ec98be58150e4bc9a1e33ce166",
-                "reference": "16c087f0e3ef52ec98be58150e4bc9a1e33ce166",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/9e60f9f8748736d3d06fea8ef26dccbdc5ba4902",
+                "reference": "9e60f9f8748736d3d06fea8ef26dccbdc5ba4902",
                 "shasum": ""
             },
             "require": {
@@ -728,7 +728,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-10-13T23:25:54+00:00"
+            "time": "2024-10-16T22:25:17+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
