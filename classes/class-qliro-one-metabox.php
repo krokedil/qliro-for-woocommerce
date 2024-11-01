@@ -63,6 +63,11 @@ class Qliro_One_Metabox extends OrderMetabox {
 		self::output_info( __( 'Reference', 'qliro-one' ), $qliro_reference );
 		self::output_info( __( 'Order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
 		self::output_info( __( 'Total amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
+
+		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+			self::maybe_output_shipping_reference( $qliro_order );
+		}
+
 		if ( $order_sync_disabled ) {
 			self::output_info( __( 'Order synchronization', 'qliro-one' ), __( 'Disabled', 'qliro-one' ) );
 		}
@@ -316,5 +321,38 @@ class Qliro_One_Metabox extends OrderMetabox {
 			false,
 			$classes
 		);
+	}
+
+	/**
+	 * Maybe output the shipping reference from the Qliro shipping line.
+	 *
+	 * @param array $qliro_order The Qliro order.
+	 *
+	 * @return void
+	 */
+	private static function maybe_output_shipping_reference( $qliro_order ) {
+		// Get any order lines from the Qliro order with the type shipping.
+		$shipping_line = array_filter(
+			$qliro_order['OrderItemActions'] ?? array(),
+			function ( $line ) {
+				return 'Shipping' === $line['Type'];
+			}
+		);
+
+		// If empty, just return.
+		if ( empty( $shipping_line ) ) {
+			return;
+		}
+
+		// Get the metadata from the shipping line and then the ShippingMethodMerchantReference if it exists.
+		$shipping_line = reset( $shipping_line );
+		$shipping_ref  = $shipping_line['MetaData']['ShippingMethodMerchantReference'] ?? '';
+
+		// If its empty, just return.
+		if ( empty( $shipping_ref ) ) {
+			return;
+		}
+
+		self::output_info( __( 'Shipping reference', 'qliro-one' ), $shipping_ref );
 	}
 }
