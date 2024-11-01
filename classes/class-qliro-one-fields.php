@@ -118,10 +118,15 @@ class Qliro_One_Fields {
 			),
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
+				'type'        => 'select',
 				'description' => __( 'Will display the shipping options inside of the Qliro One checkout iframe.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
+				'options'     => array(
+					'no'                  => __( 'No', 'qliro-one-for-woocommerce' ),
+					'wc_shipping'         => __( 'WooCommerce shipping methods', 'qliro-one-for-woocommerce' ),
+					'integrated_shipping' => __( 'Qliro integrated shipping methods', 'qliro-one-for-woocommerce' ),
+				),
 			),
 			'shipping_additional_header'                 => array(
 				'title'       => __( 'Shipping additional header', 'qliro-one-for-woocommerce' ),
