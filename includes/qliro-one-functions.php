@@ -225,10 +225,30 @@ function qoc_update_wc_shipping( $data ) {
 
 	do_action( 'qoc_update_shipping_data', $data );
 
+	// If we are using integrated shipping, we don't need to set the chosen method, but we need to update the shipping.
+	if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		$data['secondaryOption'] ??= $data['method'];
+		set_transient( 'qoc_shipping_data_' . $qliro_order_id, $data, HOUR_IN_SECONDS );
+		qliro_clear_shipping_package_hashes(); // Clear shipping packages to ensure we recalculate the shipping rates, and save the new pickup point.
+		return;
+	}
+
 	set_transient( 'qoc_shipping_data_' . $qliro_order_id, $data, HOUR_IN_SECONDS );
 	$chosen_shipping_methods   = array();
 	$chosen_shipping_methods[] = wc_clean( $data['method'] );
 	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qoc_chosen_shipping_method', $chosen_shipping_methods ) );
+}
+
+function qliro_clear_shipping_package_hashes() {
+	// Get all package keys.
+	$packages     = WC()->cart->get_shipping_packages();
+	$package_keys = array_keys( $packages );
+
+	// Loop them to ensure we clear the shipping rates for all of them.
+	foreach ( $package_keys as $package_key ) {
+		$wc_session_key = 'shipping_for_package_' . $package_key;
+		WC()->session->__unset( $wc_session_key );
+	}
 }
 
 /**
