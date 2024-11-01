@@ -26,6 +26,7 @@ class Qliro_One_Order_Management {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed' ), 10, 4 );
+		add_filter( 'woocommerce_hidden_order_itemmeta', array( $this, 'hide_shipping_metadata' ) );
 
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
@@ -180,5 +181,24 @@ class Qliro_One_Order_Management {
 
 		// Return true if the value is not set to no, since empty metadata is considered as enabled and will be returned as an empty string.
 		return 'no' !== $sync_enabled;
+	}
+
+	/**
+	 * Register shipping metadata as hidden.
+	 *
+	 * @param array $hidden_order_itemmeta The hidden order item metadata.
+	 *
+	 * @return array
+	 */
+	public function hide_shipping_metadata( $hidden_order_itemmeta ) {
+		if ( isset( $_GET['debug'] ) ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return $hidden_order_itemmeta;
+		}
+
+		$hidden_order_itemmeta[] = 'qliro_shipping_method';
+		$hidden_order_itemmeta[] = 'qliro_shipping_option';
+
+		return $hidden_order_itemmeta;
 	}
 }
