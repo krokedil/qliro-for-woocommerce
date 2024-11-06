@@ -130,18 +130,23 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	 * Add the pickup point meta to the rate.
 	 *
 	 * @param array  $rate The shipping rate to add the metadata to.
-	 * @param array  $pickup_location The pickup location from Qliro.
+	 * @param array  $location The pickup location from Qliro.
 	 * @param string $method The shipping method id from Qliro.
 	 *
 	 * @return void
 	 */
-	public static function add_pickup_point_meta( &$rate, $pickup_location, $method ) {
-		$location     = $pickup_location;
+	public static function add_pickup_point_meta( &$rate, $location, $method ) {
+		$name        = $location['name'] ?? '';
+		$address     = $location['address'] ?? '';
+		$city        = $location['city'] ?? '';
+		$postal_code = $location['postalCode'] ?? '';
+		$description = $location['description'] ?? array();
+
 		$pickup_point = ( new PickupPoint() )
 			->set_id( $method )
-			->set_name( $location['name'] )
-			->set_address( $location['address'], $location['city'], $location['postalCode'], '' )
-			->set_description( implode( ' ', $location['description'] ) );
+			->set_name( $name )
+			->set_address( $address, $city, $postal_code, '' )
+			->set_description( implode( ' ', $description ) );
 
 		$rate['meta_data']['krokedil_pickup_points']            = wp_json_encode( array( $pickup_point ) );
 		$rate['meta_data']['krokedil_selected_pickup_point']    = wp_json_encode( $pickup_point );
