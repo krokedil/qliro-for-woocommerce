@@ -98,10 +98,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 		}
 
 		// Make sure that order_item is a valid order item and not something else.
-		if ( ! ( $order_item instanceof WC_Order_Item )
-		&& ! ( $order_item instanceof WC_Order_Item_Product )
-		&& ! ( $order_item instanceof WC_Order_Item_Shipping )
-		&& ! ( $order_item instanceof WC_Order_Item_Fee ) ) {
+		if ( ! ( $order_item instanceof WC_Order_Item ) ) {
 			return;
 		}
 
