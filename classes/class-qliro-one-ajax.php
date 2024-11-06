@@ -159,23 +159,11 @@ class Qliro_One_Ajax extends WC_AJAX {
 				}
 			}
 
-			$settings = get_option( 'woocommerce_qliro_one_settings' );
-
+			// Add order note.
 			// translators: %s is transaction ID.
 			$order_note = sprintf( __( 'The order has been requested to be partially captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
-			if ( 'none' !== $settings['capture_pending_status'] ) {
-				$order->update_status( $settings['capture_pending_status'], $order_note );
-			} else {
-				$order->add_order_note( $order_note );
-			}
-			$order->save();
+			$order->add_order_note( $order_note );
 
-			// Add order note.
-			/*
-			$capture_note = __( 'Partial capture created for order. Capture ID: ', 'partial-delivery-for-woocommerce' ) . 'xxx';
-			$order        = wc_get_order( $order_id );
-			$order->add_order_note( $capture_note );
-			*/
 			wp_send_json_success( $order_id );
 			wp_die();
 		} catch ( Exception $e ) {
