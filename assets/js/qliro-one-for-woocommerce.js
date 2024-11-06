@@ -234,10 +234,10 @@ jQuery( function( $ ) {
 		setCustomerType: function (customerInfo) {
 			if (customerInfo.organizationNumber ) {
 				// Business customer.
-				Cookies.set(qliroOneParams.ctsCookieName, 'business');
+				Cookies.set(qliroOneParams.customerTypeCookieName, 'business');
 			} else {
 				// Consumer customer.
-				Cookies.set(qliroOneParams.ctsCookieName, 'consumer');
+				Cookies.set(qliroOneParams.customerTypeCookieName, 'consumer');
 			}
 		},
 
