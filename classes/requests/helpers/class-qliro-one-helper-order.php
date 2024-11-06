@@ -30,13 +30,15 @@ class Qliro_One_Helper_Order {
 		 * @var WC_Order_Item_Product $order_item WooCommerce order item product.
 		 */
 		foreach ( $order->get_items() as $order_item ) {
-			if ( ! empty( $items ) ) {
-				if ( isset( $items[ $order_item->get_id() ] ) ) {
-					$order_lines[] = self::get_order_line_items( $order_item, $order, $items[ $order_item->get_id() ] );
-				}
-			} else {
-				$order_lines[] = self::get_order_line_items( $order_item, $order );
+			// Maybe get the quantity of the item to send.
+			$item_quantity = $items[ $order_item->get_id() ] ?? null;
+
+			// If the list of items is not empty, and we do not have a quantity for this item, skip it.
+			if ( ! empty( $items ) && empty( $item_quantity ) ) {
+				continue;
 			}
+
+			$order_lines[] = self::get_order_line_items( $order_item, $order, $item_quantity );
 		}
 
 		/**
@@ -150,7 +152,7 @@ class Qliro_One_Helper_Order {
 	 *
 	 * @param WC_Order_Item_Product $order_item The WooCommerce order line item.
 	 * @param WC_Order|null         $order The WooCommerce order.
-	 * @param int                   $quantity The quantity of the order line item.
+	 * @param int|null              $quantity The quantity of the order line item. Defaults to null.
 	 * @return array
 	 */
 	public static function get_order_line_items( $order_item, $order, $quantity = null ) {
