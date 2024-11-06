@@ -110,7 +110,7 @@ class Qliro_One_Order_Management {
 
 		// translators: %s is transaction ID.
 		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
-		if ( 'none' !== $this->settings['capture_pending_status'] ) {
+		if ( 'none' !== $this->settings['capture_pending_status'] && qoc_is_fully_captured( $order ) ) {
 			$order->update_status( $this->settings['capture_pending_status'], $order_note );
 		} else {
 			$order->add_order_note( $order_note );
