@@ -33,8 +33,6 @@ class Qliro_One_Helper_Order {
 			if ( ! empty( $items ) ) {
 				if ( isset( $items[ $order_item->get_id() ] ) ) {
 					$order_lines[] = self::get_order_line_items( $order_item, $order, $items[ $order_item->get_id() ] );
-				} else {
-					continue;
 				}
 			} else {
 				$order_lines[] = self::get_order_line_items( $order_item, $order );
