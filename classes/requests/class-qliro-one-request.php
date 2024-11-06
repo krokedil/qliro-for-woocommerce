@@ -61,8 +61,6 @@ abstract class Qliro_One_Request {
 		}
 
 		$this->load_settings();
-
-		error_log( 'settings qliro_one_enforced_juridical_type ' . var_export( $this->settings['qliro_one_enforced_juridical_type'], true ) );
 	}
 
 	/**
