@@ -181,7 +181,6 @@ class Qliro_One_Assets {
 			'captured_items'         => ! empty( $captured_items ) ? wp_json_encode( $captured_items ) : '{}',
 			'shipping_checkbox_text' => __( 'Check this checkbox to include this shipping line in this capture.', 'qliro-one-for-woocommerce' ),
 			'fee_checkbox_text'      => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-one-for-woocommerce' ),
-			// 'capture_products'       => self::get_capture_product_names_from_parent( $order_id ),
 		);
 
 		// Checkout script.
@@ -220,32 +219,6 @@ class Qliro_One_Assets {
 		);
 
 		wp_enqueue_style( 'qoc_admin_style' );
-	}
-
-	/**
-	 * Get .
-	 *
-	 * @return void
-	 */
-	private static function get_capture_product_names_from_parent( $order_id ) {
-		// Get all captures for this order.
-		// $captures = qoc_get_captures_from_order( $order_id );
-		$captures = array();
-		$products = array();
-
-		// Get all products in captures.
-		foreach ( $captures as $capture ) {
-			$capture_id     = $capture->get_id();
-			$captured_items = $capture->get_items( array( 'line_item', 'shipping', 'fee' ) );
-
-			foreach ( $captured_items as $captured_item ) {
-				$name                      = $captured_item->get_name();
-				$quantity                  = $captured_item->get_quantity();
-				$products[ $capture_id ][] = "$name x $quantity";
-			}
-		}
-
-		return $products;
 	}
 }
 new Qliro_One_Assets();
