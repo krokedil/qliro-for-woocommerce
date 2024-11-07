@@ -123,14 +123,14 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		if ( 'none' === $this->settings['capture_ok_status'] ) {
-			$order->add_order_note( __( 'The order has been successfully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
-			$order->save();
-			return;
-		}
+		// Add order note.
+		$order->add_order_note( __( 'The order has been successfully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
 
-		$order->update_status( $this->settings['capture_ok_status'], __( 'The order has been successfully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
-		$order->save();
+		// Check if the order is fully captured and update the status accordingly.
+		if ( 'none' !== $this->settings['capture_ok_status'] && qoc_is_fully_captured( $order ) ) {
+			$order->update_status( $this->settings['capture_ok_status'], __( 'The order has been fully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->save();
+		}
 	}
 
 	/**
