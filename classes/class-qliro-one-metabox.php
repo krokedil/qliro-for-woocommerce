@@ -284,7 +284,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
-		$is_captured    = $order->get_meta( '_qliro_order_captured' );
+		$is_captured    = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
 		$is_cancelled   = $order->get_meta( '_qliro_order_cancelled' );
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 

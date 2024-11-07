@@ -28,6 +28,9 @@ class Qliro_One_Assets {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
+
+		// Admin scripts.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_order_script' ) );
 	}
 
 	/**
@@ -107,6 +110,7 @@ class Qliro_One_Assets {
 				'log_to_file_nonce'           => wp_create_nonce( 'qliro_one_wc_log_js' ),
 				'payForOrder'                 => $pay_for_order,
 				'iframeSnippet'               => qliro_wc_get_snippet(),
+				'customerTypeCookieName'      => apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );
@@ -139,6 +143,83 @@ class Qliro_One_Assets {
 	public function register_admin_assets() {
 		$script_version = $this->qoc_is_script_debug_enabled();
 		wp_register_script( 'qliro-one-metabox', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-metabox' . $script_version . '.js', array( 'jquery', 'jquery-blockui' ), QLIRO_WC_VERSION, false );
+	}
+
+	/**
+	 * Enqueues the admin order script.
+	 * This script is used on the WooCommerce order page.
+	 *
+	 * @param string $hook The current admin page.
+	 *
+	 * @return void
+	 */
+	public function enqueue_admin_order_script( $hook ) {
+
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+
+		if ( ! in_array( $hook, array( 'shop_order', 'woocommerce_page_wc-orders' ), true ) && ! in_array( $screen_id, array( 'shop_order' ), true ) ) {
+			return;
+		}
+
+		$order_id = qoc_get_the_ID();
+		$order    = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		$captured_items = qoc_get_captured_items( $order );
+
+		// Script Params.
+		$params = array(
+			'ajax_url'               => admin_url( 'admin-ajax.php' ),
+			'make_capture_url'       => WC_AJAX::get_endpoint( 'qliro_one_make_capture' ),
+			'make_capture_nonce'     => wp_create_nonce( 'qliro_one_make_capture' ),
+			'order_id'               => $order_id,
+			'make_capture_confirm'   => __( 'Are you sure you wish to process this capture?', 'qliro-one-for-woocommerce' ),
+			'make_capture_no_items'  => __( 'You must select at least one item to deliver.', 'qliro-one-for-woocommerce' ),
+			'captured_items'         => ! empty( $captured_items ) ? wp_json_encode( $captured_items ) : '{}',
+			'shipping_checkbox_text' => __( 'Check this checkbox to include this shipping line in this capture.', 'qliro-one-for-woocommerce' ),
+			'fee_checkbox_text'      => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-one-for-woocommerce' ),
+		);
+
+		// Checkout script.
+		wp_register_script(
+			'qoc_admin',
+			QLIRO_WC_PLUGIN_URL . '/assets/js/admin-order.js',
+			array( 'jquery', 'jquery-tiptip' ),
+			QLIRO_WC_VERSION,
+			true
+		);
+
+		// Localize the script and add the params.
+		wp_localize_script(
+			'qoc_admin',
+			'qoc_admin_params',
+			$params
+		);
+
+		// Enqueue the script.
+		wp_enqueue_script( 'qoc_admin' );
+
+		self::enqueue_admin_style();
+	}
+
+	/**
+	 * Enqueues the admin style.
+	 *
+	 * @return void
+	 */
+	private static function enqueue_admin_style() {
+		wp_register_style(
+			'qoc_admin_style',
+			QLIRO_WC_PLUGIN_URL . '/assets/css/admin.css',
+			array(),
+			QLIRO_WC_VERSION
+		);
+
+		wp_enqueue_style( 'qoc_admin_style' );
 	}
 }
 new Qliro_One_Assets();
