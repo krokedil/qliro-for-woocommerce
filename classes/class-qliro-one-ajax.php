@@ -85,7 +85,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 		$order_id        = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_one_order = QOC_WC()->api->get_qliro_one_order( $order_id );
-		if ( is_wp_error($qliro_one_order)) {
+		if ( is_wp_error( $qliro_one_order ) ) {
 			wp_send_json_error( $qliro_one_order->get_error_message() );
 		}
 
