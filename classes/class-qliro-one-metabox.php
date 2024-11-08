@@ -56,12 +56,14 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		$last_transaction    = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
+		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-one' );
+		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one' );
 		$order_sync_disabled = 'no' === $order_sync;
 
 		self::output_info( __( 'Payment method', 'qliro-one' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
 		self::output_info( __( 'Order id', 'qliro-one' ), $qliro_order_id );
 		self::output_info( __( 'Reference', 'qliro-one' ), $qliro_reference );
-		self::output_info( __( 'Order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
+		self::output_info( __( 'Order status', 'qliro-one' ), $transaction_type, $transaction_status );
 		self::output_info( __( 'Total amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
 		if ( $order_sync_disabled ) {
 			self::output_info( __( 'Order synchronization', 'qliro-one' ), __( 'Disabled', 'qliro-one' ) );
@@ -279,9 +281,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
-		$is_captured    = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
-		$is_cancelled   = $order->get_meta( '_qliro_order_cancelled' );
-		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
+		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
+		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
+		$payment_method          = $order->get_meta( 'qliro_one_payment_method_name' );
+		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
 
 		// Only output the sync button if the order is a Qliro payment method order. Cant update card orders for example.
 		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 && strpos( $payment_method, 'TRUSTLY_' ) !== 0 ) {
@@ -304,7 +307,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_one_sync_order'
 		);
 
-		$classes = ( floatval( $order->get_total() ) === $last_transaction['Amount'] ) ? 'button-secondary' : 'button-primary';
+		$classes = ( floatval( $order->get_total() ) === $last_transaction_amount ) ? 'button-secondary' : 'button-primary';
 
 		if ( $order_sync_disabled ) {
 			$classes .= ' disabled';
