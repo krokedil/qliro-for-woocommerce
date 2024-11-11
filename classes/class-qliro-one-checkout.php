@@ -125,6 +125,13 @@ class Qliro_One_Checkout {
 
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
+
+			// Verify if the order is not already completed in Qliro, set the WC Session to be reload the page.
+			if ( ! qliro_one_verify_not_completed( $qliro_order ) ) {
+				WC()->session->reload_checkout = true;
+				return;
+			}
+
 			qliro_one_unset_sessions();
 			$qliro_order = qliro_one_maybe_create_order();
 		}
