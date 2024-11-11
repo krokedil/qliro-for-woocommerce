@@ -19,7 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
-= 2024.11.07    - version 1.5.1 =
+= 2024.11.11    - version 1.5.1 =
 * Fix           - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.
 
 = 2024.10.15    - version 1.5.0 =
