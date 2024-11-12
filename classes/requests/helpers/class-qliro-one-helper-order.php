@@ -16,10 +16,11 @@ class Qliro_One_Helper_Order {
 	/**
 	 * Gets the order lines for the order.
 	 *
-	 * @param int $order_id The WooCommerce order id.
+	 * @param int   $order_id The WooCommerce order id.
+	 * @param array $items The order items (optional).
 	 * @return array
 	 */
-	public static function get_order_lines( $order_id ) {
+	public static function get_order_lines( $order_id, $items = array() ) {
 		$order       = wc_get_order( $order_id );
 		$order_lines = array();
 
@@ -29,7 +30,15 @@ class Qliro_One_Helper_Order {
 		 * @var WC_Order_Item_Product $order_item WooCommerce order item product.
 		 */
 		foreach ( $order->get_items() as $order_item ) {
-			$order_lines[] = self::get_order_line_items( $order_item, $order );
+			// Maybe get the quantity of the item to send.
+			$item_quantity = $items[ $order_item->get_id() ] ?? null;
+
+			// If the list of items is not empty, and we do not have a quantity for this item, skip it.
+			if ( ! empty( $items ) && empty( $item_quantity ) ) {
+				continue;
+			}
+
+			$order_lines[] = self::get_order_line_items( $order_item, $order, $item_quantity );
 		}
 
 		/**
@@ -38,7 +47,15 @@ class Qliro_One_Helper_Order {
 		 * @var WC_Order_Item_Shipping $order_item WooCommerce order item shipping.
 		 */
 		foreach ( $order->get_items( 'shipping' ) as $order_item ) {
-			$order_lines[] = self::process_order_item_shipping( $order_item, $order );
+			if ( ! empty( $items ) ) {
+				if ( isset( $items[ $order_item->get_id() ] ) ) {
+					$order_lines[] = self::process_order_item_shipping( $order_item, $order );
+				} else {
+					continue;
+				}
+			} else {
+				$order_lines[] = self::process_order_item_shipping( $order_item, $order );
+			}
 		}
 
 		/**
@@ -47,7 +64,15 @@ class Qliro_One_Helper_Order {
 		 * @var WC_Order_Item_Fee $order_item WooCommerce order item fee.
 		 */
 		foreach ( $order->get_items( 'fee' ) as $order_item ) {
-			$order_lines[] = self::process_order_item_fee( $order_item, $order );
+			if ( ! empty( $items ) ) {
+				if ( isset( $items[ $order_item->get_id() ] ) ) {
+					$order_lines[] = self::process_order_item_fee( $order_item, $order );
+				} else {
+					continue;
+				}
+			} else {
+				$order_lines[] = self::process_order_item_fee( $order_item, $order );
+			}
 		}
 
 		return array_values( $order_lines );
@@ -101,19 +126,43 @@ class Qliro_One_Helper_Order {
 	}
 
 	/**
+	 * Formats the order lines for a refund request.
+	 *
+	 * @param int $order_id The WooCommerce Order ID.
+	 * @return array
+	 */
+	public static function get_return_items_from_items( $items, $order_id ) {
+		$return_lines = array();
+		$order        = wc_get_order( $order_id );
+		foreach ( $items as $item ) {
+			$order_item = $order->get_item( $item['item_id'] );
+
+			if ( ! $order_item ) {
+				continue;
+			}
+			$return_lines[] = self::get_order_line_items( $order_item, $order, $item['quantity'] );
+
+		}
+
+		return $return_lines;
+	}
+
+	/**
 	 * Gets the formatted order line.
 	 *
 	 * @param WC_Order_Item_Product $order_item The WooCommerce order line item.
 	 * @param WC_Order|null         $order The WooCommerce order.
+	 * @param int|null              $quantity The quantity of the order line item. Defaults to null.
 	 * @return array
 	 */
-	public static function get_order_line_items( $order_item, $order ) {
+	public static function get_order_line_items( $order_item, $order, $quantity = null ) {
 		$order_id = $order_item->get_order_id();
 		$order    = wc_get_order( $order_id );
+		$quantity = $quantity ? $quantity : $order_item->get_quantity();
 		return array(
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
-			'Quantity'           => $order_item->get_quantity(),
+			'Quantity'           => $quantity,
 			'Type'               => 'Product',
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c0b420a8bae6fe53a9d6762fd14c7ee",
+    "content-hash": "65e86d1e6dbd8989bebceb94510e3e63",
     "packages": [],
     "packages-dev": [
         {
@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73"
+                "reference": "008a5e9dfee9488bd2f063337e29078c0e8df65d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73",
-                "reference": "1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/008a5e9dfee9488bd2f063337e29078c0e8df65d",
+                "reference": "008a5e9dfee9488bd2f063337e29078c0e8df65d",
                 "shasum": ""
             },
             "require": {
@@ -278,9 +278,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.3.3"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.4.0"
             },
-            "time": "2024-09-25T17:38:08+00:00"
+            "time": "2024-11-11T22:34:03+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -470,12 +470,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "01c1ff2704a58e46f0cb1ca9d06aee07b3589082"
+                "reference": "fd4181347ee2b93e6e581acb48f8c271b763a738"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/01c1ff2704a58e46f0cb1ca9d06aee07b3589082",
-                "reference": "01c1ff2704a58e46f0cb1ca9d06aee07b3589082",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/fd4181347ee2b93e6e581acb48f8c271b763a738",
+                "reference": "fd4181347ee2b93e6e581acb48f8c271b763a738",
                 "shasum": ""
             },
             "require": {
@@ -533,7 +533,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-04-24T21:37:59+00:00"
+            "time": "2024-10-16T19:34:28+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -655,12 +655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "16c087f0e3ef52ec98be58150e4bc9a1e33ce166"
+                "reference": "204c9630014042ff67e7ce760edf92a54bf063ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/16c087f0e3ef52ec98be58150e4bc9a1e33ce166",
-                "reference": "16c087f0e3ef52ec98be58150e4bc9a1e33ce166",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/204c9630014042ff67e7ce760edf92a54bf063ed",
+                "reference": "204c9630014042ff67e7ce760edf92a54bf063ed",
                 "shasum": ""
             },
             "require": {
@@ -728,7 +728,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-10-13T23:25:54+00:00"
+            "time": "2024-11-12T11:48:09+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

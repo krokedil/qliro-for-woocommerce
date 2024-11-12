@@ -318,10 +318,10 @@ abstract class Qliro_One_Request {
 	public function get_enforced_juridicial_type() {
 		$default_value = '';
 		if ( empty( $this->settings['qliro_one_enforced_juridical_type'] ) || 'None' === $this->settings['qliro_one_enforced_juridical_type'] ) {
-			return $default_value;
+			return apply_filters( 'qliro_one_enforced_juridical_type', $default_value );
 		}
 
-		return $this->settings['qliro_one_enforced_juridical_type'];
+		return apply_filters( 'qliro_one_enforced_juridical_type', $this->settings['qliro_one_enforced_juridical_type'] );
 	}
 
 	/**

@@ -5,7 +5,7 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.5.1
+ * Version: 1.6.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.5.1' );
+define( 'QLIRO_WC_VERSION', '1.6.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -229,6 +229,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-shipping-methods.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-partial-capture-admin-order-page.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
