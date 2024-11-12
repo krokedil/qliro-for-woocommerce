@@ -34,7 +34,7 @@ jobs:
       run: cat .kernlignore
 
     - name: Copy files excluding .kernlignore patterns
-      run: rsync -av --exclude-from='.kernlignore' --exclude='temp' --filter=':- .kernlignore' . temp/qliro-one-for-woocommerce
+      run: rsync -av --exclude-from='.kernlignore' --exclude='temp' . temp/qliro-one-for-woocommerce
 
     - name: List files in temp directory
       run: ls -R temp/qliro-one-for-woocommerce
