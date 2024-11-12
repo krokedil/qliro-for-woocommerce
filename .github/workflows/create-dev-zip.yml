@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
 
     - name: Composer Install
       run: composer install
@@ -17,11 +19,19 @@ jobs:
     - name: NPM install
       run: npm ci && npm run build
 
+    - name: Get branch name and commit hash
+      id: vars
+      run: |
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+
     - name: Create zip file
-      run: zip -r qliro-one-for-woocommerce.zip . -x@.kernlignore
+      run: zip -r qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip . -x@./.kernlignore
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: qliro-one-for-woocommerce-zip
-        path: qliro-one-for-woocommerce.zip
+        name: qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}
+        path: qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip
