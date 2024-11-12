@@ -30,8 +30,14 @@ jobs:
     - name: Create temporary directory
       run: mkdir -p temp/qliro-one-for-woocommerce
 
+    - name: Debug .kernlignore file
+      run: cat .kernlignore
+
     - name: Copy files excluding .kernlignore patterns
       run: rsync -av --exclude-from='.kernlignore' . temp/qliro-one-for-woocommerce
+
+    - name: List files in temp directory
+      run: ls -R temp/qliro-one-for-woocommerce
 
     - name: Create zip file
       run: cd temp && zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
