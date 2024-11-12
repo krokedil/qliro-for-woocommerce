@@ -27,8 +27,14 @@ jobs:
         echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
         echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
 
+    - name: Create temporary directory
+      run: mkdir -p temp/qliro-one-for-woocommerce
+
+    - name: Copy files excluding .kernlignore patterns
+      run: rsync -av --exclude-from='.kernlignore' . temp/qliro-one-for-woocommerce
+
     - name: Create zip file
-      run: zip -r qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip . -x@./.kernlignore
+      run: cd temp && zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
