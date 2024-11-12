@@ -7,7 +7,7 @@ Tested up to: 6.6.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.3.3
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2024.11.12    - version 1.6.0 =
+* Feature       - Added support for partial capture.
+* Feature       - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.
+* Tweak         - Tweaked the metabox's design.
+
 = 2024.10.15    - version 1.5.0 =
 * Feature       - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.
 * Tweak         - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.
