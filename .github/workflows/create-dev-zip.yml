@@ -41,8 +41,8 @@ jobs:
 
     - name: Create zip file
       run: |
-        cd temp
-        zip -vr ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
+        cd temp/qliro-one-for-woocommerce
+        zip -r ../../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
