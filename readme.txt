@@ -24,6 +24,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Feature       - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.
 * Tweak         - Tweaked the metabox's design.
 
+= 2024.11.11    - version 1.5.1 =
+* Fix           - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.
+
 = 2024.10.15    - version 1.5.0 =
 * Feature       - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.
 * Tweak         - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.

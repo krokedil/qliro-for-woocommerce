@@ -33,6 +33,13 @@ function qliro_one_maybe_create_order() {
 
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
+
+			// Verify if the order is not already completed in Qliro, if it is redirect the customer to the thankyou page.
+			if ( ! qliro_one_verify_not_completed( $qliro_order ) ) {
+				qliro_one_redirect_to_thankyou_page();
+				return;
+			}
+
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
@@ -318,13 +325,13 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 /**
  * Validate qliro order's status, currency, and country settings.
  *
- * @param WC_Order $order The WooCommerce order.
+ * @param array $qliro_order The Qliro order.
  * @return bool
  */
-function qliro_one_is_valid_order( $order ) {
-	$is_in_process     = ( 'InProcess' === $order['CustomerCheckoutStatus'] );
-	$is_currency_match = ( $order['Currency'] === get_woocommerce_currency() );
-	$is_country_match  = ( $order['Country'] === WC()->customer->get_billing_country() );
+function qliro_one_is_valid_order( $qliro_order ) {
+	$is_in_process     = ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] );
+	$is_currency_match = ( get_woocommerce_currency() === $qliro_order['Currency'] );
+	$is_country_match  = ( WC()->customer->get_billing_country() === $qliro_order['Country'] );
 
 	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
@@ -450,4 +457,47 @@ function qoc_get_captured_items( $order ) {
 	}
 
 	return $captured_items;
+}
+
+/**
+ * Verify if that the order is not already completed in Qliro.
+ *
+ * @param array $qliro_order The Qliro order.
+ *
+ * @return bool
+ */
+function qliro_one_verify_not_completed( $qliro_order ) {
+	// If the order from Qliro is already completed, we should not proceed with the order, and instead redirect the customer to the thankyou page.
+	if ( 'Completed' === $qliro_order['CustomerCheckoutStatus'] ) {
+		$qliro_id = $qliro_order['OrderId'];
+		Qliro_One_Logger::log( "Qliro order {$qliro_id} is already completed. Redirecting to the thankyou page." );
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Redirect the customer to the thankyou page for a completed qliro order.
+ *
+ * @return void
+ */
+function qliro_one_redirect_to_thankyou_page() {
+	// Get the WC Order for the Qliro order.
+	$confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
+	$order           = qoc_get_order_by_confirmation_id( $confirmation_id );
+
+	$redirect_url = '';
+	if ( empty( $order ) ) {
+		Qliro_One_Logger::log( "No order found with the confirmation id $confirmation_id when trying to redirect the customer to the thankyou page." );
+		$redirect_url = wc_get_endpoint_url( 'order-received' );
+	} else {
+		Qliro_One_Logger::log( "Redirecting the customer to the thankyou page for the order with the confirmation id $confirmation_id." );
+		$redirect_url = $order->get_checkout_order_received_url();
+	}
+
+	// Redirect the customer to the thankyou page for the order, with the orders confirmation id as a query parameter.
+	$redirect_url = add_query_arg( 'qliro_one_confirm_page', $confirmation_id, $redirect_url );
+	wp_safe_redirect( $redirect_url );
+	exit;
 }

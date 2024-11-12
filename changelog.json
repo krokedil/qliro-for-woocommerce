@@ -124,6 +124,11 @@
             "requires": "5.9.0",
             "tested": "6.6.2"
       },
+      "1.5.1": {
+            "description": "<ul><li>Fix - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
       "1.6.0": {
             "description": "<ul><li>Feature - Added support for partial capture.</li><li>Feature - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.</li><li>Tweak - Tweaked the metabox's design.</li></ul>",
             "requires": "5.9.0",
