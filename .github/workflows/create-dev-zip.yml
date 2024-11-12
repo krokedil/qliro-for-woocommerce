@@ -11,11 +11,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Composer Install
+      run: composer install
+
+    - name: NPM install
+      run: npm ci && npm run build
+
     - name: Create zip file
-      run: zip -r plugin.zip .
+      run: zip -r qliro-one-for-woocommerce.zip . -x@.kernlignore
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: plugin-zip
-        path: plugin.zip
+        name: qliro-one-for-woocommerce-zip
+        path: qliro-one-for-woocommerce.zip
