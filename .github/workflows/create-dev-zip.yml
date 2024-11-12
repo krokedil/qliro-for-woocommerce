@@ -40,7 +40,9 @@ jobs:
       run: ls -R temp/qliro-one-for-woocommerce
 
     - name: Create zip file
-      run: cd temp && zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
+      run: |
+        cd temp
+        zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
