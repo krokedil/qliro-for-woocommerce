@@ -3,10 +3,10 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.3.3
+WC tested up to: 9.4.0
 Stable tag: 1.6.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
