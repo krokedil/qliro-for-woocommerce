@@ -49,13 +49,5 @@ jobs:
       run: |
         aws s3 cp qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip
 
-    - name: Add comment to workflow run
-      uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.runId,
-            body: `Download URL: https://krokedil-plugin-dev-zip.s3.amazonaws.com/qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip`
-          })
+    - name: Add annotation to workflow run
+      run: echo "::notice file=qliro-one-for-woocommerce-\${{ env.BRANCH_NAME }}-\${{ env.COMMIT_HASH }}.zip::now what is this"
