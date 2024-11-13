@@ -97,6 +97,10 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			$body['ButtonCornerRadius'] = $this->get_button_corder_radius();
 		}
 
+		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+			$body['MerchantProvidedMetadata'] = Qliro_One_Helper_Cart::get_ingrid_merchant_provided_metadata();
+		}
+
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }

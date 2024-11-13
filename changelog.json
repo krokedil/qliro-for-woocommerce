@@ -133,5 +133,10 @@
             "description": "<ul><li>Feature - Added support for partial capture.</li><li>Feature - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.</li><li>Tweak - Tweaked the metabox's design.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.6.2"
+      },
+      "1.7.0": {
+            "description": "<ul><li>Feature - Added support for shipping with Ingrid.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
       }
 }
