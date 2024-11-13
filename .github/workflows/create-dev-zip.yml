@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 1
 
@@ -33,8 +33,21 @@ jobs:
     - name: Copy files excluding .kernlignore patterns
       run: rsync -av --exclude-from='.kernlignore' --exclude='temp' . temp/qliro-one-for-woocommerce
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Create zip file
+      run: |
+        cd temp
+        zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        name: qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}
-        path: temp/
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_KROKEDIL_PLUGIN_DEV_ZIP }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_KROKEDIL_PLUGIN_DEV_ZIP }}
+        aws-region: eu-north-1
+
+    - name: Upload to S3
+      run: |
+        aws s3 cp qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip --acl public-read
+
+    - name: Output S3 URL
+      run: echo "Download URL: https://krokedil-plugin-dev-zip.s3.amazonaws.com/qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip"
