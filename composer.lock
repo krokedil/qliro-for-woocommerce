@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73"
+                "reference": "008a5e9dfee9488bd2f063337e29078c0e8df65d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73",
-                "reference": "1995245b3ebfd82eeaf3a8e9d3ec962f00ab3b73",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/008a5e9dfee9488bd2f063337e29078c0e8df65d",
+                "reference": "008a5e9dfee9488bd2f063337e29078c0e8df65d",
                 "shasum": ""
             },
             "require": {
@@ -278,9 +278,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.3.3"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.4.0"
             },
-            "time": "2024-09-25T17:38:08+00:00"
+            "time": "2024-11-11T22:34:03+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -655,12 +655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "9e60f9f8748736d3d06fea8ef26dccbdc5ba4902"
+                "reference": "204c9630014042ff67e7ce760edf92a54bf063ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/9e60f9f8748736d3d06fea8ef26dccbdc5ba4902",
-                "reference": "9e60f9f8748736d3d06fea8ef26dccbdc5ba4902",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/204c9630014042ff67e7ce760edf92a54bf063ed",
+                "reference": "204c9630014042ff67e7ce760edf92a54bf063ed",
                 "shasum": ""
             },
             "require": {
@@ -728,7 +728,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-10-16T22:25:17+00:00"
+            "time": "2024-11-12T11:48:09+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

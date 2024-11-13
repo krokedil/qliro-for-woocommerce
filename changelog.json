@@ -123,5 +123,15 @@
             "description": "<ul><li>Feature - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.</li><li>Tweak - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.</li><li>Tweak - Adjusted the styling of the 'Sync Order with Qliro' button.</li><li>Tweak - Enabled the plugin to handle zero-sum orders, with an option to override via the 'qliro_check_if_needs_payment' filter.</li><li>Fix - Resolved a critical error caused by the logger.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.6.2"
+      },
+      "1.5.1": {
+            "description": "<ul><li>Fix - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
+      "1.6.0": {
+            "description": "<ul><li>Feature - Added support for partial capture.</li><li>Feature - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.</li><li>Tweak - Tweaked the metabox's design.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
       }
 }
