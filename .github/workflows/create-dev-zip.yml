@@ -16,6 +16,9 @@ jobs:
       with:
         fetch-depth: 1
 
+    - name: Create composer cache directory
+      run: mkdir -p ~/.composer/cache
+
     - name: Cache Composer dependencies
       uses: actions/cache@v4
       with:
@@ -23,9 +26,6 @@ jobs:
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-composer-
-
-    - name: Composer Install
-      run: composer install --no-dev
 
     - name: Cache npm dependencies
       uses: actions/cache@v4
@@ -35,8 +35,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-npm-
 
-    - name: NPM install
-      run: npm ci && npm run build
+    - name: Install dependencies and build project
+      run: |
+        mkdir -p ~/.composer/cache
+        composer install --prefer-dist --no-progress
+        npm ci && npm run build
 
     - name: Get branch name and commit hash
       id: vars
@@ -48,18 +51,11 @@ jobs:
         echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
         echo "ZIP_FILE_NAME=${ZIP_FILE_NAME}" >> $GITHUB_ENV
 
-    - name: Modify version in plugin file
+    - name: Modify version, prepare zip directory, and create zip file
       run: |
-        sed -i '/^\* Version:/ s/$/-dev.${BRANCH_NAME}.${COMMIT_HASH}/' ${{ env.PLUGIN_SLUG }}.php
-
-    - name: Create temporary directory
-      run: mkdir -p dev-zip-temp/${{ env.PLUGIN_SLUG }}
-
-    - name: Copy files excluding .kernlignore patterns
-      run: rsync -av --exclude-from='.kernlignore' --exclude='dev-zip-temp' . dev-zip-temp/${{ env.PLUGIN_SLUG }}
-
-    - name: Create zip file
-      run: |
+        sed -i "s/^ \* Version: \(.*\)/ \* Version: \1-dev.${BRANCH_NAME}.${COMMIT_HASH}/" ${{ env.PLUGIN_SLUG }}.php
+        mkdir -p dev-zip-temp/${{ env.PLUGIN_SLUG }}
+        rsync -av --exclude-from='.kernlignore' --exclude='dev-zip-temp' . dev-zip-temp/${{ env.PLUGIN_SLUG }}
         cd dev-zip-temp
         zip -r ../${{ env.ZIP_FILE_NAME }} ${{ env.PLUGIN_SLUG }}
 
