@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 1
 
@@ -29,7 +29,7 @@ jobs:
 
     - name: Modify version in qliro-one-for-woocommerce.php
       run: |
-        sed -i '/^\* Version:/ s/$/-dev.${{ env.BRANCH_NAME }}.${{ env.COMMIT_HASH }}/' qliro-one-for-woocommerce.php
+        sed -i '/^\* Version:/ s/$/-dev.${BRANCH_NAME}.${COMMIT_HASH}/' qliro-one-for-woocommerce.php
 
     - name: Create temporary directory
       run: mkdir -p dev-zip-temp/qliro-one-for-woocommerce
@@ -40,10 +40,10 @@ jobs:
     - name: Create zip file
       run: |
         cd dev-zip-temp
-        zip -r ../qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
+        zip -r ../qliro-one-for-woocommerce-dev-${BRANCH_NAME}-${COMMIT_HASH}.zip qliro-one-for-woocommerce
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_KROKEDIL_PLUGIN_DEV_ZIP }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_KROKEDIL_PLUGIN_DEV_ZIP }}
@@ -51,7 +51,7 @@ jobs:
 
     - name: Upload to S3
       run: |
-        aws s3 cp qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip
+        aws s3 cp qliro-one-for-woocommerce-dev-${BRANCH_NAME}-${COMMIT_HASH}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-dev-${BRANCH_NAME}-${COMMIT_HASH}.zip
 
     - name: Add annotation to workflow run with dev zip url
-      run: echo "::notice::Dev Zip Url available for 30 days, https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip"
+      run: echo "::notice::Dev Zip Url available for 30 days, https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/qliro-one-for-woocommerce-dev-${BRANCH_NAME}-${COMMIT_HASH}.zip"
