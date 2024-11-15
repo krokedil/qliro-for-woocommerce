@@ -14,7 +14,7 @@ jobs:
         fetch-depth: 1
 
     - name: Composer Install
-      run: composer install
+      run: composer install --no-dev
 
     - name: NPM install
       run: npm ci && npm run build
@@ -27,16 +27,20 @@ jobs:
         echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
         echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
 
+    - name: Modify version in qliro-one-for-woocommerce.php
+      run: |
+        sed -i '/^\* Version:/ s/$/-dev.${{ env.BRANCH_NAME }}.${{ env.COMMIT_HASH }}/' qliro-one-for-woocommerce.php
+
     - name: Create temporary directory
-      run: mkdir -p temp/qliro-one-for-woocommerce
+      run: mkdir -p dev-zip-temp/qliro-one-for-woocommerce
 
     - name: Copy files excluding .kernlignore patterns
-      run: rsync -av --exclude-from='.kernlignore' --exclude='temp' . temp/qliro-one-for-woocommerce
+      run: rsync -av --exclude-from='.kernlignore' --exclude='dev-zip-temp' . dev-zip-temp/qliro-one-for-woocommerce
 
     - name: Create zip file
       run: |
-        cd temp
-        zip -r ../qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
+        cd dev-zip-temp
+        zip -r ../qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip qliro-one-for-woocommerce
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -47,7 +51,7 @@ jobs:
 
     - name: Upload to S3
       run: |
-        aws s3 cp qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip
+        aws s3 cp qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip s3://krokedil-plugin-dev-zip/qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip
 
-    - name: Add annotation to workflow run
-      run: echo "::notice::You can download a dev version of qliro-one-for-woocommerce from the url https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/qliro-one-for-woocommerce-\${{ env.BRANCH_NAME }}-\${{ env.COMMIT_HASH }}.zip"
+    - name: Add annotation to workflow run with dev zip url
+      run: echo "::notice::Dev Zip Url available for 30 days, https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/qliro-one-for-woocommerce-dev-${{ env.BRANCH_NAME }}-${{ env.COMMIT_HASH }}.zip"
