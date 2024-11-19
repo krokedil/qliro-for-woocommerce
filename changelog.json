@@ -138,5 +138,10 @@
             "description": "<ul><li>Feature - Added support for shipping with Ingrid.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.6.2"
+      },
+      "1.7.1": {
+            "description": "<ul><li>Fix - Fixed an issue where an incorrect shipment reference was being used for Instabox integrated shipping in order management requests.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.0"
       }
 }
