@@ -224,6 +224,11 @@ class Qliro_One_Helper_Order {
 			$order              = wc_get_order( $order_item->get_order_id() );
 			$shipping_reference = ! empty( $order ) ? $order->get_meta( '_qliro_one_shipping_reference' ) : '';
 
+			// If the shipping method used is the qliro_shipping method, we should use the order line meta.
+			if ( 'qliro_shipping' === $order_item->get_method_id() ) {
+				$shipping_reference = $order_item->get_meta( 'qliro_shipping_method' );
+			}
+
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
 		} else {
