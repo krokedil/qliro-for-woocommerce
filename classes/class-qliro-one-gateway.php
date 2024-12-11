@@ -91,11 +91,21 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
+		qliro_one_unset_sessions();
 		// Try to get qliro order id from wc session.
 		$qliro_order_id           = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
 		$qliro_merchant_reference = WC()->session->get( 'qliro_one_merchant_reference' );
 		$chosen_shipping_method   = WC()->session->get( 'chosen_shipping_methods', null );
+
+		// If the order id, confirmation id or merchant reference is not set, we can not proceed.
+		if ( empty( $qliro_order_id ) || empty( $qliro_confirmation_id ) || empty( $qliro_merchant_reference ) ) {
+			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
+			return array(
+				'result'   => 'failure',
+				'messages' => __( 'The order could not be processed. Please reload the page and try again.', 'qliro-one-for-woocommerce' ),
+			);
+		}
 
 		$order = wc_get_order( $order_id );
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
