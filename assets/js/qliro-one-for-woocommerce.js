@@ -255,6 +255,12 @@ jQuery( function( $ ) {
 				error: function (data) {
 				},
 				complete: function (data) {
+					// If the response was not successful, we should fail the order.
+					if (data.responseJSON.success !== true) {
+						qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON.data, callback);
+						return;
+					}
+
 					qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
 					console.log('getQliroOneOrder completed');
 				}
