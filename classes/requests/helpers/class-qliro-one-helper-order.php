@@ -226,6 +226,11 @@ class Qliro_One_Helper_Order {
 
 			// If the shipping method used is the qliro_shipping method, we should use the order line meta.
 			if ( 'qliro_shipping' === $order_item->get_method_id() ) {
+				// If this is a refund order line, we need to get the parent to ensure we get the correct shipping reference.
+				if ( $order_item->get_meta( '_refunded_item_id' ) ) {
+					$order_item = new WC_Order_Item_Shipping( $order_item->get_meta( '_refunded_item_id' ) );
+				}
+
 				$shipping_reference = $order_item->get_meta( 'qliro_shipping_method' );
 			}
 
