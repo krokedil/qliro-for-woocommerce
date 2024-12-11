@@ -91,7 +91,6 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		qliro_one_unset_sessions();
 		// Try to get qliro order id from wc session.
 		$qliro_order_id           = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
