@@ -107,6 +107,20 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		private $checkout;
 
 		/**
+		 * Reference to API registry class.
+		 *
+		 * @var Qliro_One_API_Registry
+		 */
+		private $api_registry;
+
+		/**
+		 * Reference to subscriptions class.
+		 *
+		 * @var Qliro_One_Subscriptions
+		 */
+		private $subscriptions;
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -221,6 +235,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method-instance.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-metabox.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-subscriptions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
@@ -234,6 +249,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-merchant-reference.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-cancel-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-merchant-payment.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-om-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-upsell-order.php';
@@ -252,11 +268,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-payment-widget.php';
 
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
+
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
 			$this->metabox          = new Qliro_One_Metabox();
 			$this->checkout         = new Qliro_One_Checkout();
+			$this->api_registry     = new Qliro_One_API_Registry();
+			$this->subscriptions    = new Qliro_One_Subscriptions();
 
 			$this->pickup_points_service = new PickupPoints();
 
@@ -391,6 +411,24 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function checkout() {
 			return $this->checkout;
+		}
+
+		/**
+		 * Get the API registry instance.
+		 *
+		 * @return Qliro_One_API_Registry
+		 */
+		public function api_registry() {
+			return $this->api_registry;
+		}
+
+		/**
+		 * Get the subscriptions instance.
+		 *
+		 * @return Qliro_One_Subscriptions
+		 */
+		public function subscriptions() {
+			return $this->subscriptions;
 		}
 
 		/**
