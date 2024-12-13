@@ -161,9 +161,8 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	 * @return array
 	 */
 	public static function get_shipping_tax_rate( $data ) {
-		$ex_vat  = $data['totalShippingPriceExVat'] ?? 0;
-		$inc_vat = $data['totalShippingPrice'] ?? 0;
-
+		$ex_vat              = $data['totalShippingPriceExVat'] ?? 0;
+		$inc_vat             = $data['totalShippingPrice'] ?? 0;
 		$tax_rates           = \WC_Tax::get_shipping_tax_rates();
 		$calculated_tax_rate = 0;
 
@@ -173,7 +172,11 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 		}
 
 		foreach ( $tax_rates as $key => $tax_rate ) {
-			if ( $tax_rate['rate'] === $calculated_tax_rate ) {
+			// Calculate the difference between the rate and the calculated rate.
+			$diff = abs( $tax_rate['rate'] - $calculated_tax_rate );
+
+			// If the diff is less than or equal to 0.1 we have a match. This avoid rounding issues for tax rate calculations, and also covers the cases where the tax rates have decimals.
+			if ( $diff <= 0.1 ) {
 				return array( $key => $tax_rate );
 			}
 		}
