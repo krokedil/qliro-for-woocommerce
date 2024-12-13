@@ -101,6 +101,10 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			$body['MerchantProvidedMetadata'] = Qliro_One_Helper_Cart::get_ingrid_merchant_provided_metadata();
 		}
 
+		if ( ! empty( $merchant_urls['save_card'] ) ) {
+			$body['MerchantSavedCreditCardPushURL'] = $merchant_urls['save_card'];
+		}
+
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 }
