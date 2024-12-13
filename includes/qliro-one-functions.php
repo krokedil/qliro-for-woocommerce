@@ -343,6 +343,33 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 }
 
 /**
+ * Get an order by the Qliro order id
+ *
+ * @param string $qliro_order_id The Qliro order id.
+ * @return WC_Order|int WC_Order on success, otherwise 0.
+ */
+function qoc_get_order_by_qliro_id( $qliro_order_id ) {
+	$key    = '_qliro_one_order_id';
+	$orders = wc_get_orders(
+		array(
+			'meta_key'     => $key,
+			'meta_value'   => strval( $qliro_order_id ),
+			'limit'        => 1,
+			'orderby'      => 'date',
+			'order'        => 'DESC',
+			'meta_compare' => '=',
+		)
+	);
+
+	$order = reset( $orders );
+	if ( empty( $order ) || strval( $qliro_order_id ) !== $order->get_meta( $key ) ) {
+		Qliro_One_Logger::log( "No order found with the Qliro order id $qliro_order_id" );
+		return 0;
+	}
+	return $order;
+}
+
+/**
  * Validate qliro order's status, currency, and country settings.
  *
  * @param array $qliro_order The Qliro order.
