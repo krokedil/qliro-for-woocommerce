@@ -46,6 +46,11 @@ class Qliro_One_Merchant_URLS {
 			'om_push'      => $this->get_om_push_url( $rand_string ),
 		);
 
+		// If the cart contains a subscription, add the save card callback url.
+		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+			$merchant_urls['save_card'] = QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+		}
+
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
 	}
 
@@ -106,7 +111,7 @@ class Qliro_One_Merchant_URLS {
 	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
-	private function get_om_push_url( $rand_string ) {
+	public function get_om_push_url( $rand_string ) {
 		$om_push_url = add_query_arg(
 			array(
 				'qliro_one_confirm_id' => $rand_string,
