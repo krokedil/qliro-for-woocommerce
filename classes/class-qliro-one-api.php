@@ -155,6 +155,23 @@ class Qliro_One_API {
 	}
 
 	/**
+	 * Create a merchant payment for a Qliro recurring order.
+	 *
+	 * @param int         $order_id The WooCommerce order id.
+	 * @param string|null $token The stored card token if available.
+	 */
+	public function create_merchant_payment( $order_id, $token = null ) {
+		$request  = new Qliro_One_Request_Create_Merchant_Payment(
+			array(
+				'order_id' => $order_id,
+				'token'    => $token,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
 	 * Upsell a Qliro one order.
 	 *
 	 * @param int    $order_id Order ID.
