@@ -22,7 +22,7 @@ class Qliro_One_Checkout {
 	 * Class constructor
 	 */
 	public function __construct() {
-		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
+		$this->settings = get_option( 'woocommerce_qliro_one_settings', array() );
 
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_shipping_data_input' ) );
 		add_filter( 'woocommerce_shipping_packages', array( $this, 'maybe_set_selected_pickup_point' ) );
@@ -200,7 +200,7 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_shipping_in_iframe_enabled() {
-		return 'no' !== $this->settings['shipping_in_iframe'];
+		return isset( $this->settings['shipping_in_iframe'] ) && 'no' !== $this->settings['shipping_in_iframe'];
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_integrated_shipping_enabled() {
-		return 'integrated_shipping' === $this->settings['shipping_in_iframe'];
+		return isset( $this->settings['shipping_in_iframe'] ) && 'integrated_shipping' === $this->settings['shipping_in_iframe'];
 	}
 
 	/**
@@ -218,6 +218,6 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_wc_shipping_in_iframe_enabled() {
-		return 'wc_shipping' === $this->settings['shipping_in_iframe'];
+		return isset( $this->settings['shipping_in_iframe'] ) && 'wc_shipping' === $this->settings['shipping_in_iframe'];
 	}
 }
