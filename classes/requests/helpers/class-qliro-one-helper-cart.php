@@ -55,6 +55,24 @@ class Qliro_One_Helper_Cart {
 			}
 		}
 
+		foreach ( QOC_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
+			if ( false !== ( strpos( get_class( $giftcards ), 'WCGiftCards', true ) ) && ! function_exists( 'WC_GC' ) ) {
+				continue;
+			}
+
+			$retrieved_giftcards = $giftcards->get_cart_giftcards();
+			foreach ( $retrieved_giftcards as $retrieved_giftcard ) {
+
+				$formatted_cart_items[] = array(
+					'MerchantReference'  => $retrieved_giftcard->get_sku(),
+					'Description'        => $retrieved_giftcard->get_name(),
+					'Quantity'           => $retrieved_giftcard->get_quantity(),
+					'PricePerItemIncVat' => $retrieved_giftcard->get_total_amount(),
+					'PricePerItemExVat'  => $retrieved_giftcard->get_total_amount(),
+				);
+			}
+		}
+
 		return $formatted_cart_items;
 	}
 
