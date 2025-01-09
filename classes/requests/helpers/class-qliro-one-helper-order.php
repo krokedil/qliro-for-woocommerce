@@ -301,7 +301,7 @@ class Qliro_One_Helper_Order {
 					'MerchantReference'  => $retrieved_giftcard->get_sku(),
 					'Description'        => $retrieved_giftcard->get_name(),
 					'Quantity'           => $retrieved_giftcard->get_quantity(),
-					'Type'               => 'Giftcard',
+					'Type'               => 'Discount',
 					'PricePerItemIncVat' => $retrieved_giftcard->get_total_amount(),
 					'PricePerItemExVat'  => $retrieved_giftcard->get_total_amount(),
 				);
