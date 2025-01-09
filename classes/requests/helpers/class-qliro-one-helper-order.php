@@ -75,6 +75,9 @@ class Qliro_One_Helper_Order {
 			}
 		}
 
+		// Process gift cards.
+		$order_lines = self::process_gift_cards( $order_id, $order, $order_lines );
+
 		return array_values( $order_lines );
 	}
 
@@ -276,5 +279,35 @@ class Qliro_One_Helper_Order {
 	 */
 	public function generate_request_id() {
 		return sprintf( '%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 16384, 20479 ), random_int( 32768, 49151 ), random_int( 0, 65535 ), random_int( 0, 65535 ), random_int( 0, 65535 ) );
+	}
+
+	/**
+	 * Process gift cards.
+	 *
+	 * @param string $order_id The WooCommerce order ID.
+	 * @param object $order The WooCommerce order.
+	 * @param array  $items The items about to be sent to Qliro.
+	 * @return array
+	 */
+	public static function process_gift_cards( $order_id, $order, $items ) {
+		foreach ( QOC_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
+			if ( false !== ( strpos( get_class( $giftcards ), 'WCGiftCards', true ) ) && ! function_exists( 'WC_GC' ) ) {
+				continue;
+			}
+
+			$retrieved_giftcards = $giftcards->get_order_giftcards( $order );
+			foreach ( $retrieved_giftcards as $retrieved_giftcard ) {
+				$items[] = array(
+					'MerchantReference'  => $retrieved_giftcard->get_sku(),
+					'Description'        => $retrieved_giftcard->get_name(),
+					'Quantity'           => $retrieved_giftcard->get_quantity(),
+					'Type'               => 'Discount',
+					'PricePerItemIncVat' => $retrieved_giftcard->get_total_amount(),
+					'PricePerItemExVat'  => $retrieved_giftcard->get_total_amount(),
+				);
+			}
+		}
+
+		return $items;
 	}
 }
