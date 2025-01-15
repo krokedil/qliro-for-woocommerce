@@ -29,8 +29,9 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			$this->namespace,
 			$this->get_request_path() . '/save-card',
 			array(
-				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'save_card' ),
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'save_card' ),
+				'permission_callback' => '__return_true',
 			)
 		);
 	}
