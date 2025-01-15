@@ -36,6 +36,7 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 		$order_data = new Qliro_One_Helper_Order();
 		$order      = wc_get_order( $this->arguments['order_id'] );
 		$token      = $this->arguments['token'];
+		$confirm_id = wp_generate_uuid4();
 
 		$body = array(
 			'RequestId'                            => $order_data->generate_request_id(),
@@ -44,15 +45,8 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 			'Currency'                             => $order->get_currency(),
 			'Country'                              => $order->get_billing_country(),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
-			'MerchantOrderManagementStatusPushUrl' => QOC_WC()->merchant_urls->get_om_push_url( wp_generate_uuid4() ),
+			'MerchantOrderManagementStatusPushUrl' => QOC_WC()->merchant_urls->get_om_push_url( $confirm_id ),
 			'OrderItems'                           => $order_data::get_order_lines( $this->arguments['order_id'] ),
-			/*
-			'Customer'                             => array(
-				'PersonalNumber' => '790625-5307',
-				'Email'          => $order->get_billing_email(),
-				'JuristicType'   => empty( $order->get_billing_company() ) ? 'Physical' : 'Company',
-				'MobileNumber'   => $order->get_billing_phone(),
-			),*/
 			'BillingAddress'                       => array(
 				'FirstName'  => $order->get_billing_first_name(),
 				'LastName'   => $order->get_billing_last_name(),
@@ -70,12 +64,28 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 		);
 
 		// If we have a token, add the payment method for card payments, with the saved credit card id.
-		if ( $token ) {
+		if ( ! empty( $token ) ) {
 			$body['PaymentMethod'] = array(
 				'Name'                      => 'CREDITCARDS',
 				'MerchantSavedCreditCardId' => $token,
 			);
+		} else { // Else add the payment method and customer required for invoice payments.
+			$body['PaymentMethod'] = array(
+				'Name'    => 'QLIRO_INVOICE',
+				'Subtype' => 'INVOICE',
+			);
+
+			$body['Customer'] = array(
+				'PersonalNumber' => $order->get_meta( '_qliro_personal_number' ) ?? '',
+				'Email'          => $order->get_billing_email(),
+				'JuridicalType'  => empty( $order->get_billing_company() ) ? 'Physical' : 'Company',
+				'MobileNumber'   => $order->get_billing_phone(),
+			);
 		}
+
+		// Set the confirm id to the order meta to handle the callback for the order management.
+		$order->update_meta_data( '_qliro_one_order_confirmation_id', $confirm_id );
+		$order->save();
 
 		return $body;
 	}
