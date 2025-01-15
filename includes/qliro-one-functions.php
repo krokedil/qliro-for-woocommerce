@@ -170,18 +170,23 @@ function qliro_confirm_order( $order ) {
 		}
 	}
 
-	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+	$order = wc_get_order( $order_id );
 
-	if ( is_wp_error( $response ) ) {
-		// translators: %s - Response error message.
-		$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $response->get_error_message() );
-		$order->add_order_note( $note );
-		return false;
+	// If the order number and the qliro reference already match, we don't need to update the merchant reference.
+	if ( $order->get_order_number() !== $qliro_order['MerchantReference'] ) {
+		$qliro_order = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			// translators: %s - Response error message.
+			$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $qliro_order->get_error_message() );
+			$order->add_order_note( $note );
+			return false;
+		}
 	}
 
-	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
-		$order->update_meta_data( '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ')' );
+	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
+		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
+		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
@@ -202,6 +207,25 @@ function qliro_confirm_order( $order ) {
 			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $payment_transaction['PaymentMethodSubtypeCode'] );
 			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
 				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+			}
+
+			if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
+				// Get the subscriptions for the order.
+				$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'any' ) );
+
+				// If the WooCommerce order is a subscription order, we need to store the PersonalNumber if the payment method was not QLIRO_CARD.
+				$personal_number = $qliro_order['Customer']['PersonalNumber'] ?? '';
+
+				if ( ! empty( $personal_number ) ) {
+					// Loop through the subscriptions and set the personal number.
+					foreach ( $subscriptions as $subscription ) {
+						$subscription->update_meta_data( '_qliro_personal_number', $qliro_order['Customer']['PersonalNumber'] );
+						$subscription->save();
+					}
+
+					// If the personal number is not empty, we store it in the WooCommerce order.
+					$order->update_meta_data( '_qliro_personal_number', $personal_number );
+				}
 			}
 		}
 	}
