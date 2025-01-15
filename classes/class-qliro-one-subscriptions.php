@@ -52,7 +52,32 @@ class Qliro_One_Subscriptions {
 	 * @return void
 	 */
 	private function process_recurring_invoice_payment( $order, $subscription ) {
-		return;
+		$result = QOC_WC()->api->create_merchant_payment( $order->get_id() );
+
+		// If the result is a WP_Error, fail the payment.
+		if ( is_wp_error( $result ) ) {
+			$subscription->payment_failed();
+			$subscription->save();
+			return;
+		}
+
+		// If the result is not a WP_Error, complete the payment.
+		$subscription->payment_complete( $result['OrderId'] );
+
+		// Set the required order meta for the renewal order.
+		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
+		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
+		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
+		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
+		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
+		$order->add_order_note(
+			sprintf(
+				/* translators: %s: Order ID */
+				__( 'Qliro One recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
+				$order->get_id()
+			)
+		);
+		$order->save();
 	}
 
 	/**
@@ -100,5 +125,39 @@ class Qliro_One_Subscriptions {
 			)
 		);
 		$order->save();
+	}
+
+	/**
+	 * Check if the cart or order is a subscription of any type.
+	 *
+	 * @param WC_Order|null $order The WooCommerce order if available.
+	 *
+	 * @return bool
+	 */
+	public static function is_subscription( $order ) {
+		if ( $order === null && class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+			return true;
+		}
+
+		if ( $order !== null && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if the cart or order is a subscription of any type.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return bool
+	 */
+	public static function is_subscription_renewal( $order ) {
+		if ( $order !== null && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
