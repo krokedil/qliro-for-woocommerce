@@ -50,9 +50,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				'subscription_payment_method_change',
-				'subscription_payment_method_change_customer',
-				'subscription_payment_method_change_admin',
+				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
 				'multiple_subscriptions',
 				'tokenization', // Only for card payments when buying subscriptions.
 			)
@@ -91,7 +91,20 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return boolean
 	 */
 	public function is_available() {
-		return ! ( 'yes' !== $this->enabled );
+		// If the payment method is not enabled, just return false right away.
+		if ( ! wc_string_to_bool( $this->enabled ?? 'no' ) ) {
+			return false;
+		}
+
+		// If the cart contains a subscription, we only support swedish customers for now.
+		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+			$billing_country = WC()->customer->get_billing_country();
+			if ( 'SE' !== $billing_country ) { // Qliro only supports Swedish customers for subscriptions.
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -102,6 +115,31 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
+		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
+			// Create a new order and return the redirect url.
+			$result = QOC_WC()->api->create_qliro_one_order( $order_id );
+
+			if ( is_wp_error( $result ) ) {
+				return array(
+					'result'   => 'failure',
+					'messages' => $result->get_error_message(),
+				);
+			}
+
+			$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
+			$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
+			$order->save();
+
+			return array(
+				'result'   => 'success',
+				'redirect' => $result['PaymentLink'],
+			);
+		}
+
 		// Try to get qliro order id from wc session.
 		$qliro_order_id           = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
@@ -117,7 +155,6 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			);
 		}
 
-		$order = wc_get_order( $order_id );
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
 		$order->update_meta_data( '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		$order->update_meta_data( '_qliro_one_merchant_reference', $qliro_merchant_reference );
