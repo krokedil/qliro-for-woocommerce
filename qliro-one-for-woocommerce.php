@@ -31,6 +31,7 @@
 
 use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
+use KrokedilQliroDeps\Krokedil\WooCommerce\KrokedilWooCommerce;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -120,6 +121,11 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @var Qliro_One_Subscriptions
 		 */
 		private $subscriptions;
+		 * The WooCommerce package from Krokedil.
+		 *
+		 * @var KrokedilWooCommerce
+		 */
+		public $krokedil = null;
 
 		/**
 		 * Returns the *Singleton* instance of this class.
@@ -172,6 +178,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			// Init the gateway itself.
 			$this->init_gateways();
+
+			$this->krokedil = new KrokedilWooCommerce(
+				array(
+					'slug'         => 'qoc',
+					'price_format' => 'major',
+				)
+			);
 		}
 
 		/**
