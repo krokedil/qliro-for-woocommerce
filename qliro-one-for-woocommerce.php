@@ -121,6 +121,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @var Qliro_One_Subscriptions
 		 */
 		private $subscriptions;
+
+		/**
 		 * The WooCommerce package from Krokedil.
 		 *
 		 * @var KrokedilWooCommerce
