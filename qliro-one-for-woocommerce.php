@@ -11,6 +11,7 @@
  *
  * WC requires at least: 5.0.0
  * WC tested up to: 9.5.0
+ * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2024 Krokedil
  *
@@ -440,7 +441,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
-				'qliro-one-for-woocommerce'
+				'qliro-one-for-woocommerce',
+				1
 			);
 		}
 	}
