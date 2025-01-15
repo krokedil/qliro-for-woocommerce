@@ -18,11 +18,11 @@ class Qliro_One_API {
 	/**
 	 * Creates a Qliro One Checkout order.
 	 *
-	 * @param int $order_id The WooCommerce order id.
+	 * @param int|null $order_id The WooCommerce order id to create the Qliro One order for or null to create from the cart.
 	 * @return mixed
 	 */
-	public function create_qliro_one_order( $order_id = false ) {
-		$request  = new Qliro_One_Request_Create_Order( array() );
+	public function create_qliro_one_order( $order_id = null ) {
+		$request  = new Qliro_One_Request_Create_Order( array( 'order_id' => $order_id ) );
 		$response = $request->request();
 
 		return $this->check_for_api_error( $response );
