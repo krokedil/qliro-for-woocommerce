@@ -128,7 +128,7 @@ jQuery( function( $ ) {
 			if( $('.qoc-shipping').length ) {
 				return;
 			}
-			if ( 'qliro_one' === qliroOneForWooCommerce.paymentMethod && 'yes' === qliroOneParams.shipping_in_iframe ) {
+			if ( 'qliro_one' === qliroOneForWooCommerce.paymentMethod && 'no' !== qliroOneParams.shipping_in_iframe ) {
 				if ( $( '#shipping_method input[type=\'radio\']' ).length ) {
 					// Multiple shipping options available.
 					$( '#shipping_method input[type=\'radio\']:checked' ).each( function() {
@@ -255,6 +255,12 @@ jQuery( function( $ ) {
 				error: function (data) {
 				},
 				complete: function (data) {
+					// If the response was not successful, we should fail the order.
+					if (data.responseJSON.success !== true) {
+						qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON.data, callback);
+						return;
+					}
+
 					qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
 					console.log('getQliroOneOrder completed');
 				}

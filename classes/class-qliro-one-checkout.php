@@ -12,9 +12,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Qliro_One_Checkout {
 	/**
+	 * Settings array
+	 *
+	 * @var array
+	 */
+	private $settings = array();
+
+	/**
 	 * Class constructor
 	 */
 	public function __construct() {
+		$this->settings = get_option( 'woocommerce_qliro_one_settings', array() );
+
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_shipping_data_input' ) );
 		add_filter( 'woocommerce_shipping_packages', array( $this, 'maybe_set_selected_pickup_point' ) );
 
@@ -61,8 +70,7 @@ class Qliro_One_Checkout {
 		}
 
 		// Check Setting.
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		if ( 'yes' !== $settings['shipping_in_iframe'] ) {
+		if ( ! $this->is_shipping_in_iframe_enabled() ) {
 			return;
 		}
 
@@ -162,10 +170,9 @@ class Qliro_One_Checkout {
 	 * @param array $packages The shipping packages.
 	 * @return array
 	 */
-	function maybe_set_selected_pickup_point( $packages ) {
+	public function maybe_set_selected_pickup_point( $packages ) {
 		$data            = get_transient( 'qoc_shipping_data_' . WC()->session->get( 'qliro_one_order_id' ) );
 		$selected_option = $data['secondaryOption'] ?? '';
-
 		if ( empty( $selected_option ) ) {
 			return $packages;
 		}
@@ -176,7 +183,6 @@ class Qliro_One_Checkout {
 			foreach ( $package['rates'] as $rate ) {
 				/** @var WC_Shipping_Rate $rate */
 				$pickup_point = QOC_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
-
 				if ( ! $pickup_point ) {
 					continue;
 				}
@@ -187,5 +193,31 @@ class Qliro_One_Checkout {
 
 		return $packages;
 	}
+
+	/**
+	 * Is shipping methods in iframe enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_shipping_in_iframe_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'no' !== $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Is integrated shipping methods enabled in Qliro One.
+	 *
+	 * @return bool
+	 */
+	public function is_integrated_shipping_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'integrated_shipping' === $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Is WooCommerce shipping in iframe enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_wc_shipping_in_iframe_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'wc_shipping' === $this->settings['shipping_in_iframe'];
+	}
 }
-new Qliro_One_Checkout();

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b872af6e6fd0aa6423025ff012900e0c",
+    "content-hash": "1b29a874eb820a3d9652d11c5609c5ab",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "2.1.0",
+            "version": "dev-develop-fraktjakt",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "32c476ce0dc86a96e1d3e22afea3acaf83b4fdd7"
+                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/32c476ce0dc86a96e1d3e22afea3acaf83b4fdd7",
-                "reference": "32c476ce0dc86a96e1d3e22afea3acaf83b4fdd7",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/83fad89608e43ec8f94561994cea20bbdfbe0400",
+                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400",
                 "shasum": ""
             },
             "require": {
@@ -110,10 +110,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/2.1.0",
+                "source": "https://github.com/krokedil/shipping/tree/develop-fraktjakt",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2024-01-30T10:09:12+00:00"
+            "time": "2024-03-25T15:01:14+00:00"
         },
         {
             "name": "krokedil/woocommerce",
@@ -221,6 +221,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "krokedil/shipping": 20,
         "kernl/kernl-update-checker": 20
     },
     "prefer-stable": true,
