@@ -150,7 +150,7 @@
             "tested": "6.7.1"
       },
       "1.7.3": {
-            "description": "<ul><li>Fix - Fixed API error responses to return JSON only, preventing retry loops.</li></ul>",
+            "description": "<ul><li>Fix - Fixed an issue where we would print Qliro error messages on API calls to WooCommerce on Qliro orders in some cases, causing the response to not be a valid JSON output. This could cause issues when other services tried to for example set the order status on an order placed with Qliro.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
       }

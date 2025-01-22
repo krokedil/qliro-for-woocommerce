@@ -20,7 +20,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 == Changelog ==
 = 2025.01.22    - version 1.7.3 =
-* Fix           - Fixed API error responses to return JSON only, preventing retry loops.
+* Fix           - Fixed an issue where we would print Qliro error messages on API calls to WooCommerce on Qliro orders in some cases, causing the response to not be a valid JSON output. This could cause issues when other services tried to for example set the order status on an order placed with Qliro.
 
 = 2024.12.13    - version 1.7.2 =
 * Enhancement   - Improved the error handling when placing an order in WooCommerce when the session from Qliro has expired or is missing in WooCommerce, which would cause a timeout error.
