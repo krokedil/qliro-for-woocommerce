@@ -7,7 +7,7 @@ Tested up to: 6.7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.5.0
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.01.22    - version 1.7.3 =
+* Fix           - Fixed API error responses to return JSON only, preventing retry loops.
+
 = 2024.12.13    - version 1.7.2 =
 * Enhancement   - Improved the error handling when placing an order in WooCommerce when the session from Qliro has expired or is missing in WooCommerce, which would cause a timeout error.
 * Enhancement   - When matching Ingrid shipping tax rates to WooCommerce, allow a diff of 0.1 when comparing the tax rates to avoid rounding discrepancies between the two systems. This will prevent the wrong tax rate from being used when calculating the shipping tax in WooCommerce.

@@ -148,5 +148,10 @@
             "description": "<ul><li>Enhancement - Improved the error handling when placing an order in WooCommerce when the session from Qliro has expired or is missing in WooCommerce, which would cause a timeout error.</li><li>Enhancement - When matching Ingrid shipping tax rates to WooCommerce, allow a diff of 0.1 when comparing the tax rates to avoid rounding discrepancies between the two systems. This will prevent the wrong tax rate from being used when calculating the shipping tax in WooCommerce.</li><li>Fix - Fixed an issue when refunding an order line without specifying the order line quantity causing a division by zero error.</li><li>Fix - Fixed an issue when refunding a shipment order line with the Ingrid integration, where metadata from the order line was not copied over to the refund order line.</li><li>Fix - Fixed trying to access a setting before it has been saved, causing a PHP warning.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
+      },
+      "1.7.3": {
+            "description": "<ul><li>Fix - Fixed API error responses to return JSON only, preventing retry loops.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
       }
 }
