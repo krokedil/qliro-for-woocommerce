@@ -162,19 +162,19 @@ abstract class Qliro_One_Request {
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( $response_code < 200 || $response_code > 299 ) {
-			$data          = 'URL: ' . $request_url . ' - ' . wp_json_encode( $request_args );
+			$request       = 'URL: ' . $request_url . ' - ' . wp_json_encode( $request_args );
 			$error_message = '';
 			// Get the error messages.
 			if ( null !== json_decode( $response['body'], true ) ) {
 				$errors = json_decode( $response['body'], true );
-
 				foreach ( $errors as $error ) {
 					$error_message .= ' ' . $error;
 				}
 			}
 			$code          = wp_remote_retrieve_response_code( $response );
 			$error_message = empty( $response['body'] ) ? "API Error {$code}" : json_decode( $response['body'], true )['ErrorMessage'];
-			$return        = new WP_Error( $code, $error_message, $data );
+			$return        = new WP_Error( $code, $error_message, $request );
+			$return->add_data( $errors );
 		} else {
 			$return = json_decode( wp_remote_retrieve_body( $response ), true );
 		}

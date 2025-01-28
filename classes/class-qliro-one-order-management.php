@@ -86,8 +86,16 @@ class Qliro_One_Order_Management {
 			$prefix        = 'Evaluation, ';
 			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
 
-			// translators: %s is the error message from Qliro.
-			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
+			// The Qliro error code.
+			$system_code = $response->get_error_data()['ErrorCode'] ?? null;
+			if ( 'NO_ITEMS_LEFT_IN_RESERVATION' === $system_code ) {
+				$order->add_order_note( __( 'The order has already been captured.', 'qliro-one-for-woocommerce' ) );
+				$order->update_meta_data( '_qliro_order_captured', $order->get_meta( '_qliro_payment_transaction_id' ) );
+			} else {
+				// translators: %s is the error message from Qliro.
+				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
+			}
+
 			return;
 		}
 
