@@ -131,6 +131,11 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		if ( qliro_one_is_completed( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 
