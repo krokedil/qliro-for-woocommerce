@@ -160,27 +160,20 @@ abstract class Qliro_One_Request {
 			return $response;
 		}
 
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( $response_code < 200 || $response_code > 299 ) {
-			$request       = 'URL: ' . $request_url . ' - ' . wp_json_encode( $request_args );
-			$error_message = '';
-			// Get the error messages.
-			if ( null !== json_decode( $response['body'], true ) ) {
-				$errors = json_decode( $response['body'], true );
-				foreach ( $errors as $error ) {
-					$error_message .= ' ' . $error;
-				}
-			}
-			$code          = wp_remote_retrieve_response_code( $response );
-			$error_message = empty( $response['body'] ) ? "API Error {$code}" : json_decode( $response['body'], true )['ErrorMessage'];
-			$return        = new WP_Error( $code, $error_message, $request );
-			$return->add_data( $errors );
+		$code         = wp_remote_retrieve_response_code( $response );
+		$body         = wp_remote_retrieve_body( $response );
+		$decoded_body = json_decode( $body, true );
+
+		if ( $code < 200 || $code > 299 ) {
+			$errors  = $decoded_body;
+			$message = $errors['ErrorMessage'] ?? "API Error {$code}";
+			$result  = new WP_Error( $code, $message, $errors );
 		} else {
-			$return = json_decode( wp_remote_retrieve_body( $response ), true );
+			$result = $decoded_body;
 		}
 
 		$this->log_response( $response, $request_args, $request_url );
-		return $return;
+		return $result;
 	}
 
 	/**
