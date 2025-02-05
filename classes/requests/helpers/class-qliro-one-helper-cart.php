@@ -101,6 +101,11 @@ class Qliro_One_Helper_Cart {
 			$formatted_cart_item = self::get_ingrid_metadata( $formatted_cart_item, $cart_item, $product );
 		}
 
+		// If the cart item is a subscription item, we need to add the metadata to the cart item.
+		if ( class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_subscription( $product ) ) {
+			$formatted_cart_item['Metadata']['Subscription']['Enabled'] = true;
+		}
+
 		return $formatted_cart_item;
 	}
 
