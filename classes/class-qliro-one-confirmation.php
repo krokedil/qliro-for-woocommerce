@@ -5,9 +5,9 @@
  * @package Thing
  */
 
- /**
-  * Class Qliro_One_Confirmation
-  */
+/**
+ * Class Qliro_One_Confirmation
+ */
 class Qliro_One_Confirmation {
 
 	/**
@@ -37,6 +37,7 @@ class Qliro_One_Confirmation {
 		$result   = qliro_confirm_order( $order );
 
 		qliro_one_unset_sessions();
+		do_action( 'qoc_payment_complete', $order );
 
 		if ( $result ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
@@ -46,5 +47,4 @@ class Qliro_One_Confirmation {
 		header( 'Location:' . $order->get_checkout_order_received_url() );
 		exit;
 	}
-
 } new Qliro_One_Confirmation();
