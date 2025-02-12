@@ -37,7 +37,6 @@ class Qliro_One_Confirmation {
 		$result   = qliro_confirm_order( $order );
 
 		qliro_one_unset_sessions();
-		do_action( 'qoc_payment_complete', $order );
 
 		if ( $result ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );

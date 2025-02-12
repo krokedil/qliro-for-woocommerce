@@ -204,6 +204,7 @@ function qliro_confirm_order( $order ) {
 		}
 	}
 
+	do_action( 'qoc_order_confirmed', $qliro_order, $order );
 	$order->save();
 	return true;
 }
