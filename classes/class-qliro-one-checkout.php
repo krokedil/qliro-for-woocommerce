@@ -158,7 +158,15 @@ class Qliro_One_Checkout {
 
 	public function calculate_hash() {
 		// Get values to use for the combined hash calculation.
-		$total            = array_sum( WC()->cart->get_totals() );
+		$totals = WC()->cart->get_totals();
+		$total  = 0;
+
+		// PHP 8.3.0: Now emits E_WARNING when array values cannot be converted to int or float. Previously arrays and objects where ignored whilst every other value was cast to int.
+		foreach ( $totals as $value ) {
+			if ( is_numeric( $value ) ) {
+				$total += $value;
+			}
+		}
 		$billing_address  = WC()->customer->get_billing();
 		$shipping_address = WC()->customer->get_shipping();
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
