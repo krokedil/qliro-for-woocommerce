@@ -131,6 +131,11 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		if ( qliro_one_is_completed( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
 
@@ -153,7 +158,15 @@ class Qliro_One_Checkout {
 
 	public function calculate_hash() {
 		// Get values to use for the combined hash calculation.
-		$total            = array_sum( WC()->cart->get_totals() );
+		$totals = WC()->cart->get_totals();
+		$total  = 0;
+
+		// PHP 8.3.0: Now emits E_WARNING when array values cannot be converted to int or float. Previously arrays and objects where ignored whilst every other value was cast to int.
+		foreach ( $totals as $value ) {
+			if ( is_numeric( $value ) ) {
+				$total += $value;
+			}
+		}
 		$billing_address  = WC()->customer->get_billing();
 		$shipping_address = WC()->customer->get_shipping();
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );

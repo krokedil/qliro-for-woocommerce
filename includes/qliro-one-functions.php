@@ -31,15 +31,13 @@ function qliro_one_maybe_create_order() {
 			return;
 		}
 
+		if ( qliro_one_is_completed( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_one_order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
-
-			// Verify if the order is not already completed in Qliro, if it is redirect the customer to the thankyou page.
-			if ( ! qliro_one_verify_not_completed( $qliro_order ) ) {
-				qliro_one_redirect_to_thankyou_page();
-				return;
-			}
-
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
@@ -170,18 +168,23 @@ function qliro_confirm_order( $order ) {
 		}
 	}
 
-	$response = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+	$order = wc_get_order( $order_id );
 
-	if ( is_wp_error( $response ) ) {
-		// translators: %s - Response error message.
-		$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $response->get_error_message() );
-		$order->add_order_note( $note );
-		return false;
+	// If the order number and the qliro reference already match, we don't need to update the merchant reference.
+	if ( $order->get_order_number() !== $qliro_order['MerchantReference'] ) {
+		$qliro_order = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			// translators: %s - Response error message.
+			$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $qliro_order->get_error_message() );
+			$order->add_order_note( $note );
+			return false;
+		}
 	}
 
-	if ( isset( $response['PaymentTransactionId'] ) && ! empty( $response['PaymentTransactionId'] ) ) {
-		$order->update_meta_data( '_qliro_payment_transaction_id', $response['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $response['PaymentTransactionId'] . ')' );
+	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
+		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
+		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
@@ -203,9 +206,29 @@ function qliro_confirm_order( $order ) {
 			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
 				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
 			}
+
+			if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
+				// Get the subscriptions for the order.
+				$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'any' ) );
+
+				// If the WooCommerce order is a subscription order, we need to store the PersonalNumber if the payment method was not QLIRO_CARD.
+				$personal_number = $qliro_order['Customer']['PersonalNumber'] ?? '';
+
+				if ( ! empty( $personal_number ) ) {
+					// Loop through the subscriptions and set the personal number.
+					foreach ( $subscriptions as $subscription ) {
+						$subscription->update_meta_data( '_qliro_personal_number', $qliro_order['Customer']['PersonalNumber'] );
+						$subscription->save();
+					}
+
+					// If the personal number is not empty, we store it in the WooCommerce order.
+					$order->update_meta_data( '_qliro_personal_number', $personal_number );
+				}
+			}
 		}
 	}
 
+	do_action( 'qoc_order_confirmed', $qliro_order, $order );
 	$order->save();
 	return true;
 }
@@ -337,6 +360,33 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 	$order = reset( $orders );
 	if ( empty( $order ) || $confirmation_id !== $order->get_meta( $key ) ) {
 		Qliro_One_Logger::log( "No order found with the confirmation id $confirmation_id" );
+		return 0;
+	}
+	return $order;
+}
+
+/**
+ * Get an order by the Qliro order id
+ *
+ * @param string $qliro_order_id The Qliro order id.
+ * @return WC_Order|int WC_Order on success, otherwise 0.
+ */
+function qoc_get_order_by_qliro_id( $qliro_order_id ) {
+	$key    = '_qliro_one_order_id';
+	$orders = wc_get_orders(
+		array(
+			'meta_key'     => $key,
+			'meta_value'   => strval( $qliro_order_id ),
+			'limit'        => 1,
+			'orderby'      => 'date',
+			'order'        => 'DESC',
+			'meta_compare' => '=',
+		)
+	);
+
+	$order = reset( $orders );
+	if ( empty( $order ) || strval( $qliro_order_id ) !== $order->get_meta( $key ) ) {
+		Qliro_One_Logger::log( "No order found with the Qliro order id $qliro_order_id" );
 		return 0;
 	}
 	return $order;
@@ -495,6 +545,18 @@ function qliro_one_verify_not_completed( $qliro_order ) {
 	}
 
 	return true;
+}
+
+/**
+ * Check if the Qliro order is considered completed.
+ *
+ * @param array $qliro_order The Qliro order.
+ *
+ * @return bool
+ */
+function qliro_one_is_completed( $qliro_order ) {
+	$done_status = array( 'Completed', 'OnHold' );
+	return in_array( $qliro_order['CustomerCheckoutStatus'], $done_status, true );
 }
 
 /**

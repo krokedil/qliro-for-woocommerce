@@ -7,7 +7,7 @@ Tested up to: 6.7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.5.0
-Stable tag: 1.7.3
+Stable tag: 1.8.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,16 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.02.17    - version 1.8.0 =
+* Feature       - Added support for subscriptions.
+* Feature       - Added support for pay for order.
+* Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
+* Tweak         - Allow order status 'Completed' if order is captured through portal.
+* Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
+* Fix           - Fixed PHP 8.3.0 array_sum warnings.
+* Fix           - Fixed missing address data from Qliro API during update.
+* Fix           - Fixed issue with unsetting other shipping methods.
+
 = 2025.01.22    - version 1.7.3 =
 * Fix           - Fixed an issue where we would print Qliro error messages on API calls to WooCommerce on Qliro orders in some cases, causing the response to not be a valid JSON output. This could cause issues when other services tried to for example set the order status on an order placed with Qliro.
 

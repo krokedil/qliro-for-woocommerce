@@ -49,17 +49,15 @@ class Qliro_One_Assets {
 	 * Loads scripts for the plugin.
 	 */
 	public function qoc_load_js() {
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		if ( 'yes' !== $settings['enabled'] ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+		if ( ! isset( $settings['enabled'] ) || 'yes' !== $settings['enabled'] ) {
 			return;
 		}
-		// load front js.
-		if ( ! is_checkout() ) {
+		// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
+		if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
 			return;
 		}
-		if ( is_order_received_page() ) {
-			return;
-		}
+
 		$script_version               = $this->qoc_is_script_debug_enabled();
 		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
 		$dependencies                 = array( 'jquery' );
