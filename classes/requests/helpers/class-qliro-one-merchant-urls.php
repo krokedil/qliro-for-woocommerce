@@ -19,10 +19,16 @@ class Qliro_One_Merchant_URLS {
 	/**
 	 * Gets formatted merchant URLs array.
 	 *
-	 * @param string $order_id The WooCommerce order id.
+	 * @param WC_Order|int $order The WooCommerce order or order id.
 	 * @return array
 	 */
-	public function get_urls( $order_id = null ) {
+	public function get_urls( $order = null ) {
+		// If the order is not null, but not an instance of WC_Order, try to get the order object.
+		if ( $order !== null && ! $order instanceof WC_Order ) {
+			$order = wc_get_order( $order );
+		}
+
+		// Generate a random string to use as confirmation id, following the UUID format.
 		$rand_string = strtolower(
 			sprintf(
 				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
@@ -37,14 +43,25 @@ class Qliro_One_Merchant_URLS {
 			)
 		);
 
-		WC()->session->set( 'qliro_order_confirmation_id', $rand_string );
+		// If the order is null, set the confirmation id to the session, else store it in the order meta.
+		if ( null === $order ) {
+			WC()->session->set( 'qliro_order_confirmation_id', $rand_string );
+		} else {
+			$order->update_meta_data( '_qliro_one_order_confirmation_id', $rand_string );
+			$order->save();
+		}
 
 		$merchant_urls = array(
 			'terms'        => $this->get_terms_url(),
-			'confirmation' => $this->get_confirmation_url( $rand_string ),
+			'confirmation' => $this->get_confirmation_url( $rand_string, $order ),
 			'push'         => $this->get_push_url( $rand_string ),
 			'om_push'      => $this->get_om_push_url( $rand_string ),
 		);
+
+		// If the cart contains a subscription, add the save card callback url.
+		if ( Qliro_One_Subscriptions::is_subscription( $order ) ) {
+			$merchant_urls['save_card'] = QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+		}
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
 	}
@@ -67,16 +84,20 @@ class Qliro_One_Merchant_URLS {
 	 *
 	 * Required. URL of merchant confirmation page. Should be different than checkout and confirmation URLs.
 	 *
-	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
+	 * @param string   $rand_string A random string generated on creation that will follow the entire order process.
+	 * @param WC_Order $order The WooCommerce order if available.
 	 * @return string
 	 */
-	private function get_confirmation_url( $rand_string ) {
+	private function get_confirmation_url( $rand_string, $order = null ) {
+		$url = ( null !== $order ) ? $order->get_checkout_order_received_url() : wc_get_checkout_url();
+
 		$confirmation_url = add_query_arg(
 			array(
 				'qliro_one_confirm_page' => $rand_string,
 			),
-			wc_get_checkout_url()
+			$url
 		);
+
 		return apply_filters( 'qliro_one_wc_confirmation_url', $confirmation_url );
 	}
 
@@ -106,7 +127,7 @@ class Qliro_One_Merchant_URLS {
 	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
-	private function get_om_push_url( $rand_string ) {
+	public function get_om_push_url( $rand_string ) {
 		$om_push_url = add_query_arg(
 			array(
 				'qliro_one_confirm_id' => $rand_string,

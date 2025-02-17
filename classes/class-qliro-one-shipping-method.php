@@ -63,9 +63,12 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	 * @return array
 	 */
 	public function maybe_unset_other_rates( $rates ) {
-		// If any rate is the aco_shipping method, unset all others.
-		if ( isset( $rates[ $this->get_rate_id() ] ) ) {
-			$rates = array( $this->get_rate_id() => $rates[ $this->get_rate_id() ] );
+		// If any rate is the qliro_shipping method, unset all others.
+		foreach ( $rates as $rate ) {
+			if ( 'qliro_shipping' === $rate->method_id ) {
+				$rates = array( $this->get_rate_id() => $rate );
+				break;
+			}
 		}
 
 		return $rates;
