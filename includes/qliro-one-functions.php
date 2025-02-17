@@ -31,15 +31,13 @@ function qliro_one_maybe_create_order() {
 			return;
 		}
 
+		if ( qliro_one_is_completed( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_one_order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
 		// Validate the order.
 		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
-
-			// Verify if the order is not already completed in Qliro, if it is redirect the customer to the thankyou page.
-			if ( ! qliro_one_verify_not_completed( $qliro_order ) ) {
-				qliro_one_redirect_to_thankyou_page();
-				return;
-			}
-
 			qliro_one_unset_sessions();
 			return qliro_one_maybe_create_order();
 		}
@@ -230,6 +228,7 @@ function qliro_confirm_order( $order ) {
 		}
 	}
 
+	do_action( 'qoc_order_confirmed', $qliro_order, $order );
 	$order->save();
 	return true;
 }
@@ -546,6 +545,18 @@ function qliro_one_verify_not_completed( $qliro_order ) {
 	}
 
 	return true;
+}
+
+/**
+ * Check if the Qliro order is considered completed.
+ *
+ * @param array $qliro_order The Qliro order.
+ *
+ * @return bool
+ */
+function qliro_one_is_completed( $qliro_order ) {
+	$done_status = array( 'Completed', 'OnHold' );
+	return in_array( $qliro_order['CustomerCheckoutStatus'], $done_status, true );
 }
 
 /**

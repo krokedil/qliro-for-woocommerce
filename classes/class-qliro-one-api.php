@@ -19,7 +19,7 @@ class Qliro_One_API {
 	 * Creates a Qliro One Checkout order.
 	 *
 	 * @param int|null $order_id The WooCommerce order id to create the Qliro One order for or null to create from the cart.
-	 * @return mixed
+	 * @return array|WP_Error
 	 */
 	public function create_qliro_one_order( $order_id = null ) {
 		$request  = new Qliro_One_Request_Create_Order( array( 'order_id' => $order_id ) );
@@ -32,7 +32,7 @@ class Qliro_One_API {
 	 * Gets a Qliro One Checkout order
 	 *
 	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
-	 * @return mixed
+	 * @return array|WP_Error
 	 */
 	public function get_qliro_one_order( $qliro_one_order_id ) {
 		$request  = new Qliro_One_Request_Get_Order( array( 'qliro_order_id' => $qliro_one_order_id ) );
@@ -59,7 +59,7 @@ class Qliro_One_API {
 	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
 	 * @param int    $order_id The WooCommerce order id.
 	 * @param bool   $force If true always update the order, even if not needed.
-	 * @return mixed
+	 * @return array|WP_Error
 	 */
 	public function update_qliro_one_order( $qliro_one_order_id, $order_id = null, $force = false ) {
 		$request  = new Qliro_One_Request_Update_Order( array( 'qliro_order_id' => $qliro_one_order_id ) );
@@ -73,7 +73,7 @@ class Qliro_One_API {
 	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
 	 * @param int    $order_id The WooCommerce order id.
 	 *
-	 * @return mixed
+	 * @return array|WP_Error
 	 */
 	public function om_update_qliro_one_order( $qliro_one_order_id, $order_id ) {
 		$request_id = ( new Qliro_One_Helper_Order() )->generate_request_id();
@@ -92,6 +92,7 @@ class Qliro_One_API {
 	 * Cancels a Qliro One order.
 	 *
 	 * @param int $order_id Order ID.
+	 * @return array|WP_Error
 	 */
 	public function cancel_qliro_one_order( $order_id ) {
 		$request_id = ( new Qliro_One_Helper_Order() )->generate_request_id();
@@ -146,7 +147,7 @@ class Qliro_One_API {
 	 * Update the merchant references for a Qliro one order.
 	 *
 	 * @param int $order_id The WooCommerce Order ID.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function update_qliro_one_merchant_reference( $order_id ) {
 		$request  = new Qliro_One_Update_Merchant_Reference( array( 'order_id' => $order_id ) );
@@ -176,7 +177,7 @@ class Qliro_One_API {
 	 *
 	 * @param int    $order_id Order ID.
 	 * @param string $upsell_request_id Id that upsell order lines is tagged with.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function upsell_qliro_one_order( $order_id, $upsell_request_id ) {
 		$request  = new Qliro_One_Request_Upsell_Order(
