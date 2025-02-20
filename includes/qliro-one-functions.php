@@ -202,7 +202,12 @@ function qliro_confirm_order( $order ) {
 	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
 		if ( 'Success' === $payment_transaction['Status'] ) {
 			$order->update_meta_data( 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
-			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $payment_transaction['PaymentMethodSubtypeCode'] );
+
+			// If the PaymentMethodSubtypeCode is missing, we can retrieve it from the PaymentMethodName (e.g., QLIRO_INVOICE).
+			$subtype = implode( ' ', array_slice( explode( '_', $payment_transaction['PaymentMethodName'] ), 1 ) );
+			$subtype = $payment_transaction['PaymentMethodSubtypeCode'] ?? $subtype ?? '';
+			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $subtype );
+
 			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
 				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
 			}
