@@ -70,7 +70,7 @@ class Qliro_One_Templates {
 		if ( is_checkout() ) {
 			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			// Don't display Qliro One template if we have a cart that doesn't needs payment.
-			if ( apply_filters( 'qliro_one_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) ) {
+			if ( apply_filters( 'qliro_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) ) {
 				if ( ! WC()->cart->needs_payment() ) {
 					return $template;
 				}
@@ -240,7 +240,7 @@ class Qliro_One_Templates {
 			}
 
 			// If the setting for shipping in iframe is yes, then add the class.
-			if ( 'qliro_one' === $first_gateway && 'yes' === $settings['shipping_in_iframe'] ) {
+			if ( 'qliro_one' === $first_gateway && QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 				$class[] = 'qliro-shipping-display';
 			}
 		}

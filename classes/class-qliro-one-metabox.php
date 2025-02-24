@@ -56,13 +56,20 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		$last_transaction    = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
+		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-one' );
+		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one' );
 		$order_sync_disabled = 'no' === $order_sync;
 
 		self::output_info( __( 'Payment method', 'qliro-one' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
 		self::output_info( __( 'Order id', 'qliro-one' ), $qliro_order_id );
 		self::output_info( __( 'Reference', 'qliro-one' ), $qliro_reference );
-		self::output_info( __( 'Order status', 'qliro-one' ), $last_transaction['Type'], $last_transaction['Status'] );
+		self::output_info( __( 'Order status', 'qliro-one' ), $transaction_type, $transaction_status );
 		self::output_info( __( 'Total amount', 'qliro-one' ), self::get_amount( $last_transaction ) );
+
+		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+			self::maybe_output_shipping_reference( $qliro_order );
+		}
+
 		if ( $order_sync_disabled ) {
 			self::output_info( __( 'Order synchronization', 'qliro-one' ), __( 'Disabled', 'qliro-one' ) );
 		}
@@ -279,9 +286,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
-		$is_captured    = $order->get_meta( '_qliro_order_captured' );
-		$is_cancelled   = $order->get_meta( '_qliro_order_cancelled' );
-		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
+		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
+		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
+		$payment_method          = $order->get_meta( 'qliro_one_payment_method_name' );
+		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
 
 		// Only output the sync button if the order is a Qliro payment method order. Cant update card orders for example.
 		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 && strpos( $payment_method, 'TRUSTLY_' ) !== 0 ) {
@@ -304,7 +312,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_one_sync_order'
 		);
 
-		$classes = ( floatval( $order->get_total() ) === $last_transaction['Amount'] ) ? 'button-secondary' : 'button-primary';
+		$classes = ( floatval( $order->get_total() ) === $last_transaction_amount ) ? 'button-secondary' : 'button-primary';
 
 		if ( $order_sync_disabled ) {
 			$classes .= ' disabled';
@@ -316,5 +324,38 @@ class Qliro_One_Metabox extends OrderMetabox {
 			false,
 			$classes
 		);
+	}
+
+	/**
+	 * Maybe output the shipping reference from the Qliro shipping line.
+	 *
+	 * @param array $qliro_order The Qliro order.
+	 *
+	 * @return void
+	 */
+	private static function maybe_output_shipping_reference( $qliro_order ) {
+		// Get any order lines from the Qliro order with the type shipping.
+		$shipping_line = array_filter(
+			$qliro_order['OrderItemActions'] ?? array(),
+			function ( $line ) {
+				return 'Shipping' === $line['Type'];
+			}
+		);
+
+		// If empty, just return.
+		if ( empty( $shipping_line ) ) {
+			return;
+		}
+
+		// Get the metadata from the shipping line and then the ShippingMethodMerchantReference if it exists.
+		$shipping_line = reset( $shipping_line );
+		$shipping_ref  = $shipping_line['MetaData']['ShippingMethodMerchantReference'] ?? '';
+
+		// If its empty, just return.
+		if ( empty( $shipping_ref ) ) {
+			return;
+		}
+
+		self::output_info( __( 'Shipping reference', 'qliro-one' ), $shipping_ref );
 	}
 }

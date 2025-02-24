@@ -47,6 +47,17 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'products',
 				'refunds',
 				'upsell',
+				'subscriptions',
+				'subscription_cancellation',
+				'subscription_suspension',
+				'subscription_reactivation',
+				'subscription_amount_changes',
+				'subscription_date_changes',
+				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
+				'multiple_subscriptions',
+				'tokenization', // Only for card payments when buying subscriptions.
 			)
 		);
 		$this->has_fields         = false;
@@ -66,6 +77,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			)
 		);
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
+		add_filter( 'woocommerce_order_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999, 3 );
 	}
 
 
@@ -82,7 +94,20 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return boolean
 	 */
 	public function is_available() {
-		return ! ( 'yes' !== $this->enabled );
+		// If the payment method is not enabled, just return false right away.
+		if ( ! wc_string_to_bool( $this->enabled ?? 'no' ) ) {
+			return false;
+		}
+
+		// If the cart contains a subscription, we only support swedish customers for now.
+		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+			$billing_country = WC()->customer->get_billing_country();
+			if ( 'SE' !== $billing_country ) { // Qliro only supports Swedish customers for subscriptions.
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -93,13 +118,46 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
+		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
+			// Create a new order and return the redirect url.
+			$result = QOC_WC()->api->create_qliro_one_order( $order_id );
+
+			if ( is_wp_error( $result ) ) {
+				return array(
+					'result'   => 'failure',
+					'messages' => $result->get_error_message(),
+				);
+			}
+
+			$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
+			$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
+			$order->save();
+
+			return array(
+				'result'   => 'success',
+				'redirect' => $result['PaymentLink'],
+			);
+		}
+
 		// Try to get qliro order id from wc session.
 		$qliro_order_id           = WC()->session->get( 'qliro_one_order_id' );
 		$qliro_confirmation_id    = WC()->session->get( 'qliro_order_confirmation_id' );
 		$qliro_merchant_reference = WC()->session->get( 'qliro_one_merchant_reference' );
 		$chosen_shipping_method   = WC()->session->get( 'chosen_shipping_methods', null );
 
-		$order = wc_get_order( $order_id );
+		// If the order id, confirmation id or merchant reference is not set, we can not proceed.
+		if ( empty( $qliro_order_id ) || empty( $qliro_confirmation_id ) || empty( $qliro_merchant_reference ) ) {
+			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
+			return array(
+				'result'   => 'failure',
+				'messages' => __( 'The order could not be processed. Please reload the page and try again.', 'qliro-one-for-woocommerce' ),
+			);
+		}
+
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
 		$order->update_meta_data( '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		$order->update_meta_data( '_qliro_one_merchant_reference', $qliro_merchant_reference );
@@ -249,6 +307,29 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// Check that the order has order sync enabled.
 		if ( ! Qliro_One_Order_Management::is_order_sync_enabled( $order ) ) {
 			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Maybe change the needs payment for a WooCommerce order.
+	 *
+	 * @param bool     $wc_result The result WooCommerce had.
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param array    $valid_order_statuses The valid order statuses.
+	 * @return bool
+	 */
+	public function maybe_change_needs_payment( $wc_result, $order, $valid_order_statuses ) {
+
+		// Only change for Qliro orders.
+		if ( 'qliro_one' !== $order->get_payment_method() ) {
+			return $wc_result;
+		}
+
+		// Only if our filter is active and is set to false.
+		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
+			return $wc_result;
 		}
 
 		return true;

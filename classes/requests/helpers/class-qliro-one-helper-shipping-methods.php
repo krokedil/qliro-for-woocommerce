@@ -15,8 +15,7 @@ class Qliro_One_Helper_Shipping_Methods {
 	 * @return array
 	 */
 	public static function get_shipping_methods() {
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		if ( 'yes' !== $settings['shipping_in_iframe'] ) {
+		if ( ! QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			return array();
 		}
 
@@ -29,6 +28,11 @@ class Qliro_One_Helper_Shipping_Methods {
 		foreach ( $packages as $i => $package ) {
 			/** @var WC_Shipping_Rate $method */
 			foreach ( $package['rates'] as $method ) {
+				// If the method id contains the qliro_shipping string, skip.
+				if ( false !== strpos( $method->id, 'qliro_shipping' ) ) {
+					continue;
+				}
+
 				$method_id   = $method->id;
 				$method_name = $method->label;
 
@@ -96,10 +100,10 @@ class Qliro_One_Helper_Shipping_Methods {
 				$delivery_date_start = isset( $method_settings['qliro_delivery_date_start'] ) ? $method_settings['qliro_delivery_date_start'] : 'none';
 				$delivery_date_end   = isset( $method_settings['qliro_delivery_date_end'] ) ? $method_settings['qliro_delivery_date_end'] : 'none';
 				if ( 'none' !== $delivery_date_start ) {
-					$options['DeliveryDateInfo']['DateStart'] = date( 'Y-m-d', strtotime( "+$delivery_date_start days" ) );
+					$options['DeliveryDateInfo']['DateStart'] = date( 'Y-m-d', strtotime( "+$delivery_date_start days" ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 				}
 				if ( 'none' !== $delivery_date_end ) {
-					$options['DeliveryDateInfo']['DateEnd'] = date( 'Y-m-d', strtotime( "+$delivery_date_end days" ) );
+					$options['DeliveryDateInfo']['DateEnd'] = date( 'Y-m-d', strtotime( "+$delivery_date_end days" ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 				}
 
 				// Pickup points.

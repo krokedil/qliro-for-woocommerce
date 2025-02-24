@@ -1,33 +1,33 @@
 {
-      "0.1.0" : {
-            "description" : "<ul><li>Initial release.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.1.0": {
+            "description": "<ul><li>Initial release.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.2.0" : {
-            "description" : "<ul><li>Tweak - Readme changes.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.2.0": {
+            "description": "<ul><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.2.1" : {
-            "description" : "<ul><li>Tweak - Readme changes.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.2.1": {
+            "description": "<ul><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.3.0" : {
-            "description" : "<ul><li>Feature - Add support for the Post Purchase Upsell for WooCommerce plugin.</li><li>Tweak - Changed the ID of the order review in our checkout template.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "5.9.2",
-            "upgrade_notice" : ""
+      "0.3.0": {
+            "description": "<ul><li>Feature - Add support for the Post Purchase Upsell for WooCommerce plugin.</li><li>Tweak - Changed the ID of the order review in our checkout template.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "5.9.2",
+            "upgrade_notice": ""
       },
-      "0.3.1" : {
-            "description" : "<ul><li>Fix - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.</li></ul>",
-            "requires" : "5.9.0",
-            "tested" : "6.0.0",
-            "upgrade_notice" : ""
+      "0.3.1": {
+            "description": "<ul><li>Fix - Fixed an issue with order management callbacks. The confirmation string was not being passed in the URL for the callback.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.0.0",
+            "upgrade_notice": ""
       },
       "0.4.0": {
             "description": "<ul><li>Feature - Added support for OnHold callbacks from Qliro.</li><li>Tweak - Minor change to style to make the order review take up the space its allowed to take up</li><li>Fix - Fixed an issue with adminapi endpoints containing a extra backslash causing 404 errors.</li><li>Fix - Fixed sending a incorrect field name for MinimumCustomerAge.</li><li>Fix - Fixed some error handling on the order confirmation page.</li></ul>",
@@ -118,5 +118,45 @@
             "requires": "5.9.0",
             "tested": "6.6.2",
             "upgrade_notice": ""
+      },
+      "1.5.0": {
+            "description": "<ul><li>Feature - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.</li><li>Tweak - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.</li><li>Tweak - Adjusted the styling of the 'Sync Order with Qliro' button.</li><li>Tweak - Enabled the plugin to handle zero-sum orders, with an option to override via the 'qliro_check_if_needs_payment' filter.</li><li>Fix - Resolved a critical error caused by the logger.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
+      "1.5.1": {
+            "description": "<ul><li>Fix - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
+      "1.6.0": {
+            "description": "<ul><li>Feature - Added support for partial capture.</li><li>Feature - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.</li><li>Tweak - Tweaked the metabox's design.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
+      "1.7.0": {
+            "description": "<ul><li>Feature - Added support for shipping with Ingrid.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.6.2"
+      },
+      "1.7.1": {
+            "description": "<ul><li>Fix - Fixed an issue where an incorrect shipment reference was being used for Instabox integrated shipping in order management requests.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.0"
+      },
+      "1.7.2": {
+            "description": "<ul><li>Enhancement - Improved the error handling when placing an order in WooCommerce when the session from Qliro has expired or is missing in WooCommerce, which would cause a timeout error.</li><li>Enhancement - When matching Ingrid shipping tax rates to WooCommerce, allow a diff of 0.1 when comparing the tax rates to avoid rounding discrepancies between the two systems. This will prevent the wrong tax rate from being used when calculating the shipping tax in WooCommerce.</li><li>Fix - Fixed an issue when refunding an order line without specifying the order line quantity causing a division by zero error.</li><li>Fix - Fixed an issue when refunding a shipment order line with the Ingrid integration, where metadata from the order line was not copied over to the refund order line.</li><li>Fix - Fixed trying to access a setting before it has been saved, causing a PHP warning.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
+      },
+      "1.7.3": {
+            "description": "<ul><li>Fix - Fixed an issue where we would print Qliro error messages on API calls to WooCommerce on Qliro orders in some cases, causing the response to not be a valid JSON output. This could cause issues when other services tried to for example set the order status on an order placed with Qliro.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
+      },
+      "1.8.0": {
+            "description": "<ul><li>Feature - Added support for subscriptions</li><li>Feature - Added support for pay for order</li><li>Feature - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.</li><li>Tweak - Allow order status 'Completed' if order is captured through portal.</li><li>Tweak - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.</li><li>Fix - Fixed PHP 8.3.0 array_sum warnings.</li><li>Fix - Fixed missing address data from Qliro API during update.</li><li>Fix - Fixed issue with unsetting other shipping methods.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
       }
 }

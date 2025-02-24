@@ -12,9 +12,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Qliro_One_Checkout {
 	/**
+	 * Settings array
+	 *
+	 * @var array
+	 */
+	private $settings = array();
+
+	/**
 	 * Class constructor
 	 */
 	public function __construct() {
+		$this->settings = get_option( 'woocommerce_qliro_one_settings', array() );
+
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_shipping_data_input' ) );
 		add_filter( 'woocommerce_shipping_packages', array( $this, 'maybe_set_selected_pickup_point' ) );
 
@@ -61,8 +70,7 @@ class Qliro_One_Checkout {
 		}
 
 		// Check Setting.
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
-		if ( 'yes' !== $settings['shipping_in_iframe'] ) {
+		if ( ! $this->is_shipping_in_iframe_enabled() ) {
 			return;
 		}
 
@@ -110,7 +118,36 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		// If cart doesn't need payment anymore - reload the checkout page.
+		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
+			if ( ! WC()->cart->needs_payment() ) {
+				WC()->session->reload_checkout = true;
+			}
+		}
+
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		if ( is_wp_error( $qliro_order ) ) {
+			qliro_one_print_error_message( $qliro_order );
+			return;
+		}
+
+		if ( qliro_one_is_completed( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
+		// Validate the order.
+		if ( ! qliro_one_is_valid_order( $qliro_order ) ) {
+
+			// Verify if the order is not already completed in Qliro, set the WC Session to be reload the page.
+			if ( ! qliro_one_verify_not_completed( $qliro_order ) ) {
+				WC()->session->reload_checkout = true;
+				return;
+			}
+
+			qliro_one_unset_sessions();
+			$qliro_order = qliro_one_maybe_create_order();
+		}
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
 			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
@@ -121,7 +158,15 @@ class Qliro_One_Checkout {
 
 	public function calculate_hash() {
 		// Get values to use for the combined hash calculation.
-		$total            = array_sum( WC()->cart->get_totals() );
+		$totals = WC()->cart->get_totals();
+		$total  = 0;
+
+		// PHP 8.3.0: Now emits E_WARNING when array values cannot be converted to int or float. Previously arrays and objects where ignored whilst every other value was cast to int.
+		foreach ( $totals as $value ) {
+			if ( is_numeric( $value ) ) {
+				$total += $value;
+			}
+		}
 		$billing_address  = WC()->customer->get_billing();
 		$shipping_address = WC()->customer->get_shipping();
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
@@ -138,10 +183,9 @@ class Qliro_One_Checkout {
 	 * @param array $packages The shipping packages.
 	 * @return array
 	 */
-	function maybe_set_selected_pickup_point( $packages ) {
+	public function maybe_set_selected_pickup_point( $packages ) {
 		$data            = get_transient( 'qoc_shipping_data_' . WC()->session->get( 'qliro_one_order_id' ) );
 		$selected_option = $data['secondaryOption'] ?? '';
-
 		if ( empty( $selected_option ) ) {
 			return $packages;
 		}
@@ -152,7 +196,6 @@ class Qliro_One_Checkout {
 			foreach ( $package['rates'] as $rate ) {
 				/** @var WC_Shipping_Rate $rate */
 				$pickup_point = QOC_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
-
 				if ( ! $pickup_point ) {
 					continue;
 				}
@@ -163,5 +206,31 @@ class Qliro_One_Checkout {
 
 		return $packages;
 	}
+
+	/**
+	 * Is shipping methods in iframe enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_shipping_in_iframe_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'no' !== $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Is integrated shipping methods enabled in Qliro One.
+	 *
+	 * @return bool
+	 */
+	public function is_integrated_shipping_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'integrated_shipping' === $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Is WooCommerce shipping in iframe enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_wc_shipping_in_iframe_enabled() {
+		return isset( $this->settings['shipping_in_iframe'] ) && 'wc_shipping' === $this->settings['shipping_in_iframe'];
+	}
 }
-new Qliro_One_Checkout();

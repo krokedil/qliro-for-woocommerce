@@ -38,6 +38,7 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 	 */
 	protected function get_body() {
 		$order_id               = $this->arguments['order_id'];
+		$items                  = $this->arguments['items'];
 		$order                  = wc_get_order( $order_id );
 		$payment_transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
 
@@ -56,7 +57,7 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 			'Currency'       => $order->get_currency(),
 			'Shipments'      => array(
 				array(
-					'OrderItems' => $order_data::get_order_lines( $order_id ),
+					'OrderItems' => $order_data::get_order_lines( $order_id, $items ),
 				),
 			),
 		);

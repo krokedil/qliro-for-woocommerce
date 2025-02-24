@@ -5,12 +5,13 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.4.0
+ * Version: 1.8.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 9.2.0
+ * WC tested up to: 9.5.0
+ * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2024 Krokedil
  *
@@ -30,6 +31,7 @@
 
 use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
+use KrokedilQliroDeps\Krokedil\WooCommerce\KrokedilWooCommerce;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -38,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.3.1' );
+define( 'QLIRO_WC_VERSION', '1.8.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -93,6 +95,41 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		private $metabox;
 
 		/**
+		 * Reference to shipping method class.
+		 *
+		 * @var Qliro_One_Shipping_Method
+		 */
+		private $shipping_method;
+
+		/**
+		 * Reference to checkout class.
+		 *
+		 * @var Qliro_One_Checkout
+		 */
+		private $checkout;
+
+		/**
+		 * Reference to API registry class.
+		 *
+		 * @var Qliro_One_API_Registry
+		 */
+		private $api_registry;
+
+		/**
+		 * Reference to subscriptions class.
+		 *
+		 * @var Qliro_One_Subscriptions
+		 */
+		private $subscriptions;
+
+		/**
+		 * The WooCommerce package from Krokedil.
+		 *
+		 * @var KrokedilWooCommerce
+		 */
+		public $krokedil = null;
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -139,8 +176,17 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * Init the plugin after plugins_loaded so environment variables are set.
 		 */
 		public function init() {
+			$this->migrate_settings();
+
 			// Init the gateway itself.
 			$this->init_gateways();
+
+			$this->krokedil = new KrokedilWooCommerce(
+				array(
+					'slug'         => 'qoc',
+					'price_format' => 'major',
+				)
+			);
 		}
 
 		/**
@@ -204,6 +250,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method-instance.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-metabox.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-subscriptions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
@@ -217,6 +265,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-merchant-reference.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-cancel-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-merchant-payment.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-om-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-upsell-order.php';
@@ -229,15 +278,21 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-shipping-methods.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-partial-capture-admin-order-page.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-payment-widget.php';
 
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
+
 			$this->api              = new Qliro_One_API();
 			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
 			$this->order_management = new Qliro_One_Order_Management();
 			$this->metabox          = new Qliro_One_Metabox();
+			$this->checkout         = new Qliro_One_Checkout();
+			$this->api_registry     = new Qliro_One_API_Registry();
+			$this->subscriptions    = new Qliro_One_Subscriptions();
 
 			$this->pickup_points_service = new PickupPoints();
 
@@ -245,6 +300,23 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
+			add_filter( 'woocommerce_shipping_methods', Qliro_One_Shipping_Method::class . '::register' );
+		}
+
+		/**
+		 * Migrate settings after plugin update.
+		 *
+		 * @return void
+		 */
+		public function migrate_settings() {
+			// Get the settings for the gateway.
+			$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+
+			// If the setting for shipping_in_iframe is 'yes', change it to 'wc_shipping' for the change to a select instead of checkbox.
+			if ( isset( $settings['shipping_in_iframe'] ) && 'yes' === $settings['shipping_in_iframe'] ) {
+				$settings['shipping_in_iframe'] = 'wc_shipping';
+				update_option( 'woocommerce_qliro_one_settings', $settings );
+			}
 		}
 
 		/**
@@ -340,6 +412,42 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		}
 
 		/**
+		 * Get the shipping method instance.
+		 *
+		 * @return Qliro_One_Shipping_Method
+		 */
+		public function shipping_method() {
+			return $this->shipping_method;
+		}
+
+		/**
+		 * Get the checkout instance.
+		 *
+		 * @return Qliro_One_Checkout
+		 */
+		public function checkout() {
+			return $this->checkout;
+		}
+
+		/**
+		 * Get the API registry instance.
+		 *
+		 * @return Qliro_One_API_Registry
+		 */
+		public function api_registry() {
+			return $this->api_registry;
+		}
+
+		/**
+		 * Get the subscriptions instance.
+		 *
+		 * @return Qliro_One_Subscriptions
+		 */
+		public function subscriptions() {
+			return $this->subscriptions;
+		}
+
+		/**
 		 * Checks the plugin version.
 		 *
 		 * @return void
@@ -348,7 +456,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
 				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
 				__FILE__,
-				'qliro-one-for-woocommerce'
+				'qliro-one-for-woocommerce',
+				1
 			);
 		}
 	}

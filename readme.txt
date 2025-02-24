@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.6.2
+Tested up to: 6.7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.2.3
-Stable tag: 1.4.0
+WC tested up to: 9.5.0
+Stable tag: 1.8.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,47 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.02.17    - version 1.8.0 =
+* Feature       - Added support for subscriptions.
+* Feature       - Added support for pay for order.
+* Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
+* Tweak         - Allow order status 'Completed' if order is captured through portal.
+* Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
+* Fix           - Fixed PHP 8.3.0 array_sum warnings.
+* Fix           - Fixed missing address data from Qliro API during update.
+* Fix           - Fixed issue with unsetting other shipping methods.
+
+= 2025.01.22    - version 1.7.3 =
+* Fix           - Fixed an issue where we would print Qliro error messages on API calls to WooCommerce on Qliro orders in some cases, causing the response to not be a valid JSON output. This could cause issues when other services tried to for example set the order status on an order placed with Qliro.
+
+= 2024.12.13    - version 1.7.2 =
+* Enhancement   - Improved the error handling when placing an order in WooCommerce when the session from Qliro has expired or is missing in WooCommerce, which would cause a timeout error.
+* Enhancement   - When matching Ingrid shipping tax rates to WooCommerce, allow a diff of 0.1 when comparing the tax rates to avoid rounding discrepancies between the two systems. This will prevent the wrong tax rate from being used when calculating the shipping tax in WooCommerce.
+* Fix           - Fixed an issue when refunding an order line without specifying the order line quantity causing a division by zero error.
+* Fix           - Fixed an issue when refunding a shipment order line with the Ingrid integration, where metadata from the order line was not copied over to the refund order line.
+* Fix           - Fixed trying to access a setting before it has been saved, causing a PHP warning.
+
+= 2024.11.19    - version 1.7.1 =
+* Fix           - Fixed an issue where an incorrect shipment reference was being used for Instabox integrated shipping in order management requests.
+
+= 2024.11.13    - version 1.7.0 =
+* Feature       - Added support for shipping with Ingrid.
+
+= 2024.11.12    - version 1.6.0 =
+* Feature       - Added support for partial capture.
+* Feature       - Added the 'qliro_one_enforced_juridical_type' filter for modifying the name of the cookie that refers to the customer type.
+* Tweak         - Tweaked the metabox's design.
+
+= 2024.11.11    - version 1.5.1 =
+* Fix           - Fixed not handling Completed Qliro orders correctly if the customer landed back on the checkout page without the confirmation step being completed. The customer will now be redirected to a thankyou page for their order.
+
+= 2024.10.15    - version 1.5.0 =
+* Feature       - Added the ability to flag all products as high-risk through plugin settings or individually at the product level. Flagged products may disable certain payment methods.
+* Tweak         - Enhanced compatibility with currency switchers by initializing a new session when the currency changes.
+* Tweak         - Adjusted the styling of the "Sync Order with Qliro" button.
+* Tweak         - Enabled the plugin to handle zero-sum orders, with an option to override via the 'qliro_check_if_needs_payment' filter.
+* Fix           - Resolved a critical error caused by the logger.
+
 = 2024.09.11    - version 1.4.0 =
 * Feature       - Added a metabox to Qliro order pages to show information about the Qliro order in WooCommerce.
 * Feature       - Added a toggle to detach specific orders from the automatic order management. This is useful if you want to manually handle specific orders in WooCommerce.

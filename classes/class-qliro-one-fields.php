@@ -118,10 +118,15 @@ class Qliro_One_Fields {
 			),
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
+				'type'        => 'select',
 				'description' => __( 'Will display the shipping options inside of the Qliro One checkout iframe.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
+				'options'     => array(
+					'no'                  => __( 'No', 'qliro-one-for-woocommerce' ),
+					'wc_shipping'         => __( 'WooCommerce shipping methods', 'qliro-one-for-woocommerce' ),
+					'integrated_shipping' => __( 'Qliro integrated shipping methods', 'qliro-one-for-woocommerce' ),
+				),
 			),
 			'shipping_additional_header'                 => array(
 				'title'       => __( 'Shipping additional header', 'qliro-one-for-woocommerce' ),
@@ -156,6 +161,13 @@ class Qliro_One_Fields {
 				'title'       => __( 'Require identity verification', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'description' => __( 'If this box is checked and the customer is from Sweden, BankID identity verification will be mandatory for each purchase. As a consequence, there will be a double BankID verification requirement in certain instances. We recommend setting this requirement on an individual product level instead, as it should only be applied when there are additional perceived risks.', 'qliro-one-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
+			'has_risk'                                   => array(
+				'title'       => __( 'Has risk', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If this box is checked, the product is a risk item.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
