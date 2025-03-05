@@ -115,6 +115,7 @@ function qliro_one_unset_sessions() {
 	WC()->session->__unset( 'qliro_one_merchant_reference' );
 	WC()->session->__unset( 'qliro_one_order_id' );
 	WC()->session->__unset( 'qliro_one_last_update_hash' );
+	WC()->session->__unset( 'qliro_one_tracking_id' );
 }
 
 /**

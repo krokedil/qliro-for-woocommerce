@@ -58,6 +58,10 @@ class Qliro_One_Assets {
 			return;
 		}
 
+		// This ID will be used in tracking logging events.
+		$tracking_id = wp_generate_uuid4();
+		WC()->session->set( 'qliro_one_tracking_id', $tracking_id );
+
 		$script_version               = $this->qoc_is_script_debug_enabled();
 		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
 		$dependencies                 = array( 'jquery' );
@@ -109,6 +113,7 @@ class Qliro_One_Assets {
 				'payForOrder'                 => $pay_for_order,
 				'iframeSnippet'               => qliro_wc_get_snippet(),
 				'customerTypeCookieName'      => apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' ),
+				'trackingId'                  => $tracking_id,
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );
