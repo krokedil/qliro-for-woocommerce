@@ -105,7 +105,7 @@ function qliro_one_print_error_message( $wp_error ) {
 }
 
 /**
- * Unsets the sessions used by the plguin.
+ * Unsets the sessions used by the plugin.
  *
  * @return void
  */
@@ -115,7 +115,6 @@ function qliro_one_unset_sessions() {
 	WC()->session->__unset( 'qliro_one_merchant_reference' );
 	WC()->session->__unset( 'qliro_one_order_id' );
 	WC()->session->__unset( 'qliro_one_last_update_hash' );
-	WC()->session->__unset( 'qliro_one_tracking_id' );
 }
 
 /**
