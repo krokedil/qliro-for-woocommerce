@@ -462,7 +462,6 @@ jQuery(function ($) {
 		 * @param {string} message
 		 */
 		logToFile: function (message) {
-			console.debug(qliroOneParams.trackingId)
 			$.ajax(
 				{
 					url: qliroOneParams.log_to_file_url,
