@@ -59,7 +59,7 @@ class Qliro_One_Assets {
 		}
 
 		// This ID will be used in tracking logging events.
-		$tracking_id = wp_generate_uuid4();
+		$tracking_id = WC()->session->get( 'qliro_one_merchant_reference' );
 		WC()->session->set( 'qliro_one_tracking_id', $tracking_id );
 
 		$script_version               = $this->qoc_is_script_debug_enabled();
