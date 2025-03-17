@@ -31,6 +31,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 			'qliro_one_wc_log_js'                => true,
 			'qliro_one_wc_set_order_sync'        => false,
 			'qliro_one_make_capture'             => true,
+			'qliro_one_change_country'           => true,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_woocommerce_' . $ajax_event, array( __CLASS__, $ajax_event ) );
@@ -202,6 +203,14 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$order->update_meta_data( '_qliro_order_sync_enabled', $enabled );
 		$order->save();
 
+		wp_send_json_success();
+	}
+
+	public static function qliro_one_change_country() {
+		check_ajax_referer( 'qliro_one_change_country', 'nonce' );
+		$country = filter_input( INPUT_POST, 'country', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		WC()->customer->set_billing_country( $country );
+		WC()->customer->set_shipping_country( $country );
 		wp_send_json_success();
 	}
 }

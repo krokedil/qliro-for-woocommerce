@@ -36,9 +36,22 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
 
 			$('#billing_country').on('change', () => { 
+				const country = $('#billing_country').val();
+
 				// TODO: Remove console.log.
 				console.log('update checkout')
-				location.reload()
+				$.ajax({
+					type: 'POST',
+					data: {
+						nonce: qliroOneParams.changeCountryNonce,
+						country: country,
+					},
+					success: () => { 
+						location.reload()
+					},
+					dataType: 'json',
+					url: qliroOneParams.changeCountryUrl,
+				})
 			});
 		},
 		renderIframe: function () {
