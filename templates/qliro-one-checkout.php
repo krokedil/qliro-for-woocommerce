@@ -16,6 +16,11 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	return;
 }
 
+$args             = $checkout->get_checkout_fields( 'billing' )['billing_country'];
+$args['required'] = false;
+$value            = $checkout->get_value( 'billing_country' );
+woocommerce_form_field( 'billing_country', $args, $value );
+
 ?>
 
 <form name="checkout" class="checkout woocommerce-checkout">

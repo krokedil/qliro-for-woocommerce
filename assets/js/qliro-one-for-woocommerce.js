@@ -34,6 +34,12 @@ jQuery(function ($) {
 			}
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
+
+			$('#billing_country').on('change', () => { 
+				// TODO: Remove console.log.
+				console.log('update checkout')
+				location.reload()
+			});
 		},
 		renderIframe: function () {
 			window.q1Ready = function (q1) {
@@ -56,6 +62,7 @@ jQuery(function ($) {
 			}
 		},
 		shippingMethodChanged: function (shipping) {
+			debugger
 			$('#qoc_shipping_data').val(JSON.stringify(shipping));
 			$('body').trigger('qoc_shipping_option_changed', [shipping]);
 			$('body').trigger('update_checkout');
