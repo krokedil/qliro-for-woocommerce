@@ -44,7 +44,7 @@ class Qliro_One_Templates {
 	 */
 	public function __construct() {
 		$qliro_settings        = get_option( 'woocommerce_qliro_one_settings' );
-		$this->checkout_layout = ( isset( $qliro_settings['checkout_layout'] ) ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
+		$this->checkout_layout = isset( $qliro_settings['checkout_layout'] ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
 
 		// Override template if Qliro One Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
@@ -56,6 +56,20 @@ class Qliro_One_Templates {
 
 		// Body class modifications. For checkout layout setting.
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
+
+		if ( wc_string_to_bool( $qliro_settings['country_selector'] ?? 'no' ) ) {
+			add_action( 'qliro_one_wc_before_wrapper', array( $this, 'add_country_selector' ) );
+		}
+	}
+
+	public function add_country_selector() {
+		$checkout = WC()->checkout();
+
+		$args             = $checkout->get_checkout_fields( 'billing' )['billing_country'];
+		$args['required'] = false;
+		$value            = $checkout->get_value( 'billing_country' );
+
+		woocommerce_form_field( 'billing_country', $args, $value );
 	}
 
 	/**

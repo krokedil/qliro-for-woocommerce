@@ -398,6 +398,31 @@ class Qliro_One_Fields {
 				'default' => 'no',
 				'title'   => __( 'Display in a condensed (shorter) style', 'qliro-one-for-woocommerce' ),
 			),
+			'country_selector_section'                   => array(
+				'title' => __( 'Country selector', 'qliro-one-for-woocommerce' ),
+				'type'  => 'title',
+			),
+			'country_selector'                           => array(
+				'type'    => 'checkbox',
+				'default' => 'no',
+				'title'   => __( 'Enable country selector', 'qliro-one-for-woocommerce' ),
+			),
+			'country_selector_placement'                 => array(
+				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				// TODO: Update placeholder hooks.
+				'options' => array(
+					'4'  => __( 'Above Title', 'qliro-one-for-woocommerce' ),
+					'7'  => __( 'Between Title and Price', 'qliro-one-for-woocommerce' ),
+					'15' => __( 'Between Price and Excerpt', 'qliro-one-for-woocommerce' ),
+					'25' => __( 'Between Excerpt and Add to cart button', 'qliro-one-for-woocommerce' ),
+					'35' => __( 'Between Add to cart button and Product meta', 'qliro-one-for-woocommerce' ),
+					'45' => __( 'Between Product meta and Product sharing buttons', 'qliro-one-for-woocommerce' ),
+					'55' => __( 'After Product sharing-buttons', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => '15',
+				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
+			),
 		);
 
 		// Add upsell section if plugin is installed.
