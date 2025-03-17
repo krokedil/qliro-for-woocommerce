@@ -7,7 +7,7 @@ Tested up to: 6.7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.5.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,9 +19,14 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.03.17    - version 1.8.1 =
+* Fix           - Fixed an undefined array key warning.
+* Fix           - Fixed a critical error that could occur while editing the checkout page.
+
 = 2025.02.17    - version 1.8.0 =
 * Feature       - Added support for subscriptions.
 * Feature       - Added support for pay for order.
+* Feature       - Added support for gift cards.
 * Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
 * Tweak         - Allow order status 'Completed' if order is captured through portal.
 * Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
