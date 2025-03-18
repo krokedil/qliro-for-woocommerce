@@ -57,8 +57,10 @@ class Qliro_One_Templates {
 		// Body class modifications. For checkout layout setting.
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
 
-		if ( wc_string_to_bool( $qliro_settings['country_selector'] ?? 'no' ) ) {
-			add_action( 'qliro_one_wc_before_wrapper', array( $this, 'add_country_selector' ) );
+		if ( wc_string_to_bool( $qliro_settings['country_selector'] ?? 'yes' ) ) {
+			$default   = 'qliro_one_wc_before_snippet';
+			$placement = $qliro_settings['country_selector_placement'] ?? $default;
+			add_action( $placement, array( $this, 'add_country_selector' ) );
 		}
 	}
 

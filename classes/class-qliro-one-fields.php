@@ -410,17 +410,17 @@ class Qliro_One_Fields {
 			'country_selector_placement'                 => array(
 				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
-				// TODO: Update placeholder hooks.
 				'options' => array(
-					'4'  => __( 'Above Title', 'qliro-one-for-woocommerce' ),
-					'7'  => __( 'Between Title and Price', 'qliro-one-for-woocommerce' ),
-					'15' => __( 'Between Price and Excerpt', 'qliro-one-for-woocommerce' ),
-					'25' => __( 'Between Excerpt and Add to cart button', 'qliro-one-for-woocommerce' ),
-					'35' => __( 'Between Add to cart button and Product meta', 'qliro-one-for-woocommerce' ),
-					'45' => __( 'Between Product meta and Product sharing buttons', 'qliro-one-for-woocommerce' ),
-					'55' => __( 'After Product sharing-buttons', 'qliro-one-for-woocommerce' ),
+					'woocommerce_before_checkout_form' => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_wrapper'      => __( 'Above order review and payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_order_review'  => __( 'Below order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_wrapper'       => __( 'Below order review and payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_checkout_form' => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
 				),
-				'default' => '15',
+				'default' => 'qliro_one_wc_before_snippet',
 				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
 			),
 		);
@@ -435,7 +435,6 @@ class Qliro_One_Fields {
 				'title'             => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
 				'type'              => 'number',
 				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment . The default is 10 % , if you want higher than that you will first need to contact Qliro . ', 'qliro-one-for-woocommerce' ),
-				'default'           => '',
 				'desc_tip'          => true,
 				'default'           => 10,
 				'custom_attributes' => array(
