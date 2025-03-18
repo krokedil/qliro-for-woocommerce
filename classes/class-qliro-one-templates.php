@@ -57,14 +57,37 @@ class Qliro_One_Templates {
 		// Body class modifications. For checkout layout setting.
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
 
+		// Country selector.
 		if ( wc_string_to_bool( $qliro_settings['country_selector'] ?? 'yes' ) ) {
 			$default   = 'qliro_one_wc_before_snippet';
 			$placement = $qliro_settings['country_selector_placement'] ?? $default;
 			add_action( $placement, array( $this, 'add_country_selector' ) );
+
 		}
+
+		// Shortcode: country selector. Should always be available.
+		add_shortcode( 'qliro_one_country_selector', array( $this, 'country_selector_shortcode' ) );
 	}
 
+	/**
+	 * Shortcode: country selector.
+	 *
+	 * @param array       $atts Shortcode attributes.
+	 * @param string|null $content Shortcode content.
+	 * @param string      $shortcode_tag Shortcode tag.
+	 */
+	public function country_selector_shortcode( $atts, $content, $shortcode_tag ) {
+		$this->add_country_selector();
+	}
+
+	/**
+	 * Add country selector to the checkout page.
+	 */
 	public function add_country_selector() {
+		if ( function_exists( 'WC' ) && ! WC()->checkout ) {
+			return;
+		}
+
 		$checkout = WC()->checkout();
 
 		$args             = $checkout->get_checkout_fields( 'billing' )['billing_country'];
