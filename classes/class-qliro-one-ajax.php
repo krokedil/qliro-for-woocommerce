@@ -145,7 +145,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 				// translators: %s is the error message from Qliro.
 				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be partially captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
 				wp_send_json_error( $error_message );
-				wp_die();
 			}
 
 			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
@@ -166,10 +165,8 @@ class Qliro_One_Ajax extends WC_AJAX {
 			$order->add_order_note( $order_note );
 
 			wp_send_json_success( $order_id );
-			wp_die();
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage() );
-			wp_die();
 		}
 	}
 
