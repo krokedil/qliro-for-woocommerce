@@ -185,7 +185,7 @@ class Qliro_One_Helper_Cart {
 			'MerchantReference'  => $reference,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
-			'Type'               => $fee->amount > 0 ? 'Fee' : 'Discount',
+			'Type'               => $fee->amount < 0 ? 'Discount' : 'Fee',
 			'PricePerItemIncVat' => wc_format_decimal( abs( $fee->amount + $fee->tax ), min( wc_get_price_decimals(), 2 ) ),
 			'PricePerItemExVat'  => wc_format_decimal( abs( $fee->amount ), min( wc_get_price_decimals(), 2 ) ),
 		);
