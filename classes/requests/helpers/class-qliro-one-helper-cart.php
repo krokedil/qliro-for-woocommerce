@@ -348,6 +348,15 @@ class Qliro_One_Helper_Cart {
 	 * @return void
 	 */
 	private static function set_ingrid_vouchers( &$metadata ) {
+		// If no coupons are applied, add an empty voucher to trigger an update of the Qliro shipping options.
+		if ( empty( WC()->cart->get_applied_coupons() ) ) {
+			$metadata[] = array(
+				'Key'   => 'Ingrid.Vouchers',
+				'Value' => '',
+			);
+			return;
+		}
+
 		foreach ( WC()->cart->get_applied_coupons() as $coupon ) {
 			$metadata[] = array(
 				'Key'   => 'Ingrid.Vouchers',
