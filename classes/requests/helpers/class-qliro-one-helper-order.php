@@ -117,11 +117,15 @@ class Qliro_One_Helper_Order {
 		$return_lines = array();
 
 		foreach ( $order_lines as $order_line ) {
+			// Discount must be negative.
+			$price = $order_line['PricePerItemIncVat'];
+			$price = 'Discount' === $order_line['Type'] ? $price : abs( $price );
+
 			$return_lines[] = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
 				'Quantity'           => abs( $order_line['Quantity'] ),
-				'PricePerItemIncVat' => wc_format_decimal( abs( $order_line['PricePerItemIncVat'] ), min( wc_get_price_decimals(), 2 ) ),
+				'PricePerItemIncVat' => wc_format_decimal( $price, min( wc_get_price_decimals(), 2 ) ),
 			);
 		}
 
@@ -239,7 +243,7 @@ class Qliro_One_Helper_Order {
 
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
-		} elseif( 'fee' === $order_item->get_type() ) {
+		} elseif ( 'fee' === $order_item->get_type() ) {
 			$reference = sanitize_title_with_dashes( $order_item->get_name() );
 		} else {
 			$reference = $order_item->get_id();
