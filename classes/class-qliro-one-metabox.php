@@ -292,7 +292,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
 
 		// Only output the sync button if the order is a Qliro payment method order. Cant update card orders for example.
-		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 && strpos( $payment_method, 'TRUSTLY_' ) !== 0 ) {
+		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 ) {
 			return;
 		}
 
