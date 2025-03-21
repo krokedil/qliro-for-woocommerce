@@ -206,7 +206,7 @@ class Qliro_One_Helper_Order {
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
-			'Type'               => 'Fee',
+			'Type'               => $order_item->get_total() > 0 ? 'Fee' : 'Discount',
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
 		);
