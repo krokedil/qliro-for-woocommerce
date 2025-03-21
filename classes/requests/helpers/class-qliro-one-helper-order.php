@@ -119,7 +119,9 @@ class Qliro_One_Helper_Order {
 		foreach ( $order_lines as $order_line ) {
 			// Discount must be negative.
 			$price = $order_line['PricePerItemIncVat'];
-			$price = 'Discount' === $order_line['Type'] ? $price : abs( $price );
+			// A negative fee is a discount. On refund, Woo returns the fee as a positive value,
+			// we must inverse the price as Qliro expects price <= 0 for discounts.
+			$price = 'Discount' === $order_line['Type'] ? -1 * $price : abs( $price );
 
 			$return_lines[] = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
@@ -202,11 +204,17 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_order_item_fee( $order_item, $order ) {
+		$type = $order_item->get_total() < 0 ? 'Discount' : 'Fee';
+		if ( ! empty( $order_item->get_meta( '_refunded_item_id' ) ) ) {
+			$parent_order_item = new WC_Order_Item_Fee( $order_item->get_meta( '_refunded_item_id' ) );
+			$type              = $parent_order_item->get_total() > 0 ? 'Fee' : 'Discount';
+		}
+
 		return array(
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
-			'Type'               => $order_item->get_total() > 0 ? 'Fee' : 'Discount',
+			'Type'               => $type,
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
 		);
