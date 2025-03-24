@@ -207,7 +207,7 @@ class Qliro_One_Helper_Order {
 		$type = $order_item->get_total() < 0 ? 'Discount' : 'Fee';
 		if ( ! empty( $order_item->get_meta( '_refunded_item_id' ) ) ) {
 			$parent_order_item = new WC_Order_Item_Fee( $order_item->get_meta( '_refunded_item_id' ) );
-			$type              = $parent_order_item->get_total() > 0 ? 'Fee' : 'Discount';
+			$type              = $parent_order_item->get_total() < 0 ? 'Discount' : 'Fee';
 		}
 
 		return array(
