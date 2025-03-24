@@ -47,7 +47,6 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// Get cart shipping.
-		$settings = get_option( 'woocommerce_qliro_one_settings' );
 		if ( WC()->cart->needs_shipping() && ! QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			$shipping = self::get_shipping();
 			if ( null !== $shipping ) {
@@ -66,6 +65,7 @@ class Qliro_One_Helper_Cart {
 				$formatted_cart_items[] = array(
 					'MerchantReference'  => $retrieved_giftcard->get_sku(),
 					'Description'        => $retrieved_giftcard->get_name(),
+					'Type'               => 'Discount',
 					'Quantity'           => $retrieved_giftcard->get_quantity(),
 					'PricePerItemIncVat' => $retrieved_giftcard->get_total_amount(),
 					'PricePerItemExVat'  => $retrieved_giftcard->get_total_amount(),
@@ -92,6 +92,7 @@ class Qliro_One_Helper_Cart {
 		$formatted_cart_item = array(
 			'MerchantReference'  => self::get_product_sku( $product ),
 			'Description'        => self::get_product_name( $cart_item ),
+			'Type'               => 'Product',
 			'Quantity'           => $cart_item['quantity'],
 			'PricePerItemIncVat' => self::get_product_unit_price( $cart_item ),
 			'PricePerItemExVat'  => self::get_product_unit_price_no_tax( $cart_item ),
@@ -178,13 +179,15 @@ class Qliro_One_Helper_Cart {
 	 * @return array
 	 */
 	public static function get_fee( $fee ) {
-		// todo.
+		$reference = sanitize_title_with_dashes( $fee->name );
+
 		return array(
-			'MerchantReference'  => 'fee:' . $fee->id,
+			'MerchantReference'  => $reference,
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
-			'PricePerItemIncVat' => wc_format_decimal( $fee->amount + $fee->tax, min( wc_get_price_decimals(), 2 ) ),
-			'PricePerItemExVat'  => wc_format_decimal( $fee->amount, min( wc_get_price_decimals(), 2 ) ),
+			'Type'               => $fee->amount < 0 ? 'Discount' : 'Fee',
+			'PricePerItemIncVat' => wc_format_decimal( abs( $fee->amount + $fee->tax ), min( wc_get_price_decimals(), 2 ) ),
+			'PricePerItemExVat'  => wc_format_decimal( abs( $fee->amount ), min( wc_get_price_decimals(), 2 ) ),
 		);
 	}
 
@@ -204,6 +207,7 @@ class Qliro_One_Helper_Cart {
 						return array(
 							'MerchantReference'  => $method->id,
 							'Description'        => $method->label,
+							'Type'               => 'Shipping',
 							'Quantity'           => 1,
 							'PricePerItemIncVat' => wc_format_decimal( WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(), min( wc_get_price_decimals(), 2 ) ),
 							'PricePerItemExVat'  => wc_format_decimal( WC()->cart->get_shipping_total(), min( wc_get_price_decimals(), 2 ) ),
@@ -213,6 +217,7 @@ class Qliro_One_Helper_Cart {
 					return array(
 						'MerchantReference'  => $method->id,
 						'Description'        => $method->label,
+						'Type'               => 'Shipping',
 						'Quantity'           => 1,
 						'PricePerItemIncVat' => 0,
 						'PricePerItemExVat'  => 0,
