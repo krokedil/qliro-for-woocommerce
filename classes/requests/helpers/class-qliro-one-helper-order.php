@@ -117,11 +117,17 @@ class Qliro_One_Helper_Order {
 		$return_lines = array();
 
 		foreach ( $order_lines as $order_line ) {
+			// Discount must be negative.
+			$price = $order_line['PricePerItemIncVat'];
+			// A negative fee is a discount. On refund, Woo returns the fee as a positive value,
+			// we must inverse the price as Qliro expects price <= 0 for discounts.
+			$price = 'Discount' === $order_line['Type'] ? -1 * $price : abs( $price );
+
 			$return_lines[] = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
 				'Quantity'           => abs( $order_line['Quantity'] ),
-				'PricePerItemIncVat' => wc_format_decimal( abs( $order_line['PricePerItemIncVat'] ), min( wc_get_price_decimals(), 2 ) ),
+				'PricePerItemIncVat' => wc_format_decimal( $price, min( wc_get_price_decimals(), 2 ) ),
 			);
 		}
 
@@ -198,11 +204,17 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_order_item_fee( $order_item, $order ) {
+		$type = $order_item->get_total() < 0 ? 'Discount' : 'Fee';
+		if ( ! empty( $order_item->get_meta( '_refunded_item_id' ) ) ) {
+			$parent_order_item = new WC_Order_Item_Fee( $order_item->get_meta( '_refunded_item_id' ) );
+			$type              = $parent_order_item->get_total() < 0 ? 'Discount' : 'Fee';
+		}
+
 		return array(
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
-			'Type'               => 'Fee',
+			'Type'               => $type,
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
 		);
@@ -227,6 +239,11 @@ class Qliro_One_Helper_Order {
 			$order              = wc_get_order( $order_item->get_order_id() );
 			$shipping_reference = ! empty( $order ) ? $order->get_meta( '_qliro_one_shipping_reference' ) : '';
 
+			if ( empty( $shipping_reference ) && $order->get_parent_id() ) {
+				$parent_order       = wc_get_order( $order->get_parent_id() );
+				$shipping_reference = $parent_order ? $parent_order->get_meta( '_qliro_one_shipping_reference' ) : '';
+			}
+
 			// If the shipping method used is the qliro_shipping method, we should use the order line meta.
 			if ( 'qliro_shipping' === $order_item->get_method_id() ) {
 				// If this is a refund order line, we need to get the parent to ensure we get the correct shipping reference.
@@ -239,6 +256,8 @@ class Qliro_One_Helper_Order {
 
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
+		} elseif ( 'fee' === $order_item->get_type() ) {
+			$reference = sanitize_title_with_dashes( $order_item->get_name() );
 		} else {
 			$reference = $order_item->get_id();
 		}

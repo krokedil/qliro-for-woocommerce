@@ -7,7 +7,7 @@ Tested up to: 6.7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.5.0
-Stable tag: 1.8.1
+Stable tag: 1.9.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,14 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.03.25    - version 1.9.0 =
+* Feature       - Added 'Type' (discount, fee, shipping) to order lines.
+* Fix           - Fixed an issue where free shipping coupons did not always update the order in checkout.
+* Fix           - Fixed an issue where a removed coupon sometimes remained in the order.
+* Fix           - Fixed an issue where refunds sometimes failed for pickup point orders.
+* Fix           - Fixed 'MerchantReference' being incorrectly set for fees.
+* Fix           - Fix so that negative fees are set as discounts.
+
 = 2025.03.17    - version 1.8.1 =
 * Fix           - Fixed an undefined array key warning.
 * Fix           - Fixed a critical error that could occur while editing the checkout page.
