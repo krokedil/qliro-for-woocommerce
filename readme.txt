@@ -20,12 +20,12 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 == Changelog ==
 = 2025.03.25    - version 1.9.0 =
+* Feature       - Added 'Type' (discount, fee, shipping) to order lines.
 * Fix           - Fixed an issue where free shipping coupons did not always update the order in checkout.
 * Fix           - Fixed an issue where a removed coupon sometimes remained in the order.
 * Fix           - Fixed an issue where refunds sometimes failed for pickup point orders.
-* Fix           - Fixed 'Type' (discount, fee, shipping) not being set for order lines.
-* Fix           - Fix so that negative fees are set as discounts.
 * Fix           - Fixed 'MerchantReference' being incorrectly set for fees.
+* Fix           - Fix so that negative fees are set as discounts.
 
 = 2025.03.17    - version 1.8.1 =
 * Fix           - Fixed an undefined array key warning.

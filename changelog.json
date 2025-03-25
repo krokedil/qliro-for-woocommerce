@@ -165,7 +165,7 @@
             "tested": "6.7.1"
       },
       "1.9.0": {
-            "description": "<ul><li>Fix - Fixed an issue where free shipping coupons did not always update the order in checkout.</li><li>Fix - Fixed an issue where a removed coupon sometimes remained in the order.</li><li>Fix - Fixed an issue where refunds sometimes failed for pickup point orders.</li><li>Fix - Fixed 'Type' (discount, fee, shipping) not being set for order lines.</li><li>Fix - Fix so that negative fees are set as discounts.</li><li>Fix - Fixed 'MerchantReference' being incorrectly set for fees.</li></ul>",
+            "description": "<ul><li>Feature - Added 'Type' (discount, fee, shipping) to order lines.</li><li>Fix - Fixed an issue where free shipping coupons did not always update the order in checkout.</li><li>Fix - Fixed an issue where a removed coupon sometimes remained in the order.</li><li>Fix - Fixed an issue where refunds sometimes failed for pickup point orders.</li><li>Fix - Fixed 'MerchantReference' being incorrectly set for fees.</li><li>Fix - Fix so that negative fees are set as discounts.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
       }
