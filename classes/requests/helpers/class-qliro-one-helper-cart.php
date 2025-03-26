@@ -163,13 +163,7 @@ class Qliro_One_Helper_Cart {
 	 * @return string
 	 */
 	public static function get_product_sku( $product ) {
-		if ( $product->get_sku() ) {
-			$item_reference = $product->get_sku();
-		} else {
-			$item_reference = $product->get_id();
-		}
-
-		return $item_reference;
+		return Qliro_One_Helper_References::get_product_reference( $product );
 	}
 
 	/**

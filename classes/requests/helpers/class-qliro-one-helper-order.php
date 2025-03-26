@@ -229,11 +229,7 @@ class Qliro_One_Helper_Order {
 	public static function get_reference( $order_item ) {
 		if ( 'line_item' === $order_item->get_type() ) {
 			$product = $order_item['variation_id'] ? wc_get_product( $order_item['variation_id'] ) : wc_get_product( $order_item['product_id'] );
-			if ( $product->get_sku() ) {
-				$reference = $product->get_sku();
-			} else {
-				$reference = $product->get_id();
-			}
+			$reference = Qliro_One_Helper_References::get_product_reference( $product );
 		} elseif ( 'shipping' === $order_item->get_type() ) {
 			// We need to get any potential shipping reference from the order if possible.
 			$order              = wc_get_order( $order_item->get_order_id() );
