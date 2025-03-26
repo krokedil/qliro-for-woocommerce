@@ -253,10 +253,7 @@ class Qliro_One_Helper_Order {
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
 		} elseif ( 'fee' === $order_item->get_type() ) {
-            //We have no real identifier from WooCommerce that can be reliably used. The name
-            //might contain forbidden characters and might exceed the max-length from Qliro.
-            //By using MD5 we make sure that we always create strings that pass the regex.
-			$reference = md5( sanitize_title_with_dashes( $order_item->get_name() ) );
+            $reference = Qliro_One_Helper_References::get_fee_reference( $order_item->get_name() );
 		} else {
 			$reference = $order_item->get_id();
 		}
