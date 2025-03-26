@@ -601,11 +601,12 @@ function qliro_one_format_fee_reference( $fee_name ) {
 	// Limit the length of the merchant reference to 200 characters.
 	$merchant_reference = mb_substr( $fee_name, 0, 200 );
 
+	// Sanitize the reference.
+	$merchant_reference = sanitize_title_with_dashes( $merchant_reference );
+
 	// Match the allowed characters in the merchant reference and combine them into a single string.
 	preg_match_all( $allowed_characters, $merchant_reference, $matches );
 	$merchant_reference = implode( '', $matches[0] );
 
-	// Sanitize the reference and return.
-	$merchant_reference = sanitize_title_with_dashes( $merchant_reference );
 	return apply_filters( 'qliro_one_format_fee_reference', $merchant_reference, $fee_name );
 }
