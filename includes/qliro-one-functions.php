@@ -588,3 +588,24 @@ function qliro_one_redirect_to_thankyou_page() {
 	wp_safe_redirect( $redirect_url );
 	exit;
 }
+
+/**
+ * Format a merchant reference for fees sent to Qliro, either as a fee or a discount.
+ *
+ * @param string $fee_name The name of the fee to be formatted.
+ *
+ * @return string
+ */
+function qliro_one_format_fee_reference( $fee_name ) {
+	$allowed_characters = "/[\p{L}\s(.)'\-_&,\/–+0-9:]/"; // Regex for the allowed characters in the merchant reference.
+	// Limit the length of the merchant reference to 200 characters.
+	$merchant_reference = mb_substr( $fee_name, 0, 200 );
+
+	// Match the allowed characters in the merchant reference and combine them into a single string.
+	preg_match_all( $allowed_characters, $merchant_reference, $matches );
+	$merchant_reference = implode( '', $matches[0] );
+
+	// Sanitize the reference and return.
+	$merchant_reference = sanitize_title_with_dashes( $merchant_reference );
+	return apply_filters( 'qliro_one_format_fee_reference', $merchant_reference, $fee_name );
+}
