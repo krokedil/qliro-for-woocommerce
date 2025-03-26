@@ -179,7 +179,10 @@ class Qliro_One_Helper_Cart {
 	 * @return array
 	 */
 	public static function get_fee( $fee ) {
-		$reference = sanitize_title_with_dashes( $fee->name );
+        //We have no real identifier from WooCommerce that can be reliably used. The name
+        //might contain forbidden characters and might exceed the max-length from Qliro.
+        //By using MD5 we make sure that we always create strings that pass the regex.
+		$reference = md5( sanitize_title_with_dashes( $fee->name ) );
 
 		return array(
 			'MerchantReference'  => $reference,
