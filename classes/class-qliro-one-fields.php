@@ -402,15 +402,11 @@ class Qliro_One_Fields {
 				'title' => __( 'Country selector', 'qliro-one-for-woocommerce' ),
 				'type'  => 'title',
 			),
-			'country_selector'                           => array(
-				'type'    => 'checkbox',
-				'default' => 'no',
-				'title'   => __( 'Enable country selector', 'qliro-one-for-woocommerce' ),
-			),
 			'country_selector_placement'                 => array(
 				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'options' => array(
+					'shortcode'                        => __( 'Inactive/shortcode placement' ),
 					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
@@ -418,7 +414,7 @@ class Qliro_One_Fields {
 					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_after_wrapper'       => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
 				),
-				'default' => 'qliro_one_wc_before_snippet',
+				'default' => 'shortcode', // Disabled by default.
 				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
 			),
 		);

@@ -58,11 +58,10 @@ class Qliro_One_Templates {
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
 
 		// Country selector.
-		if ( wc_string_to_bool( $qliro_settings['country_selector'] ?? 'yes' ) ) {
+		if ( 'shortcode' !== $qliro_settings['country_selector_placement'] ) {
 			$default   = 'qliro_one_wc_before_snippet';
 			$placement = $qliro_settings['country_selector_placement'] ?? $default;
 			add_action( $placement, array( $this, 'add_country_selector' ) );
-
 		}
 
 		// Shortcode: country selector. Should always be available.
