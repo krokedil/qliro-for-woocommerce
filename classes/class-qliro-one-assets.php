@@ -58,10 +58,6 @@ class Qliro_One_Assets {
 			return;
 		}
 
-		// This ID will be used in tracking logging events.
-		$tracking_id = WC()->session->get( 'qliro_one_merchant_reference' );
-		WC()->session->set( 'qliro_one_tracking_id', $tracking_id );
-
 		$script_version               = $this->qoc_is_script_debug_enabled();
 		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
 		$dependencies                 = array( 'jquery' );
