@@ -32,7 +32,7 @@ class Qliro_One_Logger {
 			$message = self::format_data( $data );
 
 			if ( isset( WC()->session ) ) {
-				$tracking_id = WC()->session->get( 'qliro_one_tracking_id' );
+				$tracking_id = WC()->session->get( 'qliro_one_merchant_reference' );
 				if ( ! empty( $tracking_id ) ) {
 					if ( is_array( $message ) ) {
 						$message['log_id'] = $tracking_id;
