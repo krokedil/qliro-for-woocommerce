@@ -110,8 +110,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 			wp_send_json_error( 'bad_nonce' );
 		}
 		$posted_message = isset( $_POST['message'] ) ? sanitize_text_field( wp_unslash( $_POST['message'] ) ) : '';
-		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
-		$message        = "Frontend JS $qliro_order_id: $posted_message";
+		$message        = "Frontend JS $posted_message";
 		Qliro_One_Logger::log( $message );
 		wp_send_json_success();
 	}
