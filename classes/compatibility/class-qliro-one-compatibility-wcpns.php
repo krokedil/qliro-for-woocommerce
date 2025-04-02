@@ -26,8 +26,6 @@ class Qliro_One_Compatibility_WCPNS {
 			return;
 		}
 
-		exit( 'here' );
-
 		$this->wcpns_api = wcpns()->api;
 
 		add_filter( 'qliro_one_shipping_option', array( $this, 'maybe_set_postnord_servicepoints' ), 10, 3 );

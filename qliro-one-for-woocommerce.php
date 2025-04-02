@@ -174,7 +174,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * *Singleton* via the `new` operator from outside this class.
 		 */
 		protected function __construct() {
-			add_action( 'plugins_loaded', array( $this, 'init' ) );
+			add_action( 'plugins_loaded', array( $this, 'init' ), 400 );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
@@ -194,6 +194,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 					'price_format' => 'major',
 				)
 			);
+
+			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 		}
 
 		/**
@@ -303,7 +305,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->api_registry          = new Qliro_One_API_Registry();
 			$this->subscriptions         = new Qliro_One_Subscriptions();
 			$this->pickup_points_service = new PickupPoints();
-			$this->wcpns                 = new Qliro_One_Compatibility_WCPNS();
 
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
