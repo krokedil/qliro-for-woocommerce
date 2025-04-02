@@ -1,9 +1,6 @@
 <?php
 /**
  * Qliro One compatibility class for WooCommerce PostNord Shipping (WCPNS).
- *
- * @see https://wordpress.org/plugins/webshipper-automated-shipping/
- * @package  Avarda_Checkout/Classes/Compatibility
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -13,9 +10,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class Qliro_One_Compatibility_WCPNS {
 	/**
-	 * WCPNS api class instance.
+	 * The WCPNS API instance.
 	 *
-	 * @var WebshipperAPI
+	 * @var object
 	 */
 	private $wcpns_api;
 
@@ -35,7 +32,6 @@ class Qliro_One_Compatibility_WCPNS {
 
 		add_filter( 'qliro_one_shipping_option', array( $this, 'maybe_set_postnord_servicepoints' ), 10, 3 );
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'save_postnord_servicepoint_data_to_order' ), 10, 3 );
-		add_filter( 'woocommerce_checkout_fields', array( $this, 'wcpns_chosen_servicepoint' ) );
 	}
 
 	/**
@@ -67,7 +63,7 @@ class Qliro_One_Compatibility_WCPNS {
 
 		$service_code = $shipping_method->get_instance_option( 'postnord_service' ) ?? 'none';
 
-		if ( empty( $service_code ) || 'none' === $service_code ) {
+		if ( ( empty( $service_code ) || 'none' === $service_code ) ) {
 			return $options;
 		}
 
@@ -86,7 +82,7 @@ class Qliro_One_Compatibility_WCPNS {
 			return $options;
 		}
 
-		$wcpns_pickup_points_json = $this->wcpns_api->get_postnord_servicepoints(
+		$wcpns_pickup_points_json = wcpns()->api->get_postnord_servicepoints(
 			$country_code,
 			$zip,
 			$city,
@@ -97,11 +93,11 @@ class Qliro_One_Compatibility_WCPNS {
 
 		$wcpns_pickup_points = json_decode( $wcpns_pickup_points_json )->servicePointInformationResponse->servicePoints ?? array();
 
-		WC()->session->set( 'wcpns_pickup_points', $wcpns_pickup_points_json );
-
 		if ( empty( $wcpns_pickup_points ) ) {
 			return $options;
 		}
+
+		WC()->session->set( 'wcpns_pickup_points', $wcpns_pickup_points );
 
 		foreach ( $wcpns_pickup_points as $wcpns_pickup_point ) {
 			// If the id is empty, skip.
@@ -144,28 +140,43 @@ class Qliro_One_Compatibility_WCPNS {
 	 * @return void
 	 */
 	public function save_postnord_servicepoint_data_to_order( $order_id, $posted_data, $order ) {
-		$postnord_servicepoints = WC()->session->get( 'wcpns_pickup_points' );
-		error_log( 'Postnord servicepoint object: ' . print_r( $postnord_servicepoints, true ) );
-		if ( empty( $postnord_servicepoints ) ) {
+		$wcpns_pickup_points = WC()->session->get( 'wcpns_pickup_points' );
+
+		if ( empty( $wcpns_pickup_points ) ) {
 			return;
 		}
-		$order->add_meta_data( '_postnord_servicepoint', $postnord_servicepoints );
-		$order->save();
-	}
 
-	/**
-	 * Add a hidden field for the chosen pickup point.
-	 *
-	 * @param array $fields The checkout fields.
-	 *
-	 * @return array
-	 */
-	public function wcpns_chosen_servicepoint( $fields ) {
-		$fields['billing']['wcpns_chosen_servicepoint'] = array(
-			'type'    => 'text',
-			'class'   => array( 'wcpns-chosen' ),
-			'default' => '',
+		WC()->session->__unset( 'wcpns_pickup_points' );
+
+		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
+		if ( empty( $qliro_order_id ) ) {
+			return;
+		}
+
+		$shipping_data = get_transient( 'qoc_shipping_data_' . $qliro_order_id );
+
+		if ( empty( $shipping_data ) ) {
+			return;
+		}
+
+		$shipping_pickup_location = $shipping_data['pickupLocation'] ?? array();
+
+		if ( empty( $shipping_pickup_location ) ) {
+			return;
+		}
+
+		$wcpns_pickup_point = array_filter(
+			$wcpns_pickup_points,
+			function ( $pickup_point ) use ( $shipping_pickup_location ) {
+				return isset( $pickup_point->name ) && $shipping_pickup_location['name'] === $pickup_point->name;
+			}
 		);
-		return $fields;
+
+		if ( empty( $wcpns_pickup_point ) ) {
+			return;
+		}
+
+		$order->add_meta_data( '_postnord_servicepoint', reset( $wcpns_pickup_point ) );
+		$order->save();
 	}
 }
