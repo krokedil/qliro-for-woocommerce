@@ -105,7 +105,7 @@ function qliro_one_print_error_message( $wp_error ) {
 }
 
 /**
- * Unsets the sessions used by the plguin.
+ * Unsets the sessions used by the plugin.
  *
  * @return void
  */
