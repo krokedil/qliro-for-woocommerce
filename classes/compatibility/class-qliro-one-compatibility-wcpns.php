@@ -10,11 +10,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class Qliro_One_Compatibility_WCPNS {
 	/**
-	 * The WCPNS API instance.
+	 * The WCPNS checkout object.
 	 *
-	 * @var object
+	 * @var WCPNS_Checkout
 	 */
-	private $wcpns_api;
+	private $wcpns_checkout;
 
 	/**
 	 * Class constructor.
@@ -22,13 +22,18 @@ class Qliro_One_Compatibility_WCPNS {
 	 * @return void
 	 */
 	public function __construct() {
-		if ( ! function_exists( 'wcpns' ) ) {
+		add_action( 'init', array( $this, 'init' ) );
+	}
+
+	public function init() {
+
+		if ( ! class_exists( 'WCPNS_Checkout' ) ) {
 			return;
 		}
 
-		$this->wcpns_api = wcpns()->api;
+		$this->wcpns_checkout = WCPNS_Checkout::get_instance();
 
-		add_filter( 'qliro_one_shipping_option', array( $this, 'maybe_set_postnord_servicepoints' ), 10, 3 );
+		add_filter( 'woocommerce_package_rates', array( $this, 'maybe_set_postnord_servicepoints' ), 10, 3 );
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'save_postnord_servicepoint_data_to_order' ), 10, 3 );
 	}
 
@@ -41,46 +46,65 @@ class Qliro_One_Compatibility_WCPNS {
 	 *
 	 * @return array
 	 */
-	public function maybe_set_postnord_servicepoints( $options, $method, $method_settings ) {
-		$instance_id     = $method->get_instance_id();
-		$shipping_method = null;
-		$shipping_zones  = WC_Shipping_Zones::get_zones();
-
-		foreach ( $shipping_zones as $zone ) {
-			foreach ( $zone['shipping_methods'] as $method ) {
-				if ( $method->instance_id == $instance_id ) {
-					$shipping_method = $method;
-					break 2;
-				}
-			}
+	public function maybe_set_postnord_servicepoints( $params, $rate ) {
+		// Check if the rate is a PostNord rate.
+		if ( ! $this->wcpns_checkout::is_postnord_shipping_rate( $rate ) ) {
+			return $params;
 		}
-
-		if ( ! $shipping_method ) {
-			return $options;
-		}
-
-		$service_code = $shipping_method->get_instance_option( 'postnord_service' ) ?? 'none';
+		error_log( print_r( $rate->get_id(), true ) );
+		$shipping_method = $this->wcpns_checkout::get_shipping_method_from_rate( $rate );
+		$service_code    = ! empty( $shipping_method ) ? $shipping_method->get_instance_option( 'postnord_service' ) : 'none';
 
 		if ( ( empty( $service_code ) || 'none' === $service_code ) ) {
-			return $options;
+			return $params;
 		}
 
+		$meta_data = $params['meta_data'] ?? array();
+
+		if ( empty( $meta_data ) ) {
+			return $params;
+		}
+
+		// Check if the rate has pickup points.
+		if ( ! $rate['shipping_rate']['require_drop_point'] ?? false ) {
+			return $params;
+		}
+
+		$wcpns_pickup_points = $this->get_pickup_points();
+		$pickup_points       = ! empty( $wcpns_pickup_points ) ? $this->format_pickup_points( $wcpns_pickup_points ) : array();
+
+		if ( ! empty( $pickup_points ) ) {
+			$selected_pickup_point                                    = $pickup_points[0];
+			$params['meta_data']['krokedil_pickup_points']            = wp_json_encode( $pickup_points );
+			$params['meta_data']['krokedil_selected_pickup_point']    = wp_json_encode( $selected_pickup_point );
+			$params['meta_data']['krokedil_selected_pickup_point_id'] = $selected_pickup_point->get_id();
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Get the Webshipper pickup points for the shipping rate.
+	 *
+	 * @param string $rate_id The shipping rate from WooCommerce.
+	 *
+	 * @return array
+	 */
+	private function get_pickup_points() {
+		// Find an appropriate address.
 		$address      = WC()->checkout->get_value( 'shipping_address_1' ) ?? WC()->checkout->get_value( 'billing_address_1' );
 		$zip          = WC()->checkout->get_value( 'shipping_postcode' ) ?? WC()->checkout->get_value( 'billing_postcode' );
 		$city         = WC()->checkout->get_value( 'shipping_city' ) ?? WC()->checkout->get_value( 'billing_city' );
 		$country_code = WC()->checkout->get_value( 'shipping_country' ) ?? WC()->checkout->get_value( 'billing_country' );
 
 		// Sanitize above variables.
-		$address      = $address ? sanitize_text_field( $address ) : '';
-		$zip          = $zip ? sanitize_text_field( $zip ) : '';
-		$city         = $city ? sanitize_text_field( $city ) : '';
-		$country_code = $country_code ? sanitize_text_field( $country_code ) : '';
+		$address      = sanitize_text_field( $address );
+		$zip          = sanitize_text_field( $zip );
+		$city         = sanitize_text_field( $city );
+		$country_code = sanitize_text_field( $country_code );
 
-		if ( empty( $zip ) || empty( $country_code ) ) {
-			return $options;
-		}
-
-		$wcpns_pickup_points_json = wcpns()->api->get_postnord_servicepoints(
+		// Get the pickup points from the Webshipper API.
+		$wcpns_pickup_points_json = $this->wcpns_checkout->get_postnord_servicepoints_for_address(
 			$country_code,
 			$zip,
 			$city,
@@ -89,44 +113,41 @@ class Qliro_One_Compatibility_WCPNS {
 			false
 		) ?? array();
 
-		$wcpns_pickup_points = json_decode( $wcpns_pickup_points_json )->servicePointInformationResponse->servicePoints ?? array();
-
-		if ( empty( $wcpns_pickup_points ) ) {
-			return $options;
+		if ( empty( $wcpns_pickup_points_json ) ) {
+			return array();
 		}
 
-		WC()->session->set( 'wcpns_pickup_points', $wcpns_pickup_points );
+		$wcpns_pickup_points = json_decode( $wcpns_pickup_points_json )->servicePointInformationResponse->servicePoints ?? array();
 
+		return $wcpns_pickup_points;
+	}
+
+	/**
+	 * Format the Webshipper pickup points to the PickupPoint object.
+	 *
+	 * @param array $ws_pickup_points The Webshipper pickup points.
+	 *
+	 * @return PickupPoint[]
+	 */
+	private function format_pickup_points( $wcpns_pickup_points ) {
+		error_log( 'WCPNS pickup points: ' . print_r( $wcpns_pickup_points, true ) );
+		$pickup_points = array();
 		foreach ( $wcpns_pickup_points as $wcpns_pickup_point ) {
-			// If the id is empty, skip.
 			if ( empty( $wcpns_pickup_point->servicePointId ) ) {
 				continue;
 			}
 
-			$secondary_options[] = array(
-				'MerchantReference' => $wcpns_pickup_point->servicePointId,
-				'DisplayName'       => $wcpns_pickup_point->name,
-				'Descriptions'      => array( // Can max have 3 lines.
-					trim( mb_substr( $wcpns_pickup_point->deliveryAddress->streetName . ' ' . $wcpns_pickup_point->deliveryAddress->streetNumber, 0, 100 ) ),
-					trim( mb_substr( $wcpns_pickup_point->deliveryAddress->postalCode, 0, 100 ) ),
-					trim( mb_substr( $wcpns_pickup_point->deliveryAddress->additionalDescription, 0, 100 ) ),
-				),
-				'Coordinates'       => array(
-					'Lat' => $wcpns_pickup_point->deliveryAddress->coordinate->latitude,
-					'Lng' => $wcpns_pickup_point->deliveryAddress->coordinate->longitude,
-				),
-				'DeliveryDateInfo'  => array(
-					'DateStart' => 'Not sure what to put here',
-				),
-			);
+			$pickup_point = ( new PickupPoint() )
+				->set_id( $wcpns_pickup_point->servicePointId )
+				->set_name( $wcpns_pickup_point->name )
+				->set_address( $wcpns_pickup_point->deliveryAddress->streetName . ' ' . $wcpns_pickup_point->deliveryAddress->streetNumber, $wcpns_pickup_point->deliveryAddress->City, $wcpns_pickup_point->deliveryAddress->postalCode, $wcpns_pickup_point->deliveryAddress->countryCode );
 
-			if ( ! empty( $secondary_options ) ) {
-				$options['SecondaryOptions'] = $secondary_options;
-			}
+			$pickup_points[] = $pickup_point;
 		}
 
-		return $options;
+		return $pickup_points;
 	}
+
 
 	/**
 	 * Save Postnord service point data to the order.

@@ -174,7 +174,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * *Singleton* via the `new` operator from outside this class.
 		 */
 		protected function __construct() {
-			add_action( 'plugins_loaded', array( $this, 'init' ), 400 );
+			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
