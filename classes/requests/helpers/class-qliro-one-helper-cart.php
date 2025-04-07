@@ -157,7 +157,7 @@ class Qliro_One_Helper_Cart {
 	}
 
 	/**
-	 * Undocumented static function
+	 * Gets the product SKU for the merchant reference.
 	 *
 	 * @param object $product The WooCommerce Product.
 	 * @return string
@@ -179,10 +179,8 @@ class Qliro_One_Helper_Cart {
 	 * @return array
 	 */
 	public static function get_fee( $fee ) {
-		$reference = sanitize_title_with_dashes( $fee->name );
-
 		return array(
-			'MerchantReference'  => $reference,
+			'MerchantReference'  => qliro_one_format_fee_reference( $fee->name ),
 			'Description'        => $fee->name,
 			'Quantity'           => 1,
 			'Type'               => $fee->amount < 0 ? 'Discount' : 'Fee',

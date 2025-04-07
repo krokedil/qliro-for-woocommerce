@@ -168,5 +168,10 @@
             "description": "<ul><li>Feature - Added 'Type' (discount, fee, shipping) to order lines.</li><li>Fix - Fixed an issue where free shipping coupons did not always update the order in checkout.</li><li>Fix - Fixed an issue where a removed coupon sometimes remained in the order.</li><li>Fix - Fixed an issue where refunds sometimes failed for pickup point orders.</li><li>Fix - Fixed 'MerchantReference' being incorrectly set for fees.</li><li>Fix - Fix so that negative fees are set as discounts.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
+      },
+      "1.9.1": {
+            "description": "<ul><li>Fix - Fixed a critical error that could occur when the merchant reference for fees was too long or included special characters.</li><li>Fix - Fixed an undefined array key warning.</li><li>Tweak - Improved logging by keeping track of user sessions with unique IDs.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
       }
 }
