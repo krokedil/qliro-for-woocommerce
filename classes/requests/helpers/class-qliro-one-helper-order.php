@@ -257,7 +257,7 @@ class Qliro_One_Helper_Order {
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
 		} elseif ( 'fee' === $order_item->get_type() ) {
-			$reference = sanitize_title_with_dashes( $order_item->get_name() );
+			$reference = qliro_one_format_fee_reference( $order_item->get_name() );
 		} else {
 			$reference = $order_item->get_id();
 		}
