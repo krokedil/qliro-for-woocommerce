@@ -63,8 +63,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$mer_ref       = null;
 		$session       = WC()->session;
 
-		$base_location   = wc_get_base_location();
-		$billing_country = apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
+		$billing_country = qliro_one_get_billing_country();
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
 		// Merchant reference.

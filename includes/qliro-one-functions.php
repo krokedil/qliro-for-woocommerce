@@ -588,3 +588,13 @@ function qliro_one_redirect_to_thankyou_page() {
 	wp_safe_redirect( $redirect_url );
 	exit;
 }
+
+/**
+ * Get the billing country from the checkout, or the store base location if not set.
+ *
+ * @return string
+ */
+function qliro_one_get_billing_country() {
+	$base_location = wc_get_base_location();
+	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
+}
