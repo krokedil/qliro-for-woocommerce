@@ -398,6 +398,16 @@ class Qliro_One_Fields {
 				'default' => 'no',
 				'title'   => __( 'Display in a condensed (shorter) style', 'qliro-one-for-woocommerce' ),
 			),
+			'tax_status'                                 => array(
+				'title'   => __( 'Tax status', 'woocommerce' ),
+				'type'    => 'select',
+				'class'   => 'wc-enhanced-select',
+				'default' => 'taxable',
+				'options' => array(
+					'taxable' => __( 'Taxable', 'woocommerce' ),
+					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
+				),
+			),
 		);
 
 		// Add upsell section if plugin is installed.
