@@ -290,6 +290,11 @@ jQuery(function ($) {
 					// If the response was not successful, we should fail the order.
 					if (data.responseJSON.success !== true) {
 						qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON.data, callback);
+
+						// If we have a redirect url, we should redirect the user to that url.
+						if(data.responseJSON.data.redirect) {
+							window.location.href = data.responseJSON.data.redirect;
+						}
 						return;
 					}
 
