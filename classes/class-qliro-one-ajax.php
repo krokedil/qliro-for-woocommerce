@@ -90,6 +90,11 @@ class Qliro_One_Ajax extends WC_AJAX {
 			wp_send_json_error( $qliro_one_order->get_error_message() );
 		}
 
+		if ( qliro_one_is_completed( $qliro_one_order ) ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The Qliro order (id: $qliro_one_order) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			qliro_one_redirect_to_thankyou_page();
+		}
+
 		wp_send_json_success(
 			array(
 				'billingAddress'  => $qliro_one_order['BillingAddress'],
