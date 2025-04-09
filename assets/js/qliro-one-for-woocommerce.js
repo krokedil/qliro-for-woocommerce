@@ -38,8 +38,6 @@ jQuery(function ($) {
 			$('#billing_country').on('change', () => { 
 				const country = $('#billing_country').val();
 
-				// TODO: Remove console.log.
-				console.log('update checkout')
 				$.ajax({
 					type: 'POST',
 					data: {
