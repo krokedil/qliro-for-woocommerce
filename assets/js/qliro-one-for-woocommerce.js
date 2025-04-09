@@ -73,7 +73,6 @@ jQuery(function ($) {
 			}
 		},
 		shippingMethodChanged: function (shipping) {
-			debugger
 			$('#qoc_shipping_data').val(JSON.stringify(shipping));
 			$('body').trigger('qoc_shipping_option_changed', [shipping]);
 			$('body').trigger('update_checkout');
