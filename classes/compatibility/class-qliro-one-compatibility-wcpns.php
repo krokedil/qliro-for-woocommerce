@@ -40,7 +40,7 @@ class Qliro_One_Compatibility_WCPNS {
 	}
 
 	/**
-	 * Maybe set PostNord service points to the order.
+	 * Maybe add PostNord pickup point data to the shipping rate metadata.
 	 *
 	 * @param array $package['rates'] Package rates.
 	 * @param array $package          Package of cart items.
