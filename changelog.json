@@ -173,5 +173,10 @@
             "description": "<ul><li>Fix - Fixed a critical error that could occur when the merchant reference for fees was too long or included special characters.</li><li>Fix - Fixed an undefined array key warning.</li><li>Tweak - Improved logging by keeping track of user sessions with unique IDs.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
+      },
+      "1.9.2": {
+            "description": "<ul><li>Fix - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.</li><li>Fix - Add a check when reading the Qliro order before submitting the WooCommerce order to ensure the Qliro order has not already been completed.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
       }
 }
