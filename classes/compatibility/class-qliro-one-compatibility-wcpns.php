@@ -128,7 +128,8 @@ class Qliro_One_Compatibility_WCPNS {
 			$pickup_point = ( new PickupPoint() )
 				->set_id( $wcpns_pickup_point->servicePointId )
 				->set_name( $wcpns_pickup_point->name )
-				->set_address( $wcpns_pickup_point->deliveryAddress->streetName . ' ' . $wcpns_pickup_point->deliveryAddress->streetNumber, $wcpns_pickup_point->deliveryAddress->city, $wcpns_pickup_point->deliveryAddress->postalCode, $wcpns_pickup_point->deliveryAddress->countryCode );
+				->set_address( $wcpns_pickup_point->deliveryAddress->streetName . ' ' . $wcpns_pickup_point->deliveryAddress->streetNumber, $wcpns_pickup_point->deliveryAddress->city, $wcpns_pickup_point->deliveryAddress->postalCode, $wcpns_pickup_point->deliveryAddress->countryCode )
+				->set_coordinates( $wcpns_pickup_point->deliveryAddress->coordinate->latitude, $wcpns_pickup_point->deliveryAddress->coordinate->longitude );
 
 			$pickup_points[] = $pickup_point;
 		}
