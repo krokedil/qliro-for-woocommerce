@@ -622,3 +622,13 @@ function qliro_one_format_fee_reference( $fee_name ) {
 
 	return apply_filters( 'qliro_one_format_fee_reference', $merchant_reference, $fee_name );
 }
+
+/**
+ * Get the billing country from the checkout, or the store base location if not set.
+ *
+ * @return string
+ */
+function qliro_one_get_billing_country() {
+	$base_location = wc_get_base_location();
+	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
+}
