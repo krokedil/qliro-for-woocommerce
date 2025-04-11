@@ -206,7 +206,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 	public static function qliro_one_change_country() {
 		check_ajax_referer( 'qliro_one_change_country', 'nonce' );
 		$country = filter_input( INPUT_POST, 'country', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		WC()->customer->set_shipping_country( $country );
+		WC()->customer->set_billing_country( $country );
 		wp_send_json_success();
 	}
 }
