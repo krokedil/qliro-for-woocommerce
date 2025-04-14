@@ -93,7 +93,7 @@ class Qliro_One_Templates {
 		$args['required'] = false;
 		$value            = $checkout->get_value( 'billing_country' );
 
-		woocommerce_form_field( 'billing_country', $args, $value );
+		woocommerce_form_field( 'qliro_billing_country', $args, $value );
 	}
 
 	/**

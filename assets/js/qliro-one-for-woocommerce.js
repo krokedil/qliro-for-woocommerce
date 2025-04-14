@@ -35,8 +35,8 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
 
-			$('#billing_country').on('change', () => { 
-				const country = $('#billing_country').val();
+			$('#qliro_billing_country').on('change', () => { 
+				const country = $('#qliro_billing_country').val();
 
 				$.ajax({
 					type: 'POST',
