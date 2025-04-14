@@ -103,9 +103,9 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 		wp_send_json_success(
 			array(
-				'billingAddress'  => $qliro_one_order['BillingAddress'] ?? '',
-				'shippingAddress' => $qliro_one_order['ShippingAddress'] ?? '',
-				'customer'        => $qliro_one_order['Customer'] ?? '',
+				'billingAddress'  => $qliro_one_order['BillingAddress'] ?? array(),
+				'shippingAddress' => $qliro_one_order['ShippingAddress'] ?? array(),
+				'customer'        => $qliro_one_order['Customer'] ?? array(),
 			)
 		);
 	}
