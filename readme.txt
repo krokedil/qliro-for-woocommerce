@@ -22,7 +22,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 = 2025.04.14    - version 1.10.0 =
 * Feature       - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
 * Fix           - Fixed country sometimes being set to null in checkout, when restricting selling locations.
-* Fix           - Limit the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.
+* Fix           - Limited the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.
 
 = 2025.04.09    - version 1.9.2 =
 * Fix           - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.
