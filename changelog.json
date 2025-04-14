@@ -178,5 +178,10 @@
             "description": "<ul><li>Fix - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.</li><li>Fix - Add a check when reading the Qliro order before submitting the WooCommerce order to ensure the Qliro order has not already been completed.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.2"
+      },
+      "1.10.0": {
+            "description": "<ul><li>Feature - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.</li><li>Fix - Fixed country sometimes being set to null in checkout, when restricting selling locations.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
       }
 }

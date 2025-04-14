@@ -247,12 +247,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "3d5ee501872282058abbd0d6d6b08c511de039de"
+                "reference": "2c412566f94bdd8ed1bc1a50c05bd2dd1cff0df5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/3d5ee501872282058abbd0d6d6b08c511de039de",
-                "reference": "3d5ee501872282058abbd0d6d6b08c511de039de",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/2c412566f94bdd8ed1bc1a50c05bd2dd1cff0df5",
+                "reference": "2c412566f94bdd8ed1bc1a50c05bd2dd1cff0df5",
                 "shasum": ""
             },
             "require": {
@@ -282,9 +282,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.7.0"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.8.1"
             },
-            "time": "2025-02-25T12:21:28+00:00"
+            "time": "2025-04-11T18:56:54+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -663,12 +663,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "99818768ce205f0d5629a928f782fae32a1df9d3"
+                "reference": "84fccb486f12384e5ef2d93b57ef78ca9c191ee0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/99818768ce205f0d5629a928f782fae32a1df9d3",
-                "reference": "99818768ce205f0d5629a928f782fae32a1df9d3",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/84fccb486f12384e5ef2d93b57ef78ca9c191ee0",
+                "reference": "84fccb486f12384e5ef2d93b57ef78ca9c191ee0",
                 "shasum": ""
             },
             "require": {
@@ -740,7 +740,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-04-05T22:41:20+00:00"
+            "time": "2025-04-14T10:24:04+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
