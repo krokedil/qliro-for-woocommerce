@@ -114,7 +114,7 @@ class Qliro_One_Templates {
 				}
 			}
 
-			// QLiro One Checkout.
+			// Qliro One Checkout.
 			if ( 'checkout/form-checkout.php' === $template_name ) {
 				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 
@@ -173,7 +173,7 @@ class Qliro_One_Templates {
 					}
 
 					if ( 'qliro_one' === $order->get_payment_method() ) {
-						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_STRING );
+						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 						if ( empty( $confirm ) ) {
 							$template = $qliro_one_checkout_template;
 						}
