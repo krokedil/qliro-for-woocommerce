@@ -109,8 +109,6 @@ class Qliro_One_Assets {
 				'payForOrder'                 => $pay_for_order,
 				'iframeSnippet'               => qliro_wc_get_snippet(),
 				'customerTypeCookieName'      => apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' ),
-				'changeCountryNonce'          => wp_create_nonce( 'qliro_one_change_country' ),
-				'changeCountryUrl'            => WC_AJAX::get_endpoint( 'qliro_one_change_country' ),
 			)
 		);
 		wp_enqueue_script( 'qliro-one-for-woocommerce' );

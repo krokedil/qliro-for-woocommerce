@@ -34,23 +34,6 @@ jQuery(function ($) {
 			}
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
-
-			$('#qliro_billing_country').on('change', () => { 
-				const country = $('#qliro_billing_country').val();
-
-				$.ajax({
-					type: 'POST',
-					data: {
-						nonce: qliroOneParams.changeCountryNonce,
-						country: country,
-					},
-					success: () => { 
-						location.reload()
-					},
-					dataType: 'json',
-					url: qliroOneParams.changeCountryUrl,
-				})
-			});
 		},
 		renderIframe: function () {
 			window.q1Ready = function (q1) {
