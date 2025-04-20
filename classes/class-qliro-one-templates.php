@@ -66,6 +66,9 @@ class Qliro_One_Templates {
 
 		// Shortcode: country selector. Should always be available.
 		add_shortcode( 'qliro_one_country_selector', array( $this, 'country_selector_shortcode' ) );
+
+		// Unhook the country field if it has the country selector shortcode, and Qliro is the chosen gateway. We'll inject the country field instead.
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'unhook_country_field' ) );
 	}
 
 	/**
@@ -93,7 +96,23 @@ class Qliro_One_Templates {
 		$args['required'] = false;
 		$value            = $checkout->get_value( 'billing_country' );
 
-		woocommerce_form_field( 'qliro_billing_country', $args, $value );
+		do_action( 'before_qliro_country_selector' );
+		woocommerce_form_field( 'billing_country', $args, $value );
+		do_action( 'after_qliro_country_selector' );
+	}
+
+	public function unhook_country_field( $fields ) {
+		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return $fields;
+		}
+
+		global $post;
+		if ( ! has_shortcode( $post->post_content, 'qliro_one_country_selector' ) ) {
+			return $fields;
+		}
+
+		unset( $fields['billing']['billing_country'] );
+		return $fields;
 	}
 
 	/**
