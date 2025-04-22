@@ -83,6 +83,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
+			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
@@ -156,6 +157,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
+			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'OrderItems'                           => Qliro_One_Helper_Order::get_order_lines( $this->order_id ),
@@ -177,5 +179,14 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$body = array_filter( $body );
 
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
+	}
+
+	/**
+	 * Get the integrity url if set, else return the terms url.
+	 *
+	 * @return string
+	 */
+	protected function get_integrity_url() {
+		return apply_filters( 'qliro_one_wc_integrity_url', get_permalink( wc_get_page_id( 'terms' ) ) );
 	}
 }
