@@ -5,15 +5,15 @@
  * Description: Qliro One Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.8.0
+ * Version: 1.10.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 9.5.0
+ * WC tested up to: 9.7.1
  * Requires Plugins: woocommerce
  *
- * Copyright (c) 2021-2024 Krokedil
+ * Copyright (c) 2021-2025 Krokedil
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.8.0' );
+define( 'QLIRO_WC_VERSION', '1.10.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -130,6 +130,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public $krokedil = null;
 
 		/**
+		 * Reference to WCPNS compatibility class.
+		 *
+		 * @var Qliro_One_Compatibility_WCPNS
+		 */
+		public $wcpns;
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -187,6 +194,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 					'price_format' => 'major',
 				)
 			);
+
+			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 		}
 
 		/**
@@ -286,14 +295,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
 
-			$this->api              = new Qliro_One_API();
-			$this->merchant_urls    = new Qliro_One_Merchant_URLS();
-			$this->order_management = new Qliro_One_Order_Management();
-			$this->metabox          = new Qliro_One_Metabox();
-			$this->checkout         = new Qliro_One_Checkout();
-			$this->api_registry     = new Qliro_One_API_Registry();
-			$this->subscriptions    = new Qliro_One_Subscriptions();
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/compatibility/class-qliro-one-compatibility-wcpns.php';
 
+			$this->api                   = new Qliro_One_API();
+			$this->merchant_urls         = new Qliro_One_Merchant_URLS();
+			$this->order_management      = new Qliro_One_Order_Management();
+			$this->metabox               = new Qliro_One_Metabox();
+			$this->checkout              = new Qliro_One_Checkout();
+			$this->api_registry          = new Qliro_One_API_Registry();
+			$this->subscriptions         = new Qliro_One_Subscriptions();
 			$this->pickup_points_service = new PickupPoints();
 
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );

@@ -105,7 +105,7 @@ function qliro_one_print_error_message( $wp_error ) {
 }
 
 /**
- * Unsets the sessions used by the plguin.
+ * Unsets the sessions used by the plugin.
  *
  * @return void
  */
@@ -570,6 +570,18 @@ function qliro_one_is_completed( $qliro_order ) {
  * @return void
  */
 function qliro_one_redirect_to_thankyou_page() {
+	// Redirect the customer to the thankyou page for the order, with the orders confirmation id as a query parameter.
+	$redirect_url = qliro_one_get_thankyou_page_redirect_url();
+	wp_safe_redirect( $redirect_url );
+	exit;
+}
+
+/**
+ * Get the thankyou page redirect URL for the order.
+ *
+ * @return string
+ */
+function qliro_one_get_thankyou_page_redirect_url() {
 	// Get the WC Order for the Qliro order.
 	$confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
 	$order           = qoc_get_order_by_confirmation_id( $confirmation_id );
@@ -585,6 +597,38 @@ function qliro_one_redirect_to_thankyou_page() {
 
 	// Redirect the customer to the thankyou page for the order, with the orders confirmation id as a query parameter.
 	$redirect_url = add_query_arg( 'qliro_one_confirm_page', $confirmation_id, $redirect_url );
-	wp_safe_redirect( $redirect_url );
-	exit;
+
+	return $redirect_url;
+}
+
+/**
+ * Format a merchant reference for fees sent to Qliro, either as a fee or a discount.
+ *
+ * @param string $fee_name The name of the fee to be formatted.
+ *
+ * @return string
+ */
+function qliro_one_format_fee_reference( $fee_name ) {
+	$allowed_characters = "/[\p{L}\s(.)'\-_&,\/–+0-9:]/"; // Regex for the allowed characters in the merchant reference.
+	// Limit the length of the merchant reference to 200 characters.
+	$merchant_reference = mb_substr( $fee_name, 0, 200 );
+
+	// Sanitize the reference.
+	$merchant_reference = sanitize_title_with_dashes( $merchant_reference );
+
+	// Match the allowed characters in the merchant reference and combine them into a single string.
+	preg_match_all( $allowed_characters, $merchant_reference, $matches );
+	$merchant_reference = implode( '', $matches[0] );
+
+	return apply_filters( 'qliro_one_format_fee_reference', $merchant_reference, $fee_name );
+}
+
+/**
+ * Get the billing country from the checkout, or the store base location if not set.
+ *
+ * @return string
+ */
+function qliro_one_get_billing_country() {
+	$base_location = wc_get_base_location();
+	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
 }

@@ -63,7 +63,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$mer_ref       = null;
 		$session       = WC()->session;
 
-		$billing_country = WC()->checkout()->get_value( 'billing_country' );
+		$billing_country = qliro_one_get_billing_country();
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
 		// Merchant reference.
@@ -77,7 +77,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$body = array(
 			'MerchantReference'                    => $mer_ref,
 			'Currency'                             => get_woocommerce_currency(),
-			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
+			'Country'                              => $billing_country,
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
