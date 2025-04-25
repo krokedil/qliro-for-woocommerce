@@ -91,10 +91,11 @@ class Qliro_One_Templates {
 		}
 
 		$checkout = WC()->checkout();
-
-		$args             = $checkout->get_checkout_fields( 'billing' )['billing_country'];
-		$args['required'] = false;
-		$value            = $checkout->get_value( 'billing_country' );
+		$args     = array(
+			'type'     => 'country',
+			'required' => true,
+		);
+		$value    = $checkout->get_value( 'billing_country' );
 
 		do_action( 'before_qliro_country_selector' );
 		woocommerce_form_field( 'billing_country', $args, $value );
