@@ -86,6 +86,10 @@ class Qliro_One_Templates {
 	 * Add country selector to the checkout page.
 	 */
 	public function add_country_selector() {
+		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return;
+		}
+
 		if ( function_exists( 'WC' ) && ! WC()->checkout ) {
 			return;
 		}
