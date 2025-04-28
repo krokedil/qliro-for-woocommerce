@@ -183,5 +183,10 @@
             "description": "<ul><li>Feature - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.</li><li>Fix - Fixed country sometimes being set to null in checkout, when restricting selling locations.</li><li>Fix - Limited the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.2"
+      },
+      "1.10.1": {
+            "description": "<ul><li>Fix - Fixed an undefined array key warning.</li><li>Fix - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
       }
 }
