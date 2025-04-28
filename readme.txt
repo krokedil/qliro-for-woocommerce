@@ -7,7 +7,7 @@ Tested up to: 6.7.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.7.1
-Stable tag: 1.10.0
+Stable tag: 1.10.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.04.28    - version 1.10.1 =
+* Fix           - Fixed an undefined array key warning.
+* Fix           - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.
+
 = 2025.04.14    - version 1.10.0 =
 * Feature       - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
 * Fix           - Fixed country sometimes being set to null in checkout, when restricting selling locations.
