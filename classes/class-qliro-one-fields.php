@@ -238,6 +238,13 @@ class Qliro_One_Fields {
 				'default'     => 'none',
 				'desc_tip'    => false,
 			),
+			'calculate_return_fee'                       => array(
+				'title' => __( 'Calculate return fee', 'qliro-one-for-woocommerce' ),
+				'type'  => 'checkbox',
+				'default' => 'no',
+				'description' => __( 'Calculate return fee when returning items automatically if the refunded amount of a order line is less then the unit amount.', 'qliro-one-for-woocommerce' ),
+				'desc_tip' => true,
+			),
 			// Checkout customization.
 			'checkout_customization'                     => array(
 				'title' => 'Checkout Customization',
