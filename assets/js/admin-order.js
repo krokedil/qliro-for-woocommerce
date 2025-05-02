@@ -236,6 +236,81 @@ jQuery(function ($) {
 			}
 		},
 
+		refund_items: function() {
+			$qliroReturnFee = $('#qliro_return_fee');
+			$qliroReturnFee.show();
+		},
+
+		cancel_refund: function() {
+			$qliroReturnFee = $('#qliro_return_fee');
+
+			if ($qliroReturnFee.attr('data-qliro-hide') === 'no' ) {
+				return;
+			}
+
+			$qliroReturnFee.hide();
+		},
+
+		modify_refund_button_text: function() {
+			const $qliroRefundButton = $("button.do-api-refund");
+			$qliroRefundButton.append( '<span id="qliro_return_fee_total"></span>' );
+		},
+
+		update_qliro_refund_amount: function() {
+			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
+			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
+			const $qliroReturnFeeTotalSpan = $("span#qliro_return_fee_total");
+
+			const refundFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
+
+			if( refundFeeAmount === 0 ) {
+				return;
+			}
+
+			// Update the button text with the return fee amount by replacing inner text of the span#qliro_return_fee_total with the refund fee amount.
+			//$qliroReturnFeeTotalSpan.text( qoc_admin_params.return_fee_text + ' ' + accounting.formatMoney(refundFeeAmount, {
+			$qliroReturnFeeTotalSpan.text(' ( ' + qoc_admin_params.with_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ' )' );
+		},
+
+		format_number: function (number) {
+			return accounting.formatMoney(
+				number,
+				{
+					symbol: woocommerce_admin_meta_boxes.currency_format_symbol,
+					decimal: woocommerce_admin_meta_boxes.currency_format_decimal_sep,
+					thousand: woocommerce_admin_meta_boxes.currency_format_thousand_sep,
+					precision: woocommerce_admin_meta_boxes.currency_format_num_decimals,
+					format: woocommerce_admin_meta_boxes.currency_format
+				}
+			);
+		},
+
+		unformat_number: function (number) {
+			return accounting.unformat(
+				number,
+				woocommerce_admin.mon_decimal_point
+			);
+		},
+
+		on_refund_submit: function (e) {
+			// Get the refund amount from the input field.
+			const $refundAmount = $('#refund_amount');
+			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
+			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
+
+			const diff = qoc.unformat_number($refundAmount.val()) - (qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val()));
+
+			if (diff < 0) {
+				// Show an alert box with the message "Refund amount is less than the return fee amount."
+				window.alert(qoc_admin_params.refund_amount_less_than_return_fee_text);
+
+				// Pause the default action of the button.
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+		},
+
 		/**
 		 * Function that initiates the events for this file.
 		 */
@@ -243,11 +318,20 @@ jQuery(function ($) {
 			$('#woocommerce-order-items')
 				.on('click', 'button.partial-capture', this.capture)
 				.on('click', '.capture-actions .cancel-action', this.cancel_capture)
-				.on('click', '.do-capture', this.create_capture);
+				.on('click', '.do-capture', this.create_capture)
+				.on('click', '.button.refund-items', this.refund_items)
+				.on('click', '.refund-actions .cancel-action', this.cancel_refund);
+
+			$('button.do-api-refund').on('click', this.on_refund_submit);
+
 			$(document)
 				.ready(this.move_element)
 				.ready(this.add_checkboxes)
-				.ready(this.add_input_fields);
+				.ready(this.add_input_fields)
+				.ready(this.modify_refund_button_text)
+				.on('change', '#refund_amount', this.update_qliro_refund_amount)
+				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount)
+				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount);
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 

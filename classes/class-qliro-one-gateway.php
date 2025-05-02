@@ -178,7 +178,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return bool|void
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
-		return QOC_WC()->order_management->refund( $order_id, $amount );
+		$return_fee = Qliro_One_Order_Management::get_return_fee_from_post();
+
+		return QOC_WC()->order_management->refund( $order_id, $amount, $return_fee );
 	}
 
 	/**

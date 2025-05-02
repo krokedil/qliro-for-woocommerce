@@ -28,6 +28,9 @@ class Qliro_One_Order_Management {
 		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed' ), 10, 4 );
 		add_filter( 'woocommerce_hidden_order_itemmeta', array( $this, 'hide_shipping_metadata' ) );
 
+		add_action( 'woocommerce_admin_order_items_after_shipping', array( $this, 'add_return_fee_order_lines_html' ), PHP_INT_MAX );
+		add_action( 'woocommerce_after_order_refund_item_name', array( $this, 'show_return_fee_info' ) );
+
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -165,9 +168,11 @@ class Qliro_One_Order_Management {
 	 *
 	 * @param int   $order_id The WooCommerce order ID.
 	 * @param float $amount The refund amount.
+	 * @param array $return_fee The return fee data.
+	 *
 	 * @return bool|WP_Error
 	 */
-	public function refund( $order_id, $amount ) {
+	public function refund( $order_id, $amount, $return_fee = array() ) {
 		$order = wc_get_order( $order_id );
 
 		// Skip the order is order sync is not enabled for it, and return an error.
@@ -180,7 +185,7 @@ class Qliro_One_Order_Management {
 
 		// If the order has been fully captured, we can refund the order based on the capture id stored in the order meta.
 		if ( $order->get_meta( '_qliro_order_captured' ) ) {
-			return $this->create_refund( $order, $amount, $refund_order_id );
+			return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fee );
 		}
 
 		// If the order has been partially captured, we need to get the capture id from the order item meta.
@@ -315,10 +320,12 @@ class Qliro_One_Order_Management {
 	 * @param int      $refund_order_id The refund order ID.
 	 * @param string   $capture_id The capture ID.
 	 * @param array    $items The items to refund.
+	 * @param array    $return_fee The return fee data.
+	 *
 	 * @return bool|WP_Error
 	 */
-	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '' ) {
-		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items );
+	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '', $return_fee = array() ) {
+		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fee );
 
 		if ( is_wp_error( $response ) ) {
 			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );
@@ -333,6 +340,12 @@ class Qliro_One_Order_Management {
 		$text           = __( 'Processing a refund of %1$s with Qliro One', 'qliro-one-for-woocommerce' );
 		$formatted_text = sprintf( $text, wc_price( $amount ) );
 		$order->add_order_note( $formatted_text );
+
+		$refund_order = wc_get_order( $refund_order_id );
+		if ( $refund_order ) {
+			$refund_order->update_meta_data( '_qliro_return_fee', $return_fee );
+			$refund_order->save();
+		}
 		return true;
 	}
 
@@ -367,5 +380,147 @@ class Qliro_One_Order_Management {
 		$hidden_order_itemmeta[] = 'qliro_shipping_option';
 
 		return $hidden_order_itemmeta;
+	}
+
+	/**
+	 * Add the return fee order line.
+	 *
+	 * @param int $order_id The WooCommerce order.
+	 *
+	 * @return void
+	 */
+	public function add_return_fee_order_lines_html( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( 'qliro_one' !== $order->get_payment_method() ) {
+			return;
+		}
+
+		if ( ! $order->get_meta( '_qliro_order_captured' ) ) {
+			return;
+		}
+
+		?>
+		</tbody>
+		<tbody id="qliro_return_fee" data-qliro-hide="yes" style="display: none;">
+			<tr class="qliro-return-fee" data-order_item_id="qliro_return_fee">
+				<td class="thumb"><div></div></td>
+				<td class="name" >
+					<div class="view">
+						<?php esc_html_e( 'Return fee', 'qliro-one-for-woocommerce' ); ?>
+					</div>
+				</td>
+				<td class="item_cost" width="1%">&nbsp;</td>
+				<td class="quantity" width="1%">&nbsp;</td>
+				<td class="line_cost" width="1%">
+					<div class="refund" style="display: none;">
+						<input type="text" name="qliro_return_fee_amount" placeholder="0" class="refund_line_total wc_input_price" />
+					</div>
+				</td>
+				<?php foreach( $order->get_taxes() as $tax ) : ?>
+					<?php if ( empty( $tax->get_rate_percent() )) : ?>
+						<td class="line_tax" width="1%">&nbsp;</td>
+					<?php else : ?>
+						<td class="line_tax" width="1%">
+							<div class="refund" style="display: none;">
+								<input
+									type="text"
+									name="qliro_return_fee_tax_amount[<?php echo esc_attr( $tax->get_rate_id() ); ?>]"
+									placeholder="0"
+									class="refund_line_tax wc_input_price"
+									data-tax_id="<?php echo esc_attr( $tax->get_rate_id() ); ?>"
+								/>
+							</div>
+						</td>
+					<?php break; ?>
+				<?php endif; ?>
+			<?php endforeach; ?>
+				<td class="wc-order-edit-line-item">&nbsp;</td>
+			</tr>
+		<?php
+		/*
+		<?php foreach( $order->get_tax_totals() as $tax ) : ?>
+			<?php if( empty( $return_fee['tax_rate_id'] ) ) : ?>
+				<td class="line_tax" width="1%">
+					<div class="view">
+						<?php echo wp_kses_post( wc_price( $return_fee['tax_amount'], array( 'currency' => $order->get_currency() ) ) ); ?>
+					</div>
+					<div class="refund" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
+						<input type="text" name="qliro_return_fee_tax_amount[<?php echo esc_attr( $tax->rate_id ); ?>]" placeholder="<?php echo esc_attr( $return_fee['tax_amount'] ); ?>" class="refund_line_tax wc_input_price" data-tax_id="<?php echo esc_attr( $tax->rate_id ); ?>" />
+					</div>
+				</td>
+			<?php else : ?>
+				<?php if ( $tax->rate_id === $return_fee['tax_rate_id'] ) : ?>
+					<td class="line_tax" width="1%">
+						<div class="view" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
+							<?php echo wp_kses_post( wc_price( $return_fee['tax_amount'], array( 'currency' => $order->get_currency() ) ) ); ?>
+						</div>
+						<div class="refund" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
+							<input type="text" name="qliro_return_fee_tax_amount[<?php echo esc_attr( $tax->rate_id ); ?>]" placeholder="<?php echo esc_attr( $return_fee['tax_amount'] ); ?>" class="refund_line_tax wc_input_price" data-tax_id="<?php echo esc_attr( $tax->rate_id ); ?>" />
+						</div>
+					</td>
+				<?php else : ?>
+					<td class="line_tax"><div class="view">&nbsp;</div></td>
+				<?php endif; ?>
+			<?php endif; ?>
+		<?php endforeach; ?>
+		*/
+	}
+
+	/**
+	 * Show the return fee info in the refund order.
+	 *
+	 * @param WC_Order $refund_order The refund order..
+	 */
+	public function show_return_fee_info( $refund_order ) {
+		$return_fee = $refund_order->get_meta( '_qliro_return_fee' );
+		error_log(var_export($return_fee, true));
+		// If its empty, just return.
+		if ( empty( $return_fee ) || empty( $return_fee['amount'] ) ) {
+			return;
+		}
+
+		?>
+		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
+			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ) ?></span>
+			<?php echo wp_kses_post( wc_price( $return_fee['amount'] + $return_fee['tax_amount'], array( 'currency' => $refund_order->get_currency() ) ) ); ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Get the return fee from the posted data.
+	 *
+	 * @return array
+	 */
+	public static function get_return_fee_from_post() {
+		$return_fee = array(
+			'amount'      => 0,
+			'tax_amount'  => 0,
+			'tax_rate_id' => 0,
+		);
+
+		$line_item_totals_json = filter_input( INPUT_POST, 'line_item_totals', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$line_item_tax_totals_json = filter_input( INPUT_POST, 'line_item_tax_totals', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		$line_item_totals = json_decode( htmlspecialchars_decode( $line_item_totals_json ), true ) ?? array();
+		$line_item_tax_totals = json_decode( htmlspecialchars_decode( $line_item_tax_totals_json ), true ) ?? array();
+
+		foreach ( $line_item_totals as $key => $total ) {
+			if('qliro_return_fee' === $key) {
+				$return_fee['amount'] = str_replace( ',', '.', $total );
+			}
+		}
+
+		foreach ( $line_item_tax_totals as $key => $tax_line ) {
+			if('qliro_return_fee' === $key) {
+				// Get the rate id from the tax by the first key in the line
+				$tax_rate_id = array_keys( $tax_line )[0];
+				$return_fee['tax_rate_id'] = $tax_rate_id;
+				$return_fee['tax_amount'] = str_replace( ',', '.', $tax_line[$tax_rate_id] );
+			}
+		}
+
+		return $return_fee;
 	}
 }
