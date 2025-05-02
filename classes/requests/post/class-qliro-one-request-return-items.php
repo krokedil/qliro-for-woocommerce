@@ -49,9 +49,8 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 		$capture_transaction_id = ! empty( $this->arguments['capture_id'] ) ? $this->arguments['capture_id'] : $order->get_meta( '_qliro_order_captured' );
 
 		$order_items = ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id );
-		error_log( 'order items before: ' . var_export( $order_items, true ) );
 		$fees = $this->get_return_fees( $return_fee, $order_items, $order );
-		error_log( 'order items after: ' . var_export( $order_items, true ) );
+
 		return array(
 			'RequestId'      => $request_id,
 			'MerchantApiKey' => $this->get_qliro_key(),

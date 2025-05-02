@@ -474,7 +474,6 @@ class Qliro_One_Order_Management {
 	 */
 	public function show_return_fee_info( $refund_order ) {
 		$return_fee = $refund_order->get_meta( '_qliro_return_fee' );
-		error_log(var_export($return_fee, true));
 		// If its empty, just return.
 		if ( empty( $return_fee ) || empty( $return_fee['amount'] ) ) {
 			return;
