@@ -229,11 +229,20 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
+			'tax_status'                  => array(
+				'title'   => __( 'Tax status', 'woocommerce' ),
+				'type'    => 'select',
+				'class'   => 'wc-enhanced-select',
+				'default' => 'taxable',
+				'options' => array(
+					'taxable' => __( 'Taxable', 'woocommerce' ),
+					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
+				),
+			),
 		);
 
 		$shipping_method_fields = array_merge( $shipping_method_fields, $settings_fields );
 		return $shipping_method_fields;
 	}
-
 }
 new Qliro_One_Shipping_Method_Instance();

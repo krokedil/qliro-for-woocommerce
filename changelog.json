@@ -158,5 +158,35 @@
             "description": "<ul><li>Feature - Added support for subscriptions</li><li>Feature - Added support for pay for order</li><li>Feature - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.</li><li>Tweak - Allow order status 'Completed' if order is captured through portal.</li><li>Tweak - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.</li><li>Fix - Fixed PHP 8.3.0 array_sum warnings.</li><li>Fix - Fixed missing address data from Qliro API during update.</li><li>Fix - Fixed issue with unsetting other shipping methods.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
+      },
+      "1.8.1": {
+            "description": "<ul><li>Fix - Fixed an undefined array key warning.</li><li>Fix - Fixed a critical error that could occur while editing the checkout page.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
+      },
+      "1.9.0": {
+            "description": "<ul><li>Feature - Added 'Type' (discount, fee, shipping) to order lines.</li><li>Fix - Fixed an issue where free shipping coupons did not always update the order in checkout.</li><li>Fix - Fixed an issue where a removed coupon sometimes remained in the order.</li><li>Fix - Fixed an issue where refunds sometimes failed for pickup point orders.</li><li>Fix - Fixed 'MerchantReference' being incorrectly set for fees.</li><li>Fix - Fix so that negative fees are set as discounts.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
+      },
+      "1.9.1": {
+            "description": "<ul><li>Fix - Fixed a critical error that could occur when the merchant reference for fees was too long or included special characters.</li><li>Fix - Fixed an undefined array key warning.</li><li>Tweak - Improved logging by keeping track of user sessions with unique IDs.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.1"
+      },
+      "1.9.2": {
+            "description": "<ul><li>Fix - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.</li><li>Fix - Add a check when reading the Qliro order before submitting the WooCommerce order to ensure the Qliro order has not already been completed.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
+      },
+      "1.10.0": {
+            "description": "<ul><li>Feature - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.</li><li>Fix - Fixed country sometimes being set to null in checkout, when restricting selling locations.</li><li>Fix - Limited the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
+      },
+      "1.10.1": {
+            "description": "<ul><li>Fix - Fixed an undefined array key warning.</li><li>Fix - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.7.2"
       }
 }
