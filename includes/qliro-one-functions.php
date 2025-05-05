@@ -24,6 +24,12 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_fees();
 	$cart->calculate_shipping();
 	$cart->calculate_totals();
+
+	if ( qliro_one_has_country_changed() ) {
+		qliro_one_unset_sessions();
+		return qliro_one_maybe_create_order();
+	}
+
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
@@ -47,9 +53,22 @@ function qliro_one_maybe_create_order() {
 	// create.
 	$qliro_order = QOC_WC()->api->create_qliro_one_order();
 	if ( is_wp_error( $qliro_order ) || ! isset( $qliro_order['OrderId'] ) ) {
+		$system_code = $qliro_order->get_error_data()['ErrorCode'] ?? null;
+		if ( 'PAYMENT_METHOD_NOT_CONFIGURED' === $system_code ) {
+
+			$notice             = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-one-for-woocommerce' );
+			$gateways_available = count( WC()->payment_gateways()->get_available_payment_gateways() );
+			if ( $gateways_available > 1 ) {
+				$notice = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-one-for-woocommerce' );
+			}
+
+			wc_add_notice( $notice, 'error' );
+		}
+
 		// If failed then bail.
 		return;
 	}
+
 	// store id.
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
 	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
@@ -407,6 +426,7 @@ function qliro_one_is_valid_order( $qliro_order ) {
 	$is_in_process     = ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] );
 	$is_currency_match = ( get_woocommerce_currency() === $qliro_order['Currency'] );
 	$is_country_match  = ( WC()->customer->get_billing_country() === $qliro_order['Country'] );
+	// Check if curr == country.
 
 	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
@@ -587,4 +607,15 @@ function qliro_one_redirect_to_thankyou_page() {
 	$redirect_url = add_query_arg( 'qliro_one_confirm_page', $confirmation_id, $redirect_url );
 	wp_safe_redirect( $redirect_url );
 	exit;
+}
+
+function qliro_one_has_country_changed() {
+	$country_from_session  = WC()->session->get( 'qliro_one_billing_country' );
+	$country_from_checkout = WC()->checkout()->get_value( 'billing_country' );
+
+	if ( empty( $country_from_session ) || empty( $country_from_checkout ) ) {
+		return false;
+	}
+
+	return $country_from_session !== $country_from_checkout;
 }

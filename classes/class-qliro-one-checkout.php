@@ -99,6 +99,14 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		// This check must happen before we retrieve the Qliro order ID as the ID will always be empty if the customer changes the billing country from the Qliro checkout page. This is because the billing country is only saved during a create order call which only happens when Qliro is available for that country, and emptied when changing to an unsupported country.
+		if ( qliro_one_has_country_changed() ) {
+			qliro_one_unset_sessions();
+
+			WC()->session->reload_checkout = true;
+			return;
+		}
+
 		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 
 		if ( empty( $qliro_order_id ) ) {
