@@ -52,7 +52,7 @@ function qliro_one_maybe_create_order() {
 	}
 	// store id.
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
-	$session->set( 'qliro_one_last_update_hash', WC()->cart->get_cart_hash() );
+	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
 	// get qliro order.
 	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }

@@ -110,7 +110,7 @@ class Qliro_One_Checkout {
 		}
 
 		// Check if the cart hash has been changed since last update.
-		$hash       = $this->calculate_hash();
+		$hash       = self::calculate_hash();
 		$saved_hash = WC()->session->get( 'qliro_one_last_update_hash' );
 
 		// If they are the same, return.
@@ -156,7 +156,7 @@ class Qliro_One_Checkout {
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
 	}
 
-	public function calculate_hash() {
+	public static function calculate_hash() {
 		// Get values to use for the combined hash calculation.
 		$totals = WC()->cart->get_totals();
 		$total  = 0;
@@ -170,9 +170,11 @@ class Qliro_One_Checkout {
 		$billing_address  = WC()->customer->get_billing();
 		$shipping_address = WC()->customer->get_shipping();
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
+		// A billing country change warrants a reload since Qliro does not support changing of an on-going session.
+		$billing_country = WC()->customer->get_billing_country();
 
 		// Calculate a hash from the values.
-		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method ) ) );
+		$hash = md5( wp_json_encode( array( $total, $billing_address, $billing_country, $shipping_address, $shipping_method ) ) );
 
 		return $hash;
 	}
