@@ -199,7 +199,7 @@ class Qliro_One_API {
 	private function check_for_api_error( $response ) {
 		if ( is_wp_error( $response ) ) {
 			if ( ! is_admin() && ! wp_is_serving_rest_request() ) {
-				qliro_one_print_error_message( $response );
+				wc_add_wp_error_notices( $response );
 			}
 		}
 		return $response;
