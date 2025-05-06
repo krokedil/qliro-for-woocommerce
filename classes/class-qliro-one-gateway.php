@@ -378,4 +378,39 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		return json_decode( $args, true );
 	}
+
+	/**
+	 * Generate Title HTML for the Qliro settings page.
+	 *
+	 * @param string $key Field key.
+	 * @param array  $data Field data.
+	 * @since  1.0.0
+	 * @return string
+	 */
+	public function generate_title_html( $key, $data ) {
+		$field_key = $this->get_field_key( $key );
+		$defaults  = array(
+			'title' => '',
+			'class' => '',
+		);
+
+		$data = wp_parse_args( $data, $defaults );
+
+		ob_start();
+		?>
+					</table>
+			</div>
+			<div class="qliro-settings-section-wrapper">
+				<div class="qliro-settings-header">
+					<div class="qliro-settings-toggle dashicons dashicons-arrow-down-alt2"></div>
+					<h3 class="wc-settings-sub-title <?php echo esc_attr( $data['class'] ); ?>" id="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></h3>
+					<?php if ( ! empty( $data['description'] ) ) : ?>
+						<p><?php echo wp_kses_post( $data['description'] ); ?></p>
+					<?php endif; ?>
+				</div>
+				<table class="form-table">
+		<?php
+
+		return ob_get_clean();
+	}
 }
