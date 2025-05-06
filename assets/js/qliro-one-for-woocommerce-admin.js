@@ -26,21 +26,23 @@ jQuery(function ($) {
          */
         smoothScroll: function () {
             $(document).on('click', 'a[href^="#"]', function (event) {
-            event.preventDefault();
-            let section = $('#qliro-header-' + $(this).attr('href').replace('#', ''));
+                event.preventDefault();
+                let section = $('#qliro-header-' + $(this).attr('href').replace('#', ''));
 
-            if(!section.length) {
-                return;
-            }
+                if(!section.length) {
+                    return;
+                }
 
-            if (!section.next('.form-table').hasClass('active')) {
-                qocAdmin.toggleSectionContent(section);
-            }
-            
+                history.pushState(null, null, $(this).attr('href'));
 
-            $('html, body').animate({
-                scrollTop: $($.attr(this, 'href')).offset().top
-            }, 500);
+                if (!section.next('.form-table').hasClass('active')) {
+                    qocAdmin.toggleSectionContent(section);
+                }
+                
+
+                $('html, body').animate({
+                    scrollTop: $($.attr(this, 'href')).offset().top
+                }, 500);
             });
         },
     
@@ -57,15 +59,28 @@ jQuery(function ($) {
         },
 
         /**
+         * Opens the settings section based on the URL hash.
+         */
+        openSettingsSection: function () {
+            // Check if the URL contains a hash
+            let hash = window.location.hash ?? '';
+            let section = $('#qliro-header-' + hash.replace('#', ''));
+
+            if (section.length) {
+                qocAdmin.toggleSectionContent(section);
+            }
+        },
+
+        /**
          * Initializes the events for this file.
          */
         init: function () {
             $(document)
                 .ready(this.toggleSettingsSection)
                 .ready(this.moveSubmitButton)
-                .ready(this.smoothScroll);
-        }
+                .ready(this.smoothScroll)
+                .ready(this.openSettingsSection);
+        },
     };
-
     qocAdmin.init();
 });
