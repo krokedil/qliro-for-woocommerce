@@ -36,6 +36,10 @@
 	max-width: 600px;
 }
 
+.woocommerce .qliro-settings-section-wrapper table.form-table.active {
+	display: table;
+}
+
 .woocommerce .qliro-settings-section-wrapper table.form-table th.titledesc {
 	width: calc(100% - 20px);
 }

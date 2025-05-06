@@ -401,7 +401,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 					</table>
 			</div>
 			<div class="qliro-settings-section-wrapper">
-				<div class="qliro-settings-header">
+				<div class="qliro-settings-header" id="qliro-header-<?php echo esc_attr( $field_key ); ?>">
 					<div class="qliro-settings-toggle dashicons dashicons-arrow-down-alt2"></div>
 					<h3 class="wc-settings-sub-title <?php echo esc_attr( $data['class'] ); ?>" id="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></h3>
 					<?php if ( ! empty( $data['description'] ) ) : ?>
