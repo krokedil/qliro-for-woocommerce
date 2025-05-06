@@ -22,8 +22,15 @@ class Qliro_One_Fields {
 	public static function fields() {
 		$order_statuses_trigger           = wc_get_order_statuses();
 		$order_statuses_trigger['manual'] = __( 'Manual trigger', 'qliro-one-for-woocommerce' );
-		$order_statuses                   = wc_get_order_statuses();
-		$order_statuses['none']           = __( 'None', 'qliro-one-for-woocommerce' );
+
+		$order_statuses         = array();
+		$order_statuses['none'] = __( 'None', 'qliro-one-for-woocommerce' );
+		$order_statuses         = array_merge( $order_statuses, wc_get_order_statuses() );
+
+		// Unset the order statuses that are not relevant for Qliro.
+		unset( $order_statuses['wc-pending'] );
+		unset( $order_statuses['wc-refunded'] );
+		unset( $order_statuses['wc-failed'] );
 
 		$settings = array(
 			'enabled'                                    => array(
