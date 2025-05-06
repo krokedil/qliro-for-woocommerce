@@ -27,7 +27,7 @@ jQuery(function ($) {
         smoothScroll: function () {
             $(document).on('click', 'a[href^="#"]', function (event) {
             event.preventDefault();
-            let section = $('#qliro-header-' + (this).attr('href').replace('#', ''));
+            let section = $('#qliro-header-' + $(this).attr('href').replace('#', ''));
 
             if(!section.length) {
                 return;
