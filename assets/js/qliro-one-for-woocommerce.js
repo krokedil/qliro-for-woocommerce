@@ -400,7 +400,7 @@ jQuery(function ($) {
 			$.ajax({
 				type: 'POST',
 				url: qliroOneParams.submitOrder,
-				data: $('form.checkout').serialize(),
+				data: $('form.checkout').serialize() + '&' + $('#billing_country').serialize(),
 				dataType: 'json',
 				success: function (data) {
 					console.log(data);
