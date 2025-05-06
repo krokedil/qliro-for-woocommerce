@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
-    $('.qliro-settings-toggle').on('click', function() {
-        $(this).toggleClass('dashicons-arrow-up-alt2').toggleClass('dashicons-arrow-down-alt2');
+    $('.qliro-settings-header').on('click', function() {
+        $(this).find('.qliro-settings-toggle').toggleClass('dashicons-arrow-up-alt2').toggleClass('dashicons-arrow-down-alt2');
 
         let $sectionContent = $(this).closest('.qliro-settings-section-wrapper').find('.form-table');
         $sectionContent.toggle();

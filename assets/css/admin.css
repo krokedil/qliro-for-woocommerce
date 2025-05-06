@@ -3,9 +3,13 @@
 	height:15px !important;
 }
 
-.krokedil_settings__gateway_page .krokedil_settings__wrapper, .krokedil_settings__gateway_page .krokedil_settings__wrapper .krokedil_settings__wrapper_content {
+.krokedil_settings__gateway_page {
+	max-width: 1700px;
+}
+
+.krokedil_settings__gateway_page .krokedil_settings__wrapper, .krokedil_settings__gateway_page .krokedil_settings__wrapper .krokedil_settings__content {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 10px;
 }
 
@@ -13,8 +17,9 @@
 	position: relative;
 	background: white;
     border: 1px solid #e5e5e5;
-    padding: 20px;
+	border-bottom: 0;
     width: calc(100% - 40px);
+	margin-bottom: 10px;
 }
 
 .qliro-settings-section-wrapper .qliro-settings-toggle {
@@ -22,11 +27,26 @@
     top: 20px;
     right: 20px;
     z-index: 999;
-	cursor: pointer;
 }
 
-.qliro-settings-section-wrapper .form-table {
+.woocommerce .qliro-settings-section-wrapper table.form-table {
 	display: none;
+	margin: 0  20px;
+	width: calc(100% - 40px);
+	max-width: 600px;
+}
+
+.woocommerce .qliro-settings-section-wrapper table.form-table th.titledesc {
+	width: calc(100% - 20px);
+}
+
+.woocommerce .qliro-settings-section-wrapper table.form-table td.forminp, .woocommerce .qliro-settings-section-wrapper table.form-table td.forminp input:not([type="checkbox"]):not([type="radio"]):not(.colorpick), .woocommerce .qliro-settings-section-wrapper table.form-table td.forminp select {
+	width: 100%;
+	max-width: none;
+}
+
+.woocommerce .qliro-settings-section-wrapper table.form-table td.forminp input.colorpick {
+	width: calc(100% - 40px);
 }
 
 .qliro-settings-section-wrapper .form-table .titledesc {
@@ -42,7 +62,7 @@
 	flex-wrap: wrap;
 }
 
-.krokedil_settings__wrapper .krokedil_settings__wrapper_content {
+.krokedil_settings__wrapper .krokedil_settings__content {
 	flex: 1;
 }
 
@@ -52,4 +72,16 @@
 	border: none;
 	padding: 0;
 	display: block;
+	min-width: 300px;
 }
+
+.qliro-settings-section-wrapper .qliro-settings-header {
+	padding: 10px 20px;
+	border-bottom: solid 1px #e5e5e5;
+	cursor: pointer;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+  }

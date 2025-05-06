@@ -26,6 +26,12 @@ class Qliro_One_Fields {
 		$order_statuses['none']           = __( 'None', 'qliro-one-for-woocommerce' );
 
 		$settings = array(
+			// general.
+			'general'                                    => array(
+				'title'       => __( 'General', 'qliro-one-for-woocommerce' ),
+				'type'        => 'title',
+				'description' => __( 'General settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
+			),
 			'enabled'                                    => array(
 				'title'       => __( 'Enable/Disable', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable Qliro One payment', 'qliro-one-for-woocommerce' ),
@@ -49,8 +55,9 @@ class Qliro_One_Fields {
 			),
 			// credentials.
 			'credentials'                                => array(
-				'title' => 'API Credentials',
-				'type'  => 'title',
+				'title'       => 'API Credentials',
+				'type'        => 'title',
+				'description' => __( 'API credentials for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'api_key'                                    => array(
 				'title'             => __( 'Production Qliro One API key', 'qliro-one-for-woocommerce' ),
@@ -93,8 +100,9 @@ class Qliro_One_Fields {
 				),
 			),
 			'debugging'                                  => array(
-				'title' => 'Debug',
-				'type'  => 'title',
+				'title'       => 'Debug',
+				'type'        => 'title',
+				'description' => __( 'Debug settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'testmode'                                   => array(
 				'title'       => __( 'Test mode', 'qliro-one-for-woocommerce' ),
@@ -113,8 +121,9 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 			'shipping_settings'                          => array(
-				'title' => 'Shipping',
-				'type'  => 'title',
+				'title'       => 'Shipping',
+				'type'        => 'title',
+				'description' => __( 'Shipping settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
@@ -136,8 +145,9 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 			'checkout_settings'                          => array(
-				'title' => 'Checkout settings',
-				'type'  => 'title',
+				'title'       => 'Checkout settings',
+				'type'        => 'title',
+				'description' => __( 'Checkout settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'qliro_one_enforced_juridical_type'          => array(
 				'title'       => __( 'Enforced juridical type', 'qliro-one-for-woocommerce' ),
@@ -187,8 +197,9 @@ class Qliro_One_Fields {
 			),
 			// Order Management.
 			'order_management'                           => array(
-				'title' => 'Order Management',
-				'type'  => 'title',
+				'title'       => 'Order Management',
+				'type'        => 'title',
+				'description' => __( 'Order management settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'capture_status'                             => array(
 				'title'       => __( 'Capture status', 'qliro-one-for-woocommerce' ),
@@ -240,8 +251,9 @@ class Qliro_One_Fields {
 			),
 			// Checkout customization.
 			'checkout_customization'                     => array(
-				'title' => 'Checkout Customization',
-				'type'  => 'title',
+				'title'       => 'Checkout Customization',
+				'type'        => 'title',
+				'description' => __( 'Checkout customization settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'checkout_layout'                            => array(
 				'title'       => __( 'Checkout layout', 'qliro-one-for-woocommerce' ),
@@ -311,8 +323,9 @@ class Qliro_One_Fields {
 				'css'         => 'width: 100px',
 			),
 			'banner_widget_section'                      => array(
-				'title' => __( 'Banner widget', 'qliro-one-for-woocommerce' ),
-				'type'  => 'title',
+				'title'       => __( 'Banner widget', 'qliro-one-for-woocommerce' ),
+				'type'        => 'title',
+				'description' => __( 'Banner widget settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'banner_widget_enabled'                      => array(
 				'type'    => 'checkbox',
@@ -370,8 +383,9 @@ class Qliro_One_Fields {
 			),
 
 			'payment_widget_section'                     => array(
-				'title' => __( 'Payment widget', 'qliro-one-for-woocommerce' ),
-				'type'  => 'title',
+				'title'       => __( 'Payment widget', 'qliro-one-for-woocommerce' ),
+				'type'        => 'title',
+				'description' => __( 'Payment widget settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'payment_widget_enabled'                     => array(
 				'type'    => 'checkbox',
@@ -403,8 +417,9 @@ class Qliro_One_Fields {
 		// Add upsell section if plugin is installed.
 		if ( class_exists( 'PPU' ) ) {
 			$settings['upsell']            = array(
-				'title' => 'Upsell',
-				'type'  => 'title',
+				'title'       => 'Upsell',
+				'type'        => 'title',
+				'description' => __( 'Upsell settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			);
 			$settings['upsell_percentage'] = array(
 				'title'             => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
