@@ -180,11 +180,9 @@ class Qliro_One_Checkout {
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
 		$coupon_code      = WC()->cart->applied_coupons ? implode( ',', WC()->cart->applied_coupons ) : '';
 		$cart_hash        = WC()->cart->get_cart_hash();
-		// A billing country change warrants a reload since Qliro does not support changing of an on-going session.
-		$billing_country = WC()->customer->get_billing_country();
 
 		// Calculate a hash from the values.
-		$hash = md5( wp_json_encode( array( $total, $billing_address, $billing_country, $shipping_address, $shipping_method, $coupon_code, $cart_hash ) ) );
+		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method, $coupon_code, $cart_hash ) ) );
 
 		return $hash;
 	}
