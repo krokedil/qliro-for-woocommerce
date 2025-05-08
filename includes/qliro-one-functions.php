@@ -53,18 +53,6 @@ function qliro_one_maybe_create_order() {
 	// create.
 	$qliro_order = QOC_WC()->api->create_qliro_one_order();
 	if ( is_wp_error( $qliro_order ) || ! isset( $qliro_order['OrderId'] ) ) {
-		$system_code = $qliro_order->get_error_data()['ErrorCode'] ?? null;
-		if ( 'PAYMENT_METHOD_NOT_CONFIGURED' === $system_code ) {
-
-			$notice             = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-one-for-woocommerce' );
-			$gateways_available = count( WC()->payment_gateways()->get_available_payment_gateways() );
-			if ( $gateways_available > 1 ) {
-				$notice = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-one-for-woocommerce' );
-			}
-
-			wc_add_notice( $notice, 'error' );
-		}
-
 		// If failed then bail.
 		return;
 	}

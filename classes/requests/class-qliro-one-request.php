@@ -165,15 +165,36 @@ abstract class Qliro_One_Request {
 		$decoded_body = json_decode( $body, true );
 
 		if ( $code < 200 || $code > 299 ) {
-			$errors  = $decoded_body;
+			$errors = $decoded_body;
+
 			$message = $errors['ErrorMessage'] ?? "API Error {$code}";
-			$result  = new WP_Error( $code, $message, $errors );
+			if ( isset( $errors['ErrorCode'] ) ) {
+				$message = $this->get_message_by_error_code( $errors['ErrorCode'], $message );
+			}
+
+			$result = new WP_Error( $code, $message, $errors );
 		} else {
 			$result = $decoded_body;
 		}
 
 		$this->log_response( $response, $request_args, $request_url );
 		return $result;
+	}
+
+	protected function get_message_by_error_code( $error_code, $default ) {
+		switch ( $error_code ) {
+			case 'PAYMENT_METHOD_NOT_CONFIGURED':
+				$message            = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-one-for-woocommerce' );
+				$gateways_available = count( WC()->payment_gateways()->get_available_payment_gateways() );
+				if ( $gateways_available > 1 ) {
+					$message = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-one-for-woocommerce' );
+				}
+				break;
+			default:
+				return $default;
+		}
+
+		return $message;
 	}
 
 	/**
