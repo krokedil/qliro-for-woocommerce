@@ -424,10 +424,9 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
  * @return bool
  */
 function qliro_one_is_valid_order( $qliro_order ) {
-	$is_in_process     = ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] );
-	$is_currency_match = ( get_woocommerce_currency() === $qliro_order['Currency'] );
-	$is_country_match  = ( WC()->customer->get_billing_country() === $qliro_order['Country'] );
-	// Check if curr == country.
+	$is_in_process     = 'InProcess' === $qliro_order['CustomerCheckoutStatus'];
+	$is_currency_match = get_woocommerce_currency() === $qliro_order['Currency'];
+	$is_country_match  = WC()->customer->get_billing_country() === $qliro_order['Country'];
 
 	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
