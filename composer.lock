@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "009721ff75cd18caea982cd06db881794ce1c07e"
+                "reference": "648b84fd66ce7d0093aae8be6819aef0a515a1e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/009721ff75cd18caea982cd06db881794ce1c07e",
-                "reference": "009721ff75cd18caea982cd06db881794ce1c07e",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/648b84fd66ce7d0093aae8be6819aef0a515a1e5",
+                "reference": "648b84fd66ce7d0093aae8be6819aef0a515a1e5",
                 "shasum": ""
             },
             "require": {
@@ -102,7 +102,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-04-14T21:18:30+00:00"
+            "time": "2025-05-02T14:18:56+00:00"
         },
         {
             "name": "nette/utils",
@@ -288,16 +288,16 @@
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v6.8.0",
+            "version": "v6.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "1824db4d1d00d32c0119175d2369d9425dbc4953"
+                "reference": "92e444847d94f7c30f88c60004648f507688acd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/1824db4d1d00d32c0119175d2369d9425dbc4953",
-                "reference": "1824db4d1d00d32c0119175d2369d9425dbc4953",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/92e444847d94f7c30f88c60004648f507688acd5",
+                "reference": "92e444847d94f7c30f88c60004648f507688acd5",
                 "shasum": ""
             },
             "conflict": {
@@ -305,7 +305,7 @@
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "nikic/php-parser": "^4.13",
+                "nikic/php-parser": "^5.4",
                 "php": "^7.4 || ^8.0",
                 "php-stubs/generator": "^0.8.3",
                 "phpdocumentor/reflection-docblock": "^5.4.1",
@@ -333,9 +333,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.8.0"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.8.1"
             },
-            "time": "2025-04-17T15:13:53+00:00"
+            "time": "2025-05-02T12:33:34+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -666,12 +666,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "23feb19c0342c95d01e648b8062e1f24e4390a16"
+                "reference": "466729923349243886425f9c9840f941c06eebbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/23feb19c0342c95d01e648b8062e1f24e4390a16",
-                "reference": "23feb19c0342c95d01e648b8062e1f24e4390a16",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/466729923349243886425f9c9840f941c06eebbb",
+                "reference": "466729923349243886425f9c9840f941c06eebbb",
                 "shasum": ""
             },
             "require": {
@@ -743,7 +743,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-04-28T01:15:05+00:00"
+            "time": "2025-05-06T03:00:20+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
@@ -907,7 +907,7 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },

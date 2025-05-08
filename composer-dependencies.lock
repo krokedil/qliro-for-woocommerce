@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b29a874eb820a3d9652d11c5609c5ab",
+    "content-hash": "fe9963d5d94231281ae5d982d5d73bc2",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "dev-develop-fraktjakt",
+            "version": "dev-develop-shipping-description",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400"
+                "reference": "0db2cf0343691305700be3ac3c41136ae77eb5dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/83fad89608e43ec8f94561994cea20bbdfbe0400",
-                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/0db2cf0343691305700be3ac3c41136ae77eb5dd",
+                "reference": "0db2cf0343691305700be3ac3c41136ae77eb5dd",
                 "shasum": ""
             },
             "require": {
@@ -110,10 +110,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/develop-fraktjakt",
+                "source": "https://github.com/krokedil/shipping/tree/develop-shipping-description",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2024-03-25T15:01:14+00:00"
+            "time": "2025-05-08T15:03:32+00:00"
         },
         {
             "name": "krokedil/woocommerce",
@@ -221,15 +221,15 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "krokedil/shipping": 20,
-        "kernl/kernl-update-checker": 20
+        "kernl/kernl-update-checker": 20,
+        "krokedil/shipping": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
