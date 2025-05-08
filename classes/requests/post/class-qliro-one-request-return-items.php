@@ -44,12 +44,13 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 		$refund_order_id        = $this->arguments['refund_order_id'];
 		$items                  = $this->arguments['items'];
 		$return_fee             = $this->arguments['return_fee'];
-
 		$this->qliro_order_id   = $order->get_meta( '_qliro_one_order_id' );
 		$capture_transaction_id = ! empty( $this->arguments['capture_id'] ) ? $this->arguments['capture_id'] : $order->get_meta( '_qliro_order_captured' );
+		$calc_return_fee        = wc_string_to_bool( $this->settings['calculate_return_fee'] ?? 'no' );
 
 		$order_items = ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id );
-		$fees = $this->get_return_fees( $return_fee, $order_items, $order );
+		$return_fees = apply_filters( 'qliro_one_return_fees', $order_data->get_return_fees( $return_fee, $order_items, $order, $calc_return_fee ), $order_id, $refund_order_id, $order_items );
+		add_filter( 'update_qliro_return_fees_meta', fn( $fees ) => array_merge( $fees, $return_fees ), 10, 1 );
 
 		return array(
 			'RequestId'      => $request_id,
@@ -60,7 +61,7 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 				array(
 					'PaymentTransactionId' => $capture_transaction_id,
 					'OrderItems'           => $order_items,
-					'Fees'                 => apply_filters( 'qliro_one_return_fees', $fees, $order_id, $refund_order_id, $order_items ),
+					'Fees'                 => $return_fees,
 				),
 			),
 		);

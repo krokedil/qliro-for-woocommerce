@@ -168,11 +168,11 @@ class Qliro_One_Order_Management {
 	 *
 	 * @param int   $order_id The WooCommerce order ID.
 	 * @param float $amount The refund amount.
-	 * @param array $return_fee The return fee data.
+	 * @param array $return_fees The return fee data.
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function refund( $order_id, $amount, $return_fee = array() ) {
+	public function refund( $order_id, $amount, $return_fees = array() ) {
 		$order = wc_get_order( $order_id );
 
 		// Skip the order is order sync is not enabled for it, and return an error.
@@ -185,7 +185,7 @@ class Qliro_One_Order_Management {
 
 		// If the order has been fully captured, we can refund the order based on the capture id stored in the order meta.
 		if ( $order->get_meta( '_qliro_order_captured' ) ) {
-			return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fee );
+			return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
 		}
 
 		// If the order has been partially captured, we need to get the capture id from the order item meta.
@@ -320,18 +320,19 @@ class Qliro_One_Order_Management {
 	 * @param int      $refund_order_id The refund order ID.
 	 * @param string   $capture_id The capture ID.
 	 * @param array    $items The items to refund.
-	 * @param array    $return_fee The return fee data.
+	 * @param array    $return_fees The return fee data.
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '', $return_fee = array() ) {
-		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fee );
+	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '', $return_fees = array() ) {
+		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fees );
 
 		if ( is_wp_error( $response ) ) {
-			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );
+			// Regex matches any string that starts with "Evaluation," or "Message:" and ends with "Evaluation," or "Property: " or end of string.
+			preg_match_all( '/(?:Evaluation,\s*|Message:\s*)(.*?)(?=(Evaluation,|Property: |$))/s', $response->get_error_message(), $matches );
 
 			// translators: %s is the error message from Qliro (if any).
-			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : '' );
+			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : $response->get_error_message() );
 			$order->add_order_note( $note );
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
@@ -343,7 +344,8 @@ class Qliro_One_Order_Management {
 
 		$refund_order = wc_get_order( $refund_order_id );
 		if ( $refund_order ) {
-			$refund_order->update_meta_data( '_qliro_return_fee', $return_fee );
+			// Add the return fees as meta data to the refund order. The return fees are added to the filter when the request is made.
+			$refund_order->update_meta_data( '_qliro_return_fees', apply_filters( 'update_qliro_return_fees_meta', array() ) );
 			$refund_order->save();
 		}
 		return true;
@@ -407,7 +409,7 @@ class Qliro_One_Order_Management {
 				<td class="thumb"><div></div></td>
 				<td class="name" >
 					<div class="view">
-						<?php esc_html_e( 'Return fee', 'qliro-one-for-woocommerce' ); ?>
+						<?php esc_html_e( 'Qliro return fee', 'qliro-one-for-woocommerce' ); ?>
 					</div>
 				</td>
 				<td class="item_cost" width="1%">&nbsp;</td>
@@ -473,16 +475,25 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $refund_order The refund order..
 	 */
 	public function show_return_fee_info( $refund_order ) {
-		$return_fee = $refund_order->get_meta( '_qliro_return_fee' );
+		$return_fees = $refund_order->get_meta( '_qliro_return_fees' );
 		// If its empty, just return.
-		if ( empty( $return_fee ) || empty( $return_fee['amount'] ) ) {
+		if ( empty( $return_fees ) ) {
 			return;
 		}
 
+		$total = 0;
+		foreach( $return_fees as $return_fee ) {
+			$total += $return_fee['PricePerItemIncVat'] ?? 0;
+		}
+
+		// If the total is 0, just return.
+		if ( $total <= 0 ) {
+			return;
+		}
 		?>
 		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
 			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ) ?></span>
-			<?php echo wp_kses_post( wc_price( $return_fee['amount'] + $return_fee['tax_amount'], array( 'currency' => $refund_order->get_currency() ) ) ); ?>
+			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
 		</span>
 		<?php
 	}
