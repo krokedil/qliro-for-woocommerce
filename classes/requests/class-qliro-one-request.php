@@ -190,6 +190,9 @@ abstract class Qliro_One_Request {
 					$message = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-one-for-woocommerce' );
 				}
 				break;
+			case 'NO_ITEMS_LEFT_IN_RESERVATION':
+				$message = __( 'The order has already been captured.', 'qliro-one-for-woocommerce' );
+				break;
 			default:
 				return $default;
 		}
