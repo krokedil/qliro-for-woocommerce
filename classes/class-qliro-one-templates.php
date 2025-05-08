@@ -112,7 +112,7 @@ class Qliro_One_Templates {
 		}
 
 		global $post;
-		if ( ! has_shortcode( $post->post_content, 'qliro_one_country_selector' ) ) {
+		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_one_country_selector' ) ) {
 			return $fields;
 		}
 
