@@ -159,7 +159,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$order->update_meta_data( '_qliro_one_order_confirmation_id', $qliro_confirmation_id );
 		$order->update_meta_data( '_qliro_one_merchant_reference', $qliro_merchant_reference );
 		// We need to save the shipping reference to the order as well, since table rate shipping can add a 3rd param to the instance id which is not saved to the order.
-		$order->update_meta_data( '_qliro_one_shipping_reference', $chosen_shipping_method[0] );
+		if ( ! empty( $chosen_shipping_method ) ) {
+			$order->update_meta_data( '_qliro_one_shipping_reference', $chosen_shipping_method[0] );
+		}
 		$order->save();
 
 		return array(

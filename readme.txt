@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.5.0
-Stable tag: 1.8.1
+WC tested up to: 9.7.1
+Stable tag: 1.10.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,32 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.04.28    - version 1.10.1 =
+* Fix           - Fixed an undefined array key warning.
+* Fix           - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.
+
+= 2025.04.14    - version 1.10.0 =
+* Feature       - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
+* Fix           - Fixed country sometimes being set to null in checkout, when restricting selling locations.
+* Fix           - Limited the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.
+
+= 2025.04.09    - version 1.9.2 =
+* Fix           - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.
+* Fix           - Add a check when reading the Qliro order before submitting the WooCommerce order to ensure the Qliro order has not already been completed.
+
+= 2025.04.07    - version 1.9.1 =
+* Fix           - Fixed a critical error that could occur when the merchant reference for fees was too long or included special characters.
+* Fix           - Fixed an undefined array key warning.
+* Tweak         - Improved logging by keeping track of user sessions with unique IDs.
+
+= 2025.03.25    - version 1.9.0 =
+* Feature       - Added 'Type' (discount, fee, shipping) to order lines.
+* Fix           - Fixed an issue where free shipping coupons did not always update the order in checkout.
+* Fix           - Fixed an issue where a removed coupon sometimes remained in the order.
+* Fix           - Fixed an issue where refunds sometimes failed for pickup point orders.
+* Fix           - Fixed 'MerchantReference' being incorrectly set for fees.
+* Fix           - Fix so that negative fees are set as discounts.
+
 = 2025.03.17    - version 1.8.1 =
 * Fix           - Fixed an undefined array key warning.
 * Fix           - Fixed a critical error that could occur while editing the checkout page.

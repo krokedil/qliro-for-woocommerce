@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Krokedil
+# Copyright (C) 2025 Krokedil
 # This file is distributed under the same license as the Qliro One for WooCommerce package.
 msgid ""
 msgstr ""
