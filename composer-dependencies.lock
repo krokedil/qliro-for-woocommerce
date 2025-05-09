@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "0db2cf0343691305700be3ac3c41136ae77eb5dd"
+                "reference": "e8a773e109637331a711dfb7171fce5ba69ac2ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/0db2cf0343691305700be3ac3c41136ae77eb5dd",
-                "reference": "0db2cf0343691305700be3ac3c41136ae77eb5dd",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/e8a773e109637331a711dfb7171fce5ba69ac2ca",
+                "reference": "e8a773e109637331a711dfb7171fce5ba69ac2ca",
                 "shasum": ""
             },
             "require": {
@@ -113,7 +113,7 @@
                 "source": "https://github.com/krokedil/shipping/tree/develop-shipping-description",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-05-08T15:03:32+00:00"
+            "time": "2025-05-09T12:29:16+00:00"
         },
         {
             "name": "krokedil/woocommerce",
