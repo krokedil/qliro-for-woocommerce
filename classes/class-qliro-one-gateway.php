@@ -368,49 +368,19 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return array|null
 	 */
 	private function get_settings_page_args() {
-		$args = false;
+		$args = false; // get_transient( 'qliro_checkout_settings_page_config' );
 		if ( ! $args ) {
-			$args = file_get_contents( plugin_dir_path( __FILE__ ) . 'test-settings.json' );
+			$args = wp_remote_get( 'https://krokedil-settings-page-configs.s3.eu-north-1.amazonaws.com/develop/configs/qliro-one-for-woocommerce.json' );
 
-			// $args = wp_remote_retrieve_body( $args );
+			if ( is_wp_error( $args ) ) {
+				Qliro_One_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.' );
+				return null;
+			}
+
+			$args = wp_remote_retrieve_body( $args );
 			set_transient( 'qliro_checkout_settings_page_config', $args, 60 * 60 * 24 ); // 24 hours lifetime.
 		}
 
 		return json_decode( $args, true );
-	}
-
-	/**
-	 * Generate Title HTML for the Qliro settings page.
-	 *
-	 * @param string $key Field key.
-	 * @param array  $data Field data.
-	 * @since  1.0.0
-	 * @return string
-	 */
-	public function generate_title_html( $key, $data ) {
-		$field_key = $this->get_field_key( $key );
-		$defaults  = array(
-			'title' => '',
-			'class' => '',
-		);
-
-		$data = wp_parse_args( $data, $defaults );
-
-		ob_start();
-		?>
-					</table>
-			</div>
-			<div class="qliro-settings-section-wrapper">
-				<div class="qliro-settings-header" id="qliro-header-<?php echo esc_attr( $field_key ); ?>">
-					<div class="qliro-settings-toggle dashicons dashicons-arrow-down-alt2"></div>
-					<h3 class="wc-settings-sub-title <?php echo esc_attr( $data['class'] ); ?>" id="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></h3>
-					<?php if ( ! empty( $data['description'] ) ) : ?>
-						<p><?php echo wp_kses_post( $data['description'] ); ?></p>
-					<?php endif; ?>
-				</div>
-				<table class="form-table">
-		<?php
-
-		return ob_get_clean();
 	}
 }

@@ -154,16 +154,6 @@ class Qliro_One_Assets {
 	public function enqueue_admin_order_script( $hook ) {
 		self::enqueue_admin_style();
 
-		// Register & enqueue the admin script.
-		wp_register_script(
-			'qoc_admin_js',
-			QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce-admin.js',
-			array( 'jquery' ),
-			QLIRO_WC_VERSION,
-			true
-		);
-		wp_enqueue_script( 'qoc_admin_js' );
-
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 

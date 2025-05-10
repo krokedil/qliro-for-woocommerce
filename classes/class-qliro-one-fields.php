@@ -28,8 +28,9 @@ class Qliro_One_Fields {
 		$settings = array(
 			// general.
 			'general'                                    => array(
+				'id'          => 'general',
 				'title'       => __( 'General', 'qliro-one-for-woocommerce' ),
-				'type'        => 'title',
+				'type'        => 'section_start',
 				'description' => __( 'General settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'enabled'                                    => array(
@@ -53,10 +54,14 @@ class Qliro_One_Fields {
 				'default'     => 'Payment method description.',
 				'desc_tip'    => true,
 			),
+			'general_end'                                => array(
+				'type' => 'section_end',
+			),
 			// credentials.
 			'credentials'                                => array(
+				'id'          => 'credentials',
 				'title'       => 'API Credentials',
-				'type'        => 'title',
+				'type'        => 'section_start',
 				'description' => __( 'API credentials for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'api_key'                                    => array(
@@ -195,10 +200,14 @@ class Qliro_One_Fields {
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
+			'credentials_end'                            => array(
+				'type' => 'section_end',
+			),
 			// Order Management.
 			'order_management'                           => array(
+				'id'          => 'order_management',
 				'title'       => 'Order Management',
-				'type'        => 'title',
+				'type'        => 'section_start',
 				'description' => __( 'Order management settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'capture_status'                             => array(
@@ -249,10 +258,14 @@ class Qliro_One_Fields {
 				'default'     => 'none',
 				'desc_tip'    => false,
 			),
+			'order_management_end'                       => array(
+				'type' => 'section_end',
+			),
 			// Checkout customization.
 			'checkout_customization'                     => array(
+				'id'          => 'checkout_customization',
 				'title'       => 'Checkout Customization',
-				'type'        => 'title',
+				'type'        => 'section_start',
 				'description' => __( 'Checkout customization settings for Qliro One payment method.', 'qliro-one-for-woocommerce' ),
 			),
 			'checkout_layout'                            => array(
@@ -411,6 +424,9 @@ class Qliro_One_Fields {
 				'type'    => 'checkbox',
 				'default' => 'no',
 				'title'   => __( 'Display in a condensed (shorter) style', 'qliro-one-for-woocommerce' ),
+			),
+			'checkout_customization_end'                 => array(
+				'type' => 'section_end',
 			),
 		);
 
