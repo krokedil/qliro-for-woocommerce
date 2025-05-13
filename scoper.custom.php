@@ -5,6 +5,6 @@ function customize_php_scoper_config( array $config ): array {
 	$config['exclude-constants'][] = 'WP_INSTALLING';
 	$config['exclude-constants'][] = 'WP_INSTALLING_NETWORK';
 	$config['exclude-namespaces'][] = 'Automattic';
-
+	$config['exclude-classes'][] = 'WCPNS_Checkout';
 	return $config;
 }
