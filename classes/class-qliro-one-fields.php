@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for Qliro One gateway settings.
+ * Class for Qliro gateway settings.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
@@ -35,7 +35,7 @@ class Qliro_One_Fields {
 		$settings = array(
 			'enabled'                                    => array(
 				'title'       => __( 'Enable/Disable', 'qliro-one-for-woocommerce' ),
-				'label'       => __( 'Enable Qliro One payment', 'qliro-one-for-woocommerce' ),
+				'label'       => __( 'Enable Qliro payment', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
@@ -44,7 +44,7 @@ class Qliro_One_Fields {
 				'title'       => __( 'Title', 'qliro-one-for-woocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'Payment method title.', 'qliro-one-for-woocommerce' ),
-				'default'     => 'Qliro One',
+				'default'     => 'Qliro',
 				'desc_tip'    => true,
 			),
 			'description'                                => array(
@@ -60,9 +60,9 @@ class Qliro_One_Fields {
 				'type'  => 'title',
 			),
 			'api_key'                                    => array(
-				'title'             => __( 'Production Qliro One API key', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Production Qliro API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
-				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Use API key and API secret you downloaded in the Qliro Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -70,9 +70,9 @@ class Qliro_One_Fields {
 				),
 			),
 			'api_secret'                                 => array(
-				'title'             => __( 'Production Qliro One API Secret', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Production Qliro API Secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
-				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Use API key and API secret you downloaded in the Qliro Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -80,9 +80,9 @@ class Qliro_One_Fields {
 				),
 			),
 			'test_api_key'                               => array(
-				'title'             => __( 'Test Qliro One API key', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Test Qliro API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
-				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Use API key and API secret you downloaded in the Qliro Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -90,9 +90,9 @@ class Qliro_One_Fields {
 				),
 			),
 			'test_api_secret'                            => array(
-				'title'             => __( 'Test Qliro One API Secret', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Test Qliro API Secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
-				'description'       => __( 'Use API key and API secret you downloaded in the Qliro One Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Use API key and API secret you downloaded in the Qliro Merchant Portal. Don’t use your email address.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -126,7 +126,7 @@ class Qliro_One_Fields {
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Display Shipping in the iframe', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'description' => __( 'Will display the shipping options inside of the Qliro One checkout iframe.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Will display the shipping options inside of the Qliro checkout iframe.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 				'options'     => array(
@@ -181,14 +181,14 @@ class Qliro_One_Fields {
 			'qliro_one_button_ask_for_newsletter_signup' => array(
 				'title'       => __( 'Ask for newsletter signup', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Will display an unchecked checkbox for newsletter sign-up in the Qliro One Checkout.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Will display an unchecked checkbox for newsletter sign-up in the Qliro Checkout.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
 			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
 				'title'       => __( 'Ask for newsletter signup checked', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Will display an already checked checkbox for newsletter sign-up on the Qliro One Checkout', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Will display an already checked checkbox for newsletter sign-up on the Qliro Checkout', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
@@ -255,9 +255,9 @@ class Qliro_One_Fields {
 				'type'        => 'select',
 				'options'     => array(
 					'one_column_checkout' => __( 'One column checkout', 'qliro-one-for-woocommerce' ),
-					'two_column_right'    => __( 'Two column checkout (Qliro One in right column)', 'qliro-one-for-woocommerce' ),
-					'two_column_left'     => __( 'Two column checkout (Qliro One in left column)', 'qliro-one-for-woocommerce' ),
-					'two_column_left_sf'  => __( 'Two column checkout (Qliro One in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
+					'two_column_right'    => __( 'Two column checkout (Qliro in right column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left'     => __( 'Two column checkout (Qliro in left column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left_sf'  => __( 'Two column checkout (Qliro in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
 				),
 				'description' => __( 'Select the Checkout layout.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'one_column_checkout',
@@ -266,7 +266,7 @@ class Qliro_One_Fields {
 			'other_payment_method_button_text'           => array(
 				'title'             => __( 'Other payment method button text', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
-				'description'       => __( 'Customize the <em>Select another payment method</em> button text that is displayed in checkout if using other payment methods than Qliro One. Leave blank to use the default (and translatable) text.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Customize the <em>Select another payment method</em> button text that is displayed in checkout if using other payment methods than Qliro. Leave blank to use the default (and translatable) text.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -276,7 +276,7 @@ class Qliro_One_Fields {
 			'qliro_one_bg_color'                         => array(
 				'title'       => __( 'Background color', 'qliro-one-for-woocommerce' ),
 				'type'        => 'color',
-				'description' => __( 'Hex color code to use as background color in Qliro One.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Hex color code to use as background color in Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 				'desc_tip'    => true,
 			),
@@ -304,7 +304,7 @@ class Qliro_One_Fields {
 			'qliro_one_corner_radius'                    => array(
 				'title'       => __( 'Corner radius', 'qliro-one-for-woocommerce' ),
 				'type'        => 'number',
-				'description' => __( 'A pixel value to be used on corners throughout Qliro One.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'A pixel value to be used on corners throughout Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'css'         => 'width: 100px',

@@ -32,7 +32,7 @@ class Qliro_One_Checkout {
 	}
 
 	/**
-	 * Add a hidden input field for the shipping data from Qliro One.
+	 * Add a hidden input field for the shipping data from Qliro.
 	 *
 	 * @param array $fields The WooCommerce checkout fields.
 	 * @return array
@@ -86,7 +86,7 @@ class Qliro_One_Checkout {
 	}
 
 	/**
-	 * Update the Qliro One order after calculations from WooCommerce has run.
+	 * Update the Qliro order after calculations from WooCommerce has run.
 	 *
 	 * @return void
 	 */
@@ -219,7 +219,7 @@ class Qliro_One_Checkout {
 	}
 
 	/**
-	 * Is integrated shipping methods enabled in Qliro One.
+	 * Is integrated shipping methods enabled in Qliro.
 	 *
 	 * @return bool
 	 */

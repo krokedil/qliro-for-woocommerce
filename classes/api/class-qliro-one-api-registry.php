@@ -1,6 +1,6 @@
 <?php
 /**
- * Register the Qliro One API controllers.
+ * Register the Qliro API controllers.
  *
  * @package Qliro_One_For_WooCommerce/Classes/API
  */

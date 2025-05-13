@@ -41,7 +41,7 @@ class Qliro_One_Order_Management {
 	 * @return void
 	 */
 	public function order_status_changed( $order_id, $status_from, $status_to, $order ) {
-		// If this order wasn't created using Qliro One payment method, bail.
+		// If this order wasn't created using Qliro payment method, bail.
 		if ( 'qliro_one' !== $order->get_payment_method() ) {
 			return;
 		}
@@ -69,7 +69,7 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
-	 * Captures a Qliro One order.
+	 * Captures a Qliro order.
 	 *
 	 * @param int      $order_id The WooCommerce order ID.
 	 * @param WC_Order $order The WooCommerce order.
@@ -128,7 +128,7 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
-	 * Cancels a Qliro One order.
+	 * Cancels a Qliro order.
 	 *
 	 * @param int      $order_id Order ID.
 	 * @param WC_Order $order The WooCommerce order.
@@ -161,7 +161,7 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
-	 * Request for refunding a Qliro One Order.
+	 * Request for refunding a Qliro Order.
 	 *
 	 * @param int   $order_id The WooCommerce order ID.
 	 * @param float $amount The refund amount.
@@ -194,7 +194,7 @@ class Qliro_One_Order_Management {
 		// If the prepped items array is empty, return false.
 		if ( empty( $prepped_items ) ) {
 			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro One: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
 			return false;
 		}
 
@@ -214,8 +214,8 @@ class Qliro_One_Order_Management {
 		// Do not allow refunds with more than one capture id.
 		if ( count( $prepped_items ) > 1 ) {
 			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro One: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
-			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro One. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
 		}
 
 		// Create one or more refunds based on the prepped items array.
@@ -324,13 +324,13 @@ class Qliro_One_Order_Management {
 			preg_match_all( '/Message: (.*?)(?=Property:|$)/s', $response->get_error_message(), $matches );
 
 			// translators: %s is the error message from Qliro (if any).
-			$note = sprintf( __( 'Failed to refund the order with Qliro One%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : '' );
+			$note = sprintf( __( 'Failed to refund the order with Qliro%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : '' );
 			$order->add_order_note( $note );
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
 		}
 		// translators: refund amount, refund id.
-		$text           = __( 'Processing a refund of %1$s with Qliro One', 'qliro-one-for-woocommerce' );
+		$text           = __( 'Processing a refund of %1$s with Qliro', 'qliro-one-for-woocommerce' );
 		$formatted_text = sprintf( $text, wc_price( $amount ) );
 		$order->add_order_note( $formatted_text );
 		return true;

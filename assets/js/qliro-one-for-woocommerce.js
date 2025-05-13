@@ -61,7 +61,7 @@ jQuery(function ($) {
 			$('body').trigger('update_checkout');
 		},
 		/**
-		 * When the customer changes from Qliro One to other payment methods.
+		 * When the customer changes from Qliro to other payment methods.
 		 * @param {Event} e
 		 */
 		changeFromQliroOne: function (e) {
@@ -90,7 +90,7 @@ jQuery(function ($) {
 			});
 		},
 		/**
-		 * When the customer changes to Qliro One from other payment methods.
+		 * When the customer changes to Qliro from other payment methods.
 		 */
 		maybeChangeToQliroOne: function () {
 			if (!qliroOneForWooCommerce.preventPaymentMethodChange) {
@@ -148,7 +148,7 @@ jQuery(function ($) {
 			}
 		},
 		/*
-		 * Check if Qliro One is the selected gateway.
+		 * Check if Qliro is the selected gateway.
 		 */
 		checkIfQliroOneSelected: function () {
 			if (qliroOneForWooCommerce.paymentMethodEl.length > 0) {
