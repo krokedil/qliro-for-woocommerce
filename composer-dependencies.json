@@ -1,7 +1,7 @@
 {
     "require": {
         "php": ">=7.4",
-        "krokedil/shipping": "dev-develop-fraktjakt",
+        "krokedil/shipping": "dev-develop-redlight-postnord-compat",
         "krokedil/woocommerce": "^1.7.0",
         "kernl/kernl-update-checker": "dev-master"
     },
