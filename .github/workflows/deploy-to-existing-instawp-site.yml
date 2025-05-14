@@ -1,0 +1,126 @@
+name: Deploy Dev Zip to existing InstaWP site
+# NOTE: You can change the default value of 'qliro-settings.krokedil.site' below if you want to push by default to another site and comment out push if you don't want the action to be triggered on all commits.
+on:
+  # push:
+  #   branches:
+  #     - '**'
+  workflow_dispatch:
+    inputs:
+      instawp_url:
+        description: 'InstaWP site URL to deploy to (e.g. qliro-sandbox.krokedil.site)'
+        required: true
+        default: 'qliro-sandbox.krokedil.site'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_SLUG: qliro-one-for-woocommerce
+      # You can change the default below to push to another site by default
+      INSTA_WP_URL: ${{ github.event.inputs.instawp_url || 'qliro-sandbox.krokedil.site' }}
+      INSTAWP_API_TOKEN: ${{ secrets.INSTAWP_API_TOKEN }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Create composer cache directory
+      run: mkdir -p ~/.composer/cache
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.composer/cache
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-
+
+    - name: Install dependencies and build project
+      run: |
+        mkdir -p ~/.composer/cache
+        composer install --prefer-dist --no-progress
+        npm ci && npm run build
+
+    - name: Get branch name and commit hash
+      id: vars
+      run: |
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        RUN_ID=${{ github.run_id }}
+        ZIP_FILE_NAME="${{ env.PLUGIN_SLUG }}-dev-${BRANCH_NAME}-${COMMIT_HASH}-${RUN_ID}.zip"
+        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+        echo "ZIP_FILE_NAME=${ZIP_FILE_NAME}" >> $GITHUB_ENV
+        echo "zip_file_name=$ZIP_FILE_NAME" >> $GITHUB_OUTPUT
+
+    - name: Modify version, prepare zip directory, and create zip file
+      run: |
+        sed -i "s/^ \* Version: \(.*\)/ \* Version: \1-dev.${BRANCH_NAME}.${COMMIT_HASH}/" ${{ env.PLUGIN_SLUG }}.php
+        mkdir -p dev-zip-temp/${{ env.PLUGIN_SLUG }}
+        rsync -av --exclude-from='.kernlignore' --exclude='dev-zip-temp' . dev-zip-temp/${{ env.PLUGIN_SLUG }}
+        cd dev-zip-temp
+        zip -r ../${{ steps.vars.outputs.zip_file_name }} ${{ env.PLUGIN_SLUG }}
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_KROKEDIL_PLUGIN_DEV_ZIP }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_KROKEDIL_PLUGIN_DEV_ZIP }}
+        aws-region: eu-north-1
+
+    - name: Get InstaWP siteid from URL
+      id: instawp_siteid
+      env:
+        INSTA_WP_URL: ${{ env.INSTA_WP_URL }}
+        INSTAWP_API_TOKEN: ${{ env.INSTAWP_API_TOKEN }}
+      run: |
+        # Normalize input: remove protocol and trailing slash
+        NORMALIZED_URL=$(echo "$INSTA_WP_URL" | sed -E 's#^https?://##; s#/$##')
+        SITE_LIST=$(curl -s -H "Authorization: Bearer $INSTAWP_API_TOKEN" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          "https://app.instawp.io/api/v2/sites?per_page=300")
+        # Find all matches (case-insensitive, ignore protocol and trailing slash)
+        MATCHES=$(echo "$SITE_LIST" | jq -r --arg url "$NORMALIZED_URL" '.data[] | select((.url | gsub("^https?://"; "") | rtrimstr("/")) == $url) | "\(.id) \(.url)"')
+        MATCH_COUNT=$(echo "$MATCHES" | grep -c '^' || true)
+        if [ "$MATCH_COUNT" -eq 0 ]; then
+          echo "::error::No InstaWP site found matching '$INSTA_WP_URL' (normalized: '$NORMALIZED_URL')." >&2
+          exit 1
+        elif [ "$MATCH_COUNT" -gt 1 ]; then
+          echo "::warning::Multiple InstaWP sites found matching '$INSTA_WP_URL' (normalized: '$NORMALIZED_URL'). Matches:"
+          echo "$MATCHES"
+        fi
+        SITEID=$(echo "$MATCHES" | head -n1 | awk '{print $1}')
+        echo "SITEID=$SITEID" >> $GITHUB_ENV
+        echo "siteid=$SITEID" >> $GITHUB_OUTPUT
+
+    - name: Upload to S3
+      run: |
+        aws s3 cp ${{ steps.vars.outputs.zip_file_name }} s3://krokedil-plugin-dev-zip/${{ steps.vars.outputs.zip_file_name }}
+
+    - name: Execute InstaWP command 2301 to deploy zip
+      env:
+        INSTAWP_API_TOKEN: ${{ env.INSTAWP_API_TOKEN }}
+        SITEID: ${{ steps.instawp_siteid.outputs.siteid }}
+      run: |
+        curl -s -X POST "https://app.instawp.io/api/v2/sites/${SITEID}/execute-command" \
+          -H "Authorization: Bearer $INSTAWP_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"command_id":2301,"commandArguments":[{"dev_zip_public_url":"https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/${{ steps.vars.outputs.zip_file_name }}"}]}'
+
+    - name: Delete zip from S3
+      run: |
+        aws s3 rm s3://krokedil-plugin-dev-zip/${{ steps.vars.outputs.zip_file_name }}
+
+    - name: Add annotation with InstaWP deployment link
+      run: |
+        echo "::notice::Dev Zip deployed to ${{ env.INSTA_WP_URL }} (SiteID: ${{ steps.instawp_siteid.outputs.siteid }}) - https://app.instawp.io/sites/${{ steps.instawp_siteid.outputs.siteid }}/staging-dashboard"
