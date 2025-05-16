@@ -143,7 +143,7 @@ class Qliro_One_Templates {
 	}
 
 	/**
-	 * Override checkout form template if Qliro One Checkout is the selected payment method.
+	 * Override checkout form template if Qliro Checkout is the selected payment method.
 	 *
 	 * @param string $template      Template.
 	 * @param string $template_name Template name.
@@ -160,7 +160,7 @@ class Qliro_One_Templates {
 				}
 			}
 
-			// Qliro One Checkout.
+			// Qliro Checkout.
 			if ( 'checkout/form-checkout.php' === $template_name ) {
 				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 
