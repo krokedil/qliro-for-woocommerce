@@ -337,15 +337,32 @@ class Qliro_One_Order_Management {
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
 		}
+
+		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
+
 		// translators: refund amount, refund id.
 		$text           = __( 'Processing a refund of %1$s with Qliro One', 'qliro-one-for-woocommerce' );
-		$formatted_text = sprintf( $text, wc_price( $amount ) );
+
+		if ( ! empty( $applied_return_fees ) ) {
+			$total_return_fees = 0;
+			foreach ( $applied_return_fees as $return_fee ) {
+				$total_return_fees += $return_fee['PricePerItemIncVat'] ?? 0;
+			}
+
+			$formatted_total_return_fees = wc_price( $total_return_fees, array( 'currency' => $order->get_currency() ) );
+
+			// translators: return frees amount.
+			$extra_text = sprintf( __( ' (including return fees of %1$s)', 'qliro-one-for-woocommerce' ), $formatted_total_return_fees );
+			$text .= $extra_text;
+		}
+
+		$formatted_text = sprintf( $text, wc_price( $amount, array( 'currency' => $order->get_currency() ) ) );
 		$order->add_order_note( $formatted_text );
 
 		$refund_order = wc_get_order( $refund_order_id );
-		if ( $refund_order ) {
+		if ( $refund_order && ! empty( $applied_return_fees ) ) {
 			// Add the return fees as meta data to the refund order. The return fees are added to the filter when the request is made.
-			$refund_order->update_meta_data( '_qliro_return_fees', apply_filters( 'update_qliro_return_fees_meta', array() ) );
+			$refund_order->update_meta_data( '_qliro_return_fees', $applied_return_fees );
 			$refund_order->save();
 		}
 		return true;
@@ -440,33 +457,6 @@ class Qliro_One_Order_Management {
 				<td class="wc-order-edit-line-item">&nbsp;</td>
 			</tr>
 		<?php
-		/*
-		<?php foreach( $order->get_tax_totals() as $tax ) : ?>
-			<?php if( empty( $return_fee['tax_rate_id'] ) ) : ?>
-				<td class="line_tax" width="1%">
-					<div class="view">
-						<?php echo wp_kses_post( wc_price( $return_fee['tax_amount'], array( 'currency' => $order->get_currency() ) ) ); ?>
-					</div>
-					<div class="refund" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
-						<input type="text" name="qliro_return_fee_tax_amount[<?php echo esc_attr( $tax->rate_id ); ?>]" placeholder="<?php echo esc_attr( $return_fee['tax_amount'] ); ?>" class="refund_line_tax wc_input_price" data-tax_id="<?php echo esc_attr( $tax->rate_id ); ?>" />
-					</div>
-				</td>
-			<?php else : ?>
-				<?php if ( $tax->rate_id === $return_fee['tax_rate_id'] ) : ?>
-					<td class="line_tax" width="1%">
-						<div class="view" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
-							<?php echo wp_kses_post( wc_price( $return_fee['tax_amount'], array( 'currency' => $order->get_currency() ) ) ); ?>
-						</div>
-						<div class="refund" style="<?php echo $show_fee ? 'display: none;' : '' ?>">
-							<input type="text" name="qliro_return_fee_tax_amount[<?php echo esc_attr( $tax->rate_id ); ?>]" placeholder="<?php echo esc_attr( $return_fee['tax_amount'] ); ?>" class="refund_line_tax wc_input_price" data-tax_id="<?php echo esc_attr( $tax->rate_id ); ?>" />
-						</div>
-					</td>
-				<?php else : ?>
-					<td class="line_tax"><div class="view">&nbsp;</div></td>
-				<?php endif; ?>
-			<?php endif; ?>
-		<?php endforeach; ?>
-		*/
 	}
 
 	/**

@@ -50,7 +50,7 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 
 		$order_items = ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id );
 		$return_fees = apply_filters( 'qliro_one_return_fees', $order_data->get_return_fees( $return_fee, $order_items, $order, $calc_return_fee ), $order_id, $refund_order_id, $order_items );
-		add_filter( 'update_qliro_return_fees_meta', fn( $fees ) => array_merge( $fees, $return_fees ), 10, 1 );
+		add_filter( 'qliro_applied_return_fees', fn( $fees ) => array_merge( $fees, $return_fees ), 10, 1 );
 
 		return array(
 			'RequestId'      => $request_id,
