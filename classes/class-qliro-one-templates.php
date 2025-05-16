@@ -133,9 +133,9 @@ class Qliro_One_Templates {
 		}
 
 		// If we unhook the billing field, it won't be available when we call get_checkout_fields in the `add_country_selector` method which we need to re-use WC defaults.
-		$fields['billing']['qliro_one_billing_country']             = $fields['billing']['billing_country'];
-		$fields['billing']['qliro_one_billing_country']['type']     = 'hidden';
-		$fields['billing']['qliro_one_billing_country']['required'] = false;
+		$fields['billing']['qliro_billing_country']             = $fields['billing']['billing_country'];
+		$fields['billing']['qliro_billing_country']['type']     = 'hidden';
+		$fields['billing']['qliro_billing_country']['required'] = false;
 
 		// We do not want it to appear on the checkout field since we'll replace it with our own country field.
 		unset( $fields['billing']['billing_country'] );
