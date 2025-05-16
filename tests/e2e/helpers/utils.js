@@ -6,7 +6,7 @@ const KCOSettingsArray = {
 	woocommerce_kco_settings: {
 		enabled: "yes",
 		title: "Qliro",
-		description: "Qliro One for WooCommerce Test",
+		description: "Qliro for WooCommerce Test",
 		select_another_method_text: "",
 		testmode: "yes",
 		logging: "yes",

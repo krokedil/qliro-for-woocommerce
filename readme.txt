@@ -1,4 +1,4 @@
-=== Qliro One for WooCommerce ===
+=== Qliro for WooCommerce ===
 Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com

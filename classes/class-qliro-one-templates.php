@@ -1,6 +1,6 @@
 <?php
 /**
- * Templates class for Qliro One checkout.
+ * Templates class for Qliro checkout.
  *
  * @package  Qliro_One_For_WooCommerce/Classes
  */
@@ -46,7 +46,7 @@ class Qliro_One_Templates {
 		$qliro_settings        = get_option( 'woocommerce_qliro_one_settings' );
 		$this->checkout_layout = isset( $qliro_settings['checkout_layout'] ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
 
-		// Override template if Qliro One Checkout page.
+		// Override template if Qliro Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
 
 		// Template hooks.
@@ -153,7 +153,7 @@ class Qliro_One_Templates {
 	public function override_template( $template, $template_name ) {
 		if ( is_checkout() ) {
 			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-			// Don't display Qliro One template if we have a cart that doesn't needs payment.
+			// Don't display Qliro template if we have a cart that doesn't needs payment.
 			if ( apply_filters( 'qliro_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) && null !== WC()->cart ) {
 				if ( ! WC()->cart->needs_payment() ) {
 					return $template;
@@ -170,7 +170,7 @@ class Qliro_One_Templates {
 					$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout.php';
 				}
 
-				// Qliro One checkout page.
+				// Qliro checkout page.
 				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
 					// If chosen payment method exists.
 					if ( 'qliro_one' === WC()->session->get( 'chosen_payment_method' ) ) {
@@ -179,7 +179,7 @@ class Qliro_One_Templates {
 						}
 					}
 
-					// If chosen payment method does not exist and Qliro One is the first gateway.
+					// If chosen payment method does not exist and Qliro is the first gateway.
 					if ( null === WC()->session->get( 'chosen_payment_method' ) || '' === WC()->session->get( 'chosen_payment_method' ) ) {
 						reset( $available_gateways );
 
@@ -205,7 +205,7 @@ class Qliro_One_Templates {
 				}
 			}
 
-			// Qliro One Checkout Pay for order.
+			// Qliro Checkout Pay for order.
 			if ( 'checkout/form-pay.php' === $template_name ) {
 				global $wp;
 				$order_id           = $wp->query_vars['order-pay'];
@@ -225,7 +225,7 @@ class Qliro_One_Templates {
 						}
 					}
 
-					// If chosen payment method does not exist and Qliro One is the first gateway.
+					// If chosen payment method does not exist and Qliro is the first gateway.
 					if ( empty( $order->get_payment_method() ) ) {
 						reset( $available_gateways );
 						if ( 'qliro_one' === key( $available_gateways ) ) {

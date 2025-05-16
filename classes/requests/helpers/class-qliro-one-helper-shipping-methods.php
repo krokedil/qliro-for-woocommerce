@@ -1,12 +1,12 @@
 <?php
 /**
- * Helper class to get available shipping methods for the Qliro One order.
+ * Helper class to get available shipping methods for the Qliro order.
  *
  * @package Qliro_One/Classes/Requests/Helpers
  */
 
 /**
- * Helper class to get available shipping methods for the Qliro One order.
+ * Helper class to get available shipping methods for the Qliro order.
  */
 class Qliro_One_Helper_Shipping_Methods {
 	/**
