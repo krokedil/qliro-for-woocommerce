@@ -72,7 +72,7 @@ class Qliro_One_Templates {
 	}
 
 	/**
-	 * Shortcode: country selector.
+	 * Shortcode: `qliro_one_country_selector`.
 	 *
 	 * @param array       $atts Shortcode attributes.
 	 * @param string|null $content Shortcode content.
@@ -95,9 +95,13 @@ class Qliro_One_Templates {
 		}
 
 		$checkout = WC()->checkout();
-		$args     = array(
-			'type'     => 'country',
-			'required' => true,
+		$fields   = $checkout->get_checkout_fields( 'billing' );
+		$args     = array_merge(
+			$fields['qliro_one_billing_country'],
+			array(
+				'type'     => 'country',
+				'required' => true,
+			)
 		);
 		$value    = $checkout->get_value( 'billing_country' );
 
@@ -106,6 +110,13 @@ class Qliro_One_Templates {
 		do_action( 'after_qliro_country_selector' );
 	}
 
+	/**
+	 * Maybe unhook the billing country field.
+	 *
+	 * @param array $fields Checkout fields.
+	 *
+	 * @return array
+	 */
 	public function unhook_country_field( $fields ) {
 		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return $fields;
@@ -116,6 +127,12 @@ class Qliro_One_Templates {
 			return $fields;
 		}
 
+		// If we unhook the billing field, it won't be available when we call get_checkout_fields in the `add_country_selector` method which we need to re-use WC defaults.
+		$fields['billing']['qliro_one_billing_country']             = $fields['billing']['billing_country'];
+		$fields['billing']['qliro_one_billing_country']['type']     = 'hidden';
+		$fields['billing']['qliro_one_billing_country']['required'] = false;
+
+		// We do not want it to appear on the checkout field since we'll replace it with our own country field.
 		unset( $fields['billing']['billing_country'] );
 		return $fields;
 	}
