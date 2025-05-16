@@ -102,7 +102,7 @@ class Qliro_One_Templates {
 		$checkout = WC()->checkout();
 		$fields   = $checkout->get_checkout_fields( 'billing' );
 		$args     = array_merge(
-			$fields['qliro_one_billing_country'],
+			$fields['qliro_billing_country'] ?? $fields['billing_country'],
 			array(
 				'type'     => 'country',
 				'required' => true,
