@@ -86,6 +86,11 @@ class Qliro_One_Templates {
 	 * Add country selector to the checkout page.
 	 */
 	public function add_country_selector() {
+		// The order received page is a checkout page, but we don't want to show the country selector there.
+		if ( ! is_checkout() || is_order_received_page() ) {
+			return;
+		}
+
 		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return;
 		}
