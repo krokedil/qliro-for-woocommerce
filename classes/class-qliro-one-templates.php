@@ -65,14 +65,14 @@ class Qliro_One_Templates {
 		}
 
 		// Shortcode: country selector. Should always be available.
-		add_shortcode( 'qliro_one_country_selector', array( $this, 'country_selector_shortcode' ) );
+		add_shortcode( 'qliro_country_selector', array( $this, 'country_selector_shortcode' ) );
 
 		// Unhook the country field if it has the country selector shortcode, and Qliro is the chosen gateway. We'll inject the country field instead.
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'unhook_country_field' ) );
 	}
 
 	/**
-	 * Shortcode: `qliro_one_country_selector`.
+	 * Shortcode: `qliro_country_selector`.
 	 *
 	 * @param array       $atts Shortcode attributes.
 	 * @param string|null $content Shortcode content.
@@ -128,7 +128,7 @@ class Qliro_One_Templates {
 		}
 
 		global $post;
-		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_one_country_selector' ) ) {
+		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_country_selector' ) ) {
 			return $fields;
 		}
 
