@@ -91,7 +91,7 @@ class Qliro_One_Templates {
 			return;
 		}
 
-		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return;
 		}
 
@@ -123,7 +123,7 @@ class Qliro_One_Templates {
 	 * @return array
 	 */
 	public function unhook_country_field( $fields ) {
-		if ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return $fields;
 		}
 
