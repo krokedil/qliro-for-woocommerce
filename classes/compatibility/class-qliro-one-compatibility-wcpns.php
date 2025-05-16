@@ -1,6 +1,6 @@
 <?php
 /**
- * Qliro One compatibility class for WooCommerce PostNord Shipping (WCPNS).
+ * Qliro compatibility class for WooCommerce PostNord Shipping (WCPNS).
  */
 
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoint\PickupPoint;

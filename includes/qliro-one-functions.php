@@ -58,7 +58,7 @@ function qliro_one_maybe_create_order() {
 }
 
 /**
- * Echoes Qliro One Checkout iframe snippet.
+ * Echoes Qliro Checkout iframe snippet.
  *
  * @return string|null
  */
@@ -118,7 +118,7 @@ function qliro_one_unset_sessions() {
 }
 
 /**
- * Shows select another payment method button in Qliro One Checkout page.
+ * Shows select another payment method button in Qliro Checkout page.
  */
 function qliro_one_wc_show_another_gateway_button() {
 	$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
@@ -184,12 +184,12 @@ function qliro_confirm_order( $order ) {
 
 	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
 		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
+		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 	// translators: %s - the Qliro order ID.
-	$note = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );

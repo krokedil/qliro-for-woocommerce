@@ -27,7 +27,7 @@ abstract class Qliro_One_Request {
 	protected $log_title;
 
 	/**
-	 * The Qliro One order id.
+	 * The Qliro order id.
 	 *
 	 * @var string
 	 */
@@ -118,7 +118,7 @@ abstract class Qliro_One_Request {
 		return apply_filters(
 			'http_headers_useragent',
 			'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' )
-		) . ' - WooCommerce: ' . WC()->version . ' - QLIRO ONE: ' . QLIRO_WC_VERSION . ' - PHP Version: ' . phpversion() . ' - Krokedil';
+		) . ' - WooCommerce: ' . WC()->version . ' - QLIRO: ' . QLIRO_WC_VERSION . ' - PHP Version: ' . phpversion() . ' - Krokedil';
 	}
 
 	/**

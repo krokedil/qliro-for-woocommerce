@@ -1,6 +1,6 @@
 <?php
 /**
- * Qliro One Checkout page
+ * Qliro Checkout page
  *
  * Overrides /checkout/form-checkout.php.
  *

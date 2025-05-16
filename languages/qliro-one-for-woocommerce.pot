@@ -1,8 +1,8 @@
 # Copyright (C) 2025 Krokedil
-# This file is distributed under the same license as the Qliro One for WooCommerce package.
+# This file is distributed under the same license as the Qliro for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro One for WooCommerce 1.7.1\n"
+"Project-Id-Version: Qliro for WooCommerce 1.7.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
 "POT-Creation-Date: 2024-11-19 09:49:06+00:00\n"
@@ -72,7 +72,7 @@ msgid "The order has been successfully refunded by Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-callbacks.php:225
-msgid "The Qliro one order was rejected by Qliro."
+msgid "The Qliro order was rejected by Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-callbacks.php:249
@@ -112,7 +112,7 @@ msgid "Enable/Disable"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:31
-msgid "Enable Qliro One payment"
+msgid "Enable Qliro payment"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:37
@@ -133,26 +133,26 @@ msgid "Payment method description."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:56
-msgid "Production Qliro One API key"
+msgid "Production Qliro API key"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:58 classes/class-qliro-one-fields.php:68
 #: classes/class-qliro-one-fields.php:78 classes/class-qliro-one-fields.php:88
 msgid ""
-"Use API key and API secret you downloaded in the Qliro One Merchant Portal. "
+"Use API key and API secret you downloaded in the Qliro Merchant Portal. "
 "Don’t use your email address."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:66
-msgid "Production Qliro One API Secret"
+msgid "Production Qliro API Secret"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:76
-msgid "Test Qliro One API key"
+msgid "Test Qliro API key"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:86
-msgid "Test Qliro One API Secret"
+msgid "Test Qliro API Secret"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:100
@@ -184,7 +184,7 @@ msgid "Display Shipping in the iframe"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:122
-msgid "Will display the shipping options inside of the Qliro One checkout iframe."
+msgid "Will display the shipping options inside of the Qliro checkout iframe."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:126
@@ -263,7 +263,7 @@ msgstr ""
 
 #: classes/class-qliro-one-fields.php:177
 msgid ""
-"Will display an unchecked checkbox for newsletter sign-up in the Qliro One "
+"Will display an unchecked checkbox for newsletter sign-up in the Qliro "
 "Checkout."
 msgstr ""
 
@@ -274,7 +274,7 @@ msgstr ""
 #: classes/class-qliro-one-fields.php:184
 msgid ""
 "Will display an already checked checkbox for newsletter sign-up on the "
-"Qliro One Checkout"
+"Qliro Checkout"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:194
@@ -346,15 +346,15 @@ msgid "One column checkout"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:251
-msgid "Two column checkout (Qliro One in right column)"
+msgid "Two column checkout (Qliro in right column)"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:252
-msgid "Two column checkout (Qliro One in left column)"
+msgid "Two column checkout (Qliro in left column)"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:253
-msgid "Two column checkout (Qliro One in left column) - Storefront light"
+msgid "Two column checkout (Qliro in left column) - Storefront light"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:255
@@ -368,7 +368,7 @@ msgstr ""
 #: classes/class-qliro-one-fields.php:262
 msgid ""
 "Customize the <em>Select another payment method</em> button text that is "
-"displayed in checkout if using other payment methods than Qliro One. Leave "
+"displayed in checkout if using other payment methods than Qliro. Leave "
 "blank to use the default (and translatable) text."
 msgstr ""
 
@@ -377,7 +377,7 @@ msgid "Background color"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:272
-msgid "Hex color code to use as background color in Qliro One."
+msgid "Hex color code to use as background color in Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:277
@@ -409,7 +409,7 @@ msgid "Corner radius"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:300
-msgid "A pixel value to be used on corners throughout Qliro One."
+msgid "A pixel value to be used on corners throughout Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:306
@@ -558,11 +558,11 @@ msgstr ""
 
 #: classes/class-qliro-one-gateway.php:39
 #: classes/class-qliro-one-product-tab.php:30
-msgid "Qliro One"
+msgid "Qliro"
 msgstr ""
 
 #: classes/class-qliro-one-gateway.php:40
-msgid "Qliro One replaces the standard WooCommerce checkout page."
+msgid "Qliro replaces the standard WooCommerce checkout page."
 msgstr ""
 
 #: classes/class-qliro-one-gateway.php:199
@@ -671,7 +671,7 @@ msgstr ""
 #: classes/class-qliro-one-order-management.php:189
 #: classes/class-qliro-one-order-management.php:209
 #. translators: %s is the error message from Qliro.
-msgid "Failed to refund the order with Qliro One: %s"
+msgid "Failed to refund the order with Qliro: %s"
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:189
@@ -684,18 +684,18 @@ msgstr ""
 
 #: classes/class-qliro-one-order-management.php:210
 msgid ""
-"Failed to refund the order with Qliro One. Multiple capture IDs can not be "
+"Failed to refund the order with Qliro. Multiple capture IDs can not be "
 "used in one refund request."
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:319
 #. translators: %s is the error message from Qliro (if any).
-msgid "Failed to refund the order with Qliro One%s"
+msgid "Failed to refund the order with Qliro%s"
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:325
 #. translators: refund amount, refund id.
-msgid "Processing a refund of %1$s with Qliro One"
+msgid "Processing a refund of %1$s with Qliro"
 msgstr ""
 
 #: classes/class-qliro-one-partial-capture-admin-order-page.php:46
@@ -728,7 +728,7 @@ msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:47
 msgid ""
-"These settings let you customize the shipping methods in Qliro One "
+"These settings let you customize the shipping methods in Qliro "
 "checkout, and only apply when you show the shipping options in the iframe. "
 msgstr ""
 
@@ -915,13 +915,13 @@ msgstr ""
 
 #: classes/class-qliro-one-shipping-method.php:24
 #: classes/class-qliro-one-shipping-method.php:25
-msgid "Qliro One Shipping"
+msgid "Qliro Shipping"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method.php:26
 msgid ""
 "A dynamic shipping method, that will get its prices set by Qliro and the "
-"integration towards a shipping provider. When Qliro One is the selected "
+"integration towards a shipping provider. When Qliro is the selected "
 "payment method, the other shipping methods for this region wont be shown to "
 "the customer."
 msgstr ""
@@ -1037,12 +1037,12 @@ msgid ""
 msgstr ""
 
 #: includes/qliro-one-functions.php:184
-msgid "Qliro One order successfully placed. (Qliro Payment transaction id: "
+msgid "Qliro order successfully placed. (Qliro Payment transaction id: "
 msgstr ""
 
 #: includes/qliro-one-functions.php:189
 #. translators: %s - the Qliro order ID.
-msgid "Payment via Qliro One, Qliro order id: %s"
+msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
 
 #: qliro-one-for-woocommerce.php:129 qliro-one-for-woocommerce.php:139
@@ -1059,7 +1059,7 @@ msgstr ""
 
 #: qliro-one-for-woocommerce.php:328 qliro-one-for-woocommerce.php:338
 msgid ""
-"Your installation of Qliro One for WooCommerce is not complete. If you "
+"Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
 "README.DEV.md file in the plugin."
 msgstr ""
@@ -1069,7 +1069,7 @@ msgid "You must be logged in to checkout."
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "Qliro One for WooCommerce"
+msgid "Qliro for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -1077,7 +1077,7 @@ msgid "https://krokedil.com/qliro/"
 msgstr ""
 
 #. Description of the plugin/theme
-msgid "Qliro One Checkout payment gateway for WooCommerce."
+msgid "Qliro Checkout payment gateway for WooCommerce."
 msgstr ""
 
 #. Author of the plugin/theme
