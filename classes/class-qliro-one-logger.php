@@ -69,7 +69,7 @@ class Qliro_One_Logger {
 	/**
 	 * Formats the log data to be logged.
 	 *
-	 * @param string          $qliro_order_id The Qliro One order id.
+	 * @param string          $qliro_order_id The Qliro order id.
 	 * @param string          $method The method.
 	 * @param string          $title The title for the log.
 	 * @param array           $request_args The request args.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles metaboxes for Qliro One.
+ * Handles metaboxes for Qliro.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
@@ -188,7 +188,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	}
 
 	/**
-	 * Get the last transaction from a Qliro One order.
+	 * Get the last transaction from a Qliro order.
 	 *
 	 * @param array $transactions
 	 *
@@ -225,7 +225,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	}
 
 	/**
-	 * Get the status of a Qliro One order from the payment transaction.
+	 * Get the status of a Qliro order from the payment transaction.
 	 *
 	 * @param array $transaction
 	 *
@@ -267,7 +267,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 		$subtype        = $order->get_meta( 'qliro_one_payment_method_subtype_code' );
 
-		// If the payment method starts with QLIRO_, it is a Qliro One payment method.
+		// If the payment method starts with QLIRO_, it is a Qliro payment method.
 		if ( strpos( $payment_method, 'QLIRO_' ) === 0 ) {
 			$payment_method = str_replace( 'QLIRO_', '', $payment_method );
 			$subtype        = __( 'Qliro payment method', 'qliro-one' );
