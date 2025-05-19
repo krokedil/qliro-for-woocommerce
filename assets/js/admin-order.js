@@ -331,7 +331,6 @@ jQuery(function ($) {
 				.ready(this.modify_refund_button_text)
 				.on('change', '#refund_amount', this.update_qliro_refund_amount)
 				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount)
-				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount);
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 
