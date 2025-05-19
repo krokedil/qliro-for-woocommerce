@@ -15,7 +15,6 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
 	return;
 }
-
 ?>
 
 <form name="checkout" class="checkout woocommerce-checkout">

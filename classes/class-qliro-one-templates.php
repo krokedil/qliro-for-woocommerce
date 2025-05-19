@@ -44,7 +44,7 @@ class Qliro_One_Templates {
 	 */
 	public function __construct() {
 		$qliro_settings        = get_option( 'woocommerce_qliro_one_settings' );
-		$this->checkout_layout = ( isset( $qliro_settings['checkout_layout'] ) ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
+		$this->checkout_layout = isset( $qliro_settings['checkout_layout'] ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
 
 		// Override template if Qliro Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
@@ -56,6 +56,90 @@ class Qliro_One_Templates {
 
 		// Body class modifications. For checkout layout setting.
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
+
+		// Country selector.
+		if ( 'shortcode' !== ( $qliro_settings['country_selector_placement'] ?? 'shortcode' ) ) {
+			// Defaults to 'qliro_one_wc_before_snippet' hook.
+			$placement = $qliro_settings['country_selector_placement'] ?? 'qliro_one_wc_before_snippet';
+			add_action( $placement, array( $this, 'add_country_selector' ) );
+		}
+
+		// Shortcode: country selector. Should always be available.
+		add_shortcode( 'qliro_country_selector', array( $this, 'country_selector_shortcode' ) );
+
+		// Unhook the country field if it has the country selector shortcode, and Qliro is the chosen gateway. We'll inject the country field instead.
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'unhook_country_field' ) );
+	}
+
+	/**
+	 * Shortcode: `qliro_country_selector`.
+	 *
+	 * @param array       $atts Shortcode attributes.
+	 * @param string|null $content Shortcode content.
+	 * @param string      $shortcode_tag Shortcode tag.
+	 */
+	public function country_selector_shortcode( $atts, $content, $shortcode_tag ) {
+		$this->add_country_selector();
+	}
+
+	/**
+	 * Add country selector to the checkout page.
+	 */
+	public function add_country_selector() {
+		// The order received page is a checkout page, but we don't want to show the country selector there.
+		if ( ! is_checkout() || is_order_received_page() ) {
+			return;
+		}
+
+		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return;
+		}
+
+		if ( function_exists( 'WC' ) && ! WC()->checkout ) {
+			return;
+		}
+
+		$checkout = WC()->checkout();
+		$fields   = $checkout->get_checkout_fields( 'billing' );
+		$args     = array_merge(
+			$fields['qliro_billing_country'] ?? $fields['billing_country'],
+			array(
+				'type'     => 'country',
+				'required' => true,
+			)
+		);
+		$value    = $checkout->get_value( 'billing_country' );
+
+		do_action( 'before_qliro_country_selector' );
+		woocommerce_form_field( 'billing_country', $args, $value );
+		do_action( 'after_qliro_country_selector' );
+	}
+
+	/**
+	 * Maybe unhook the billing country field.
+	 *
+	 * @param array $fields Checkout fields.
+	 *
+	 * @return array
+	 */
+	public function unhook_country_field( $fields ) {
+		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return $fields;
+		}
+
+		global $post;
+		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_country_selector' ) ) {
+			return $fields;
+		}
+
+		// If we unhook the billing field, it won't be available when we call get_checkout_fields in the `add_country_selector` method which we need to re-use WC defaults.
+		$fields['billing']['qliro_billing_country']             = $fields['billing']['billing_country'];
+		$fields['billing']['qliro_billing_country']['type']     = 'hidden';
+		$fields['billing']['qliro_billing_country']['required'] = false;
+
+		// We do not want it to appear on the checkout field since we'll replace it with our own country field.
+		unset( $fields['billing']['billing_country'] );
+		return $fields;
 	}
 
 	/**
@@ -135,7 +219,7 @@ class Qliro_One_Templates {
 					}
 
 					if ( 'qliro_one' === $order->get_payment_method() ) {
-						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_STRING );
+						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 						if ( empty( $confirm ) ) {
 							$template = $qliro_one_checkout_template;
 						}

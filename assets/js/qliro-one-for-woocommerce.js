@@ -34,6 +34,10 @@ jQuery(function ($) {
 			}
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
+
+			// This refers to the billing country field that we manually inject in the template class.
+			$('#billing_country').on('change', () => $('body').trigger('update_checkout'));
+
 		},
 		renderIframe: function () {
 			window.q1Ready = function (q1) {
@@ -396,7 +400,7 @@ jQuery(function ($) {
 			$.ajax({
 				type: 'POST',
 				url: qliroOneParams.submitOrder,
-				data: $('form.checkout').serialize(),
+				data: $('form.checkout').serialize() + '&' + $('#billing_country').serialize(),
 				dataType: 'json',
 				success: function (data) {
 					console.log(data);

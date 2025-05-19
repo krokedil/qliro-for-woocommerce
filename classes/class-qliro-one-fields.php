@@ -405,6 +405,25 @@ class Qliro_One_Fields {
 				'default' => 'no',
 				'title'   => __( 'Display in a condensed (shorter) style', 'qliro-one-for-woocommerce' ),
 			),
+			'country_selector_section'                   => array(
+				'title' => __( 'Country selector', 'qliro-one-for-woocommerce' ),
+				'type'  => 'title',
+			),
+			'country_selector_placement'                 => array(
+				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'shortcode'                        => __( 'Inactive/shortcode placement' ),
+					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_order_review'  => __( 'Below order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_wrapper'       => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => 'shortcode', // Disabled by default.
+				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
+			),
 		);
 
 		// Add upsell section if plugin is installed.
@@ -417,7 +436,6 @@ class Qliro_One_Fields {
 				'title'             => __( 'Upsell Percentage', 'qliro-one-for-woocommerce' ),
 				'type'              => 'number',
 				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment . The default is 10 % , if you want higher than that you will first need to contact Qliro . ', 'qliro-one-for-woocommerce' ),
-				'default'           => '',
 				'desc_tip'          => true,
 				'default'           => 10,
 				'custom_attributes' => array(

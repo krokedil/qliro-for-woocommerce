@@ -99,6 +99,14 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		// This check must happen before we retrieve the Qliro order ID as the ID will always be empty if the customer changes the billing country from the Qliro checkout page. This is because the billing country is only saved during a create order call which only happens when Qliro is available for that country, and emptied when changing to an unsupported country.
+		if ( qliro_one_has_country_changed() ) {
+			qliro_one_unset_sessions();
+
+			WC()->session->reload_checkout = true;
+			return;
+		}
+
 		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 
 		if ( empty( $qliro_order_id ) ) {
@@ -110,7 +118,7 @@ class Qliro_One_Checkout {
 		}
 
 		// Check if the cart hash has been changed since last update.
-		$hash       = $this->calculate_hash();
+		$hash       = self::calculate_hash();
 		$saved_hash = WC()->session->get( 'qliro_one_last_update_hash' );
 
 		// If they are the same, return.
@@ -156,7 +164,7 @@ class Qliro_One_Checkout {
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
 	}
 
-	public function calculate_hash() {
+	public static function calculate_hash() {
 		// Get values to use for the combined hash calculation.
 		$totals = WC()->cart->get_totals();
 		$total  = 0;
