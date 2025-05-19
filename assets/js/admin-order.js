@@ -269,7 +269,7 @@ jQuery(function ($) {
 
 			// Update the button text with the return fee amount by replacing inner text of the span#qliro_return_fee_total with the refund fee amount.
 			//$qliroReturnFeeTotalSpan.text( qoc_admin_params.return_fee_text + ' ' + accounting.formatMoney(refundFeeAmount, {
-			$qliroReturnFeeTotalSpan.text(' ( ' + qoc_admin_params.with_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ' )' );
+			$qliroReturnFeeTotalSpan.text(' (' + qoc_admin_params.with_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ')' );
 		},
 
 		format_number: function (number) {
