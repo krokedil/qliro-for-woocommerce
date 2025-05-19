@@ -157,6 +157,7 @@ abstract class Qliro_One_Request {
 	 */
 	protected function process_response( $response, $request_args, $request_url ) {
 		if ( is_wp_error( $response ) ) {
+			$this->log_response( $response, $request_args, $request_url );
 			return $response;
 		}
 
