@@ -170,7 +170,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 					$response->get_error_message()
 				)
 			);
-			return;
+			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+			exit;
 		}
 
 		// Get the new payment transaction id from the response, and update the order meta with it.
@@ -288,13 +289,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
 		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
 		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
-		$payment_method          = $order->get_meta( 'qliro_one_payment_method_name' );
 		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
-
-		// Only output the sync button if the order is a Qliro payment method order. Cant update card orders for example.
-		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 && strpos( $payment_method, 'TRUSTLY_' ) !== 0 ) {
-			return;
-		}
 
 		// If the order is captured or cancelled, do not output the sync button.
 		if ( $is_captured || $is_cancelled ) {
