@@ -170,7 +170,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 					$response->get_error_message()
 				)
 			);
-			return;
+			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+			exit;
 		}
 
 		// Get the new payment transaction id from the response, and update the order meta with it.
