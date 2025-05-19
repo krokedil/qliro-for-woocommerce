@@ -310,7 +310,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return false;
 		}
 
-		if ( ! $order->get_meta( '_qliro_order_captured' ) ) {
+		if ( ! qoc_is_fully_captured( $order ) ) {
 			return false;
 		}
 

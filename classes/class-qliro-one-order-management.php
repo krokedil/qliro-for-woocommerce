@@ -341,7 +341,7 @@ class Qliro_One_Order_Management {
 		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
 
 		// translators: refund amount, refund id.
-		$text           = __( 'Processing a refund of %1$s with Qliro', 'qliro-one-for-woocommerce' );
+		$text = __( 'Processing a refund of %1$s with Qliro', 'qliro-one-for-woocommerce' );
 
 		if ( ! empty( $applied_return_fees ) ) {
 			$total_return_fees = 0;
@@ -353,7 +353,7 @@ class Qliro_One_Order_Management {
 
 			// translators: return frees amount.
 			$extra_text = sprintf( __( ' (including return fees of %1$s)', 'qliro-one-for-woocommerce' ), $formatted_total_return_fees );
-			$text .= $extra_text;
+			$text      .= $extra_text;
 		}
 
 		$formatted_text = sprintf( $text, wc_price( $amount, array( 'currency' => $order->get_currency() ) ) );
@@ -415,7 +415,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		if ( ! $order->get_meta( '_qliro_order_captured' ) ) {
+		if ( ! qoc_is_fully_captured( $order ) ) {
 			return;
 		}
 
@@ -436,8 +436,8 @@ class Qliro_One_Order_Management {
 						<input type="text" name="qliro_return_fee_amount" placeholder="0" class="refund_line_total wc_input_price" />
 					</div>
 				</td>
-				<?php foreach( $order->get_taxes() as $tax ) : ?>
-					<?php if ( empty( $tax->get_rate_percent() )) : ?>
+				<?php foreach ( $order->get_taxes() as $tax ) : ?>
+					<?php if ( empty( $tax->get_rate_percent() ) ) : ?>
 						<td class="line_tax" width="1%">&nbsp;</td>
 					<?php else : ?>
 						<td class="line_tax" width="1%">
@@ -451,7 +451,7 @@ class Qliro_One_Order_Management {
 								/>
 							</div>
 						</td>
-					<?php break; ?>
+						<?php break; ?>
 				<?php endif; ?>
 			<?php endforeach; ?>
 				<td class="wc-order-edit-line-item">&nbsp;</td>
@@ -472,7 +472,7 @@ class Qliro_One_Order_Management {
 		}
 
 		$total = 0;
-		foreach( $return_fees as $return_fee ) {
+		foreach ( $return_fees as $return_fee ) {
 			$total += $return_fee['PricePerItemIncVat'] ?? 0;
 		}
 
@@ -482,7 +482,7 @@ class Qliro_One_Order_Management {
 		}
 		?>
 		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
-			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ) ?></span>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ); ?></span>
 			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
 		</span>
 		<?php
@@ -500,24 +500,24 @@ class Qliro_One_Order_Management {
 			'tax_rate_id' => 0,
 		);
 
-		$line_item_totals_json = filter_input( INPUT_POST, 'line_item_totals', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$line_item_totals_json     = filter_input( INPUT_POST, 'line_item_totals', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$line_item_tax_totals_json = filter_input( INPUT_POST, 'line_item_tax_totals', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		$line_item_totals = json_decode( htmlspecialchars_decode( $line_item_totals_json ), true ) ?? array();
+		$line_item_totals     = json_decode( htmlspecialchars_decode( $line_item_totals_json ), true ) ?? array();
 		$line_item_tax_totals = json_decode( htmlspecialchars_decode( $line_item_tax_totals_json ), true ) ?? array();
 
 		foreach ( $line_item_totals as $key => $total ) {
-			if('qliro_return_fee' === $key) {
+			if ( 'qliro_return_fee' === $key ) {
 				$return_fee['amount'] = str_replace( ',', '.', $total );
 			}
 		}
 
 		foreach ( $line_item_tax_totals as $key => $tax_line ) {
-			if('qliro_return_fee' === $key) {
+			if ( 'qliro_return_fee' === $key ) {
 				// Get the rate id from the tax by the first key in the line
-				$tax_rate_id = array_keys( $tax_line )[0];
+				$tax_rate_id               = array_keys( $tax_line )[0];
 				$return_fee['tax_rate_id'] = $tax_rate_id;
-				$return_fee['tax_amount'] = str_replace( ',', '.', $tax_line[$tax_rate_id] );
+				$return_fee['tax_amount']  = str_replace( ',', '.', $tax_line[ $tax_rate_id ] );
 			}
 		}
 
