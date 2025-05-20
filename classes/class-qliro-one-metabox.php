@@ -76,6 +76,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
+		self::output_discount_button( $order, $qliro_order, $last_transaction );
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
 
@@ -324,6 +325,31 @@ class Qliro_One_Metabox extends OrderMetabox {
 			false,
 			$classes
 		);
+	}
+
+	private static function output_discount_button( $order, $qliro_order, $last_transaction ) {
+		$transaction_id = $last_transaction['PaymentTransactionId'] ?? '';
+		$action_url     = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action'         => 'qliro_one_refund_order',
+					'order_id'       => $order->get_id(),
+					'qliro_order_id' => $qliro_order['OrderId'] ?? '',
+					'transaction_id' => $transaction_id,
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+			'qliro_one_refund_order'
+		);
+
+		self::output_action_button(
+			__( 'Add discount', 'qliro-one' ),
+			$action_url,
+			false,
+			array( 'button-secondary', 'qliro-refund-order-button' )
+		);
+
+		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
 
 	/**
