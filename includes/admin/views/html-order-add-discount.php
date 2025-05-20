@@ -16,7 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="row">
 				<div class="toggle-box">
 					<input type="text" placeholder="Rabatt-ID" />
+					<div class="tooltip-container">
 					<span class="symbol tooltip">i</span>
+					<p class="tooltip-hover-text">Innehåller artikelnummer och rabattnummer. Ex. artikelnummer_rabatt01</p>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -55,11 +58,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="total">
 				<div class="row">
 					<p>Totalbelopp innan</p>
-					<p>2961.25 SEK</p>
+					<p class="price">2961.25 SEK</p>
 				</div>
 				<div class="row">
 					<p class="violet">Rabatt</p>
-					<p class="violet">-25% (0 SEK)</p>
+					<p class="violet price">-25% (0 SEK)</p>
 				</div>
 
 			</div>
