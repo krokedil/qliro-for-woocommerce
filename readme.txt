@@ -25,6 +25,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Feature       - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'. 
 * Enhancement   - Changed so the refund with Qliro button is not shown for orders that have not been completed with Qliro, preventing the refund from causing a API error when it can't be made.
 * Enhancement   - Improved logging to handle situations where the remote requests returns WP_Error that is not properly logged.
+* Tweak         - The sync order button will now always be available on the order edit page for all Qliro orders regardless of payment method.
 * Tweak         - Checks if the order was paid with Qliro before showing the partial capture button on the order edit page.
 * Tweak         - Removed pending, refunded and failed order statuses from part of the statuses in the order management where it is not relevant.
 * Tweak         - Relabeling from "Qliro One" to "Qliro".
