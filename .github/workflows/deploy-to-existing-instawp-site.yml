@@ -1,15 +1,15 @@
 name: Deploy Dev Zip to existing InstaWP site
 # NOTE: You can change the default value of 'qliro-settings.krokedil.site' below if you want to push by default to another site and comment out push if you don't want the action to be triggered on all commits.
 on:
-  # push:
-  #   branches:
-  #     - '**'
+  push:
+    branches:
+     - '**'
   workflow_dispatch:
     inputs:
       instawp_url:
         description: 'InstaWP site URL to deploy to (e.g. qliro-sandbox.krokedil.site)'
         required: true
-        default: 'qliro-sandbox.krokedil.site'
+        default: 'qliro-settings.krokedil.site'
 
 jobs:
   build-and-deploy:
@@ -17,7 +17,7 @@ jobs:
     env:
       PLUGIN_SLUG: qliro-one-for-woocommerce
       # You can change the default below to push to another site by default
-      INSTA_WP_URL: ${{ github.event.inputs.instawp_url || 'qliro-sandbox.krokedil.site' }}
+      INSTA_WP_URL: ${{ github.event.inputs.instawp_url || 'qliro-settings.krokedil.site' }}
       INSTAWP_API_TOKEN: ${{ secrets.INSTAWP_API_TOKEN }}
     steps:
     - name: Checkout repository
