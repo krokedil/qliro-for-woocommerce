@@ -1,6 +1,6 @@
 <?php
 /**
- * Qliro One payment widget.
+ * Qliro payment widget.
  *
  * @package Qliro_One_For_WooCommerce/Classes/Widgets
  */
@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro One payment widget class.
+ * Qliro payment widget class.
  */
 class Qliro_One_Payment_Widget {
 
@@ -45,7 +45,6 @@ class Qliro_One_Payment_Widget {
 		if ( 'yes' === $this->settings['payment_widget_enabled'] ) {
 			add_action( 'woocommerce_single_product_summary', array( $this, 'payment_widget_hook' ), 1 );
 		}
-
 	}
 
 	/**

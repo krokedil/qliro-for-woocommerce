@@ -1,3 +1,3 @@
-# Qliro One for WooCommerce
+# Qliro for WooCommerce
 
-Official repository for Qliro One Checkout for WooCommerce plugin. This plugin provides Qliro One payment gateway to your WooCommerce store.
+Official repository for Qliro Checkout for WooCommerce plugin. This plugin provides Qliro payment gateway to your WooCommerce store.

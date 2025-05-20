@@ -1,13 +1,13 @@
-=== Qliro One for WooCommerce ===
+=== Qliro for WooCommerce ===
 Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.7.2
+Tested up to: 6.8.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.7.1
-Stable tag: 1.10.1
+WC tested up to: 9.8.5
+Stable tag: 1.11.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,17 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.05.20    - version 1.11.0 =
+* Feature       - Added support for adding a return fee when making a refund on a Qliro order.
+* Feature       - Added a setting to automatically calculate a return fee for Qliro orders, if a refund is made when the full amount of a order line is not refunded.
+* Feature       - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'. 
+* Enhancement   - Changed so the refund with Qliro button is not shown for orders that have not been completed with Qliro, preventing the refund from causing a API error when it can't be made.
+* Enhancement   - Improved logging to handle situations where the remote requests returns WP_Error that is not properly logged.
+* Tweak         - The sync order button will now always be available on the order edit page for all Qliro orders regardless of payment method.
+* Tweak         - Checks if the order was paid with Qliro before showing the partial capture button on the order edit page.
+* Tweak         - Removed pending, refunded and failed order statuses from part of the statuses in the order management where it is not relevant.
+* Tweak         - Relabeling from "Qliro One" to "Qliro".
+
 = 2025.04.28    - version 1.10.1 =
 * Fix           - Fixed an undefined array key warning.
 * Fix           - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.

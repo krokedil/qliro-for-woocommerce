@@ -37,6 +37,11 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 			return;
 		}
 
+		// Only show if the order is paid via Qliro.
+		if ( 'qliro_one' !== $order->get_payment_method() ) {
+			return;
+		}
+
 		if ( qoc_is_fully_captured( $order ) ) {
 			return;
 		}

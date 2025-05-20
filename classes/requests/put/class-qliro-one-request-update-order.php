@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class for the request to add an item to the Qliro One order.
+ * Class for the request to add an item to the Qliro order.
  */
 class Qliro_One_Request_Update_Order extends Qliro_One_Request_Put {
 

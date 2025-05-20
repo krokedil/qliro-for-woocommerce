@@ -123,4 +123,4 @@ jobs:
 
     - name: Add annotation with InstaWP deployment link
       run: |
-        echo "::notice::Dev Zip deployed to ${{ env.INSTA_WP_URL }} (SiteID: ${{ steps.instawp_siteid.outputs.siteid }}) - https://app.instawp.io/sites/${{ steps.instawp_siteid.outputs.siteid }}/staging-dashboard"
+        echo "::notice::Dev Zip from ${BRANCH_NAME} (${COMMIT_HASH}) deployed to ${{ env.INSTA_WP_URL }} (SiteID: ${{ steps.instawp_siteid.outputs.siteid }}) - Magic login link can be found at https://app.instawp.io/sites/${{ steps.instawp_siteid.outputs.siteid }}/staging-dashboard"

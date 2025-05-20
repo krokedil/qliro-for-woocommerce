@@ -53,7 +53,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$available_gateways  = WC()->payment_gateways()->get_available_payment_gateways();
 		$switch_to_qliro_one = isset( $_POST['qliro_one'] ) ? sanitize_text_field( wp_unslash( $_POST['qliro_one'] ) ) : '';
 		if ( 'false' === $switch_to_qliro_one ) {
-			// Set chosen payment method to first gateway that is not Qliro One Checkout for WooCommerce.
+			// Set chosen payment method to first gateway that is not Qliro Checkout for WooCommerce.
 			$first_gateway = reset( $available_gateways );
 			if ( 'qliro_one' !== $first_gateway->id ) {
 				WC()->session->set( 'chosen_payment_method', $first_gateway->id );
@@ -77,7 +77,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 
 	/**
-	 * Gets the Qliro One order.
+	 * Gets the Qliro order.
 	 */
 	public static function qliro_one_get_order() {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
@@ -162,7 +162,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 				// translators: %s is the error message from Qliro.
 				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be partially captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
 				wp_send_json_error( $error_message );
-				wp_die();
 			}
 
 			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
@@ -183,10 +182,8 @@ class Qliro_One_Ajax extends WC_AJAX {
 			$order->add_order_note( $order_note );
 
 			wp_send_json_success( $order_id );
-			wp_die();
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage() );
-			wp_die();
 		}
 	}
 
