@@ -350,8 +350,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return;
 		}
 
-		$gateway_page = new Gateway( $this, $args );
 		$args['icon'] = QLIRO_WC_PLUGIN_URL . '/assets/images/qliro-icon.png';
+
+		$gateway_page = new Gateway( $this, $args );
 
 		$args['general_content'] = array( $gateway_page, 'output' );
 		$settings_page           = ( SettingsPage::get_instance() )
