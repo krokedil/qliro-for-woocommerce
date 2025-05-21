@@ -263,11 +263,21 @@ jQuery(function ($) {
 					$('.summary .discount-amount').text(amount.toFixed(2));
 
 					$('#qliro-discount-modal button.confirm').attr('disabled', discountedTotalAmount == totalAmount);
+					
+					updateTotal(amount)
 				}
 
 				const toggleModal = (e) => {
 					e.preventDefault();
 					$('.qliro-one-overlay-backdrop').hide();
+				}
+
+				const updateTotal = (newTotalAmount) => {
+					const actionURL = $('#qliro-discount-modal .confirm').attr('formaction')
+					const url = new URL(actionURL, location.origin);
+					url.searchParams.set('total_amount', newTotalAmount.toFixed(2));
+
+					$('#qliro-discount-modal .confirm').attr('formaction', url.toString());
 				}
 
 				$('[name="qliro-discount-amount"]').on('input', function () {

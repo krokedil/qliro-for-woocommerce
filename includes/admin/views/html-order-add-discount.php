@@ -83,7 +83,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 			<footer>
 				<div class="row">
 					<button class="close">Tillbaka</button>
-					<button disabled class="confirm">Bekräfta</button>
+					<button class="confirm" disabled type="submit" formaction="<?php echo $action_url; ?>">Bekräfta</button>
 				</div>
 			</footer>
 		</div>
