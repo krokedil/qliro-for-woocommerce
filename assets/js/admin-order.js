@@ -253,15 +253,23 @@ jQuery(function ($) {
 
 			const discount = $('#qliro-discount');
 			if (discount.length > 0) {
+				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+
 				const updateView = (amount, percentage) => {
-					const newTotal = (totalAmount - amount).toFixed(2);
-					$('#qliro-new-total-amount').text(newTotal);
+					const discountedTotalAmount = totalAmount - amount;
+					$('#qliro-new-total-amount').text(discountedTotalAmount.toFixed(2));
 
 					$('.summary .discount-percentage').text(-1 * percentage.toFixed(2));
 					$('.summary .discount-amount').text(amount.toFixed(2));
+
+					$('#qliro-discount-modal button.confirm').attr('disabled', discountedTotalAmount == totalAmount );
 				}
 
-				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+				const toggleModal = (e) => {
+					e.preventDefault();
+					$('.qliro-one-overlay-backdrop').hide();
+				}
+
 				$('[name="qliro-discount-amount"]').on('input', function () {
 					let discountAmount = parseFloat($(this).val());
 					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
@@ -293,7 +301,7 @@ jQuery(function ($) {
 						$(this).val(discountPercentage.toFixed(2));
 
 					// Do not allow negative values.
-					} else if (discountPercentage < 0) {
+					} else if (discountPercentage <= 0) {
 						discountPercentage = 0;
 						$(this).val(discountPercentage.toFixed(2));
 					}
@@ -303,6 +311,9 @@ jQuery(function ($) {
 
 					updateView(discountAmount, discountPercentage);
 				})
+
+				$('#qliro-discount-modal .close').on('click', toggleModal)
+
 			}
 		}
 	}

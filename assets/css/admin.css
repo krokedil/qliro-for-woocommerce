@@ -48,7 +48,7 @@
 	border: none;
 }
 
-.qliro-one-overlay .close {
+.qliro-one-overlay .close-button {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -232,6 +232,7 @@
 		border: 2px solid var(--light-grey);
 		border-radius: 0.25em;
         font-weight: 600;
+		cursor: pointer;
 	}
 
 	.confirm {

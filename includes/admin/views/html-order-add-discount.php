@@ -12,8 +12,8 @@ $total_amount = wc_format_decimal( $order->get_total() );
 ?>
 
 <div class="qliro-one-overlay-backdrop">
-	<dialog class="qliro-one-overlay">
-		<span class="close">&#x2715;</span>
+	<dialog class="qliro-one-overlay" id="qliro-discount-modal" role="dialog">
+		<span class="close-button close">&#x2715;</span>
 		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>">
 			<h1>Lägg till rabatt</h1>
 			<section class="discount-id">
@@ -82,7 +82,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 			</section>
 			<footer>
 				<div class="row">
-					<button>Tillbaka</button>
+					<button class="close">Tillbaka</button>
 					<button disabled class="confirm">Bekräfta</button>
 				</div>
 			</footer>
