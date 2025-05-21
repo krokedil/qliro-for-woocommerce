@@ -312,6 +312,11 @@ jQuery(function ($) {
 					updateView(discountAmount, discountPercentage);
 				})
 
+				$('#qliro_add_order_discount').on('click', function (e) {
+					e.preventDefault();
+					$('.qliro-one-overlay-backdrop').show();
+				})
+
 				$('#qliro-discount-modal .close').on('click', toggleModal)
 
 			}

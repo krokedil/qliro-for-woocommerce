@@ -342,12 +342,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_one_refund_order'
 		);
 
-		self::output_action_button(
-			__( 'Add discount', 'qliro-one' ),
-			$action_url,
-			false,
-			array( 'button-secondary', 'qliro-refund-order-button' )
-		);
+		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
+		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add discount</a>";
 
 		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
