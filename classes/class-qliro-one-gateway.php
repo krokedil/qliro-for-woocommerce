@@ -39,8 +39,8 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		$this->id                 = 'qliro_one';
-		$this->method_title       = __( 'Qliro One', 'qliro-one-for-woocommerce' );
-		$this->method_description = __( 'Qliro One replaces the standard WooCommerce checkout page.', 'qliro-one-for-woocommerce' );
+		$this->method_title       = __( 'Qliro for WooCommerce', 'qliro-one-for-woocommerce' );
+		$this->method_description = __( 'Safe and simple payment. An embedded checkout with high conversion rates and the most popular payment methods on the market — giving your customers a first-class shopping experience.', 'qliro-one-for-woocommerce' );
 		$this->supports           = apply_filters(
 			'qliro_one_gateway_supports',
 			array(
