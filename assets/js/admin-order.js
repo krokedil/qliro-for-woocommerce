@@ -262,7 +262,7 @@ jQuery(function ($) {
 					$('.summary .discount-percentage').text(-1 * percentage.toFixed(2));
 					$('.summary .discount-amount').text(amount.toFixed(2));
 
-					$('#qliro-discount-modal button.confirm').attr('disabled', discountedTotalAmount == totalAmount );
+					$('#qliro-discount-modal button.confirm').attr('disabled', discountedTotalAmount == totalAmount);
 				}
 
 				const toggleModal = (e) => {
