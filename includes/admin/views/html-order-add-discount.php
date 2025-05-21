@@ -14,7 +14,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 <div class="qliro-one-overlay-backdrop">
 	<dialog class="qliro-one-overlay">
 		<span class="close">&#x2715;</span>
-		<div id="qliro-discount">
+		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>">
 			<h1>Lägg till rabatt</h1>
 			<section class="discount-id">
 				<div class="row">
@@ -34,12 +34,12 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 				<div class="row">
 					<div class="toggle-box">
-						<input type="number" name="discount-amount" max="<?php echo $total_amount; ?>">
+						<input type="number" name="qliro-discount-amount" min="0.0" max="<?php echo $total_amount; ?>">
 						<span class="symbol">SEK</span>
 					</div>
 					<p>=</p>
 					<div class="toggle-box">
-						<input type="number" name="discount-percentage" max="100.00">
+						<input type="number" name="qliro-discount-percentage" min="0.0" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -52,7 +52,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				<div class="row">
 					<p class="bold">Moms</p>
 					<div class="toggle-box">
-						<input type="number" name="discount-vat" placeholder="25" max="100.00">
+						<input type="number" name="qliro-discount-vat" placeholder="25" min="0.0" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -66,7 +66,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 					</div>
 					<div class="row">
 						<p class="violet">Rabatt</p>
-						<p class="violet price">0% (0 SEK)</p>
+						<p class="violet price"><span class="discount-percentage">0</span>% (<span class="discount-amount">0.00</span> SEK)</p>
 					</div>
 
 				</div>
@@ -76,7 +76,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 						<p class="bold">Nytt belopp att betala:</p>
 					</div>
 					<div class="row new-total-amount">
-						<p class="bold"><?php echo $total_amount; ?> SEK</p>
+						<p class="bold"><span id="qliro-new-total-amount"><?php echo $total_amount; ?></span> SEK</p>
 					</div>
 				</div>
 			</section>

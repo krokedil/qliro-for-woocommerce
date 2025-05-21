@@ -251,6 +251,59 @@ jQuery(function ($) {
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 
+			const discount = $('#qliro-discount');
+			if (discount.length > 0) {
+				const updateView = (amount, percentage) => {
+					const newTotal = (totalAmount - amount).toFixed(2);
+					$('#qliro-new-total-amount').text(newTotal);
+
+					$('.summary .discount-percentage').text(-1 * percentage.toFixed(2));
+					$('.summary .discount-amount').text(amount.toFixed(2));
+				}
+
+				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+				$('[name="qliro-discount-amount"]').on('input', function () {
+					let discountAmount = parseFloat($(this).val());
+					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
+
+					// Do not allow exceeding the total amount.
+					if (discountAmount > totalAmount) {
+						discountAmount = totalAmount;
+						$(this).val(discountAmount.toFixed(2));
+
+					// Do not allow negative values.
+					} else if (discountAmount < 0) {
+						discountAmount = 0;
+						$(this).val(discountAmount.toFixed(2));
+					}
+
+					const percentage = ((discountAmount / totalAmount) * 100);
+					$('[name="qliro-discount-percentage"]').val(percentage.toFixed(2));
+
+					updateView(discountAmount, percentage);
+				})
+
+				$('[name="qliro-discount-percentage"]').on('input', function () {
+					let discountPercentage = parseFloat($(this).val());
+					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
+
+					// Do not allow exceeding 100%.
+					if (discountPercentage > 100) {
+						discountPercentage = 100;
+						$(this).val(discountPercentage.toFixed(2));
+
+					// Do not allow negative values.
+					} else if (discountPercentage < 0) {
+						discountPercentage = 0;
+						$(this).val(discountPercentage.toFixed(2));
+					}
+
+					const discountAmount = ((totalAmount * discountPercentage) / 100);
+					$('[name="qliro-discount-amount"]').val(discountAmount.toFixed(2));
+
+					updateView(discountAmount, discountPercentage);
+				})
+			}
 		}
 	}
 	qoc.init();
