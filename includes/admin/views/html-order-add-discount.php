@@ -12,7 +12,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 ?>
 
 <div class="qliro-one-overlay-backdrop">
-	<div class="qliro-one-overlay">
+	<dialog class="qliro-one-overlay">
 		<span class="close">&#x2715;</span>
 		<div id="qliro-discount">
 			<h1>Lägg till rabatt</h1>
@@ -22,8 +22,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 						<input type="text" placeholder="Rabatt-ID" />
 						<div class="tooltip-container">
 							<span class="symbol tooltip">i</span>
-							<p class="tooltip-hover-text">Innehåller artikelnummer och rabattnummer. Ex.
-								artikelnummer_rabatt01</p>
+							<p class="tooltip-hover-text">Innehåller artikelnummer och rabattnummer. Ex. artikelnummer_rabatt01</p>
 						</div>
 					</div>
 				</div>
@@ -35,12 +34,12 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 				<div class="row">
 					<div class="toggle-box">
-						<input type="text" name="discount-amount">
+						<input type="number" name="discount-amount" max="<?php echo $total_amount; ?>">
 						<span class="symbol">SEK</span>
 					</div>
 					<p>=</p>
 					<div class="toggle-box">
-						<input type="text" name="discount-percentage">
+						<input type="number" name="discount-percentage" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -53,7 +52,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				<div class="row">
 					<p class="bold">Moms</p>
 					<div class="toggle-box">
-						<input type="text" name="discount-vat" placeholder="25">
+						<input type="number" name="discount-vat" placeholder="25" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -88,5 +87,5 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 			</footer>
 		</div>
-	</div>
+</dialog>
 </div>
