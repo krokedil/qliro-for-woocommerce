@@ -34,12 +34,12 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 				<div class="row">
 					<div class="toggle-box">
-						<input type="number" name="qliro-discount-amount" min="0.0" max="<?php echo $total_amount; ?>">
+						<input type="number" name="qliro-discount-amount" step="any" min="0.00" max="<?php echo $total_amount; ?>">
 						<span class="symbol">SEK</span>
 					</div>
 					<p>=</p>
 					<div class="toggle-box">
-						<input type="number" name="qliro-discount-percentage" min="0.0" max="100.00">
+						<input type="number" name="qliro-discount-percentage" step="any" min="0.00" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -52,7 +52,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				<div class="row">
 					<p class="bold">Moms</p>
 					<div class="toggle-box">
-						<input type="number" name="qliro-discount-vat" placeholder="25" min="0.0" max="100.00">
+						<input type="number" name="qliro-discount-vat" placeholder="25" step="any" min="0.00" max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
