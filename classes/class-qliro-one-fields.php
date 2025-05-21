@@ -178,6 +178,7 @@ class Qliro_One_Fields {
 			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
 				'title'       => __( 'Ask for newsletter signup checked by default', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
+				'label'       => __( 'Set signup newsletter field as checked by default', 'qliro-one-for-woocommerce' ),
 				'description' => __( 'If enabled, Qliro Checkout will set signup newsletter as checked by default.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -208,7 +209,7 @@ class Qliro_One_Fields {
 			'has_risk'                                   => array(
 				'title'       => __( 'Has risk', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'label'       => __( 'Flag order as has risk', 'qliro-one-for-woocommerce' ),
+				'label'       => __( 'Flag all products as has risk products', 'qliro-one-for-woocommerce' ),
 				'description' => __( 'If enabled, all products in the order will be flagged as has risk products. This can be used to eg limit the list of available payment methods shown for customer. Please note that you also have the possibility to set this on an individual product level.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -273,7 +274,7 @@ class Qliro_One_Fields {
 			),
 			'om_advanced_settings'                       => array(
 				'title'       => __( 'Advanced pending status configuration', 'qliro-one-for-woocommerce' ),
-				'label'       => __( 'Enable advanced pending pending status configuration', 'qliro-one-for-woocommerce' ),
+				'label'       => __( 'Enable advanced pending status configuration', 'qliro-one-for-woocommerce' ),
 				'description' => __( 'There is a delay when a capture or cancellation is initiated and WooCommerce receives the response. Therefore you have the possibility to customize what order status an order should have during this process. Use only in advanced situations.', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
@@ -286,7 +287,7 @@ class Qliro_One_Fields {
 				'options'     => $order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to while WooCommerce wait for Qliro to tell us if the capture was successful or not.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
-				'desc_tip'    => true,
+				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
 			),
 			'capture_ok_status'                          => array(
@@ -295,7 +296,7 @@ class Qliro_One_Fields {
 				'options'     => $order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to when we get notified of a successful order capture from Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
-				'desc_tip'    => true,
+				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
 			),
 			'cancel_pending_status'                      => array(
@@ -304,7 +305,7 @@ class Qliro_One_Fields {
 				'options'     => $order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to while we wait for Qliro to tell us if the cancelation was successful or not.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
-				'desc_tip'    => true,
+				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
 			),
 			'cancel_ok_status'                           => array(
@@ -313,7 +314,7 @@ class Qliro_One_Fields {
 				'options'     => $order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to when we get notified of a successful order cancelation from Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
-				'desc_tip'    => true,
+				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
 			),
 			'order_management_end'                       => array(
@@ -414,7 +415,7 @@ class Qliro_One_Fields {
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
 				'description' => __(
-					'The banner widget is a simple way to promote Qliro Payment methods and campaigns, without having to manually update banners continuously. Please note that you can also display the same banner widget by using the shortcode [qliro_one_banner_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/)">here</a>.',
+					'Promote Qliro payment methods and campaigns, without having to manually update banners continuously. You can also display it with the shortcode [qliro_one_banner_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/)">here</a>.',
 					'qliro-one-for-woocommerce'
 				),
 			),
@@ -477,7 +478,7 @@ class Qliro_One_Fields {
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
 				'description' => __(
-					'The payment widget presents a suitable payment method based on the price of the product, whose product page you are on. Please note that you can also display the same banner widget by using the shortcode [qliro_one_payment_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.'
+					'Presents a suitable payment method based on the price of the current product. You can also display it with the shortcode [qliro_one_payment_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.'
 				),
 			),
 			'payment_widget_placement_location'          => array(
