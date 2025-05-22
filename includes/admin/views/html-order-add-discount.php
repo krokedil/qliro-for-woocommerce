@@ -9,12 +9,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $total_amount = wc_format_decimal( $order->get_total() );
+
+$fees = array();
+foreach ( $order->get_fees() as $fee ) {
+	$id = $fee->get_meta( 'qliro_discount_id' );
+	if ( ! empty( $id ) ) {
+		$fees[] = $id;
+	}
+}
+$fees = wp_json_encode( $fees );
 ?>
 
 <div class="qliro-one-overlay-backdrop">
 	<dialog class="qliro-one-overlay" id="qliro-discount-modal" role="dialog">
 		<span class="close-button close">&#x2715;</span>
-		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>">
+		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>" data-fees='<?php echo $fees; ?>'>
 			<h1>Lägg till rabatt</h1>
 			<section class="discount-id">
 				<div class="row">
@@ -26,6 +35,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 						</div>
 					</div>
 				</div>
+				<p id="qliro-discount-id-error" class="explanation hidden error">Rabatt-ID måste vara unikt</p>
 			</section>
 			<hr>
 			<section>
@@ -46,7 +56,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 				<div class="row">
 					<p id="qliro-discount-notice" class="explanation">Procentsatsen är baserad på totalbelopp</p>
-					<p id="qliro-discount-error" class="explanation error" style="display: none;">Beloppet får inte vara lika med eller överstiga totalbelopp.</p>
+					<p id="qliro-discount-error" class="explanation error hidden">Beloppet får inte vara lika med eller överstiga totalbelopp.</p>
 				</div>
 			</section>
 			<hr>

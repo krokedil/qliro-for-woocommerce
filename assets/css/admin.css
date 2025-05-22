@@ -69,6 +69,10 @@
         border-radius: 0.25em;
 	}
 
+	.hidden {
+		display: none;
+	}
+
 	.bold {
 		padding-left: 0;
 		font-weight: bold;

@@ -253,6 +253,7 @@ jQuery(function ($) {
 
 			const discount = $('#qliro-discount');
 			if (discount.length > 0) {
+				const fees = JSON.parse($('#qliro-discount').attr('data-fees'));
 				const totalAmount = parseFloat(discount.attr('data-total-amount'));
 				const discountIdEl = $('[name="qliro-discount-id"]');
 				const discountAmountEl = $('[name="qliro-discount-amount"]');
@@ -281,16 +282,12 @@ jQuery(function ($) {
 
 					const hasDiscountAmount = amount > 0
 					const hasDiscountId = discountIdEl.val().length > 0;
+					const isDuplicateId = fees.includes(discountIdEl.val());
 					const isFullyDiscounted = amount >= totalAmount;
-					$('#qliro-discount-modal button.confirm').attr('disabled', !hasDiscountId || !hasDiscountAmount || isFullyDiscounted);
+					$('#qliro-discount-modal button.confirm').attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
 
-					if (isFullyDiscounted) {
-						$('#qliro-discount-error').show();
-						$('#qliro-discount-notice').hide()
-					} else {
-						$('#qliro-discount-error').hide();
-						$('#qliro-discount-notice').show()
-					}
+					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
+					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);
 					
 					updateURL()
 				}
@@ -301,6 +298,9 @@ jQuery(function ($) {
 				}
 
 				$('[name="qliro-discount-id"]').on('input', function () {
+					const alreadyExists = fees.includes($(this).val());
+					$('#qliro-discount-id-error').toggleClass('hidden', !alreadyExists);
+
 					const discountAmount = parseFloat(discountAmountEl.val());
 					const discountPercentage = parseFloat(discountPercentageEl.val());
 					if (!isNaN(discountAmount) && !isNaN(discountPercentage)) {
