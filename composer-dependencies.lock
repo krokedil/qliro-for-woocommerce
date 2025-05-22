@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/settings-page.git",
-                "reference": "c49c7aa2887f6966276ee0451d6761a4d8798707"
+                "reference": "1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/settings-page/zipball/c49c7aa2887f6966276ee0451d6761a4d8798707",
-                "reference": "c49c7aa2887f6966276ee0451d6761a4d8798707",
+                "url": "https://api.github.com/repos/krokedil/settings-page/zipball/1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a",
+                "reference": "1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a",
                 "shasum": ""
             },
             "require-dev": {
@@ -99,7 +99,7 @@
                 "source": "https://github.com/krokedil/settings-page/tree/develop-settings-design",
                 "issues": "https://github.com/krokedil/settings-page/issues"
             },
-            "time": "2025-05-22T08:29:46+00:00"
+            "time": "2025-05-22T10:59:44+00:00"
         },
         {
             "name": "krokedil/shipping",
