@@ -29,6 +29,8 @@ class Qliro_One_Checkout {
 
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'update_shipping_method' ), 1 );
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'update_qliro_order' ), 9999 );
+
+		add_filter( 'woocommerce_states', array( $this, 'maybe_unset_states_from_countries' ), PHP_INT_MAX ); // Make sure we run this last.
 	}
 
 	/**
@@ -242,5 +244,38 @@ class Qliro_One_Checkout {
 	 */
 	public function is_wc_shipping_in_iframe_enabled() {
 		return isset( $this->settings['shipping_in_iframe'] ) && 'wc_shipping' === $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Maybe unset states from countries list for Qliro checkout.
+	 *
+	 * Needed since Qliro checkout has a field for states that is a text input, and WooCommerce renders a select field if a country has states listed.
+	 * This makes it hard or almost impossible to select the correct state in WooCommerce based on the user input in Qliro checkout.
+	 *
+	 * @param array $states The states.
+	 * @return array
+	 */
+	public function maybe_unset_states_from_countries( $country_states ) {
+		// Only do this if Qliro is the selected payment method.
+		if ( empty( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return $country_states;
+		}
+
+
+		// Ensure each country (key) has a empty array as a value.
+		foreach ( $country_states as $cc => $states ) {
+			/*
+			* If the country has states that are defined, set them to null, this will force it to be shown as a text input.
+			* An empty array would only render it as a hidden field,
+			* causing WooCommerce to ignore the field when submitting the form during updates etc.
+			*
+			* @see woocommerce/includes/wc-template-functions.php::woocommerce_form_field case 'state'
+			*/
+			if ( is_array( $states ) && ! empty( $states ) ) {
+				$country_states[ $cc ] = null;
+			}
+		}
+
+		return $country_states;
 	}
 }
