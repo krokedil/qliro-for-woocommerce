@@ -244,15 +244,6 @@ class Qliro_One_Fields {
 				'type'        => 'krokedil_section_start',
 				'description' => __( 'Manage settings related to an order after it has been created, such as when capture and cancelation with Qliro should be initiated etc.', 'qliro-one-for-woocommerce' ),
 			),
-			'enable_order_management'                    => array(
-				'title'       => __( 'Enable order management', 'qliro-one-for-woocommerce' ),
-				'label'       => __( 'Enable order management', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
-				'description' => __( 'By enabling order management, capture will be done with Qliro when the WooCommerce order status is set to Completed and canceling will be done with Qliro when the WooCommerce order status is set to Cancelled. Please note that you also have the possibility to disable order management on specific orders, eg if an order needs to be managed in a specific way. Read more about order management <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/order-management/">here</a>.', 'qliro-one-for-woocommerce' ),
-				'default'     => 'yes',
-				'desc_tip'    => false,
-				'class'       => 'krokedil_conditional_toggler krokedil_toggler_enable_om',
-			),
 			'capture_status'                             => array(
 				'title'       => __( 'Capture order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
@@ -260,7 +251,6 @@ class Qliro_One_Fields {
 				'description' => __( 'Select what WooCommerce order status to use to initiate capturing the order in Qliros system. Please note that you also have the possibility to disable order management on specific orders.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'wc-completed',
 				'desc_tip'    => true,
-				'class'       => 'krokedil_conditional_setting krokedil_conditional_enable_om',
 			),
 			'cancel_status'                              => array(
 				'title'       => __( 'Cancel order status', 'qliro-one-for-woocommerce' ),
@@ -269,7 +259,6 @@ class Qliro_One_Fields {
 				'description' => __( 'Select what WooCommerce order status to use to initiate canceling the order in Qliros system. Please note that you also have the possibility to disable order management on specific orders.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'wc-cancelled',
 				'desc_tip'    => true,
-				'class'       => 'krokedil_conditional_setting krokedil_conditional_enable_om',
 			),
 			'om_advanced_settings'                       => array(
 				'title'       => __( 'Advanced pending status configuration', 'qliro-one-for-woocommerce' ),
@@ -278,7 +267,7 @@ class Qliro_One_Fields {
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => false,
-				'class'       => 'krokedil_conditional_toggler krokedil_toggler_om_advanced_settings krokedil_conditional_setting krokedil_conditional_enable_om',
+				'class'       => 'krokedil_conditional_toggler krokedil_toggler_om_advanced_settings',
 			),
 			'capture_pending_status'                     => array(
 				'title'       => __( 'Pending capture order status', 'qliro-one-for-woocommerce' ),
