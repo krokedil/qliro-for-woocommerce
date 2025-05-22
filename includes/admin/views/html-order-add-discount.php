@@ -19,7 +19,7 @@ $total_amount = wc_format_decimal( $order->get_total() );
 			<section class="discount-id">
 				<div class="row">
 					<div class="toggle-box">
-						<input type="text" placeholder="Rabatt-ID" />
+						<input type="text" name="qliro-discount-id" placeholder="Rabatt-ID" required />
 						<div class="tooltip-container">
 							<span class="symbol tooltip">i</span>
 							<p class="tooltip-hover-text">Innehåller artikelnummer och rabattnummer. Ex. artikelnummer_rabatt01</p>
@@ -34,7 +34,8 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				</div>
 				<div class="row">
 					<div class="toggle-box">
-						<input type="number" name="qliro-discount-amount" step="any" min="0.00" max="<?php echo $total_amount; ?>">
+						<input type="number" name="qliro-discount-amount" step="any" min="0.00"
+							max="<?php echo $total_amount; ?>">
 						<span class="symbol">SEK</span>
 					</div>
 					<p>=</p>
@@ -44,7 +45,8 @@ $total_amount = wc_format_decimal( $order->get_total() );
 					</div>
 				</div>
 				<div class="row">
-					<p class="explanation">Procentsatsen är baserad på totalbelopp</p>
+					<p id="qliro-discount-notice" class="explanation">Procentsatsen är baserad på totalbelopp</p>
+					<p id="qliro-discount-error" class="explanation error" style="display: none;">Beloppet får inte vara lika med eller överstiga totalbelopp.</p>
 				</div>
 			</section>
 			<hr>
@@ -52,7 +54,8 @@ $total_amount = wc_format_decimal( $order->get_total() );
 				<div class="row">
 					<p class="bold">Moms</p>
 					<div class="toggle-box">
-						<input type="number" name="qliro-discount-vat" placeholder="25" step="any" min="0.00" max="100.00">
+						<input type="number" name="qliro-discount-vat" placeholder="25" step="any" min="0.00"
+							max="100.00">
 						<span class="symbol">%</span>
 					</div>
 				</div>
@@ -66,7 +69,8 @@ $total_amount = wc_format_decimal( $order->get_total() );
 					</div>
 					<div class="row">
 						<p class="violet">Rabatt</p>
-						<p class="violet price"><span class="discount-percentage">0</span>% (<span class="discount-amount">0.00</span> SEK)</p>
+						<p class="violet price"><span class="discount-percentage">0</span>% (<span
+								class="discount-amount">0.00</span> SEK)</p>
 					</div>
 
 				</div>
@@ -83,9 +87,10 @@ $total_amount = wc_format_decimal( $order->get_total() );
 			<footer>
 				<div class="row">
 					<button class="close">Tillbaka</button>
-					<button class="confirm" disabled type="submit" formaction="<?php echo $action_url; ?>">Bekräfta</button>
+					<button class="confirm" disabled type="submit"
+						formaction="<?php echo $action_url; ?>">Bekräfta</button>
 				</div>
 			</footer>
 		</div>
-</dialog>
+	</dialog>
 </div>

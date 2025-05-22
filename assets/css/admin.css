@@ -16,6 +16,7 @@
 	--white-smoke: #f9f9f9;
 	--mint-green: #94efd2;
 	--electric-violet: #7b31d9;
+	--poppy-red: #fe1b1b;
 }
 
 .qliro-one-overlay-backdrop {
@@ -77,6 +78,10 @@
 	.violet {
 		color: var(--electric-violet);
 	}
+	
+	.error {
+		color: var(--poppy-red);
+	}
 
 	h1 {
 		margin: 0.5em 0;
@@ -113,6 +118,7 @@
 
 		p.explanation {
 			text-align: center;
+			flex: 1 0 52%;
 		}
 
 		>p:first-child {
