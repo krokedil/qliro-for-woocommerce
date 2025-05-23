@@ -205,7 +205,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( empty( $action ) || empty( $order_id ) || empty( $discount_amount ) || empty( $discount_id ) || empty( $transaction_id ) ) {
+		if ( empty( $action ) || empty( $order_id ) || empty( $discount_amount ) || empty( $discount_id ) ) {
 			return;
 		}
 
@@ -265,7 +265,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order->add_item( $fee );
 			$order->save();
 		} finally {
-			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
 			exit;
 		}
 	}
