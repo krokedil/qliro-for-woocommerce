@@ -77,7 +77,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
-		self::output_order_discount_button( $order, $qliro_order, $last_transaction );
+		self::output_order_discount_button( $order, $qliro_order );
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
 
@@ -202,11 +202,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$qliro_order_id  = filter_input( INPUT_GET, 'qliro_order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( empty( $action ) || empty( $order_id ) || empty( $discount_amount ) || empty( $discount_id ) ) {
+		if ( empty( $action ) || empty( $order_id ) || empty( $discount_amount ) || empty( $discount_id ) || empty( $transaction_id ) ) {
 			return;
 		}
 
@@ -222,6 +221,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 		if ( ! $order || $this->payment_method_id !== $order->get_payment_method() ) {
 			return;
 		}
+
+		// Description length allowed by Qliro.
+		$discount_id = substr( $discount_id, 0, 200 );
 
 		try {
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
@@ -243,6 +245,22 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$fee->set_total_tax( 0 );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
+
+			$items = array(
+				array(
+					'MerchantReference'  => $discount_id,
+					'Type'               => 'Discount',
+					'Quantity'           => $fee->get_quantity(),
+					'PricePerItemIncVat' => $fee->get_total(),
+					'Description'        => 'Rabatt',
+					'PricePerItemExVat'  => $fee->get_total(),
+				),
+			);
+
+			$response = QOC_WC()->api->add_items_qliro_order( $order_id, $items );
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
+			}
 
 			$order->add_item( $fee );
 			$order->save();
@@ -391,9 +409,15 @@ class Qliro_One_Metabox extends OrderMetabox {
 		);
 	}
 
-	private static function output_order_discount_button( $order, $qliro_order, $last_transaction ) {
-		$transaction_id = $last_transaction['PaymentTransactionId'] ?? '';
-
+	/**
+	 * Output the "Add discount" action button.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param array    $qliro_order The Qliro order.
+	 *
+	 * @return void
+	 */
+	private static function output_order_discount_button( $order, $qliro_order ) {
 		// Referenced within the template.
 		$action_url = wp_nonce_url(
 			add_query_arg(
@@ -401,7 +425,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'action'          => 'qliro_add_order_discount',
 					'order_id'        => $order->get_id(),
 					'qliro_order_id'  => $qliro_order['OrderId'] ?? '',
-					'transaction_id'  => $transaction_id,
 					'discount_amount' => 0,
 					'discount_id'     => '',
 				),
@@ -410,8 +433,11 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_add_order_discount'
 		);
 
+		// Since a discount can only be added if the order is captured, we need to check if the order is captured.
+		$is_enabled = empty( $order->get_meta( '_qliro_order_captured' ) ) ? 'disabled' : '';
+
 		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
-		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add discount</a>";
+		echo "<a id='qliro_add_order_discount' {$is_enabled} class='{$classes}'>Add discount</a>";
 
 		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
