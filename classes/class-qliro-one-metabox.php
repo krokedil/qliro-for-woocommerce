@@ -265,6 +265,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order->add_item( $fee );
 			$order->save();
 		} finally {
+			wp_safe_redirect( $order->get_edit_order_url() );
 			exit;
 		}
 	}
@@ -432,11 +433,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_add_order_discount'
 		);
 
-		// Since a discount can only be added if the order is captured, we need to check if the order is captured.
-		$is_enabled = empty( $order->get_meta( '_qliro_order_captured' ) ) ? 'disabled' : '';
-
 		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
-		echo "<a id='qliro_add_order_discount' {$is_enabled} class='{$classes}'>Add discount</a>";
+		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add discount</a>";
 
 		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}

@@ -259,6 +259,9 @@ jQuery(function ($) {
 				const discountAmountEl = $('[name="qliro-discount-amount"]');
 				const discountPercentageEl = $('[name="qliro-discount-percentage"]');
 
+				// Whether the manager can add a discount.
+				const actionAllowed = discount.attr('data-allowed') === 'true';
+
 				const updateURL = () => {
 					const actionURL = $('#qliro-discount-modal .confirm').attr('formaction')
 					const url = new URL(actionURL, location.origin);
@@ -280,11 +283,17 @@ jQuery(function ($) {
 					$('.summary .discount-percentage').text(-1 * percentage.toFixed(2));
 					$('.summary .discount-amount').text(amount.toFixed(2));
 
-					const hasDiscountAmount = amount > 0
-					const hasDiscountId = discountIdEl.val().length > 0;
-					const isDuplicateId = fees.includes(discountIdEl.val());
 					const isFullyDiscounted = amount >= totalAmount;
-					$('#qliro-discount-modal button.confirm').attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
+
+					// Only enable the submit button if the action is allowed.
+					if (actionAllowed) {
+						const hasDiscountAmount = amount > 0
+						const hasDiscountId = discountIdEl.val().length > 0;
+						const isDuplicateId = fees.includes(discountIdEl.val());
+						$('#qliro-discount-modal button.confirm').attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
+					} else {
+						$('#qliro-discount-modal button.confirm').attr('disabled', true);
+					}
 
 					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
 					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);

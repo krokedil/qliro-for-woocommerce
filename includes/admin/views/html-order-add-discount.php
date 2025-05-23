@@ -8,6 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+
+// Since a discount can only be added if the order is captured, we need to check if the order is captured. Referenced within the template.
+$is_allowed   = empty( $order->get_meta( '_qliro_order_captured' ) ) ? 'false' : 'true';
 $total_amount = wc_format_decimal( $order->get_total() );
 
 $fees = array();
@@ -23,7 +26,7 @@ $fees = wp_json_encode( $fees );
 <div class="qliro-one-overlay-backdrop">
 	<dialog class="qliro-one-overlay" id="qliro-discount-modal" role="dialog">
 		<span class="close-button close">&#x2715;</span>
-		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>" data-fees='<?php echo $fees; ?>'>
+		<div id="qliro-discount" data-total-amount="<?php echo $total_amount; ?>" data-fees='<?php echo $fees; ?>' data-allowed='<?php echo $is_allowed; ?>'>
 			<h1>Lägg till rabatt</h1>
 			<section class="discount-id">
 				<div class="row">
