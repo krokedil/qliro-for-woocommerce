@@ -63,7 +63,7 @@ class Qliro_One_Fields {
 				'class' => 'krokedil_settings_title',
 			),
 			'api_key'                                    => array(
-				'title'             => __( 'Production Qliro Merchant API Key', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Production Qliro merchant API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
 				'description'       => __( 'Please contact your Onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
@@ -73,7 +73,7 @@ class Qliro_One_Fields {
 				),
 			),
 			'api_secret'                                 => array(
-				'title'             => __( 'Production Qliro Merchant API Secret', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Production Qliro merchant API secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
 				'description'       => __( 'Please contact your Onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
@@ -83,7 +83,7 @@ class Qliro_One_Fields {
 				),
 			),
 			'test_api_key'                               => array(
-				'title'             => __( 'Test Qliro Merchant API key', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Test Qliro merchant API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
 				'description'       => __( 'Used when test mode is enabled below. More information about how to test before becoming a Qliro customer <a target="_blank" href="https://krokedil.com/product/qliro-for-woocommerce/">here</a>.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
@@ -93,7 +93,7 @@ class Qliro_One_Fields {
 				),
 			),
 			'test_api_secret'                            => array(
-				'title'             => __( 'Test Qliro Merchant API Secret', 'qliro-one-for-woocommerce' ),
+				'title'             => __( 'Test Qliro merchant API secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
 				'description'       => __( 'Used when test mode is enabled below. More information about how to test before becoming a Qliro customer <a target="_blank" href="https://krokedil.com/product/qliro-for-woocommerce/">here</a>.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
@@ -241,7 +241,7 @@ class Qliro_One_Fields {
 			// Order Management.
 			'order_management'                           => array(
 				'id'          => 'order_management',
-				'title'       => 'Order Management',
+				'title'       => 'Order management',
 				'type'        => 'krokedil_section_start',
 				'description' => __( 'Manage settings related to an order after it has been created, such as when capture and cancelation with Qliro should be initiated etc.', 'qliro-one-for-woocommerce' ),
 			),
@@ -312,7 +312,7 @@ class Qliro_One_Fields {
 			// Checkout customization.
 			'checkout_customization'                     => array(
 				'id'          => 'checkout_customization',
-				'title'       => 'Checkout Customization',
+				'title'       => 'Checkout customization',
 				'type'        => 'krokedil_section_start',
 				'description' => __( 'Customize your checkout related to page layout, other payment method button text, colors and corner radius to make the look and feel of the checkout fit into your website in the best possible way.', 'qliro-one-for-woocommerce' ),
 			),
