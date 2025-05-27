@@ -182,7 +182,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 	}
 
 	/**
-	 * Get the integrity url if set, else return the terms url.
+	 * Get the privacy policy url if set.
 	 *
 	 * @return string
 	 */
