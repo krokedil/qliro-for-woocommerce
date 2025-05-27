@@ -187,6 +187,12 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 	 * @return string
 	 */
 	protected function get_integrity_url() {
-		return apply_filters( 'qliro_one_wc_integrity_url', get_permalink( wc_get_page_id( 'terms' ) ) );
+		$wc_privacy_policy_page_id = wc_privacy_policy_page_id();
+
+		if ( 0 === $wc_privacy_policy_page_id ) {
+			return null;
+		}
+
+		return get_permalink( $wc_privacy_policy_page_id ) ?: null;
 	}
 }
