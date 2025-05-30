@@ -117,11 +117,17 @@ class Qliro_One_Helper_Order {
 		$return_lines = array();
 
 		foreach ( $order_lines as $order_line ) {
+			// Discount must be negative.
+			$price = $order_line['PricePerItemIncVat'];
+			// A negative fee is a discount. On refund, Woo returns the fee as a positive value,
+			// we must inverse the price as Qliro expects price <= 0 for discounts.
+			$price = 'Discount' === $order_line['Type'] ? -1 * $price : abs( $price );
+
 			$return_lines[] = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
 				'Quantity'           => abs( $order_line['Quantity'] ),
-				'PricePerItemIncVat' => wc_format_decimal( abs( $order_line['PricePerItemIncVat'] ), min( wc_get_price_decimals(), 2 ) ),
+				'PricePerItemIncVat' => wc_format_decimal( $price, min( wc_get_price_decimals(), 2 ) ),
 			);
 		}
 
@@ -198,11 +204,17 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_order_item_fee( $order_item, $order ) {
+		$type = $order_item->get_total() < 0 ? 'Discount' : 'Fee';
+		if ( ! empty( $order_item->get_meta( '_refunded_item_id' ) ) ) {
+			$parent_order_item = new WC_Order_Item_Fee( $order_item->get_meta( '_refunded_item_id' ) );
+			$type              = $parent_order_item->get_total() < 0 ? 'Discount' : 'Fee';
+		}
+
 		return array(
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
-			'Type'               => 'Fee',
+			'Type'               => $type,
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
 		);
@@ -227,6 +239,11 @@ class Qliro_One_Helper_Order {
 			$order              = wc_get_order( $order_item->get_order_id() );
 			$shipping_reference = ! empty( $order ) ? $order->get_meta( '_qliro_one_shipping_reference' ) : '';
 
+			if ( empty( $shipping_reference ) && $order->get_parent_id() ) {
+				$parent_order       = wc_get_order( $order->get_parent_id() );
+				$shipping_reference = $parent_order ? $parent_order->get_meta( '_qliro_one_shipping_reference' ) : '';
+			}
+
 			// If the shipping method used is the qliro_shipping method, we should use the order line meta.
 			if ( 'qliro_shipping' === $order_item->get_method_id() ) {
 				// If this is a refund order line, we need to get the parent to ensure we get the correct shipping reference.
@@ -239,6 +256,8 @@ class Qliro_One_Helper_Order {
 
 			// If the shipping reference is an empty value, use the method id and instance id.
 			$reference = empty( $shipping_reference ) ? $order_item->get_method_id() . ':' . $order_item->get_instance_id() : $shipping_reference;
+		} elseif ( 'fee' === $order_item->get_type() ) {
+			$reference = qliro_one_format_fee_reference( $order_item->get_name() );
 		} else {
 			$reference = $order_item->get_id();
 		}
@@ -309,5 +328,97 @@ class Qliro_One_Helper_Order {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Get the return fees.
+	 *
+	 * @param array    $return_fees The array of return fees.
+	 * @param array    $order_items The order items to send to Qliro for refund.
+	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 *
+	 * @return array
+	 */
+	public function get_return_fees( $return_fees, &$order_items, $order, $calc_return_fee ) {
+		$fees = array();
+		if ( ! empty( $return_fees ) ) {
+			$fees = array_map( function( $return_fee ) {
+				if ( $return_fee['amount'] > 0 ) {
+					return array(
+						'MerchantReference'   => 'return-fee',
+						'PricePerItemExVat'   => $return_fee['amount'],
+						'PricePerItemIncVat'  => $return_fee['amount'] + $return_fee['tax_amount'],
+					);
+				}
+				return null; // Exclude fees with a zero or negative amount.
+			}, $return_fees );
+
+			// Remove null values from the array.
+			$fees = array_filter( $fees );
+		}
+
+		if( $calc_return_fee ) {
+			$calculated_return_fee = $this->calculate_return_fee( $order_items, $order );
+			if ( ! empty( $calculated_return_fee ) && $calculated_return_fee['PricePerItemIncVat'] > 0 ) {
+				$fees[] = $calculated_return_fee;
+			}
+		}
+
+		return $fees;
+	}
+
+	/**
+	 * Calculate the return fee.
+	 *
+	 * @param array    $items The items included in the refund.
+	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 *
+	 * @return array
+	 */
+	public function calculate_return_fee( &$items, $order ) {
+		$fee = array(
+			'MerchantReference'   => 'return-fee-calculated',
+			'PricePerItemIncVat' => 0,
+			'PricePerItemExVat' => 0,
+		);
+
+		$original_order_items = $order->get_items( array( 'line_item', 'fee', 'shipping' ) );
+		// Loop each item that we are sending to Qliro, and compare the quantity, price and tax amount to the original order. If a difference is found, we should add the difference as a return fee.
+		foreach ( $items as &$item ) {
+			$reference = $item['MerchantReference'] ?? null;
+			$original_order_item = array_filter( $original_order_items, function( $original_item ) use ( $reference, $order ) {
+				switch( $original_item->get_type() ) {
+					case 'line_item':
+						/** @var WC_Order_Item_Product $original_item */
+						return $original_item->get_product()->get_sku() === $reference || $original_item->get_product_id() === $reference || $original_item->get_variation_id() === $reference;
+					case 'shipping':
+						/** @var WC_Order_Item_Shipping $original_item */
+						return $original_item->get_method_id() === $reference ||  $original_item->get_meta('qliro_shipping_method') === $reference || $order->get_meta( '_qliro_one_shipping_reference' ) === $reference;
+					case 'fee':
+						/** @var WC_Order_Item_Fee $original_item */
+						return qliro_one_format_fee_reference( $original_item->get_name() ) === $reference;
+					default:
+						return false;
+				}
+			} );
+
+			if ( empty( $original_order_item ) ) {
+				continue;
+			}
+
+			$original_order_item         = reset( $original_order_item );
+			$original_unit_price_inc_vat = Qliro_One_Helper_Order::get_unit_price_inc_vat( $original_order_item );
+			$quantity                    = $item['Quantity'] ?? 1;
+
+			$inc_vat_diff = $original_unit_price_inc_vat - $item['PricePerItemIncVat'];
+
+			$fee['PricePerItemIncVat'] += round( $inc_vat_diff * $quantity, 2 );
+			$fee['PricePerItemExVat']  += round( $inc_vat_diff * $quantity, 2 );
+
+			// Set the price per item to the original price to ensure we send the correct value to Qliro.
+			$item['PricePerItemIncVat'] = $original_unit_price_inc_vat;
+		}
+
+		return $fee;
 	}
 }

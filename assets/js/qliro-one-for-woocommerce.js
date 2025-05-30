@@ -34,6 +34,10 @@ jQuery(function ($) {
 			}
 			qliroOneForWooCommerce.bodyEl.on('update_checkout', qliroOneForWooCommerce.updateCheckout);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.updatedCheckout);
+
+			// This refers to the billing country field that we manually inject in the template class.
+			$('#billing_country').on('change', () => $('body').trigger('update_checkout'));
+
 		},
 		renderIframe: function () {
 			window.q1Ready = function (q1) {
@@ -61,7 +65,7 @@ jQuery(function ($) {
 			$('body').trigger('update_checkout');
 		},
 		/**
-		 * When the customer changes from Qliro One to other payment methods.
+		 * When the customer changes from Qliro to other payment methods.
 		 * @param {Event} e
 		 */
 		changeFromQliroOne: function (e) {
@@ -90,7 +94,7 @@ jQuery(function ($) {
 			});
 		},
 		/**
-		 * When the customer changes to Qliro One from other payment methods.
+		 * When the customer changes to Qliro from other payment methods.
 		 */
 		maybeChangeToQliroOne: function () {
 			if (!qliroOneForWooCommerce.preventPaymentMethodChange) {
@@ -148,7 +152,7 @@ jQuery(function ($) {
 			}
 		},
 		/*
-		 * Check if Qliro One is the selected gateway.
+		 * Check if Qliro is the selected gateway.
 		 */
 		checkIfQliroOneSelected: function () {
 			if (qliroOneForWooCommerce.paymentMethodEl.length > 0) {
@@ -290,6 +294,11 @@ jQuery(function ($) {
 					// If the response was not successful, we should fail the order.
 					if (data.responseJSON.success !== true) {
 						qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON.data, callback);
+
+						// If we have a redirect url, we should redirect the user to that url.
+						if(data.responseJSON.data.redirect) {
+							window.location.href = data.responseJSON.data.redirect;
+						}
 						return;
 					}
 
@@ -391,7 +400,7 @@ jQuery(function ($) {
 			$.ajax({
 				type: 'POST',
 				url: qliroOneParams.submitOrder,
-				data: $('form.checkout').serialize(),
+				data: $('form.checkout').serialize() + '&' + $('#billing_country').serialize(),
 				dataType: 'json',
 				success: function (data) {
 					console.log(data);

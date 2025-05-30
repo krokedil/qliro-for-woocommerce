@@ -1,12 +1,12 @@
 <?php
 /**
- * Handles the callbacks for the Qliro One integration.
+ * Handles the callbacks for the Qliro integration.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
 
 /**
- * Class for handling the callbacks for the Qliro One integration
+ * Class for handling the callbacks for the Qliro integration
  */
 class Qliro_One_Callbacks {
 	/**
@@ -93,7 +93,7 @@ class Qliro_One_Callbacks {
 					as_schedule_single_action( time() + 30, 'qliro_onhold_checkout', array( $confirmation_id ) );
 					break;
 				default:
-					Qliro_One_Logger::log( "Unknown Qliro One checkout callback status: {$data['Status']}" );
+					Qliro_One_Logger::log( "Unknown Qliro checkout callback status: {$data['Status']}" );
 					break;
 			}
 		}
@@ -222,7 +222,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'failed', __( 'The Qliro one order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
 		$order->save();
 	}
 

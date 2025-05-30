@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles metaboxes for Qliro One.
+ * Handles metaboxes for Qliro.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
@@ -170,7 +170,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 					$response->get_error_message()
 				)
 			);
-			return;
+			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+			exit;
 		}
 
 		// Get the new payment transaction id from the response, and update the order meta with it.
@@ -188,7 +189,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	}
 
 	/**
-	 * Get the last transaction from a Qliro One order.
+	 * Get the last transaction from a Qliro order.
 	 *
 	 * @param array $transactions
 	 *
@@ -225,7 +226,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	}
 
 	/**
-	 * Get the status of a Qliro One order from the payment transaction.
+	 * Get the status of a Qliro order from the payment transaction.
 	 *
 	 * @param array $transaction
 	 *
@@ -267,7 +268,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 		$subtype        = $order->get_meta( 'qliro_one_payment_method_subtype_code' );
 
-		// If the payment method starts with QLIRO_, it is a Qliro One payment method.
+		// If the payment method starts with QLIRO_, it is a Qliro payment method.
 		if ( strpos( $payment_method, 'QLIRO_' ) === 0 ) {
 			$payment_method = str_replace( 'QLIRO_', '', $payment_method );
 			$subtype        = __( 'Qliro payment method', 'qliro-one' );
@@ -288,13 +289,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
 		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
 		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
-		$payment_method          = $order->get_meta( 'qliro_one_payment_method_name' );
 		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
-
-		// Only output the sync button if the order is a Qliro payment method order. Cant update card orders for example.
-		if ( strpos( $payment_method, 'QLIRO_' ) !== 0 && strpos( $payment_method, 'TRUSTLY_' ) !== 0 ) {
-			return;
-		}
 
 		// If the order is captured or cancelled, do not output the sync button.
 		if ( $is_captured || $is_cancelled ) {

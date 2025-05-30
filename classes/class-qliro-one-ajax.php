@@ -53,7 +53,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$available_gateways  = WC()->payment_gateways()->get_available_payment_gateways();
 		$switch_to_qliro_one = isset( $_POST['qliro_one'] ) ? sanitize_text_field( wp_unslash( $_POST['qliro_one'] ) ) : '';
 		if ( 'false' === $switch_to_qliro_one ) {
-			// Set chosen payment method to first gateway that is not Qliro One Checkout for WooCommerce.
+			// Set chosen payment method to first gateway that is not Qliro Checkout for WooCommerce.
 			$first_gateway = reset( $available_gateways );
 			if ( 'qliro_one' !== $first_gateway->id ) {
 				WC()->session->set( 'chosen_payment_method', $first_gateway->id );
@@ -77,7 +77,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 
 	/**
-	 * Gets the Qliro One order.
+	 * Gets the Qliro order.
 	 */
 	public static function qliro_one_get_order() {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
@@ -90,11 +90,22 @@ class Qliro_One_Ajax extends WC_AJAX {
 			wp_send_json_error( $qliro_one_order->get_error_message() );
 		}
 
+		if ( qliro_one_is_completed( $qliro_one_order ) ) {
+			Qliro_One_Logger::log( "[AJAX]: The Qliro order (id: $order_id) is already completed, but the customer is still on checkout page. Redirecting to thankyou page." );
+			$redirect_url = qliro_one_get_thankyou_page_redirect_url();
+
+			wp_send_json_error(
+				array(
+					'redirect' => $redirect_url,
+				)
+			);
+		}
+
 		wp_send_json_success(
 			array(
-				'billingAddress'  => $qliro_one_order['BillingAddress'],
-				'shippingAddress' => $qliro_one_order['ShippingAddress'],
-				'customer'        => $qliro_one_order['Customer'],
+				'billingAddress'  => $qliro_one_order['BillingAddress'] ?? array(),
+				'shippingAddress' => $qliro_one_order['ShippingAddress'] ?? array(),
+				'customer'        => $qliro_one_order['Customer'] ?? array(),
 			)
 		);
 	}
@@ -105,13 +116,20 @@ class Qliro_One_Ajax extends WC_AJAX {
 	 * @return void
 	 */
 	public static function qliro_one_wc_log_js() {
-		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_log_js' ) ) {
-			wp_send_json_error( 'bad_nonce' );
-		}
-		$posted_message = isset( $_POST['message'] ) ? sanitize_text_field( wp_unslash( $_POST['message'] ) ) : '';
+		check_ajax_referer( 'qliro_one_wc_log_js', 'nonce' );
 		$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
-		$message        = "Frontend JS $qliro_order_id: $posted_message";
+
+		// Get the content size of the request.
+		$post_size = (int) $_SERVER['CONTENT_LENGTH'] ?? 0;
+
+		// If the post data is too long, log an error message and return.
+		if ( $post_size > 1024 ) {
+			Qliro_One_Logger::log( "Frontend JS $qliro_order_id: message too long and can't be logged." );
+			wp_send_json_success(); // Return success to not stop anything in the frontend if this happens.
+		}
+
+		$posted_message = isset( $_POST['message'] ) ? sanitize_text_field( wp_unslash( $_POST['message'] ) ) : '';
+		$message        = "Frontend JS $posted_message";
 		Qliro_One_Logger::log( $message );
 		wp_send_json_success();
 	}
@@ -144,7 +162,6 @@ class Qliro_One_Ajax extends WC_AJAX {
 				// translators: %s is the error message from Qliro.
 				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be partially captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
 				wp_send_json_error( $error_message );
-				wp_die();
 			}
 
 			$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
@@ -165,10 +182,8 @@ class Qliro_One_Ajax extends WC_AJAX {
 			$order->add_order_note( $order_note );
 
 			wp_send_json_success( $order_id );
-			wp_die();
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage() );
-			wp_die();
 		}
 	}
 

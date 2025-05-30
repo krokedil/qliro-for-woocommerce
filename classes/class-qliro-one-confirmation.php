@@ -1,6 +1,6 @@
 <?php
 /**
- * Confirmation class file for the Qliro One gateway
+ * Confirmation class file for the Qliro gateway
  *
  * @package Thing
  */

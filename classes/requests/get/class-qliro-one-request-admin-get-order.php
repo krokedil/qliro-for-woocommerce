@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Get admin Qliro One order.
+ * Get admin Qliro order.
  */
 class Qliro_One_Request_Admin_Get_Order extends Qliro_One_Request_Get {
 
@@ -30,5 +30,4 @@ class Qliro_One_Request_Admin_Get_Order extends Qliro_One_Request_Get {
 	protected function get_request_url() {
 		return $this->get_api_url_base() . 'checkout/adminapi/v2/orders/' . $this->qliro_order_id;
 	}
-
 }
