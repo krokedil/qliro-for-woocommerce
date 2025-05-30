@@ -65,7 +65,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Feature       - Added support for subscriptions.
 * Feature       - Added support for pay for order.
 * Feature       - Added support for gift cards.
-* Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
+* Feature       - Added 'qoc_order_confirmed' to enable newsletter support, together with other custom actions when a Qliro order is confirmed.
 * Tweak         - Allow order status 'Completed' if order is captured through portal.
 * Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
 * Fix           - Fixed PHP 8.3.0 array_sum warnings.
