@@ -28,7 +28,7 @@ $fees = wp_json_encode( $fees );
 			<section class="discount-id">
 				<div class="row">
 					<div class="toggle-box">
-						<input type="text" name="qliro-discount-id" placeholder="Rabatt-ID" required maxlength="200" />
+						<input type="text" name="qliro-discount-id" placeholder="Rabatt-ID" maxlength="200" />
 						<div class="tooltip-container">
 							<span class="symbol tooltip">i</span>
 							<p class="tooltip-hover-text">Innehåller artikelnummer och rabattnummer. Ex. artikelnummer_rabatt01</p>
