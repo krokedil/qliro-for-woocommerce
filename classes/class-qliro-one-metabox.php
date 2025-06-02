@@ -257,13 +257,18 @@ class Qliro_One_Metabox extends OrderMetabox {
 				),
 			);
 
-			$response = QOC_WC()->api->add_items_qliro_order( $order_id, $items );
+			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
+			$is_captured = qoc_is_fully_captured( $order );
+			$response    = $is_captured ? QOC_WC()->api->add_items_qliro_order( $order_id, $items ) : QOC_WC()->api->update_items_qliro_order( $order_id, $items );
 			if ( is_wp_error( $response ) ) {
 				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
 			}
 
 			$order->add_item( $fee );
+			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
 			$order->save();
+		} catch ( Exception $e ) {
+			$order->add_order_note( $e->getMessage() );
 		} finally {
 			wp_safe_redirect( $order->get_edit_order_url() );
 			exit;
