@@ -176,7 +176,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -187,15 +186,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			// Init the gateway itself.
 			$this->init_gateways();
-
-			$this->krokedil = new KrokedilWooCommerce(
-				array(
-					'slug'         => 'qoc',
-					'price_format' => 'major',
-				)
-			);
-
-			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 		}
 
 		/**
@@ -305,12 +295,21 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->api_registry          = new Qliro_One_API_Registry();
 			$this->subscriptions         = new Qliro_One_Subscriptions();
 			$this->pickup_points_service = new PickupPoints();
+			$this->krokedil = new KrokedilWooCommerce(
+				array(
+					'slug'         => 'qoc',
+					'price_format' => 'major',
+				)
+			);
+
+			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 			add_filter( 'woocommerce_shipping_methods', Qliro_One_Shipping_Method::class . '::register' );
+			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
