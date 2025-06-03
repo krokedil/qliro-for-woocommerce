@@ -76,6 +76,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'process_admin_options',
 			)
 		);
+		add_action( 'woocommerce_update_options_payment_gateways_qliro_one', array( $this, 'update_conditional_settings' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
 		add_filter( 'woocommerce_order_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999, 3 );
 	}
@@ -384,5 +385,20 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		return json_decode( $args, true );
+	}
+
+	public function update_conditional_settings() {
+		$banner_widget_cart_placement_location = isset( $_POST['woocommerce_qliro_one_banner_widget_cart_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_banner_widget_cart_placement_location'] ) : '';
+		$banner_widget_placement_location      = isset( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) : '';
+
+		$banner_widget_enabled = 'none' === $banner_widget_cart_placement_location && 'none' === $banner_widget_placement_location ? 'no' : 'yes';
+		error_log( 'Banner widget enabled: ' . $banner_widget_enabled );
+		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_widget_enabled );
+
+		$payment_widget_placement_location = isset( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) : '';
+
+		$payment_widget_enabled = 'none' === $payment_widget_placement_location ? 'no' : 'yes';
+		error_log( 'Payment widget enabled: ' . $payment_widget_enabled );
+		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_widget_enabled );
 	}
 }

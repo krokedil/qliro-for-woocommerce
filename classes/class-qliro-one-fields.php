@@ -140,7 +140,7 @@ class Qliro_One_Fields {
 				'description' => __( 'Integrating with shipping service like nShift, Ingrid or Fraktjakt? Want to customize how WooCommerce shipping methods looks within the Qliro iframe? Read more about shipping related compatability and configurations <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/shipping-settings/">here</a>.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => false,
-				'class'       => 'krokedil_conditional_toggler krokedil_toggler_iframe_shipping',
+				'class'       => 'krokedil_conditional_toggler krokedil_toggler_iframe_shipping toggler_option_wc_shipping',
 				'options'     => array(
 					'no'                  => __( 'No', 'qliro-one-for-woocommerce' ),
 					'wc_shipping'         => __( 'WooCommerce shipping methods', 'qliro-one-for-woocommerce' ),
