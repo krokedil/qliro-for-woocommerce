@@ -435,7 +435,7 @@ class Qliro_One_Fields {
 					'45'   => __( 'Between Product meta and Product sharing buttons', 'qliro-one-for-woocommerce' ),
 					'55'   => __( 'After Product sharing-buttons', 'qliro-one-for-woocommerce' ),
 				),
-				'default'     => '0',
+				'default'     => 'none',
 				'desc'        => __( 'Select where to display the widget in your product pages.', 'qliro-one-for-woocommerce' ),
 			),
 			'banner_widget_cart_placement_location'      => array(

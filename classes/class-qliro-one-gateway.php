@@ -388,15 +388,45 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function update_conditional_settings() {
-		$banner_widget_cart_placement_location = isset( $_POST['woocommerce_qliro_one_banner_widget_cart_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_banner_widget_cart_placement_location'] ) : '';
-		$banner_widget_placement_location      = isset( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) : '';
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
 
-		$banner_widget_enabled = 'none' === $banner_widget_cart_placement_location && 'none' === $banner_widget_placement_location ? 'no' : 'yes';
-		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_widget_enabled );
+		// If all locations are set to none, disable the banner widget.
+		$banner_cart_location = sanitize_text_field( $settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals' );
+		$banner_location      = sanitize_text_field( $settings['banner_widget_placement_location'] ?? 'none' );
+		$banner_enabled       = ( $banner_cart_location === 'none' && $banner_location === 'none' ) ? 'no' : 'yes';
+		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_enabled );
 
-		$payment_widget_placement_location = isset( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) : '';
+		// If the payment widget location is set to none, disable the payment widget.
+		$payment_location = sanitize_text_field( $settings['payment_widget_placement_location'] ?? '15' );
+		$payment_enabled  = ( $payment_location === 'none' ) ? 'no' : 'yes';
+		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_enabled );
 
-		$payment_widget_enabled = 'none' === $payment_widget_placement_location ? 'no' : 'yes';
-		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_widget_enabled );
+		$om_advanced_settings = sanitize_text_field( $settings['om_advanced_settings'] ?? 'no' );
+
+		// If the advanced order management setting is disabled, reset the custom order statuses to default.
+		if ( 'no' === $om_advanced_settings ) {
+			$this->reset_om_statuses( $settings );
+		}
+
+		update_option( 'woocommerce_qliro_one_settings', $settings );
+	}
+
+	/**
+	 * Reset the order management statuses.
+	 *
+	 * @param array $settings The Qliro One settings array.
+	 * @return void
+	 */
+	private function reset_om_statuses( &$settings = array() ) {
+		$order_status_settings = array(
+			'capture_pending_status',
+			'capture_ok_status',
+			'cancel_pending_status',
+			'cancel_ok_status',
+		);
+
+		foreach ( $order_status_settings as $order_status_setting ) {
+			$settings[ $order_status_setting ] = 'none';
+		}
 	}
 }
