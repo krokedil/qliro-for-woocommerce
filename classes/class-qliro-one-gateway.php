@@ -392,13 +392,11 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$banner_widget_placement_location      = isset( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_banner_widget_placement_location'] ) : '';
 
 		$banner_widget_enabled = 'none' === $banner_widget_cart_placement_location && 'none' === $banner_widget_placement_location ? 'no' : 'yes';
-		error_log( 'Banner widget enabled: ' . $banner_widget_enabled );
 		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_widget_enabled );
 
 		$payment_widget_placement_location = isset( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) ? sanitize_text_field( $_POST['woocommerce_qliro_one_payment_widget_placement_location'] ) : '';
 
 		$payment_widget_enabled = 'none' === $payment_widget_placement_location ? 'no' : 'yes';
-		error_log( 'Payment widget enabled: ' . $payment_widget_enabled );
 		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_widget_enabled );
 	}
 }
