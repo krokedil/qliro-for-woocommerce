@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/settings-page.git",
-                "reference": "1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a"
+                "reference": "5eb7e7dfcbf9056ac116f1177673c534a700fe1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/settings-page/zipball/1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a",
-                "reference": "1646dc6ab7a69d181e718d9bcd1d0967d5acaa2a",
+                "url": "https://api.github.com/repos/krokedil/settings-page/zipball/5eb7e7dfcbf9056ac116f1177673c534a700fe1d",
+                "reference": "5eb7e7dfcbf9056ac116f1177673c534a700fe1d",
                 "shasum": ""
             },
             "require-dev": {
@@ -99,7 +99,7 @@
                 "source": "https://github.com/krokedil/settings-page/tree/develop-settings-design",
                 "issues": "https://github.com/krokedil/settings-page/issues"
             },
-            "time": "2025-05-22T10:59:44+00:00"
+            "time": "2025-06-03T10:01:42+00:00"
         },
         {
             "name": "krokedil/shipping",
@@ -107,12 +107,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538"
+                "reference": "38bc3f737a4623b4ee7c5a45942984abf48748a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/f49d63a9a36055300d62fbc01f71bd52bceae538",
-                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/38bc3f737a4623b4ee7c5a45942984abf48748a8",
+                "reference": "38bc3f737a4623b4ee7c5a45942984abf48748a8",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +147,7 @@
             },
             "scripts": {
                 "phpunit": [
-                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php --coverage-html=coverage"
+                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php"
                 ],
                 "createdocs": [
                     "./vendor/bin/phpdoc-md"
@@ -158,20 +158,20 @@
                 "source": "https://github.com/krokedil/shipping/tree/develop",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-05-09T11:41:20+00:00"
+            "time": "2025-05-23T09:35:13+00:00"
         },
         {
             "name": "krokedil/woocommerce",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5"
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/d008878feeba072cb952d95cadd68ad93cbae727",
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727",
                 "shasum": ""
             },
             "require-dev": {
@@ -202,10 +202,10 @@
             ],
             "description": "A library package for Krokedils plugins that contains helper methods when working with WooCommerce.",
             "support": {
-                "source": "https://github.com/krokedil/woocommerce/tree/1.8.0",
+                "source": "https://github.com/krokedil/woocommerce/tree/1.8.1",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2025-02-05T14:02:57+00:00"
+            "time": "2025-06-03T09:31:00+00:00"
         },
         {
             "name": "psr/container",
