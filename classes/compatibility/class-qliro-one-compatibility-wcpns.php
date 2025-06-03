@@ -51,10 +51,9 @@ class Qliro_One_Compatibility_WCPNS {
 
 		foreach ( $rates as $rate ) {
 			$shipping_method = $this->wcpns_checkout::get_shipping_method_from_rate( $rate );
-			$service_code    = ! empty( $shipping_method ) ? $shipping_method->get_instance_option( 'postnord_service' ) : 'none';
 
-			// Make sure this is a PostNord service point shipping method.
-			if ( ( empty( $service_code ) || 'none' === $service_code ) ) {
+			// If the shipping method is empty or does not support PostNord service points, skip it.
+			if ( empty( $shipping_method ) || ! wc_string_to_bool( $shipping_method->get_instance_option( 'postnord_servicepoints' ) ) ) {
 				continue;
 			}
 
