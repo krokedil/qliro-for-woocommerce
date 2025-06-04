@@ -155,7 +155,7 @@
             "tested": "6.7.1"
       },
       "1.8.0": {
-            "description": "<ul><li>Feature - Added support for subscriptions</li><li>Feature - Added support for pay for order</li><li>Feature - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.</li><li>Tweak - Allow order status 'Completed' if order is captured through portal.</li><li>Tweak - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.</li><li>Fix - Fixed PHP 8.3.0 array_sum warnings.</li><li>Fix - Fixed missing address data from Qliro API during update.</li><li>Fix - Fixed issue with unsetting other shipping methods.</li></ul>",
+            "description": "<ul><li>Feature - Added support for gift cards.</li><li>Feature - Added support for subscriptions.</li><li>Feature - Added support for pay for order.</li><li>Added 'qoc_order_confirmed' to enable newsletter support, together with other custom actions when a Qliro order is confirmed.</li><li>Tweak - Allow order status 'Completed' if order is captured through portal.</li><li>Tweak - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.</li><li>Fix - Fixed PHP 8.3.0 array_sum warnings.</li><li>Fix - Fixed missing address data from Qliro API during update.</li><li>Fix - Fixed issue with unsetting other shipping methods.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.7.1"
       },
