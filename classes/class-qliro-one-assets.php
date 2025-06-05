@@ -152,8 +152,6 @@ class Qliro_One_Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_order_script( $hook ) {
-		self::enqueue_admin_style();
-
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
@@ -201,6 +199,8 @@ class Qliro_One_Assets {
 
 		// Enqueue the script.
 		wp_enqueue_script( 'qoc_admin' );
+
+		self::enqueue_admin_style();
 	}
 
 	/**
