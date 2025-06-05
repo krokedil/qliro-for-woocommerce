@@ -152,6 +152,7 @@ class Qliro_One_Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_order_script( $hook ) {
+
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
