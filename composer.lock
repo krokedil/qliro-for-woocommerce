@@ -477,17 +477,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "bcefd1ebb188c4099116743f67abf7c36abc1015"
+                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/bcefd1ebb188c4099116743f67abf7c36abc1015",
-                "reference": "bcefd1ebb188c4099116743f67abf7c36abc1015",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
+                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
                 "shasum": ""
             },
             "require": {
                 "phpcompatibility/php-compatibility": "^9.0",
-                "phpcompatibility/phpcompatibility-paragonie": "^1.0"
+                "phpcompatibility/phpcompatibility-paragonie": "^1.0",
+                "squizlabs/php_codesniffer": "^3.3"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
@@ -544,7 +545,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-03-03T03:03:54+00:00"
+            "time": "2025-05-12T16:38:37+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -666,12 +667,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "466729923349243886425f9c9840f941c06eebbb"
+                "reference": "f5e7943d08c21e1e6537c3c8e911642bf9e2bbd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/466729923349243886425f9c9840f941c06eebbb",
-                "reference": "466729923349243886425f9c9840f941c06eebbb",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/f5e7943d08c21e1e6537c3c8e911642bf9e2bbd9",
+                "reference": "f5e7943d08c21e1e6537c3c8e911642bf9e2bbd9",
                 "shasum": ""
             },
             "require": {
@@ -743,7 +744,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-06T03:00:20+00:00"
+            "time": "2025-05-15T00:11:16+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

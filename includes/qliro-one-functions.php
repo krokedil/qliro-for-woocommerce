@@ -24,6 +24,12 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_fees();
 	$cart->calculate_shipping();
 	$cart->calculate_totals();
+
+	if ( qliro_one_has_country_changed() ) {
+		qliro_one_unset_sessions();
+		return qliro_one_maybe_create_order();
+	}
+
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
@@ -50,15 +56,16 @@ function qliro_one_maybe_create_order() {
 		// If failed then bail.
 		return;
 	}
+
 	// store id.
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
-	$session->set( 'qliro_one_last_update_hash', WC()->cart->get_cart_hash() );
+	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
 	// get qliro order.
 	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }
 
 /**
- * Echoes Qliro One Checkout iframe snippet.
+ * Echoes Qliro Checkout iframe snippet.
  *
  * @return string|null
  */
@@ -99,8 +106,9 @@ function qliro_one_print_error_message( $wp_error ) {
 		if ( function_exists( 'wc_add_notice' ) ) {
 			wc_add_notice( $error_message, 'error' );
 		}
-	} elseif ( function_exists( 'wc_print_notice' ) ) {
-			wc_print_notice( $error_message, 'error' );
+	} elseif ( function_exists( 'wc_add_notice' ) ) {
+		// Add to the queue to be printed later. This allows the notice to be displayed along the other notices.
+		wc_add_notice( $error_message, 'error' );
 	}
 }
 
@@ -118,7 +126,7 @@ function qliro_one_unset_sessions() {
 }
 
 /**
- * Shows select another payment method button in Qliro One Checkout page.
+ * Shows select another payment method button in Qliro Checkout page.
  */
 function qliro_one_wc_show_another_gateway_button() {
 	$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
@@ -184,12 +192,12 @@ function qliro_confirm_order( $order ) {
 
 	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
 		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
+		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 	// translators: %s - the Qliro order ID.
-	$note = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
@@ -404,9 +412,9 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
  * @return bool
  */
 function qliro_one_is_valid_order( $qliro_order ) {
-	$is_in_process     = ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] );
-	$is_currency_match = ( get_woocommerce_currency() === $qliro_order['Currency'] );
-	$is_country_match  = ( WC()->customer->get_billing_country() === $qliro_order['Country'] );
+	$is_in_process     = 'InProcess' === $qliro_order['CustomerCheckoutStatus'];
+	$is_currency_match = get_woocommerce_currency() === $qliro_order['Currency'];
+	$is_country_match  = WC()->customer->get_billing_country() === $qliro_order['Country'];
 
 	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
@@ -631,4 +639,15 @@ function qliro_one_format_fee_reference( $fee_name ) {
 function qliro_one_get_billing_country() {
 	$base_location = wc_get_base_location();
 	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
+}
+
+function qliro_one_has_country_changed() {
+	$country_from_session  = WC()->session->get( 'qliro_one_billing_country' );
+	$country_from_checkout = WC()->checkout()->get_value( 'billing_country' );
+
+	if ( empty( $country_from_session ) || empty( $country_from_checkout ) ) {
+		return false;
+	}
+
+	return $country_from_session !== $country_from_checkout;
 }

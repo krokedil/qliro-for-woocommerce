@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe9963d5d94231281ae5d982d5d73bc2",
+    "content-hash": "2e2f9f209f3121fc1f093de443abb65a",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "dev-develop-shipping-description",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "e8a773e109637331a711dfb7171fce5ba69ac2ca"
+                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/e8a773e109637331a711dfb7171fce5ba69ac2ca",
-                "reference": "e8a773e109637331a711dfb7171fce5ba69ac2ca",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/f49d63a9a36055300d62fbc01f71bd52bceae538",
+                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538",
                 "shasum": ""
             },
             "require": {
@@ -102,7 +102,7 @@
             },
             "scripts": {
                 "phpunit": [
-                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php"
+                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php --coverage-html=coverage"
                 ],
                 "createdocs": [
                     "./vendor/bin/phpdoc-md"
@@ -110,10 +110,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/develop-shipping-description",
+                "source": "https://github.com/krokedil/shipping/tree/develop",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-05-09T12:29:16+00:00"
+            "time": "2025-05-09T11:41:20+00:00"
         },
         {
             "name": "krokedil/woocommerce",

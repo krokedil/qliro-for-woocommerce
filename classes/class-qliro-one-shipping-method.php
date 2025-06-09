@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for the Qliro One shipping method that is used when using a third party shipping provider through Qliro One.
+ * Class for the Qliro shipping method that is used when using a third party shipping provider through Qliro.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoint\PickupPoint;
 
 /**
- * Qliro One shipping method class
+ * Qliro shipping method class
  */
 class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	/**
@@ -21,9 +21,9 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	public function __construct( $instance_id = 0 ) {
 		$this->id                 = 'qliro_shipping';
 		$this->instance_id        = absint( $instance_id );
-		$this->title              = __( 'Qliro One Shipping', 'qliro-checkout-for-woocommerce' );
-		$this->method_title       = __( 'Qliro One Shipping', 'qliro-checkout-for-woocommerce' );
-		$this->method_description = __( 'A dynamic shipping method, that will get its prices set by Qliro and the integration towards a shipping provider. When Qliro One is the selected payment method, the other shipping methods for this region wont be shown to the customer.', 'avarda-checkout-for-woocommerce' );
+		$this->title              = __( 'Qliro Shipping', 'qliro-checkout-for-woocommerce' );
+		$this->method_title       = __( 'Qliro Shipping', 'qliro-checkout-for-woocommerce' );
+		$this->method_description = __( 'A dynamic shipping method, that will get its prices set by Qliro and the integration towards a shipping provider. When Qliro is the selected payment method, the other shipping methods for this region wont be shown to the customer.', 'avarda-checkout-for-woocommerce' );
 		$this->supports           = array(
 			'shipping-zones',
 			// 'instance-settings',

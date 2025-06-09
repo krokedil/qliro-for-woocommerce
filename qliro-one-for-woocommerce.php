@@ -1,16 +1,16 @@
 <?php // phpcs:ignore
 /**
- * Plugin Name: Qliro One for WooCommerce
+ * Plugin Name: Qliro for WooCommerce
  * Plugin URI: https://krokedil.com/qliro/
- * Description: Qliro One Checkout payment gateway for WooCommerce.
+ * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.10.1
+ * Version: 1.11.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 9.7.1
+ * WC tested up to: 9.8.5
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2025 Krokedil
@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.10.1' );
+define( 'QLIRO_WC_VERSION', '1.11.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -185,7 +185,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -196,15 +195,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			// Init the gateway itself.
 			$this->init_gateways();
-
-			$this->krokedil = new KrokedilWooCommerce(
-				array(
-					'slug'         => 'qoc',
-					'price_format' => 'major',
-				)
-			);
-
-			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 		}
 
 		/**
@@ -315,12 +305,21 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->subscriptions         = new Qliro_One_Subscriptions();
 			$this->pickup_points_service = new PickupPoints();
 			$this->shipping_rate_service = new ShippingRate( array( 'show_description' => false ) );
+			$this->krokedil              = new KrokedilWooCommerce(
+				array(
+					'slug'         => 'qoc',
+					'price_format' => 'major',
+				)
+			);
+
+			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 			add_filter( 'woocommerce_shipping_methods', Qliro_One_Shipping_Method::class . '::register' );
+			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -381,7 +380,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		private static function missing_autoloader() {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( // phpcs:ignore
-					esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' )
+					esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' )
 				);
 			}
 
@@ -391,7 +390,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 					?>
 						<div class="notice notice-error">
 							<p>
-								<?php echo esc_html__( 'Your installation of Qliro One for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+								<?php echo esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
 							</p>
 						</div>
 					<?php

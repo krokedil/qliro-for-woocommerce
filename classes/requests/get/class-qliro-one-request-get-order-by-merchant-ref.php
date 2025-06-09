@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Get Qliro One order by merchant reference.
+ * Get Qliro order by merchant reference.
  */
 class Qliro_One_Request_Get_Order_By_Merchant_Ref extends Qliro_One_Request_Get {
 
@@ -33,5 +33,4 @@ class Qliro_One_Request_Get_Order_By_Merchant_Ref extends Qliro_One_Request_Get 
 		// todo check docs, it's unclear.
 		return $this->get_api_url_base() . 'checkout/merchantapi/orders/' . $merchant_reference;
 	}
-
 }
