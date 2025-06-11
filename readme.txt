@@ -23,6 +23,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Fix           - Pay for order should now be working as expected.
 * Fix           - Fixed a potential fatal error that could occur if dependencies failed to install properly.
 * Fix           - Fixed the province data sometimes being incorrectly set on the order confirmation page.
+* Enhancement   - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.
 * Tweak         - Added the option to include a merchant integrity policy URL link in the Qliro iframe.
 * Tweak         - Readme changes.
 
