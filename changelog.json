@@ -193,5 +193,10 @@
             "description": "<ul><li>Feature - Added support for adding a return fee when making a refund on a Qliro order.</li><li>Feature - Added a setting to automatically calculate a return fee for Qliro orders, if a refund is made when the full amount of a order line is not refunded.</li><li>Feature - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'.</li><li>Enhancement - Changed so the refund with Qliro button is not shown for orders that have not been completed with Qliro, preventing the refund from causing a API error when it can't be made.</li><li>Enhancement - Improved logging to handle situations where the remote requests returns WP_Error that is not properly logged.</li><li>Tweak - The sync order button will now always be available on the order edit page for all Qliro orders regardless of payment method.</li><li>Tweak - Checks if the order was paid with Qliro before showing the partial capture button on the order edit page.</li><li>Tweak - Removed pending, refunded and failed order statuses from part of the statuses in the order management where it is not relevant.</li><li>Tweak - Relabeling from \"Qliro One\" to \"Qliro\".</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.1"
+      }, 
+      "1.11.1": {
+            "description": "<ul><li>Fix - Pay for order should now be working as expected.</li><li>Fix - Fixed a potential fatal error that could occur if dependencies failed to install properly.</li><li>Fix - Fixed the province data sometimes being incorrectly set on the order confirmation page.</li><li>Tweak - Added the option to include a merchant integrity policy URL link in the Qliro iframe.</li><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.1"
       }
 }
