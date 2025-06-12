@@ -189,11 +189,14 @@ class Qliro_One_Fields {
 				'title' => __( 'Risk mitigation', 'qliro-one-for-woocommerce' ),
 				'type'  => 'title',
 				'class' => 'krokedil_settings_title',
+				'description' => __(
+					'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">here</a>.'
+				),
 			),
 			'minimum_age'                                => array(
 				'title'       => __( 'Minimum customer age', 'qliro-one-for-woocommerce' ),
 				'type'        => 'number',
-				'description' => __( 'Sets minimum customer age for all purchases, which then also prevents B2B purchases. Please note that you also have the possibility to set this on an individual product level.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Sets minimum customer age for all purchases, which then also prevents B2B purchases.', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 				'css'         => 'width: 100px',
 				'desc_tip'    => true,
@@ -202,7 +205,7 @@ class Qliro_One_Fields {
 				'title'       => __( 'Require identity verification', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Verify customers identity with BankID', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'If enabled and the order country is Sweden, the customer will always be asked to verify their identity with BankID when completing the purchase. This could lead to double BankID verification requirement in certain instances. Please note that you also have the possibility to set this on an individual product level.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'If enabled and the order country is Sweden, the customer will always be asked to verify their identity with BankID when completing the purchase. This could lead to double BankID verification requirement in certain instances.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
@@ -210,7 +213,7 @@ class Qliro_One_Fields {
 				'title'       => __( 'Has risk', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'label'       => __( 'Flag all products as has risk products', 'qliro-one-for-woocommerce' ),
-				'description' => __( 'If enabled, all products in the order will be flagged as has risk products. This can be used to eg limit the list of available payment methods shown for customer. Please note that you also have the possibility to set this on an individual product level.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'If enabled, all products in the order will be flagged as has risk products. This can be used to eg limit the list of available payment methods shown for customer.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			),
