@@ -192,6 +192,7 @@ jQuery(function ($) {
 		updateAddress: async (customerInfo) => {
 			// The "ship to different address" checkbox should always be checked.
 			$('#ship-to-different-address-checkbox').prop('checked', true);
+			$('.woocommerce-shipping-fields .shipping_address').show();
 
 			// Since the postal code is not always included in the frontend, we need to fetch the address from the backend.
 			let billingAddress, shippingAddress, customer
@@ -301,6 +302,7 @@ jQuery(function ($) {
 		setAddressData: function (addressData, callback) {
 			// The "ship to different address" checkbox should always be checked.
 			$('#ship-to-different-address-checkbox').prop('checked', true);
+			$('.woocommerce-shipping-fields .shipping_address').show();
 
 			if (0 < $('form.checkout #terms').length) {
 				$('form.checkout #terms').prop('checked', true);
