@@ -65,7 +65,7 @@ class Qliro_One_Fields {
 			'api_key'                                    => array(
 				'title'             => __( 'Production Qliro merchant API key', 'qliro-one-for-woocommerce' ),
 				'type'              => 'text',
-				'description'       => __( 'Please contact your Onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Please contact your onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -75,7 +75,7 @@ class Qliro_One_Fields {
 			'api_secret'                                 => array(
 				'title'             => __( 'Production Qliro merchant API secret', 'qliro-one-for-woocommerce' ),
 				'type'              => 'password',
-				'description'       => __( 'Please contact your Onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
+				'description'       => __( 'Please contact your onboarding agent or email integration@qliro.com to get your API credentials.', 'qliro-one-for-woocommerce' ),
 				'default'           => '',
 				'desc_tip'          => true,
 				'custom_attributes' => array(
@@ -137,7 +137,7 @@ class Qliro_One_Fields {
 			'shipping_in_iframe'                         => array(
 				'title'       => __( 'Shipping within the Qliro iframe', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'description' => __( 'Integrating with shipping service like nShift, Ingrid or Fraktjakt? Want to customize how WooCommerce shipping methods looks within the Qliro iframe? Read more about shipping related compatability and configurations <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/shipping-settings/">here</a>.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Integrating with shipping service like nShift, Ingrid or Fraktjakt? Want to customize how WooCommerce shipping methods looks within the Qliro iframe? Read more about shipping related compatibility and configurations <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/shipping-settings/">here</a>.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'no',
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_toggler krokedil_toggler_iframe_shipping toggler_option_wc_shipping',
@@ -150,7 +150,7 @@ class Qliro_One_Fields {
 			'shipping_additional_header'                 => array(
 				'title'       => __( 'Shipping section description', 'qliro-one-for-woocommerce' ),
 				'type'        => 'textarea',
-				'description' => __( 'With this option you can have a custom text displayed right under the shipping section’s main title which can inform the customers of a certain campaign or other relevant information such as discounts on delivery for purchases over certain amount.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Display a custom text right under the shipping section’s main title. Useful to eg inform about a certain campaign or discounts on delivery for purchases over certain amount.', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_iframe_shipping',
@@ -328,7 +328,7 @@ class Qliro_One_Fields {
 					'two_column_left'     => __( 'Two column checkout (Qliro One in left column)', 'qliro-one-for-woocommerce' ),
 					'two_column_left_sf'  => __( 'Two column checkout (Qliro One in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
 				),
-				'description' => __( 'Choose what layout you want to use on the checkout page together with Qliro. Read more about the options and how the checkout page template can be further customized here.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Choose layout to use on the Qliro checkout page. Read more about the options and how the checkout page template can be further customized here.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'two_column_right',
 				'desc_tip'    => false,
 			),
@@ -424,7 +424,7 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 			'banner_widget_placement_location'           => array(
-				'title'       => __( 'Banner widget product page placement', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Banner widget placement on product pages', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'description' => __( 'Choose where on the product page that you want to display the banner widget.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
@@ -442,7 +442,7 @@ class Qliro_One_Fields {
 				'desc'        => __( 'Select where to display the widget in your product pages.', 'qliro-one-for-woocommerce' ),
 			),
 			'banner_widget_cart_placement_location'      => array(
-				'title'       => __( 'Banner widget cart placement', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Banner widget placement on cart page', 'qliro-one-for-woocommerce' ),
 				'description' => __( 'Choose where on the cart page that you want to display the banner widget.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
 				'type'        => 'select',
@@ -474,7 +474,7 @@ class Qliro_One_Fields {
 				),
 			),
 			'payment_widget_placement_location'          => array(
-				'title'       => __( 'Payment widget product placement', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Payment widget placement on product pages', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'description' => __( ' Choose where on the product page that you want to display the product widget.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
