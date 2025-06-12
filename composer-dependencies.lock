@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538"
+                "reference": "afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/f49d63a9a36055300d62fbc01f71bd52bceae538",
-                "reference": "f49d63a9a36055300d62fbc01f71bd52bceae538",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6",
+                "reference": "afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6",
                 "shasum": ""
             },
             "require": {
@@ -102,7 +102,7 @@
             },
             "scripts": {
                 "phpunit": [
-                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php --coverage-html=coverage"
+                    "./vendor/bin/phpunit --bootstrap tests/bootstrap.php"
                 ],
                 "createdocs": [
                     "./vendor/bin/phpdoc-md"
@@ -113,20 +113,20 @@
                 "source": "https://github.com/krokedil/shipping/tree/develop",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-05-09T11:41:20+00:00"
+            "time": "2025-06-09T09:15:41+00:00"
         },
         {
             "name": "krokedil/woocommerce",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5"
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/d008878feeba072cb952d95cadd68ad93cbae727",
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727",
                 "shasum": ""
             },
             "require-dev": {
@@ -157,10 +157,10 @@
             ],
             "description": "A library package for Krokedils plugins that contains helper methods when working with WooCommerce.",
             "support": {
-                "source": "https://github.com/krokedil/woocommerce/tree/1.8.0",
+                "source": "https://github.com/krokedil/woocommerce/tree/1.8.1",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2025-02-05T14:02:57+00:00"
+            "time": "2025-06-03T09:31:00+00:00"
         },
         {
             "name": "psr/container",
@@ -221,15 +221,15 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "kernl/kernl-update-checker": 20,
-        "krokedil/shipping": 20
+        "krokedil/shipping": 20,
+        "kernl/kernl-update-checker": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
     },
