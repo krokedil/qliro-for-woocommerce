@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.8.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.8.5
-Stable tag: 1.11.0
+WC tested up to: 9.9.3
+Stable tag: 1.11.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.06.12    - version 1.11.1 =
+* Fix           - Fixed a potential fatal error during checkout that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
+
 = 2025.05.20    - version 1.11.0 =
 * Feature       - Added support for adding a return fee when making a refund on a Qliro order.
 * Feature       - Added a setting to automatically calculate a return fee for Qliro orders, if a refund is made when the full amount of a order line is not refunded.
