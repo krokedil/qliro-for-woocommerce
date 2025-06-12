@@ -112,9 +112,9 @@ class Qliro_One_Fields {
 				'title'       => __( 'Test mode', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable test mode', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Disable test mode when testing is complete and you want to go live.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'yes',
-				'desc_tip'    => true,
+				'desc_tip'    => false,
 			),
 			'logging'                                    => array(
 				'title'       => __( 'Logging', 'qliro-one-for-woocommerce' ),
