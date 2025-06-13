@@ -32,6 +32,7 @@ class Qliro_One_Notifications_Ingrid_Shipping extends Qliro_One_Notifications {
 	 * @param WC_Order|null $order   The order object, if available.
 	 *
 	 * @return void
+	 * @throws WP_Exception If the notification cannot be handled.
 	 */
 	public function handle_notification( $payload, $order = null ) {
 		// If we did not get an order, throw an exception.

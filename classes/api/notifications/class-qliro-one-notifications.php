@@ -12,14 +12,14 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Qliro_One_Notifications {
 	/**
-	 * The event type for the notification.
+	 * The event type for the notification. Should match the event type sent by Qliro in the notification request as a uppercase string.
 	 *
 	 * @var string
 	 */
 	protected $event_type;
 
 	/**
-	 * The provider for the notification.
+	 * The provider for the notification. Should match the provider sent by Qliro in the notification request as a uppercase string.
 	 *
 	 * @var string
 	 */
