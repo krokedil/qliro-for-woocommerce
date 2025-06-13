@@ -82,6 +82,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
+			'MerchantNotificationUrl'              => QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Notifications::class, 'notifications' ),
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
 			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
