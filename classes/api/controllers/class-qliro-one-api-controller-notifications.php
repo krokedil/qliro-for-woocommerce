@@ -85,14 +85,14 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			$handler = $this->provider->get_handler( $event_type, $provider );;
 
 			if ( null === $handler ) {
-				do_action( "qliro_notification_{$event_type}_{_$provider}", $qliro_order_id, $body, $order ); // Trigger the action to allow other plugins to handle the event.
+				do_action( "qliro_notification_{$event_type}_{$provider}", $qliro_order_id, $body, $order ); // Trigger the action to allow other plugins to handle the event.
 				return $this->success_response(); // Return a success if nothing has thrown an exception.
 			}
 
 			$handler->handle_notification( $payload, $order );
 
 			// Trigger an action to let other plugins know that a change has been made, and allow them to take action if needed.
-			do_action( "qliro_notification_{$event_type}_{_$provider}", $qliro_order_id, $body, $order );
+			do_action( "qliro_notification_{$event_type}_{$provider}", $qliro_order_id, $body, $order );
 
 			return $this->success_response();
 		} catch ( Exception $e ) {
