@@ -272,7 +272,8 @@ class Qliro_One_Helper_Order {
 	 * @return string
 	 */
 	public static function get_unit_price_inc_vat( $order_item ) {
-		$quantity   = empty( $order_item->get_quantity() ) ? 1 : $order_item->get_quantity();
+		$quantity = empty( $order_item->get_quantity() ) ? 1 : $order_item->get_quantity();
+
 		$unit_price = wc_format_decimal( ( qliro_ensure_numeric( $order_item->get_total() ) + $order_item->get_total_tax() ) / $quantity, min( wc_get_price_decimals(), 2 ) );
 		return $unit_price;
 	}
