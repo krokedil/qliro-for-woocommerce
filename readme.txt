@@ -7,7 +7,7 @@ Tested up to: 6.8.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.9.3
-Stable tag: 1.11.1
+Stable tag: 1.11.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,13 +19,17 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
-= 2025.06.12    - version 1.11.1 =
+= 2025.06.17    - version 1.11.2 =
 * Fix           - Pay for order should now be working as expected.
 * Fix           - Fixed a potential fatal error that could occur if dependencies failed to install properly.
 * Fix           - Fixed the province data sometimes being incorrectly set on the order confirmation page.
+* Fix           - Fixed a potential fatal error that could occur for order management actions, that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
 * Enhancement   - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.
 * Tweak         - Added the option to include a merchant integrity policy URL link in the Qliro iframe.
 * Tweak         - Readme changes.
+
+= 2025.06.12    - version 1.11.1 =
+* Fix           - Fixed a potential fatal error during checkout that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
 
 = 2025.05.20    - version 1.11.0 =
 * Feature       - Added support for adding a return fee when making a refund on a Qliro order.
