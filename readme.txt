@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.8.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.9.3
-Stable tag: 1.11.1
+WC tested up to: 9.9.4
+Stable tag: 1.11.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,15 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.06.17    - version 1.11.2 =
+* Fix           - Pay for order should now be working as expected.
+* Fix           - Fixed a potential fatal error that could occur if dependencies failed to install properly.
+* Fix           - Fixed the province data sometimes being incorrectly set on the order confirmation page.
+* Fix           - Fixed a potential fatal error that could occur during order management actions when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
+* Enhancement   - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.
+* Tweak         - Added the option to include a merchant integrity policy URL link in the Qliro iframe.
+* Tweak         - Readme changes.
+
 = 2025.06.12    - version 1.11.1 =
 * Fix           - Fixed a potential fatal error during checkout that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
 
@@ -64,10 +73,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Fix           - Fixed a critical error that could occur while editing the checkout page.
 
 = 2025.02.17    - version 1.8.0 =
+* Feature       - Added support for gift cards.
 * Feature       - Added support for subscriptions.
 * Feature       - Added support for pay for order.
 * Feature       - Added support for gift cards.
-* Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
+* Feature       - Added 'qoc_order_confirmed' to enable newsletter support, together with other custom actions when a Qliro order is confirmed.
 * Tweak         - Allow order status 'Completed' if order is captured through portal.
 * Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
 * Fix           - Fixed PHP 8.3.0 array_sum warnings.

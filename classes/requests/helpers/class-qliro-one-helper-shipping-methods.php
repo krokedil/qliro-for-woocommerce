@@ -48,22 +48,8 @@ class Qliro_One_Helper_Shipping_Methods {
 
 				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
 
-				// Description.
-				$description = isset( $method_settings['qliro_description'] ) ? $method_settings['qliro_description'] : '';
-				if ( ! empty( $description ) ) {
-					// The trim is necessary to remove invisible characters (even when printed) such as "\n", otherwise, we'll end up with "empty" elements. The array_filter without arguments removes empty lines.
-					$lines = array_filter( array_map( 'trim', explode( "\n", $method_settings['qliro_description'] ) ) );
-
-					// Maximum length is 100 characters per line and up to 3 lines.
-					$description = array_map(
-						function ( $line ) {
-							return trim( mb_substr( $line, 0, 100 ) );
-						},
-						$lines
-					);
-
-					$options['Descriptions'] = array_slice( $description, 0, 3 );
-				}
+				// Set the shipping method description if it exists.
+				self::set_shipping_method_description( $method, $method_settings, $options );
 
 				// Category display name.
 				$category_display_name = isset( $method_settings['qliro_category_display_name'] ) ? $method_settings['qliro_category_display_name'] : 'none';
@@ -154,6 +140,38 @@ class Qliro_One_Helper_Shipping_Methods {
 
 		if ( ! empty( $secondary_options ) ) {
 			$options['SecondaryOptions'] = $secondary_options;
+		}
+	}
+
+	/**
+	 * Set the shipping method description.
+	 *
+	 * @param WC_Shipping_rate $method The shipping method rate from WooCommerce.
+	 * @param array            $method_settings The shipping method settings from the WooCommerce shipping method instance.
+	 * @param array            $options The shipping options for the Qliro api.
+	 *
+	 * @return void
+	 */
+	public static function set_shipping_method_description( $method, $method_settings, &$options ) {
+		// Description.
+		$description = $method_settings['qliro_description'] ?? '';
+		if ( empty( $description ) ) {
+			$description = QOC_WC()->shipping_rate_service()->get_shipping_rate_description( $method );
+		}
+
+		if ( ! empty( $description ) ) {
+			// The trim is necessary to remove invisible characters (even when printed) such as "\n", otherwise, we'll end up with "empty" elements. The array_filter without arguments removes empty lines.
+			$lines = array_filter( array_map( 'trim', explode( "\n", $description ) ) );
+
+			// Maximum length is 100 characters per line and up to 3 lines.
+			$description_array = array_map(
+				function ( $line ) {
+					return trim( mb_substr( $line, 0, 100 ) );
+				},
+				$lines
+			);
+
+			$options['Descriptions'] = array_slice( $description_array, 0, 3 );
 		}
 	}
 }

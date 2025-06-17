@@ -204,38 +204,6 @@ class Qliro_One_Templates {
 					}
 				}
 			}
-
-			// Qliro Checkout Pay for order.
-			if ( 'checkout/form-pay.php' === $template_name ) {
-				global $wp;
-				$order_id           = $wp->query_vars['order-pay'];
-				$order              = wc_get_order( $order_id );
-				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
-					if ( locate_template( 'woocommerce/qliro-one-checkout-pay.php' ) ) {
-						$qliro_one_checkout_template = locate_template( 'woocommerce/qliro-one-checkout-pay.php' );
-					} else {
-						$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout-pay.php';
-					}
-
-					if ( 'qliro_one' === $order->get_payment_method() ) {
-						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-						if ( empty( $confirm ) ) {
-							$template = $qliro_one_checkout_template;
-						}
-					}
-
-					// If chosen payment method does not exist and Qliro is the first gateway.
-					if ( empty( $order->get_payment_method() ) ) {
-						reset( $available_gateways );
-						if ( 'qliro_one' === key( $available_gateways ) ) {
-							if ( empty( $confirm ) ) {
-								$template = $qliro_one_checkout_template;
-							}
-						}
-					}
-				}
-			}
 		}
 
 		return $template;

@@ -5,12 +5,12 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.11.1
+ * Version: 1.11.2
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 9.9.3
+ * WC tested up to: 9.9.4
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2025 Krokedil
@@ -30,7 +30,9 @@
  */
 
 use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\PickupPointServiceInterface;
+use KrokedilQliroDeps\Krokedil\Shipping\Interfaces\ShippingRateServiceInterface;
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoints;
+use KrokedilQliroDeps\Krokedil\Shipping\ShippingRate;
 use KrokedilQliroDeps\Krokedil\WooCommerce\KrokedilWooCommerce;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.11.1' );
+define( 'QLIRO_WC_VERSION', '1.11.2' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -86,6 +88,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @var PickupPointServiceInterface $pickup_points_service
 		 */
 		private $pickup_points_service;
+
+		/**
+		 * Pickup points service.
+		 *
+		 * @var ShippingRateServiceInterface $shipping_rate_service
+		 */
+		private $shipping_rate_service;
 
 		/**
 		 * Reference to metabox class.
@@ -176,7 +185,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -187,15 +195,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			// Init the gateway itself.
 			$this->init_gateways();
-
-			$this->krokedil = new KrokedilWooCommerce(
-				array(
-					'slug'         => 'qoc',
-					'price_format' => 'major',
-				)
-			);
-
-			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 		}
 
 		/**
@@ -305,12 +304,22 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->api_registry          = new Qliro_One_API_Registry();
 			$this->subscriptions         = new Qliro_One_Subscriptions();
 			$this->pickup_points_service = new PickupPoints();
+			$this->shipping_rate_service = new ShippingRate( array( 'show_description' => false ) );
+			$this->krokedil              = new KrokedilWooCommerce(
+				array(
+					'slug'         => 'qoc',
+					'price_format' => 'major',
+				)
+			);
+
+			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 
 			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 			add_filter( 'woocommerce_shipping_methods', Qliro_One_Shipping_Method::class . '::register' );
+			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -410,6 +419,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function pickup_points_service() {
 			return $this->pickup_points_service;
+		}
+
+		/**
+		 * Get the shipping rate service.
+		 *
+		 * @return ShippingRateServiceInterface
+		 */
+		public function shipping_rate_service() {
+			return $this->shipping_rate_service;
 		}
 
 		/**
