@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e2f9f209f3121fc1f093de443abb65a",
+    "content-hash": "7def671afaa2f1c504fe8667197b39ef",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "dev-develop",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6"
+                "reference": "8cbdc08ce87c22dd6474277ab024b664d96fa4e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6",
-                "reference": "afc56e84d3e1e9bb1f19a6fcbd14d92037d022b6",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/8cbdc08ce87c22dd6474277ab024b664d96fa4e8",
+                "reference": "8cbdc08ce87c22dd6474277ab024b664d96fa4e8",
                 "shasum": ""
             },
             "require": {
@@ -110,10 +110,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/develop",
+                "source": "https://github.com/krokedil/shipping/tree/2.2.0",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-06-09T09:15:41+00:00"
+            "time": "2025-06-09T09:17:29+00:00"
         },
         {
             "name": "krokedil/woocommerce",
@@ -221,7 +221,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "krokedil/shipping": 20,
         "kernl/kernl-update-checker": 20
     },
     "prefer-stable": true,
