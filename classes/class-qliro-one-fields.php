@@ -20,12 +20,17 @@ class Qliro_One_Fields {
 	 * Returns the fields.
 	 */
 	public static function fields() {
-		$order_statuses_trigger = wc_get_order_statuses();
-		$order_statuses_trigger = array( 'manual' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $order_statuses_trigger;
-		$order_statuses         = wc_get_order_statuses();
-		$order_statuses         = array( 'none' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $order_statuses;
-		$wc_logs_url            = admin_url( 'admin.php?page=wc-status&tab=logs&source=qliro-for-woocommerce&paged=1' );
-		$ppu_status             = class_exists( 'PPU' ) ? ' active' : ' inactive';
+		$wc_order_statuses = wc_get_order_statuses();
+
+		$order_statuses_capture = array( 'manual' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
+		$order_statuses_cancel  = array( 'manual' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
+
+		// Set recommended order statuses for capture and cancel.
+		$order_statuses_capture['wc-completed'] = __( 'Completed (recommended)', 'qliro-one-for-woocommerce' );
+		$order_statuses_cancel['wc-cancelled']  = __( 'Cancelled (recommended)', 'qliro-one-for-woocommerce' );
+
+		$wc_logs_url = admin_url( 'admin.php?page=wc-status&tab=logs&source=qliro-for-woocommerce&paged=1' );
+		$ppu_status  = class_exists( 'PPU' ) ? ' active' : ' inactive';
 
 		$settings = array(
 			// general.
@@ -186,9 +191,9 @@ class Qliro_One_Fields {
 			),
 			// Risk mitigation.
 			'risk_mitigation'                            => array(
-				'title' => __( 'Risk mitigation', 'qliro-one-for-woocommerce' ),
-				'type'  => 'title',
-				'class' => 'krokedil_settings_title',
+				'title'       => __( 'Risk mitigation', 'qliro-one-for-woocommerce' ),
+				'type'        => 'title',
+				'class'       => 'krokedil_settings_title',
 				'description' => __(
 					'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">here</a>.'
 				),
@@ -251,7 +256,7 @@ class Qliro_One_Fields {
 			'capture_status'                             => array(
 				'title'       => __( 'Capture order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses_trigger,
+				'options'     => $order_statuses_capture,
 				'description' => __( 'Select WooCommerce order status used to initiate capturing the order in Qliros system. Suggested and default is to use Completed. Please note that you also have the possibility to disable order management on specific orders.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'wc-completed',
 				'desc_tip'    => true,
@@ -259,7 +264,7 @@ class Qliro_One_Fields {
 			'cancel_status'                              => array(
 				'title'       => __( 'Cancel order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses_trigger,
+				'options'     => $order_statuses_cancel,
 				'description' => __( 'Select WooCommerce order status used to initiate canceling the order in Qliros system. Suggested and default is to use Cancelled. Please note that you also have the possibility to disable order management on specific orders.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'wc-cancelled',
 				'desc_tip'    => true,
