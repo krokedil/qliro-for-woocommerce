@@ -29,6 +29,8 @@ class Qliro_One_Fields {
 		$order_statuses_capture['wc-completed'] = __( 'Completed (recommended)', 'qliro-one-for-woocommerce' );
 		$order_statuses_cancel['wc-cancelled']  = __( 'Cancelled (recommended)', 'qliro-one-for-woocommerce' );
 
+		$advanced_order_statuses = array( 'none' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
+
 		$wc_logs_url = admin_url( 'admin.php?page=wc-status&tab=logs&source=qliro-for-woocommerce&paged=1' );
 		$ppu_status  = class_exists( 'PPU' ) ? ' active' : ' inactive';
 
@@ -281,7 +283,7 @@ class Qliro_One_Fields {
 			'capture_pending_status'                     => array(
 				'title'       => __( 'Pending capture order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses,
+				'options'     => $advanced_order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to while WooCommerce wait for Qliro to tell us if the capture was successful or not.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
 				'desc_tip'    => false,
@@ -290,7 +292,7 @@ class Qliro_One_Fields {
 			'capture_ok_status'                          => array(
 				'title'       => __( 'OK capture order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses,
+				'options'     => $advanced_order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to when we get notified of a successful order capture from Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
 				'desc_tip'    => false,
@@ -299,7 +301,7 @@ class Qliro_One_Fields {
 			'cancel_pending_status'                      => array(
 				'title'       => __( 'Pending cancel order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses,
+				'options'     => $advanced_order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to while we wait for Qliro to tell us if the cancelation was successful or not.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
 				'desc_tip'    => false,
@@ -308,7 +310,7 @@ class Qliro_One_Fields {
 			'cancel_ok_status'                           => array(
 				'title'       => __( 'OK cancel order status', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
-				'options'     => $order_statuses,
+				'options'     => $advanced_order_statuses,
 				'description' => __( 'Select what WooCommerce order status to set the order to when we get notified of a successful order cancelation from Qliro.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'none',
 				'desc_tip'    => false,
