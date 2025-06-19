@@ -29,7 +29,7 @@ class Qliro_One_Fields {
 		$order_statuses_capture['wc-completed'] = __( 'Completed (recommended)', 'qliro-one-for-woocommerce' );
 		$order_statuses_cancel['wc-cancelled']  = __( 'Cancelled (recommended)', 'qliro-one-for-woocommerce' );
 
-		$advanced_order_statuses = array( 'none' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
+		$advanced_order_statuses = array( 'none' => __( 'None (recommended)', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
 
 		$wc_logs_url = admin_url( 'admin.php?page=wc-status&tab=logs&source=qliro-for-woocommerce&paged=1' );
 		$ppu_status  = class_exists( 'PPU' ) ? ' active' : ' inactive';
