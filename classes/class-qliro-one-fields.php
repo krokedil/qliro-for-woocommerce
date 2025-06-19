@@ -363,7 +363,7 @@ class Qliro_One_Fields {
 					'two_column_left'     => __( 'Two column checkout (Qliro in left column)', 'qliro-one-for-woocommerce' ),
 					'two_column_left_sf'  => __( 'Two column checkout (Qliro in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
 				),
-				'description' => __( 'Choose layout to use on the Qliro checkout page. Read more about the options and how the checkout page template can be further customized here.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Choose layout to use on the Qliro checkout page. Read more about the options and how the checkout page template can be further customized <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#checkout-customization">here</a>.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'two_column_right',
 				'desc_tip'    => false,
 			),
@@ -442,7 +442,7 @@ class Qliro_One_Fields {
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
 				'description' => __(
-					'Promote Qliro payment methods and campaigns, without having to manually update banners continuously. You can also display it with the shortcode [qliro_one_banner_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/)">here</a>.',
+					'Promote Qliro payment methods and campaigns, without having to manually update banners continuously. You can also display it with the shortcode [qliro_one_banner_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.',
 					'qliro-one-for-woocommerce'
 				),
 			),
