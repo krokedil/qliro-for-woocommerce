@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for Qliro One gateway settings.
+ * Class for Qliro gateway settings.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
@@ -21,6 +21,10 @@ class Qliro_One_Fields {
 	 */
 	public static function fields() {
 		$wc_order_statuses = wc_get_order_statuses();
+
+		unset( $wc_order_statuses['wc-pending'] );
+		unset( $wc_order_statuses['wc-refunded'] );
+		unset( $wc_order_statuses['wc-failed'] );
 
 		$order_statuses_capture = array( 'manual' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
 		$order_statuses_cancel  = array( 'manual' => __( 'None', 'qliro-one-for-woocommerce' ) ) + $wc_order_statuses;
@@ -319,6 +323,13 @@ class Qliro_One_Fields {
 			'order_management_end'                       => array(
 				'type' => 'krokedil_section_end',
 			),
+			'calculate_return_fee'                       => array(
+				'title'       => __( 'Calculate return fee', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'default'     => 'no',
+				'description' => __( 'Calculate return fee when returning items automatically if the refunded amount of a order line is less then the unit amount.', 'qliro-one-for-woocommerce' ),
+				'desc_tip'    => true,
+			),
 			// Checkout customization.
 			'checkout_customization'                     => array(
 				'id'          => 'checkout_customization',
@@ -331,9 +342,9 @@ class Qliro_One_Fields {
 				'type'        => 'select',
 				'options'     => array(
 					'one_column_checkout' => __( 'One column checkout', 'qliro-one-for-woocommerce' ),
-					'two_column_right'    => __( 'Two column checkout (Qliro One in right column)', 'qliro-one-for-woocommerce' ),
-					'two_column_left'     => __( 'Two column checkout (Qliro One in left column)', 'qliro-one-for-woocommerce' ),
-					'two_column_left_sf'  => __( 'Two column checkout (Qliro One in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
+					'two_column_right'    => __( 'Two column checkout (Qliro in right column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left'     => __( 'Two column checkout (Qliro in left column)', 'qliro-one-for-woocommerce' ),
+					'two_column_left_sf'  => __( 'Two column checkout (Qliro in left column) - Storefront light', 'qliro-one-for-woocommerce' ),
 				),
 				'description' => __( 'Choose layout to use on the Qliro checkout page. Read more about the options and how the checkout page template can be further customized here.', 'qliro-one-for-woocommerce' ),
 				'default'     => 'two_column_right',
@@ -508,6 +519,25 @@ class Qliro_One_Fields {
 			),
 			'widgets_end'                                => array(
 				'type' => 'krokedil_section_end',
+			),
+			'country_selector_section'                   => array(
+				'title' => __( 'Country selector', 'qliro-one-for-woocommerce' ),
+				'type'  => 'title',
+			),
+			'country_selector_placement'                 => array(
+				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
+				'type'    => 'select',
+				'options' => array(
+					'shortcode'                        => __( 'Inactive/shortcode placement' ),
+					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_order_review'  => __( 'Below order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_wrapper'       => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
+				),
+				'default' => 'shortcode', // Disabled by default.
+				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
 			),
 		);
 
