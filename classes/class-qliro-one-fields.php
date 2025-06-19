@@ -166,6 +166,22 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_iframe_shipping',
 			),
+			'country_selector_placement'                 => array(
+				'title'       => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'shortcode'                        => __( 'Inactive/shortcode placement' ),
+					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_order_review'  => __( 'Below order review', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
+					'qliro_one_wc_after_wrapper'       => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
+				),
+				'default'     => 'shortcode', // Disabled by default.
+				'description' => __( 'Enables the possibility to switch billing country from the checkout page. Choose where on the checkout page you want it to be visible. Please note that you can also display it with the shortcode [qliro_country_selector], read more about it <a href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#country-selector">here</a>.', 'qliro-one-for-woocommerce' ),
+				'desc_tip'    => false,
+			),
 			'qliro_one_enforced_juridical_type'          => array(
 				'title'       => __( 'Allowed customer types', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
@@ -275,6 +291,13 @@ class Qliro_One_Fields {
 				'default'     => 'wc-cancelled',
 				'desc_tip'    => true,
 			),
+			'calculate_return_fee'                       => array(
+				'title'       => __( 'Automatically calculate return fee on refunds', 'qliro-one-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'default'     => 'no',
+				'description' => __( 'If enabled, then the Qliro return fee will be automatically calculated in the background if a refunded order line is less than the unit amount.', 'qliro-one-for-woocommerce' ),
+				'desc_tip'    => true,
+			),
 			'om_advanced_settings'                       => array(
 				'title'       => __( 'Advanced pending status configuration', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Enable advanced pending status configuration', 'qliro-one-for-woocommerce' ),
@@ -319,13 +342,6 @@ class Qliro_One_Fields {
 				'default'     => 'none',
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
-			),
-			'calculate_return_fee'                       => array(
-				'title'       => __( 'Calculate return fee', 'qliro-one-for-woocommerce' ),
-				'type'        => 'checkbox',
-				'default'     => 'no',
-				'description' => __( 'Calculate return fee when returning items automatically if the refunded amount of a order line is less then the unit amount.', 'qliro-one-for-woocommerce' ),
-				'desc_tip'    => true,
 			),
 			'order_management_end'                       => array(
 				'type' => 'krokedil_section_end',
@@ -518,31 +534,6 @@ class Qliro_One_Fields {
 				'desc_tip'    => true,
 			),
 			'widgets_end'                                => array(
-				'type' => 'krokedil_section_end',
-			),
-			// Country selector.
-			'country_selector'                           => array(
-				'id'          => 'country_selector',
-				'title'       => __( 'Country selector', 'qliro-one-for-woocommerce' ),
-				'type'        => 'krokedil_section_start',
-				'description' => __( 'A description.', 'qliro-one-for-woocommerce' ),
-			),
-			'country_selector_placement'                 => array(
-				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
-				'type'    => 'select',
-				'options' => array(
-					'shortcode'                        => __( 'Inactive/shortcode placement' ),
-					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
-					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
-					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
-					'qliro_one_wc_after_order_review'  => __( 'Below order review', 'qliro-one-for-woocommerce' ),
-					'qliro_one_wc_after_snippet'       => __( 'Below payment form', 'qliro-one-for-woocommerce' ),
-					'qliro_one_wc_after_wrapper'       => __( 'Below checkout form', 'qliro-one-for-woocommerce' ),
-				),
-				'default' => 'shortcode', // Disabled by default.
-				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
-			),
-			'country_selector_end'                       => array(
 				'type' => 'krokedil_section_end',
 			),
 		);
