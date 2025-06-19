@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7def671afaa2f1c504fe8667197b39ef",
+    "content-hash": "7c5d95ce2383e9d1b5234bf0ee5c0dca",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -55,6 +55,51 @@
                 "source": "https://github.com/vital101/plugin-update-checker/tree/4.0.1"
             },
             "time": "2023-06-01T00:26:22+00:00"
+        },
+        {
+            "name": "krokedil/settings-page",
+            "version": "dev-develop-settings-design",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krokedil/settings-page.git",
+                "reference": "154089c66d5170005f9a12edc8115bb60c1d1bbf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krokedil/settings-page/zipball/154089c66d5170005f9a12edc8115bb60c1d1bbf",
+                "reference": "154089c66d5170005f9a12edc8115bb60c1d1bbf",
+                "shasum": ""
+            },
+            "require-dev": {
+                "php-stubs/woocommerce-stubs": "dev-master",
+                "wp-coding-standards/wpcs": "dev-develop"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Krokedil\\SettingsPage\\": "src/"
+                }
+            },
+            "scripts": {
+                "makepot": [
+                    "wp --allow-root i18n make-pot ./src ./languages/krokedil-settings.pot --domain=krokedil-settings"
+                ]
+            },
+            "license": [
+                "GPL-V2"
+            ],
+            "authors": [
+                {
+                    "name": "Krokedil AB",
+                    "email": "info@krokedil.se"
+                }
+            ],
+            "description": "A package to help setup settings pages in WordPress and WooCommerce for Krokedil plugins to add the Addons and Support tabs",
+            "support": {
+                "source": "https://github.com/krokedil/settings-page/tree/develop-settings-design",
+                "issues": "https://github.com/krokedil/settings-page/issues"
+            },
+            "time": "2025-06-19T13:10:52+00:00"
         },
         {
             "name": "krokedil/shipping",
@@ -221,6 +266,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "krokedil/settings-page": 20,
         "kernl/kernl-update-checker": 20
     },
     "prefer-stable": true,

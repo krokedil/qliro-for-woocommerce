@@ -320,15 +320,15 @@ class Qliro_One_Fields {
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_om_advanced_settings',
 			),
-			'order_management_end'                       => array(
-				'type' => 'krokedil_section_end',
-			),
 			'calculate_return_fee'                       => array(
 				'title'       => __( 'Calculate return fee', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'description' => __( 'Calculate return fee when returning items automatically if the refunded amount of a order line is less then the unit amount.', 'qliro-one-for-woocommerce' ),
 				'desc_tip'    => true,
+			),
+			'order_management_end'                       => array(
+				'type' => 'krokedil_section_end',
 			),
 			// Checkout customization.
 			'checkout_customization'                     => array(
@@ -520,9 +520,12 @@ class Qliro_One_Fields {
 			'widgets_end'                                => array(
 				'type' => 'krokedil_section_end',
 			),
-			'country_selector_section'                   => array(
-				'title' => __( 'Country selector', 'qliro-one-for-woocommerce' ),
-				'type'  => 'title',
+			// Country selector.
+			'country_selector'                           => array(
+				'id'          => 'country_selector',
+				'title'       => __( 'Country selector', 'qliro-one-for-woocommerce' ),
+				'type'        => 'krokedil_section_start',
+				'description' => __( 'A description.', 'qliro-one-for-woocommerce' ),
 			),
 			'country_selector_placement'                 => array(
 				'title'   => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
@@ -538,6 +541,9 @@ class Qliro_One_Fields {
 				),
 				'default' => 'shortcode', // Disabled by default.
 				'desc'    => __( 'Select where to display the selector on the checkout page.', 'qliro-one-for-woocommerce' ),
+			),
+			'country_selector_end'                       => array(
+				'type' => 'krokedil_section_end',
 			),
 		);
 
