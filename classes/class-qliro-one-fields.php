@@ -38,6 +38,16 @@ class Qliro_One_Fields {
 		$wc_logs_url = admin_url( 'admin.php?page=wc-status&tab=logs&source=qliro-for-woocommerce&paged=1' );
 		$ppu_status  = class_exists( 'PPU' ) ? ' active' : ' inactive';
 
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+
+		// If no custom order statuses are set, default the advanced order management settings to not be enabled.
+		$custom_statuses_used = (
+			( isset( $settings['capture_pending_status'] ) && 'none' !== $settings['capture_pending_status'] ) ||
+			( isset( $settings['capture_ok_status'] ) && 'none' !== $settings['capture_ok_status'] ) ||
+			( isset( $settings['cancel_pending_status'] ) && 'none' !== $settings['cancel_pending_status'] ) ||
+			( isset( $settings['cancel_ok_status'] ) && 'none' !== $settings['cancel_ok_status'] )
+		) ? 'yes' : 'no';
+
 		$settings = array(
 			// general.
 			'general'                                    => array(
@@ -304,7 +314,7 @@ class Qliro_One_Fields {
 				'label'       => __( 'Enable advanced pending status configuration', 'qliro-one-for-woocommerce' ),
 				'description' => __( 'There is a delay when a capture or cancellation is initiated and WooCommerce receives the response. Therefore you have the possibility to customize what order status an order should have during this process. Use only in advanced situations.', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'default'     => 'no',
+				'default'     => $custom_statuses_used,
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_toggler krokedil_toggler_om_advanced_settings',
 			),
