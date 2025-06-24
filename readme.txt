@@ -7,7 +7,7 @@ Tested up to: 6.8.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 9.9.4
-Stable tag: 1.11.2
+Stable tag: 1.12.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.06.24    - version 1.12.0 =
+* Feature       - Redesigned the layout, structure and navigation of the settings page.
+
 = 2025.06.17    - version 1.11.2 =
 * Fix           - Pay for order should now be working as expected.
 * Fix           - Fixed a potential fatal error that could occur if dependencies failed to install properly.
