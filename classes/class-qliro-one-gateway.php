@@ -5,6 +5,9 @@
  * @package Qliro_One_For_WooCommerce/Classes
  */
 
+use KrokedilQliroDeps\Krokedil\SettingsPage\SettingsPage;
+use KrokedilQliroDeps\Krokedil\SettingsPage\Gateway;
+
 /**
  * Class Qliro_One_Gateway
  */
@@ -36,8 +39,8 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		$this->id                 = 'qliro_one';
-		$this->method_title       = __( 'Qliro', 'qliro-one-for-woocommerce' );
-		$this->method_description = __( 'Qliro replaces the standard WooCommerce checkout page.', 'qliro-one-for-woocommerce' );
+		$this->method_title       = __( 'Qliro for WooCommerce', 'qliro-one-for-woocommerce' );
+		$this->method_description = __( 'Safe and simple payment. An embedded checkout with high conversion rates and the most popular payment methods on the market — giving your customers a first-class shopping experience.', 'qliro-one-for-woocommerce' );
 		$this->supports           = apply_filters(
 			'qliro_one_gateway_supports',
 			array(
@@ -73,6 +76,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'process_admin_options',
 			)
 		);
+		add_action( 'woocommerce_update_options_payment_gateways_qliro_one', array( $this, 'update_conditional_settings' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
 		add_filter( 'woocommerce_order_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999, 3 );
 	}
@@ -338,5 +342,97 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Add settings page extension for Qliro Checkout.
+	 *
+	 * @return void
+	 */
+	public function admin_options() {
+		$args = $this->get_settings_page_args();
+
+		if ( empty( $args ) ) {
+			parent::admin_options();
+			return;
+		}
+
+		$args['icon'] = QLIRO_WC_PLUGIN_URL . '/assets/images/qliro-icon.png';
+
+		$gateway_page = new Gateway( $this, $args );
+
+		$args['general_content'] = array( $gateway_page, 'output' );
+		$settings_page           = ( SettingsPage::get_instance() )
+			->set_plugin_name( 'Qliro Checkout' )
+			->register_page( $this->id, $args, $this )
+			->output( $this->id );
+	}
+
+	/**
+	 * Read the settings page arguments from remote or local storage.
+	 * If the args are stored locally, they are fetched from the transient cache.
+	 * If they are not available locally, they are fetched from the remote source and stored in the transient cache.
+	 * If the remote source is not available, the function returns null, and default settings page will be used instead.
+	 *
+	 * @return array|null
+	 */
+	private function get_settings_page_args() {
+		$args = get_transient( 'qliro_checkout_settings_page_config' );
+		if ( ! $args ) {
+			$args = wp_remote_get( 'https://krokedil-settings-page-configs.s3.eu-north-1.amazonaws.com/develop/configs/qliro-one-for-woocommerce.json' );
+
+			if ( is_wp_error( $args ) ) {
+				Qliro_One_Logger::log( 'Failed to fetch Qliro Checkout settings page config from remote source.' );
+				return null;
+			}
+
+			$args = wp_remote_retrieve_body( $args );
+			set_transient( 'qliro_checkout_settings_page_config', $args, 60 * 60 * 24 ); // 24 hours lifetime.
+		}
+
+		return json_decode( $args, true );
+	}
+
+	public function update_conditional_settings() {
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+
+		// If all locations are set to none, disable the banner widget.
+		$banner_cart_location = sanitize_text_field( $settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals' );
+		$banner_location      = sanitize_text_field( $settings['banner_widget_placement_location'] ?? 'none' );
+		$banner_enabled       = ( $banner_cart_location === 'none' && $banner_location === 'none' ) ? 'no' : 'yes';
+		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_enabled );
+
+		// If the payment widget location is set to none, disable the payment widget.
+		$payment_location = sanitize_text_field( $settings['payment_widget_placement_location'] ?? '15' );
+		$payment_enabled  = ( $payment_location === 'none' ) ? 'no' : 'yes';
+		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_enabled );
+
+		$om_advanced_settings = sanitize_text_field( $settings['om_advanced_settings'] ?? 'no' );
+
+		// If the advanced order management setting is disabled, reset the custom order statuses to default.
+		if ( 'no' === $om_advanced_settings ) {
+			$this->reset_om_statuses( $settings );
+		}
+
+		update_option( 'woocommerce_qliro_one_settings', $settings );
+	}
+
+	/**
+	 * Reset the order management statuses.
+	 *
+	 * @param array $settings The Qliro One settings array.
+	 * @return void
+	 */
+	private function reset_om_statuses( &$settings = array() ) {
+		$order_status_settings = array(
+			'capture_pending_status',
+			'capture_ok_status',
+			'cancel_pending_status',
+			'cancel_ok_status',
+		);
+
+		foreach ( $order_status_settings as $order_status_setting ) {
+			$settings[ $order_status_setting ] = 'none';
+		}
 	}
 }
