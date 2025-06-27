@@ -35,3 +35,5 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	<?php do_action( 'qliro_one_wc_after_wrapper' ); ?>
 </form>
 <?php do_action( 'qliro_one_wc_after_checkout_form' ); ?>
+
+<?php do_action( 'woocommerce_after_checkout_form', WC()->checkout() ); ?>
