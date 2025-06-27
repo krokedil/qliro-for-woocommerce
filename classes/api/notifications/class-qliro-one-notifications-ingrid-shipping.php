@@ -16,14 +16,14 @@ class Qliro_One_Notifications_Ingrid_Shipping extends Qliro_One_Notifications {
 	 *
 	 * @var string
 	 */
-	protected $event_type = 'SHIPPING_PROVIDER_UPDATE';
+	protected $event_type = 'shipping_provider_update';
 
 	/**
 	 * The provider for the notification.
 	 *
 	 * @var string
 	 */
-	protected $provider = 'INGRID';
+	protected $provider = 'ingrid';
 
 	/**
 	 * Handle the notification callback.
@@ -40,7 +40,7 @@ class Qliro_One_Notifications_Ingrid_Shipping extends Qliro_One_Notifications {
 			throw new WP_Exception( 'Order not found in WooCommerce.', 404 );
 		}
 
-		$session = $payload['session'] ?? throw new WP_Exception( 'Session data is missing from the payload.', 401 );
+		$session         = $payload['session'] ?? throw new WP_Exception( 'Session data is missing from the payload.', 401 );
 		$delivery_groups = $session['delivery_groups'] ?? throw new WP_Exception( 'Delivery groups data is missing from the session data.', 401 );
 
 		// From the first delivery group, get the tos_id.

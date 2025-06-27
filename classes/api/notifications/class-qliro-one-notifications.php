@@ -32,10 +32,8 @@ abstract class Qliro_One_Notifications {
 	 * @param string $provider   The provider to check.
 	 */
 	public function matches( $event_type, $provider ) {
-		// Uppercase the event type and provider for case-insensitive comparison.
-		$event_type = strtoupper( $event_type );
-		$provider   = strtoupper( $provider );
-		return $this->event_type === $event_type && $this->provider === $provider;
+		// Lowercase the event type and provider for case-insensitive comparison.
+		return strtolower( $this->event_type ) === strtolower( $event_type ) && strtolower( $this->provider ) === strtolower( $provider );
 	}
 
 	/**
