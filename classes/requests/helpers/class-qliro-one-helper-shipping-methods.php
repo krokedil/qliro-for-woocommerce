@@ -28,6 +28,7 @@ class Qliro_One_Helper_Shipping_Methods {
 		foreach ( $packages as $i => $package ) {
 			/** @var WC_Shipping_Rate $method */
 			foreach ( $package['rates'] as $method ) {
+				$method_cost = qliro_ensure_numeric( $method->cost );
 				// If the method id contains the qliro_shipping string, skip.
 				if ( false !== strpos( $method->id, 'qliro_shipping' ) ) {
 					continue;
@@ -36,8 +37,8 @@ class Qliro_One_Helper_Shipping_Methods {
 				$method_id   = $method->id;
 				$method_name = $method->label;
 
-				$method_price_inc_tax = round( $method->cost + array_sum( $method->taxes ), 2 );
-				$method_price_ex_tax  = round( $method->cost, 2 );
+				$method_price_inc_tax = round( $method_cost + array_sum( $method->taxes ), 2 );
+				$method_price_ex_tax  = round( $method_cost, 2 );
 				$options              = array(
 					'MerchantReference' => $method_id,
 					'DisplayName'       => $method_name,

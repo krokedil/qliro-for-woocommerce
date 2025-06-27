@@ -247,12 +247,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "c2c98aaf7b02d81ab7792a33259c22bf55eb2006"
+                "reference": "2efd06960ebb0ea853c906d979298fc176eec8a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/c2c98aaf7b02d81ab7792a33259c22bf55eb2006",
-                "reference": "c2c98aaf7b02d81ab7792a33259c22bf55eb2006",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/2efd06960ebb0ea853c906d979298fc176eec8a9",
+                "reference": "2efd06960ebb0ea853c906d979298fc176eec8a9",
                 "shasum": ""
             },
             "require": {
@@ -282,9 +282,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.9.3"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.9.4"
             },
-            "time": "2025-06-10T00:06:55+00:00"
+            "time": "2025-06-16T19:18:36+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -477,12 +477,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c"
+                "reference": "ab217cfc57bebbf3efa44fa059baafd0d9e4064c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
-                "reference": "5bfbbfbabb3df2b9a83e601de9153e4a7111962c",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/ab217cfc57bebbf3efa44fa059baafd0d9e4064c",
+                "reference": "ab217cfc57bebbf3efa44fa059baafd0d9e4064c",
                 "shasum": ""
             },
             "require": {
@@ -545,7 +545,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-12T16:38:37+00:00"
+            "time": "2025-06-13T07:13:41+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -667,12 +667,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "15ce011a1d1a4e97df597dfd16b0b9080ce580f6"
+                "reference": "611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/15ce011a1d1a4e97df597dfd16b0b9080ce580f6",
-                "reference": "15ce011a1d1a4e97df597dfd16b0b9080ce580f6",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8",
+                "reference": "611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8",
                 "shasum": ""
             },
             "require": {
@@ -744,7 +744,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-09T04:52:41+00:00"
+            "time": "2025-06-17T22:52:59+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
