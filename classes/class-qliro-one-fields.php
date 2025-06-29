@@ -141,7 +141,11 @@ class Qliro_One_Fields {
 				'title'       => __( 'Logging', 'qliro-one-for-woocommerce' ),
 				'label'       => __( 'Log debug messages', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Save debug messages from the plugin to the WooCommerce logs. Existing plugin logs can be found <a target="_blank" href="' . $wc_logs_url . '">here</a>.', 'qliro-one-for-woocommerce' ),
+				'description' => sprintf(
+					// translators: %s is the URL to the WooCommerce logs.
+					__( 'Save debug messages from the plugin to the WooCommerce logs. Existing plugin logs can be found <a target="_blank" href="%s">here</a>.', 'qliro-one-for-woocommerce' ),
+					esc_url( $wc_logs_url )
+				),
 				'default'     => 'yes',
 				'desc_tip'    => false,
 			),
@@ -180,7 +184,7 @@ class Qliro_One_Fields {
 				'title'       => __( 'Country selector placement', 'qliro-one-for-woocommerce' ),
 				'type'        => 'select',
 				'options'     => array(
-					'shortcode'                        => __( 'Inactive/shortcode placement' ),
+					'shortcode'                        => __( 'Inactive/shortcode placement', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_before_wrapper'      => __( 'Above checkout form', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_before_order_review' => __( 'Above order review', 'qliro-one-for-woocommerce' ),
 					'qliro_one_wc_before_snippet'      => __( 'Above payment form', 'qliro-one-for-woocommerce' ),
@@ -227,7 +231,8 @@ class Qliro_One_Fields {
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
 				'description' => __(
-					'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">here</a>.'
+					'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">here</a>.',
+					'qliro-one-for-woocommerce'
 				),
 			),
 			'minimum_age'                                => array(
@@ -460,7 +465,7 @@ class Qliro_One_Fields {
 				'type'        => 'select',
 				'default'     => 'campaign',
 				'title'       => __( 'Banner widget payment method', 'qliro-one-for-woocommerce' ),
-				'description' => __( 'Choose the payment method to be presented in the banner widget.', 'woocommerce' ),
+				'description' => __( 'Choose the payment method to be presented in the banner widget.', 'qliro-one-for-woocommerce' ),
 				'options'     => array(
 					'campaign'     => __( 'Campaign', 'qliro-one-for-woocommerce' ),
 					'invoice'      => __( 'Invoice', 'qliro-one-for-woocommerce' ),
@@ -515,7 +520,8 @@ class Qliro_One_Fields {
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
 				'description' => __(
-					'Presents a suitable payment method based on the price of the current product. You can also display it with the shortcode [qliro_one_payment_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.'
+					'Presents a suitable payment method based on the price of the current product. You can also display it with the shortcode [qliro_one_payment_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.',
+					'qliro-one-for-woocommerce'
 				),
 			),
 			'payment_widget_placement_location'          => array(

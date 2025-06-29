@@ -230,13 +230,13 @@ class Qliro_One_Shipping_Method_Instance {
 				),
 			),
 			'tax_status'                  => array(
-				'title'   => __( 'Tax status', 'woocommerce' ),
+				'title'   => __( 'Tax status', 'qliro-one-for-woocommerce' ),
 				'type'    => 'select',
 				'class'   => 'wc-enhanced-select',
 				'default' => 'taxable',
 				'options' => array(
-					'taxable' => __( 'Taxable', 'woocommerce' ),
-					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
+					'taxable' => __( 'Taxable', 'qliro-one-for-woocommerce' ),
+					// 'none'    => _x( 'None', 'Tax status', 'qliro-one-for-woocommerce' ), @todo Implement logic for this.
 				),
 			),
 		);
