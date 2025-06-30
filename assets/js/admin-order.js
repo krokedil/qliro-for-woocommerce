@@ -263,7 +263,8 @@ jQuery(function ($) {
 
 			const refundFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
 
-			if( refundFeeAmount === 0 ) {
+			if (refundFeeAmount === 0) {
+				$qliroReturnFeeTotalSpan.text('');
 				return;
 			}
 
