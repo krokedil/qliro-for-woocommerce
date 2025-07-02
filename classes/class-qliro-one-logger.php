@@ -45,7 +45,7 @@ class Qliro_One_Logger {
 			if ( empty( self::$log ) ) {
 				self::$log = new WC_Logger();
 			}
-			self::$log->add( 'qliro-one-for-woocommerce', wp_json_encode( $message ) );
+			self::$log->add( 'qliro-one-checkout-for-woocommerce', wp_json_encode( $message ) );
 		}
 
 		if ( isset( $data['response']['code'] ) && ( $data['response']['code'] < 200 || $data['response']['code'] > 299 ) ) {

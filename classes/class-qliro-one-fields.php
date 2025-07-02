@@ -142,9 +142,9 @@ class Qliro_One_Fields {
 				'label'       => __( 'Log debug messages', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'description' => sprintf(
-					// translators: %s is the URL to the WooCommerce logs.
-					__( 'Save debug messages from the plugin to the WooCommerce logs. Existing plugin logs can be found <a target="_blank" href="%s">here</a>.', 'qliro-one-for-woocommerce' ),
-					esc_url( $wc_logs_url )
+					// translators: %s is the link to the WooCommerce logs.
+					__( 'Save debug messages from the plugin to the WooCommerce logs. Existing plugin logs can be found %s.', 'qliro-one-for-woocommerce' ),
+					'<a target="_blank" href="' . esc_url( $wc_logs_url ) . '">' . __( 'here', 'qliro-one-for-woocommerce' ) . '</a>'
 				),
 				'default'     => 'yes',
 				'desc_tip'    => false,
@@ -230,9 +230,10 @@ class Qliro_One_Fields {
 				'title'       => __( 'Risk mitigation', 'qliro-one-for-woocommerce' ),
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
-				'description' => __(
-					'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">here</a>.',
-					'qliro-one-for-woocommerce'
+				'description' => sprintf(
+					/* translators: %s: link to product-level settings documentation */
+					__( 'Below you have the possibility to apply site-wide risk mitigation settings. Please note that you also have the possibility to set these settings on an individual product level, read more about it %s.', 'qliro-one-for-woocommerce' ),
+					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/introduction/#product-level-settings">' . __( 'here', 'qliro-one-for-woocommerce' ) . '</a>'
 				),
 			),
 			'minimum_age'                                => array(
@@ -519,9 +520,13 @@ class Qliro_One_Fields {
 				'title'       => __( 'Product widget', 'qliro-one-for-woocommerce' ),
 				'type'        => 'title',
 				'class'       => 'krokedil_settings_title',
-				'description' => __(
-					'Presents a suitable payment method based on the price of the current product. You can also display it with the shortcode [qliro_one_payment_widget], read more about it <a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">here</a>.',
-					'qliro-one-for-woocommerce'
+				'description' => sprintf(
+					/* translators: %s: Link to the documentation for displaying the widget via shortcode. */
+					__(
+						'Presents a suitable payment method based on the price of the current product. You can also display it with the shortcode [qliro_one_payment_widget], read more about it %s.',
+						'qliro-one-for-woocommerce'
+					),
+					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/customization/display-widget-via-shortcode/">' . __( 'here', 'qliro-one-for-woocommerce' ) . '</a>'
 				),
 			),
 			'payment_widget_placement_location'          => array(
