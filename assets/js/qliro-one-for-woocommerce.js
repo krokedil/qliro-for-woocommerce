@@ -87,7 +87,9 @@ jQuery(function ($) {
 				},
 				url: qliroOneParams.change_payment_method_url,
 				success: function (data) { },
-				error: function (data) { },
+				error: function (xhr, status, error) {
+					qliroOneForWooCommerce.logToFile('changeFromQliroOne AJAX error: ' + status + ' | ' + error + ' | ' + JSON.stringify(xhr));
+				},
 				complete: function (data) {
 					window.location.href = data.responseJSON.data.redirect;
 				}
@@ -288,22 +290,26 @@ jQuery(function ($) {
 				url: qliroOneParams.get_order_url,
 				success: function (data) {
 				},
-				error: function (data) {
+					// Log error details
+					qliroOneForWooCommerce.logToFile('getQliroOneOrder AJAX error: ' + status + ' | ' + error + ' | ' + JSON.stringify(xhr));
 				},
 				complete: function (data) {
-					// If the response was not successful, we should fail the order.
-					if (data.responseJSON.success !== true) {
-						qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON.data, callback);
-
-						// If we have a redirect url, we should redirect the user to that url.
-						if(data.responseJSON.data.redirect) {
-							window.location.href = data.responseJSON.data.redirect;
+					try {
+						if (!data.responseJSON || data.responseJSON.success !== true) {
+							qliroOneForWooCommerce.logToFile('getQliroOneOrder failed: ' + JSON.stringify(data.responseJSON));
+							qliroOneForWooCommerce.failOrder('getQliroOneOrder', data.responseJSON?.data || 'Unknown error', callback);
+							if (data.responseJSON?.data?.redirect) {
+								window.location.href = data.responseJSON.data.redirect;
+							}
+							return;
 						}
 						return;
+						qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
+						qliroOneForWooCommerce.logToFile('getQliroOneOrder completed');
+					} catch (err) {
+						qliroOneForWooCommerce.logToFile('getQliroOneOrder complete handler error: ' + err);
+						qliroOneForWooCommerce.failOrder('getQliroOneOrder-exception', err, callback);
 					}
-
-					qliroOneForWooCommerce.setAddressData(data.responseJSON.data, callback);
-					console.log('getQliroOneOrder completed');
 				}
 			});
 		},
@@ -462,9 +468,7 @@ jQuery(function ($) {
 				qliroOneForWooCommerce.logToFile('Timeout error | Timeout when placing the WooCommerce order');
 				qliroOneForWooCommerce.failOrder('timeout-error', 'Timeout error', callback);
 			}, 29000); // 29 seconds.
-
 			qliroOneForWooCommerce.getQliroOneOrder(data, callback);
-
 		},
 		/**
 		 * Logs the message to the Qliro checkout log in WooCommerce.
