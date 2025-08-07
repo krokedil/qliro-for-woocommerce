@@ -252,3 +252,16 @@
 
 
 }
+
+.qliro-discount-form-modal {
+	max-width: max-content;
+}
+
+#qliro-discount-form-heading {
+	padding: 0;
+}
+
+#qliro-discount-form {
+	padding: 0 1rem !important;
+}
+

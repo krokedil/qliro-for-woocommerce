@@ -251,16 +251,21 @@ jQuery(function ($) {
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 
-			const discount = $('#qliro-discount');
+			const discount = $('#qliro-discount-form');
 			if (discount.length > 0) {
-				const fees = JSON.parse($('#qliro-discount').attr('data-fees'));
+				const fees = JSON.parse($('#qliro-discount-form').attr('data-fees'));
 				const totalAmount = parseFloat(discount.attr('data-total-amount'));
-				const discountIdEl = $('[name="qliro-discount-id"]');
-				const discountAmountEl = $('[name="qliro-discount-amount"]');
-				const discountPercentageEl = $('[name="qliro-discount-percentage"]');
+				const discountIdEl = $('#qliro-discount-id');
+				const discountAmountEl = $('#qliro-discount-amount');
+				const discountPercentageEl = $('#qliro-discount-percentage');
+				const newDiscountPercentageEl = $('#qliro-new-discount-percentage');
+				const newTotalAmountEl = $('#qliro-new-total-amount');
+				const modal = $('.qliro-discount-form-modal');
+				const submitButton = $('#qliro-discount-form-submit');
+				const closeButtons = $('.qliro-discount-form-modal .modal-close')
 
 				const updateURL = () => {
-					const actionURL = $('#qliro-discount-modal .confirm').attr('formaction')
+					const actionURL = submitButton.attr('formaction')
 					const url = new URL(actionURL, location.origin);
 
 					const discountAmount = parseFloat(discountAmountEl.val());
@@ -270,21 +275,19 @@ jQuery(function ($) {
 
 					url.searchParams.set('discount_id', discountIdEl.val());
 
-					$('#qliro-discount-modal .confirm').attr('formaction', url.toString());
+					submitButton.attr('formaction', url.toString());
 				}
 
 				const updateView = (amount, percentage) => {
 					const discountedTotalAmount = totalAmount - amount;
-					$('#qliro-new-total-amount').text(discountedTotalAmount.toFixed(2));
-
-					$('.summary .discount-percentage').text(-1 * percentage.toFixed(2));
-					$('.summary .discount-amount').text(amount.toFixed(2));
+					newTotalAmountEl.val(discountedTotalAmount.toFixed(2));
+					newDiscountPercentageEl.val(-1 * percentage.toFixed(2));
 
 					const isFullyDiscounted = amount >= totalAmount;
 					const hasDiscountAmount = amount > 0
 					const hasDiscountId = discountIdEl.val().length > 0;
 					const isDuplicateId = fees.includes(discountIdEl.val());
-					$('#qliro-discount-modal button.confirm').attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
+					submitButton.attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
 
 					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
 					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);
@@ -294,10 +297,10 @@ jQuery(function ($) {
 
 				const toggleModal = (e) => {
 					e.preventDefault();
-					$('.qliro-one-overlay-backdrop').hide();
+					modal.hide();
 				}
 
-				$('[name="qliro-discount-id"]').on('input', function () {
+				discountIdEl.on('input', function () {
 					const alreadyExists = fees.includes($(this).val());
 					$('#qliro-discount-id-error').toggleClass('hidden', !alreadyExists);
 
@@ -310,7 +313,7 @@ jQuery(function ($) {
 					updateURL()
 				})
 
-				$('[name="qliro-discount-amount"]').on('input', function () {
+				discountAmountEl.on('input', function () {
 					let discountAmount = parseFloat($(this).val());
 					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
 
@@ -326,12 +329,12 @@ jQuery(function ($) {
 					}
 
 					const percentage = ((discountAmount / totalAmount) * 100);
-					$('[name="qliro-discount-percentage"]').val(percentage.toFixed(2));
+					discountPercentageEl.val(percentage.toFixed(2));
 
 					updateView(discountAmount, percentage);
 				})
 
-				$('[name="qliro-discount-percentage"]').on('input', function () {
+				discountPercentageEl.on('input', function () {
 					let discountPercentage = parseFloat($(this).val());
 					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
 
@@ -346,17 +349,17 @@ jQuery(function ($) {
 					} 
 
 					const discountAmount = ((totalAmount * discountPercentage) / 100);
-					$('[name="qliro-discount-amount"]').val(discountAmount.toFixed(2));
+					discountAmountEl.val(discountAmount.toFixed(2));
 
 					updateView(discountAmount, discountPercentage);
 				})
 
 				$('#qliro_add_order_discount').on('click', function (e) {
 					e.preventDefault();
-					$('.qliro-one-overlay-backdrop').show();
+					modal.show();
 				})
 
-				$('#qliro-discount-modal .close').on('click', toggleModal)
+				closeButtons.on('click', toggleModal)
 
 			}
 		}

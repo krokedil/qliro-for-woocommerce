@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b29a874eb820a3d9652d11c5609c5ab",
+    "content-hash": "2e2f9f209f3121fc1f093de443abb65a",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -58,16 +58,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "dev-develop-fraktjakt",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400"
+                "reference": "08c7f236267bd692c81f75d63da3831970fb7df0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/83fad89608e43ec8f94561994cea20bbdfbe0400",
-                "reference": "83fad89608e43ec8f94561994cea20bbdfbe0400",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/08c7f236267bd692c81f75d63da3831970fb7df0",
+                "reference": "08c7f236267bd692c81f75d63da3831970fb7df0",
                 "shasum": ""
             },
             "require": {
@@ -86,6 +86,11 @@
             "autoload": {
                 "psr-4": {
                     "Krokedil\\Shipping\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Krokedil\\Shipping\\Tests\\": "tests/"
                 }
             },
             "archive": {
@@ -110,23 +115,23 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/develop-fraktjakt",
+                "source": "https://github.com/krokedil/shipping/tree/develop",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2024-03-25T15:01:14+00:00"
+            "time": "2025-07-16T11:34:49+00:00"
         },
         {
             "name": "krokedil/woocommerce",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5"
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
-                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/d008878feeba072cb952d95cadd68ad93cbae727",
+                "reference": "d008878feeba072cb952d95cadd68ad93cbae727",
                 "shasum": ""
             },
             "require-dev": {
@@ -157,10 +162,10 @@
             ],
             "description": "A library package for Krokedils plugins that contains helper methods when working with WooCommerce.",
             "support": {
-                "source": "https://github.com/krokedil/woocommerce/tree/1.8.0",
+                "source": "https://github.com/krokedil/woocommerce/tree/1.8.1",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2025-02-05T14:02:57+00:00"
+            "time": "2025-06-03T09:31:00+00:00"
         },
         {
             "name": "psr/container",
@@ -221,15 +226,15 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "krokedil/shipping": 20,
-        "kernl/kernl-update-checker": 20
+        "kernl/kernl-update-checker": 20,
+        "krokedil/shipping": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
