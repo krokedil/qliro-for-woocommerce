@@ -79,7 +79,7 @@ $section_3 = array(
 		'name' => 'Totalbelopp innan',
 		'id' => 'qliro-total-amount',
 		'type' => 'text',
-		'value' => $total_amount,
+		'value' => "$total_amount SEK",
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
