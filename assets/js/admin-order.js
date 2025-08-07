@@ -280,8 +280,8 @@ jQuery(function ($) {
 
 				const updateView = (amount, percentage) => {
 					const discountedTotalAmount = totalAmount - amount;
-					newTotalAmountEl.val(discountedTotalAmount.toFixed(2));
-					newDiscountPercentageEl.val(-1 * percentage.toFixed(2));
+					newTotalAmountEl.val(`${discountedTotalAmount.toFixed(2)} SEK`);
+					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
 
 					const isFullyDiscounted = amount >= totalAmount;
 					const hasDiscountAmount = amount > 0

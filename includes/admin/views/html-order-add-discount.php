@@ -97,7 +97,7 @@ $section_3 = array(
 		'name' => 'Nytt belopp att betala',
 		'id' => 'qliro-new-total-amount',
 		'type' => 'text',
-		'value' => $total_amount,
+		'value' => "$total_amount SEK",
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -120,7 +120,14 @@ $section_3 = array(
 				</header>
 				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php echo esc_attr($fees); ?>" data-total-amount="<?php echo esc_attr( $total_amount ); ?>">
 					<?php woocommerce_admin_fields($section_1); ?>
+					<p id="qliro-discount-id-error" class="explanation hidden error">Rabatt-ID måste vara unikt</p>
+					<hr>
+
 					<?php woocommerce_admin_fields($section_2); ?>
+					<p id="qliro-discount-notice" class="explanation">Procentsatsen är baserad på totalbelopp</p>
+					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden">Beloppet får inte vara lika med eller överstiga totalbelopp.</p>
+					<hr>
+
 					<?php woocommerce_admin_fields($section_3); ?>
 
 				</article>
@@ -132,7 +139,7 @@ $section_3 = array(
 							</span>
 						</div>
 
-						<button type="submit" id="qliro-discount-form-submit" class="button button-primary button-large" aria-label="Bekräfta" formaction="<?php echo $action_url; ?>">Bekräfta</button>
+						<button type="submit" disabled id="qliro-discount-form-submit" class="button button-primary button-large" aria-label="Bekräfta" formaction="<?php echo $action_url; ?>">Bekräfta</button>
 					</div>
 				</footer>
 			</section>
