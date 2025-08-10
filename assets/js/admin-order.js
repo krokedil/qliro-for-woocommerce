@@ -295,11 +295,6 @@ jQuery(function ($) {
 					updateURL()
 				}
 
-				const toggleModal = (e) => {
-					e.preventDefault();
-					modal.hide();
-				}
-
 				discountIdEl.on('input', function () {
 					const alreadyExists = fees.includes($(this).val());
 					$('#qliro-discount-id-error').toggleClass('hidden', !alreadyExists);
@@ -358,6 +353,11 @@ jQuery(function ($) {
 					e.preventDefault();
 					modal.show();
 				})
+
+				const toggleModal = (e) => {
+					e.preventDefault();
+					modal.hide();
+				}
 
 				closeButtons.on('click', toggleModal)
 
