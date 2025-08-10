@@ -260,7 +260,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Type'               => 'Discount',
 					'Quantity'           => $fee->get_quantity(),
 					'PricePerItemIncVat' => $fee->get_total(),
-					'Description'        => 'Rabatt',
+					'Description'        => $fee->get_name(),
 					'PricePerItemExVat'  => $fee->get_total(),
 				),
 			);
