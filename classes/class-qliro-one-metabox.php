@@ -202,23 +202,26 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( empty( $action ) || empty( $order_id ) || empty( $discount_amount ) || empty( $discount_id ) ) {
+		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
 			return;
 		}
 
+		// Check if this event even concerns us.
 		if ( 'qliro_add_order_discount' !== $action ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
+		$order = wc_get_order( $order_id );
+		if ( empty( $order ) || $this->payment_method_id !== $order->get_payment_method() ) {
 			return;
 		}
 
-		$order = wc_get_order( $order_id );
-		if ( ! $order || $this->payment_method_id !== $order->get_payment_method() ) {
+		$order_key = $order->get_order_key();
+		if ( ! hash_equals( $order->get_order_key(), $order_key ) ) {
 			return;
 		}
 
@@ -429,6 +432,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 				array(
 					'action'          => 'qliro_add_order_discount',
 					'order_id'        => $order->get_id(),
+					'order_key'       => $order->get_order_key(),
 					'qliro_order_id'  => $qliro_order['OrderId'] ?? '',
 					'discount_amount' => 0,
 					'discount_id'     => '',
