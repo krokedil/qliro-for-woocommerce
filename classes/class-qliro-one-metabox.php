@@ -225,10 +225,15 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		// Description length allowed by Qliro.
-		$discount_id = substr( $discount_id, 0, 200 );
-
 		try {
+
+			// These controls should throw to inform the customer about what happened.
+			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
+				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
+			}
+
+			// Description length allowed by Qliro.
+			$discount_id = substr( $discount_id, 0, 200 );
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
 			$order_total = $order->get_total();
 			if ( ( $discount_amount * 100 ) >= ( $order_total * 100 ) ) {
