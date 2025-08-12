@@ -53,8 +53,8 @@ class Qliro_One_Request_Add_Items extends Qliro_One_Request_Post {
 		}
 
 		return array(
-			'RequestId'      => $order_data->generate_request_id(),
 			'MerchantApiKey' => $this->get_qliro_key(),
+			'RequestId'      => $order_data->generate_request_id(),
 			'OrderId'        => $this->qliro_order_id,
 			'Currency'       => $order->get_currency(),
 			'Additions'      => array(

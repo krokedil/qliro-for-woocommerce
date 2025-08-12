@@ -257,10 +257,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$items = array(
 				array(
 					'MerchantReference'  => $discount_id,
-					'Type'               => 'Discount',
-					'Quantity'           => $fee->get_quantity(),
-					'PricePerItemIncVat' => $fee->get_total(),
 					'Description'        => $fee->get_name(),
+					'Quantity'           => $fee->get_quantity(),
+					'Type'               => 'Discount',
+					'PricePerItemIncVat' => $fee->get_total(),
 					'PricePerItemExVat'  => $fee->get_total(),
 				),
 			);
