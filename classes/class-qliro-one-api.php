@@ -12,13 +12,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Qliro_One_API class.
  *
- * Class that has functions for the Qliro One communication.
+ * Class that has functions for the Qliro communication.
  */
 class Qliro_One_API {
 	/**
-	 * Creates a Qliro One Checkout order.
+	 * Creates a Qliro Checkout order.
 	 *
-	 * @param int|null $order_id The WooCommerce order id to create the Qliro One order for or null to create from the cart.
+	 * @param int|null $order_id The WooCommerce order id to create the Qliro order for or null to create from the cart.
 	 * @return array|WP_Error
 	 */
 	public function create_qliro_one_order( $order_id = null ) {
@@ -29,9 +29,9 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Gets a Qliro One Checkout order
+	 * Gets a Qliro Checkout order
 	 *
-	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @param string $qliro_one_order_id The Qliro Checkout order id.
 	 * @return array|WP_Error
 	 */
 	public function get_qliro_one_order( $qliro_one_order_id ) {
@@ -41,9 +41,9 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Gets a Qliro One Admin order
+	 * Gets a Qliro Admin order
 	 *
-	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @param string $qliro_one_order_id The Qliro Checkout order id.
 	 * @return mixed
 	 */
 	public function get_qliro_one_admin_order( $qliro_one_order_id ) {
@@ -54,9 +54,9 @@ class Qliro_One_API {
 
 
 	/**
-	 * Updates a Qliro One Checkout order.
+	 * Updates a Qliro Checkout order.
 	 *
-	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @param string $qliro_one_order_id The Qliro Checkout order id.
 	 * @param int    $order_id The WooCommerce order id.
 	 * @param bool   $force If true always update the order, even if not needed.
 	 * @return array|WP_Error
@@ -68,9 +68,9 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Updates a Qliro One order during order management.
+	 * Updates a Qliro order during order management.
 	 *
-	 * @param string $qliro_one_order_id The Qliro One Checkout order id.
+	 * @param string $qliro_one_order_id The Qliro Checkout order id.
 	 * @param int    $order_id The WooCommerce order id.
 	 *
 	 * @return array|WP_Error
@@ -89,7 +89,7 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Cancels a Qliro One order.
+	 * Cancels a Qliro order.
 	 *
 	 * @param int $order_id Order ID.
 	 * @return array|WP_Error
@@ -107,7 +107,7 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Capture a Qliro one order.
+	 * Capture a Qliro order.
 	 *
 	 * @param int   $order_id Order ID.
 	 * @param array $items Items to capture.
@@ -125,18 +125,24 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Refund a Qliro one order.
+	 * Refund a Qliro order.
 	 *
-	 * @param int $order_id Order ID.
+	 * @param int                 $order_id Order ID.
+	 * @param int                 $refund_order_id Refund order ID.
+	 * @param string              $capture_id Capture ID.
+	 * @param array               $items Items to refund.
+	 * @param array Fee to refund.
+	 *
 	 * @return array|WP_Error
 	 */
-	public function refund_qliro_one_order( $order_id, $refund_order_id, $capture_id = '', $items = array() ) {
+	public function refund_qliro_one_order( $order_id, $refund_order_id, $capture_id = '', $items = array(), $return_fees = array() ) {
 		$request  = new Qliro_One_Request_Return_Items(
 			array(
 				'order_id'        => $order_id,
 				'refund_order_id' => $refund_order_id,
 				'capture_id'      => $capture_id,
 				'items'           => $items,
+				'return_fee'      => $return_fees,
 			)
 		);
 		$response = $request->request();
@@ -180,7 +186,43 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Update the merchant references for a Qliro one order.
+	 * Add items to a shipped Qliro order.
+	 *
+	 * @param int   $order_id Order ID.
+	 * @param array $items Items to add.
+	 * @return array|WP_Error
+	 */
+	public function add_items_qliro_order( $order_id, $items ) {
+		$request  = new Qliro_One_Request_Add_Items(
+			array(
+				'order_id' => $order_id,
+				'items'    => $items,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
+	 * Update items on a Qliro order not yet shipped.
+	 *
+	 * @param int   $order_id Order ID.
+	 * @param array $items Items to add.
+	 * @return array|WP_Error
+	 */
+	public function update_items_qliro_order( $order_id, $items ) {
+		$request  = new Qliro_One_Request_Update_Items(
+			array(
+				'order_id' => $order_id,
+				'items'    => $items,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
+	 * Update the merchant references for a Qliro order.
 	 *
 	 * @param int $order_id The WooCommerce Order ID.
 	 * @return array|WP_Error
@@ -209,7 +251,7 @@ class Qliro_One_API {
 	}
 
 	/**
-	 * Upsell a Qliro one order.
+	 * Upsell a Qliro order.
 	 *
 	 * @param int    $order_id Order ID.
 	 * @param string $upsell_request_id Id that upsell order lines is tagged with.

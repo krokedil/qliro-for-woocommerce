@@ -1,6 +1,6 @@
 <?php
 /**
- * Class that formats merchant URLs for Qliro One API.
+ * Class that formats merchant URLs for Qliro API.
  *
  * @package Qliro_One_For_WooCommerce/Classes/Requests/Helpers
  */
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Qliro_One_Merchant_URLs class.
  *
- * Class that formats gets merchant URLs Qliro One API.
+ * Class that formats gets merchant URLs Qliro API.
  */
 class Qliro_One_Merchant_URLS {
 

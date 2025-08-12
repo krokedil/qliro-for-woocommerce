@@ -200,8 +200,10 @@ class Qliro_One_Helper_Cart {
 		$chosen_shipping = $chosen_methods[0];
 		foreach ( $packages as $i => $package ) {
 			foreach ( $package['rates'] as $method ) {
+				$method_cost = qliro_ensure_numeric( $method->cost );
+
 				if ( $chosen_shipping === $method->id ) {
-					if ( $method->cost > 0 ) {
+					if ( $method_cost > 0 ) {
 						return array(
 							'MerchantReference'  => $method->id,
 							'Description'        => $method->label,

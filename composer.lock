@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "6e0fa428497bf560152ee73ffbb8af5c6a56b0dd"
+                "reference": "18a95476797ed480b3f2598984bc6f7e1eecc9a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/6e0fa428497bf560152ee73ffbb8af5c6a56b0dd",
-                "reference": "6e0fa428497bf560152ee73ffbb8af5c6a56b0dd",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/18a95476797ed480b3f2598984bc6f7e1eecc9a8",
+                "reference": "18a95476797ed480b3f2598984bc6f7e1eecc9a8",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-27T17:24:01+00:00"
+            "time": "2025-05-28T16:05:48+00:00"
         },
         {
             "name": "nette/utils",
@@ -195,12 +195,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "54123e2fa2a07b11d03fe15f27fb7a64d970a9df"
+                "reference": "2efd06960ebb0ea853c906d979298fc176eec8a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/54123e2fa2a07b11d03fe15f27fb7a64d970a9df",
-                "reference": "54123e2fa2a07b11d03fe15f27fb7a64d970a9df",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/2efd06960ebb0ea853c906d979298fc176eec8a9",
+                "reference": "2efd06960ebb0ea853c906d979298fc176eec8a9",
                 "shasum": ""
             },
             "require": {
@@ -230,22 +230,22 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v10.0.2"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v9.9.4"
             },
-            "time": "2025-07-14T17:13:11+00:00"
+            "time": "2025-06-16T19:18:36+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v6.8.2",
+            "version": "v6.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "9c8e22e437463197c1ec0d5eaa9ddd4a0eb6d7f8"
+                "reference": "92e444847d94f7c30f88c60004648f507688acd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/9c8e22e437463197c1ec0d5eaa9ddd4a0eb6d7f8",
-                "reference": "9c8e22e437463197c1ec0d5eaa9ddd4a0eb6d7f8",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/92e444847d94f7c30f88c60004648f507688acd5",
+                "reference": "92e444847d94f7c30f88c60004648f507688acd5",
                 "shasum": ""
             },
             "conflict": {
@@ -253,7 +253,7 @@
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "nikic/php-parser": "^5.5",
+                "nikic/php-parser": "^5.4",
                 "php": "^7.4 || ^8.0",
                 "php-stubs/generator": "^0.8.3",
                 "phpdocumentor/reflection-docblock": "^5.4.1",
@@ -281,9 +281,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.8.2"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.8.1"
             },
-            "time": "2025-07-16T06:41:00+00:00"
+            "time": "2025-05-02T12:33:34+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -737,12 +737,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "501c14723b0d570f71c7cb3c6563d5a886d414f9"
+                "reference": "611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/501c14723b0d570f71c7cb3c6563d5a886d414f9",
-                "reference": "501c14723b0d570f71c7cb3c6563d5a886d414f9",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8",
+                "reference": "611f7b1fa15e265c7b7b7b7ef0e4905bb5e1add8",
                 "shasum": ""
             },
             "require": {
@@ -814,122 +814,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-08-06T00:52:17+00:00"
-        },
-        {
-            "name": "symplify/phpstan-rules",
-            "version": "14.6.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symplify/phpstan-rules.git",
-                "reference": "0d3f5b5f9f6c20df5405fcbc123313c932d2562c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symplify/phpstan-rules/zipball/0d3f5b5f9f6c20df5405fcbc123313c932d2562c",
-                "reference": "0d3f5b5f9f6c20df5405fcbc123313c932d2562c",
-                "shasum": ""
-            },
-            "require": {
-                "nette/utils": "^3.2|^4.0",
-                "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.1.8",
-                "webmozart/assert": "^1.11"
-            },
-            "type": "phpstan-extension",
-            "extra": {
-                "phpstan": {
-                    "includes": [
-                        "config/services/services.neon"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/functions/fast-functions.php"
-                ],
-                "psr-4": {
-                    "Symplify\\PHPStanRules\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Set of Symplify rules for PHPStan",
-            "support": {
-                "issues": "https://github.com/symplify/phpstan-rules/issues",
-                "source": "https://github.com/symplify/phpstan-rules/tree/14.6.9"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/rectorphp",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/tomasvotruba",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-04-28T13:48:58+00:00"
-        },
-        {
-            "name": "webmozart/assert",
-            "version": "1.11.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webmozarts/assert.git",
-                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/11cb2199493b2f8a3b53e7f19068fc6aac760991",
-                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "php": "^7.2 || ^8.0"
-            },
-            "conflict": {
-                "phpstan/phpstan": "<0.12.20",
-                "vimeo/psalm": "<4.6.1 || 4.6.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^8.5.13"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.10-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webmozart\\Assert\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bernhard Schussek",
-                    "email": "bschussek@gmail.com"
-                }
-            ],
-            "description": "Assertions to validate method input/output with nice error messages.",
-            "keywords": [
-                "assert",
-                "check",
-                "validate"
-            ],
-            "support": {
-                "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/1.11.0"
-            },
-            "time": "2022-06-03T18:03:27+00:00"
+            "time": "2025-06-17T22:52:59+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

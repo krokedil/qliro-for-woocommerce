@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is responsible for creating the Qliro One branding widget (available in Appearance → Widgets).
+ * This file is responsible for creating the Qliro branding widget (available in Appearance → Widgets).
  *
  * @package Qliro_One_For_WooCommerce/Classes/Widgets
  */
@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro One banner widget class.
+ * Qliro banner widget class.
  */
 class Qliro_One_Banner_Widget {
 
@@ -52,7 +52,6 @@ class Qliro_One_Banner_Widget {
 		if ( 'yes' === $this->settings['banner_widget_cart_enabled'] ) {
 			add_action( $this->settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals', array( $this, 'add_banner_widget_to_page' ), apply_filters( 'qliro_banner_widget_cart_priority', 5 ) );
 		}
-
 	}
 
 	/**

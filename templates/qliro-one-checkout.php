@@ -1,6 +1,6 @@
 <?php
 /**
- * Qliro One Checkout page
+ * Qliro Checkout page
  *
  * Overrides /checkout/form-checkout.php.
  *
@@ -15,7 +15,6 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
 	return;
 }
-
 ?>
 
 <form name="checkout" class="checkout woocommerce-checkout">
@@ -36,3 +35,5 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	<?php do_action( 'qliro_one_wc_after_wrapper' ); ?>
 </form>
 <?php do_action( 'qliro_one_wc_after_checkout_form' ); ?>
+
+<?php do_action( 'woocommerce_after_checkout_form', WC()->checkout() ); ?>

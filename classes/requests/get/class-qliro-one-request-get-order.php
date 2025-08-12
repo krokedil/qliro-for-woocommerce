@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Get Qliro One order.
+ * Get Qliro order.
  */
 class Qliro_One_Request_Get_Order extends Qliro_One_Request_Get {
 
