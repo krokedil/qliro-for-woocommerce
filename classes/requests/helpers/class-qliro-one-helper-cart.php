@@ -103,7 +103,7 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// If the cart item is a subscription item, we need to add the metadata to the cart item.
-		if ( class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_subscription( $product ) ) {
+		if ( Qliro_One_Subscriptions::is_subscription_item( $cart_item ) ) {
 			$formatted_cart_item['Metadata']['Subscription']['Enabled'] = true;
 		}
 
