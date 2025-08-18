@@ -1,11 +1,11 @@
 # Copyright (C) 2025 Krokedil
-# This file is distributed under the GPLv3 or later.
+# This file is distributed under the same license as the Qliro for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.12.0\n"
+"Project-Id-Version: Qliro for WooCommerce 1.13.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-07-02 15:31:06+00:00\n"
+"POT-Creation-Date: 2025-08-18 06:58:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,30 +220,17 @@ msgstr ""
 msgid "Log debug messages"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:146
-#. translators: %s is the link to the WooCommerce logs.
-msgid ""
-"Save debug messages from the plugin to the WooCommerce logs. Existing "
-"plugin logs can be found %s."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:147
-#: classes/class-qliro-one-fields.php:236
-#: classes/class-qliro-one-fields.php:529
-msgid "here"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:160
+#: classes/class-qliro-one-fields.php:156
 msgid ""
 "Configure your checkout in relation to shipping, B2C/B2B purchases, "
 "newsletter signup and risk mitigations."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:163
+#: classes/class-qliro-one-fields.php:159
 msgid "Shipping within the Qliro iframe"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:165
+#: classes/class-qliro-one-fields.php:161
 msgid ""
 "Integrating with shipping service like nShift, Ingrid or Fraktjakt? Want to "
 "customize how WooCommerce shipping methods looks within the Qliro iframe? "
@@ -253,65 +240,65 @@ msgid ""
 "settings/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:170
+#: classes/class-qliro-one-fields.php:166
 msgid "No"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:171
+#: classes/class-qliro-one-fields.php:167
 msgid "WooCommerce shipping methods"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:172
+#: classes/class-qliro-one-fields.php:168
 msgid "Qliro integrated shipping with Ingrid"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:176
+#: classes/class-qliro-one-fields.php:172
 msgid "Shipping section description"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:178
+#: classes/class-qliro-one-fields.php:174
 msgid ""
 "Display a custom text right under the shipping section’s main title. Useful "
 "to eg inform about a certain campaign or discounts on delivery for "
 "purchases over certain amount."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:184
+#: classes/class-qliro-one-fields.php:180
 msgid "Country selector placement"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:187
-#: classes/class-qliro-one-fields.php:483
-#: classes/class-qliro-one-fields.php:501
-#: classes/class-qliro-one-fields.php:538
+#: classes/class-qliro-one-fields.php:183
+#: classes/class-qliro-one-fields.php:477
+#: classes/class-qliro-one-fields.php:495
+#: classes/class-qliro-one-fields.php:527
 msgid "Inactive/shortcode placement"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:188
+#: classes/class-qliro-one-fields.php:184
 msgid "Above checkout form"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:189
+#: classes/class-qliro-one-fields.php:185
 msgid "Above order review"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:190
+#: classes/class-qliro-one-fields.php:186
 msgid "Above payment form"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:191
+#: classes/class-qliro-one-fields.php:187
 msgid "Below order review"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:192
+#: classes/class-qliro-one-fields.php:188
 msgid "Below payment form"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:193
+#: classes/class-qliro-one-fields.php:189
 msgid "Below checkout form"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:196
+#: classes/class-qliro-one-fields.php:192
 msgid ""
 "Enables the possibility to switch billing country from the checkout page. "
 "Choose where on the checkout page you want it to be visible. Please note "
@@ -321,37 +308,37 @@ msgid ""
 "introduction/#country-selector\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:200
+#: classes/class-qliro-one-fields.php:196
 msgid "Allowed customer types"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:203
+#: classes/class-qliro-one-fields.php:199
 msgid "Both B2B & B2C"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:204
+#: classes/class-qliro-one-fields.php:200
 msgid "Only B2C"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:205
+#: classes/class-qliro-one-fields.php:201
 msgid "Only B2B"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:207
+#: classes/class-qliro-one-fields.php:203
 msgid ""
 "Qliro supports both B2C and B2B checkout flows. Change the setting if you "
 "only want to allow B2C or B2B checkout flow."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:211
+#: classes/class-qliro-one-fields.php:207
 msgid "Ask for newsletter signup"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:213
+#: classes/class-qliro-one-fields.php:209
 msgid "Show signup newsletter field"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:214
+#: classes/class-qliro-one-fields.php:210
 msgid ""
 "If enabled, Qliro Checkout will ask the customer if they want to sign up "
 "for a newsletter. Read more about how you can use the response from this "
@@ -360,50 +347,51 @@ msgid ""
 "newsletter-settings/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:220
+#: classes/class-qliro-one-fields.php:216
 msgid "Ask for newsletter signup checked by default"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:222
+#: classes/class-qliro-one-fields.php:218
 msgid "Set signup newsletter field as checked by default"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:223
+#: classes/class-qliro-one-fields.php:219
 msgid "If enabled, Qliro Checkout will set signup newsletter as checked by default."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:230
+#: classes/class-qliro-one-fields.php:226
 msgid "Risk mitigation"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:235
-#. translators: %s: link to product-level settings documentation
+#: classes/class-qliro-one-fields.php:229
 msgid ""
 "Below you have the possibility to apply site-wide risk mitigation settings. "
 "Please note that you also have the possibility to set these settings on an "
-"individual product level, read more about it %s."
+"individual product level, read more about it <a target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/get-started/"
+"introduction/#product-level-settings\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:240
+#: classes/class-qliro-one-fields.php:234
 #: classes/class-qliro-one-product-tab.php:55
 msgid "Minimum customer age"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:242
+#: classes/class-qliro-one-fields.php:236
 msgid ""
 "Sets minimum customer age for all purchases, which then also prevents B2B "
 "purchases."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:248
+#: classes/class-qliro-one-fields.php:242
 msgid "Require identity verification"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:249
+#: classes/class-qliro-one-fields.php:243
 msgid "Verify customers identity with BankID"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:251
+#: classes/class-qliro-one-fields.php:245
 msgid ""
 "If enabled and the order country is Sweden, the customer will always be "
 "asked to verify their identity with BankID when completing the purchase. "
@@ -411,27 +399,27 @@ msgid ""
 "instances."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:256
+#: classes/class-qliro-one-fields.php:250
 #: classes/class-qliro-one-product-tab.php:70
 msgid "Has risk"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:258
+#: classes/class-qliro-one-fields.php:252
 msgid "Flag all products as has risk products"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:259
+#: classes/class-qliro-one-fields.php:253
 msgid ""
 "If enabled, all products in the order will be flagged as has risk products. "
 "This can be used to eg limit the list of available payment methods shown "
 "for customer."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:265
+#: classes/class-qliro-one-fields.php:259
 msgid "Upsell on WooCommerce thank you page"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:267
+#: classes/class-qliro-one-fields.php:261
 msgid ""
 "The plugin \"Post Purchase Upsell for WooCommerce\" is needed to enable "
 "upsell on the WooCommerce thank you page. Read more about it <a "
@@ -440,11 +428,11 @@ msgid ""
 ">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:271
+#: classes/class-qliro-one-fields.php:265
 msgid "Upsell percentage"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:274
+#: classes/class-qliro-one-fields.php:268
 msgid ""
 "Set the max amount above the order value a customer can add to a Qliro "
 "order paid with a After Delivery payment. If you want higher than 10% you "
@@ -454,17 +442,17 @@ msgid ""
 ">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:292
+#: classes/class-qliro-one-fields.php:286
 msgid ""
 "Manage settings related to an order after it has been created, such as when "
 "capture and cancelation with Qliro should be initiated etc."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:295
+#: classes/class-qliro-one-fields.php:289
 msgid "Capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:298
+#: classes/class-qliro-one-fields.php:292
 msgid ""
 "Select WooCommerce order status used to initiate capturing the order in "
 "Qliros system. Suggested and default is to use Completed. Please note that "
@@ -472,11 +460,11 @@ msgid ""
 "orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:303
+#: classes/class-qliro-one-fields.php:297
 msgid "Cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:306
+#: classes/class-qliro-one-fields.php:300
 msgid ""
 "Select WooCommerce order status used to initiate canceling the order in "
 "Qliros system. Suggested and default is to use Cancelled. Please note that "
@@ -484,29 +472,29 @@ msgid ""
 "orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:311
+#: classes/class-qliro-one-fields.php:305
 msgid "Calculate return fee"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:312
+#: classes/class-qliro-one-fields.php:306
 msgid "Automatically calculate return fee on refunds"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:315
+#: classes/class-qliro-one-fields.php:309
 msgid ""
 "If enabled, then the Qliro return fee will be automatically calculated in "
 "the background if a refunded order line is less than the unit amount."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:319
+#: classes/class-qliro-one-fields.php:313
 msgid "Advanced pending status configuration"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:320
+#: classes/class-qliro-one-fields.php:314
 msgid "Enable advanced pending status configuration"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:321
+#: classes/class-qliro-one-fields.php:315
 msgid ""
 "There is a delay when a capture or cancellation is initiated and "
 "WooCommerce receives the response. Therefore you have the possibility to "
@@ -514,74 +502,74 @@ msgid ""
 "only in advanced situations."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:328
+#: classes/class-qliro-one-fields.php:322
 msgid "Pending capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:331
+#: classes/class-qliro-one-fields.php:325
 msgid ""
 "Select what WooCommerce order status to set the order to while WooCommerce "
 "wait for Qliro to tell us if the capture was successful or not."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:337
+#: classes/class-qliro-one-fields.php:331
 msgid "OK capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:340
+#: classes/class-qliro-one-fields.php:334
 msgid ""
 "Select what WooCommerce order status to set the order to when we get "
 "notified of a successful order capture from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:346
+#: classes/class-qliro-one-fields.php:340
 msgid "Pending cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:349
+#: classes/class-qliro-one-fields.php:343
 msgid ""
 "Select what WooCommerce order status to set the order to while we wait for "
 "Qliro to tell us if the cancelation was successful or not."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:355
+#: classes/class-qliro-one-fields.php:349
 msgid "OK cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:358
+#: classes/class-qliro-one-fields.php:352
 msgid ""
 "Select what WooCommerce order status to set the order to when we get "
 "notified of a successful order cancelation from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:371
+#: classes/class-qliro-one-fields.php:365
 msgid ""
 "Customize your checkout related to page layout, other payment method button "
 "text, colors and corner radius to make the look and feel of the checkout "
 "fit into your website in the best possible way."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:374
+#: classes/class-qliro-one-fields.php:368
 msgid "Checkout page layout"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:377
+#: classes/class-qliro-one-fields.php:371
 msgid "One column checkout"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:378
+#: classes/class-qliro-one-fields.php:372
 msgid "Two column checkout (Qliro in right column)"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:379
+#: classes/class-qliro-one-fields.php:373
 msgid "Two column checkout (Qliro in left column)"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:380
+#: classes/class-qliro-one-fields.php:374
 msgid "Two column checkout (Qliro in left column) - Storefront light"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:382
+#: classes/class-qliro-one-fields.php:376
 msgid ""
 "Choose layout to use on the Qliro checkout page. Read more about the "
 "options and how the checkout page template can be further customized <a "
@@ -590,95 +578,95 @@ msgid ""
 "introduction/#checkout-customization\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:387
+#: classes/class-qliro-one-fields.php:381
 msgid "Customize other payment method button text"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:389
+#: classes/class-qliro-one-fields.php:383
 msgid ""
 "Customize the <em>Select another payment method</em> button text that is "
 "displayed on the checkout page if other payment methods than Qliro is "
 "enabled. Leave blank to use the default (and translatable) text."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:398
+#: classes/class-qliro-one-fields.php:392
 msgid "Look and feel"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:403
+#: classes/class-qliro-one-fields.php:397
 msgid "Background color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:405
+#: classes/class-qliro-one-fields.php:399
 msgid ""
 "If the background should be something else than white, set the preferred "
 "hex color. Only colors with saturation <= 10% are supported. If a color "
 "with saturation > 10% is provided, the saturation will be lowered to 10%."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:410
+#: classes/class-qliro-one-fields.php:404
 msgid "Primary color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:412
+#: classes/class-qliro-one-fields.php:406
 msgid ""
 "Define the hex color for the selected options throughout the checkout. The "
 "spinner for loading in the checkout will have the same color."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:417
+#: classes/class-qliro-one-fields.php:411
 msgid "Call to action color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:419
+#: classes/class-qliro-one-fields.php:413
 msgid "Define the hex color for the CTA buttons throughout the checkout."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:424
+#: classes/class-qliro-one-fields.php:418
 msgid "Call to action hover color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:426
+#: classes/class-qliro-one-fields.php:420
 msgid ""
 "Define the hex color for the CTA buttons hoovered throughout the checkout. "
 "If not provided, the hover color will be a blend between the call to action "
 "color and the background color."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:431
+#: classes/class-qliro-one-fields.php:425
 msgid "Corner radius"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:433
+#: classes/class-qliro-one-fields.php:427
 msgid ""
 "A pixel value to be used on corners throughout Qliro Checkout, eg for the "
 "outline of payment or shipping methods. Changes will also apply on all "
 "fields to be filled in by customer, e.g. fields when customer authenticate."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:439
+#: classes/class-qliro-one-fields.php:433
 msgid "Button corner radius"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:441
+#: classes/class-qliro-one-fields.php:435
 msgid ""
 "A pixel value to be used on corners of CTA buttons throughout Qliro "
 "Checkout."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:452
+#: classes/class-qliro-one-fields.php:446
 msgid "Widgets"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:454
+#: classes/class-qliro-one-fields.php:448
 msgid "Setup Qliro payment widgets and banner widgets on your website."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:457
+#: classes/class-qliro-one-fields.php:451
 msgid "Banner widget"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:460
+#: classes/class-qliro-one-fields.php:454
 msgid ""
 "Promote Qliro payment methods and campaigns, without having to manually "
 "update banners continuously. You can also display it with the shortcode "
@@ -687,150 +675,150 @@ msgid ""
 "display-widget-via-shortcode/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:468
+#: classes/class-qliro-one-fields.php:462
 msgid "Banner widget payment method"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:469
+#: classes/class-qliro-one-fields.php:463
 msgid "Choose the payment method to be presented in the banner widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:471
+#: classes/class-qliro-one-fields.php:465
 msgid "Campaign"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:472
+#: classes/class-qliro-one-fields.php:466
 msgid "Invoice"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:473
+#: classes/class-qliro-one-fields.php:467
 msgid "Part payment"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:478
+#: classes/class-qliro-one-fields.php:472
 msgid "Banner widget placement on product pages"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:480
+#: classes/class-qliro-one-fields.php:474
 msgid "Choose where on the product page that you want to display the banner widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:484
-#: classes/class-qliro-one-fields.php:539
+#: classes/class-qliro-one-fields.php:478
+#: classes/class-qliro-one-fields.php:528
 msgid "Above Title"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:485
-#: classes/class-qliro-one-fields.php:540
+#: classes/class-qliro-one-fields.php:479
+#: classes/class-qliro-one-fields.php:529
 msgid "Between Title and Price"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:486
-#: classes/class-qliro-one-fields.php:541
+#: classes/class-qliro-one-fields.php:480
+#: classes/class-qliro-one-fields.php:530
 msgid "Between Price and Excerpt"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:487
-#: classes/class-qliro-one-fields.php:542
+#: classes/class-qliro-one-fields.php:481
+#: classes/class-qliro-one-fields.php:531
 msgid "Between Excerpt and Add to cart button"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:488
-#: classes/class-qliro-one-fields.php:543
+#: classes/class-qliro-one-fields.php:482
+#: classes/class-qliro-one-fields.php:532
 msgid "Between Add to cart button and Product meta"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:489
-#: classes/class-qliro-one-fields.php:544
+#: classes/class-qliro-one-fields.php:483
+#: classes/class-qliro-one-fields.php:533
 msgid "Between Product meta and Product sharing buttons"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:490
-#: classes/class-qliro-one-fields.php:545
+#: classes/class-qliro-one-fields.php:484
+#: classes/class-qliro-one-fields.php:534
 msgid "After Product sharing-buttons"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:493
-#: classes/class-qliro-one-fields.php:548
+#: classes/class-qliro-one-fields.php:487
+#: classes/class-qliro-one-fields.php:537
 msgid "Select where to display the widget in your product pages."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:496
+#: classes/class-qliro-one-fields.php:490
 msgid "Banner widget placement on cart page"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:497
+#: classes/class-qliro-one-fields.php:491
 msgid "Choose where on the cart page that you want to display the banner widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:502
+#: classes/class-qliro-one-fields.php:496
 msgid "Above cross-sell"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:503
+#: classes/class-qliro-one-fields.php:497
 msgid "Above cart totals"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:504
+#: classes/class-qliro-one-fields.php:498
 msgid "Between cart totals and proceed to checkout button"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:505
+#: classes/class-qliro-one-fields.php:499
 msgid "After proceed to checkout button"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:506
+#: classes/class-qliro-one-fields.php:500
 msgid "Bottom of the page"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:509
+#: classes/class-qliro-one-fields.php:503
 msgid "Select where to display the widget on the cart page."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:513
+#: classes/class-qliro-one-fields.php:507
 msgid "Banner widget styled shadow"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:514
+#: classes/class-qliro-one-fields.php:508
 msgid "Whether or not the banner should be rendered with a Qliro style shadow."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:516
+#: classes/class-qliro-one-fields.php:510
 msgid "Display with a Qliro style shadow"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:520
+#: classes/class-qliro-one-fields.php:514
 msgid "Product widget"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:525
-#. translators: %s: Link to the documentation for displaying the widget via
-#. shortcode.
+#: classes/class-qliro-one-fields.php:517
 msgid ""
 "Presents a suitable payment method based on the price of the current "
 "product. You can also display it with the shortcode "
-"[qliro_one_payment_widget], read more about it %s."
+"[qliro_one_payment_widget], read more about it <a target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/customization/"
+"display-widget-via-shortcode/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:533
+#: classes/class-qliro-one-fields.php:522
 msgid "Payment widget placement on product pages"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:535
+#: classes/class-qliro-one-fields.php:524
 msgid ""
 " Choose where on the product page that you want to display the product "
 "widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:552
+#: classes/class-qliro-one-fields.php:541
 msgid "Payment widget condensed copy"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:553
+#: classes/class-qliro-one-fields.php:542
 msgid "Display with a condensed and shorter copy"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:555
+#: classes/class-qliro-one-fields.php:544
 msgid "If enabled, the product widget will be rendered with shorter copy."
 msgstr ""
 
@@ -1130,6 +1118,7 @@ msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
 #: dependencies/krokedil/settings-page/src/Addons.php:209
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Addons.php:199
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Addons.php:199
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Addons.php:199
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Addons.php:199
@@ -1268,6 +1257,7 @@ msgid ""
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:56
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:54
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:56
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:54
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:56
@@ -1278,6 +1268,7 @@ msgid "View details"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:71
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:77
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:71
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:77
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:71
@@ -1288,6 +1279,7 @@ msgid "More information about %s"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:107
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:128
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:107
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:128
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:107
@@ -1298,6 +1290,7 @@ msgid "Check for updates"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:183
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:224
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:183
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:224
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:183
@@ -1308,6 +1301,7 @@ msgid "Unknown update checker status \"%s\""
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:84
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:101
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:84
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:101
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:84
@@ -1319,6 +1313,8 @@ msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:42
 #: dependencies/krokedil/settings-page/src/Navigation.php:57
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Addons.php:46
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Navigation.php:63
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Addons.php:46
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Navigation.php:63
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Addons.php:46
@@ -1329,6 +1325,7 @@ msgid "Addons"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:241
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Addons.php:230
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Addons.php:230
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Addons.php:230
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Addons.php:230
@@ -1336,6 +1333,7 @@ msgid "Active"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:245
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Addons.php:234
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Addons.php:234
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Addons.php:234
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Addons.php:234
@@ -1343,6 +1341,7 @@ msgid "Activate"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:251
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Addons.php:239
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Addons.php:239
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Addons.php:239
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Addons.php:239
@@ -1350,6 +1349,7 @@ msgid "Install Now"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Navigation.php:52
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Navigation.php:55
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Navigation.php:55
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Navigation.php:55
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Navigation.php:55
@@ -1358,7 +1358,9 @@ msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Navigation.php:54
 #: dependencies/krokedil/settings-page/src/Support.php:30
-#: qliro-one-for-woocommerce.php:213
+#: qliro-one-for-woocommerce.php:211
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Navigation.php:59
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Support.php:31
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Navigation.php:59
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Support.php:31
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Navigation.php:59
@@ -1369,6 +1371,7 @@ msgid "Support"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:100
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Support.php:115
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Support.php:115
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Support.php:115
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Support.php:115
@@ -1376,6 +1379,7 @@ msgid "If you still need help, please open a support ticket with Krokedil."
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:103
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Support.php:116
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Support.php:116
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Support.php:116
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Support.php:116
@@ -1383,6 +1387,7 @@ msgid "Open support ticket with Krokedil"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Layout.php:76
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Traits/Layout.php:67
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Traits/Layout.php:67
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Traits/Layout.php:67
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Traits/Layout.php:67
@@ -1390,6 +1395,7 @@ msgid "Return to payments"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:74
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:74
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:74
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:74
@@ -1397,6 +1403,7 @@ msgid "Plugin resources"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:86
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:86
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:86
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:86
@@ -1404,6 +1411,7 @@ msgid "Additional resources"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+#: tmp-74c932d29a/source/vendor/krokedil/settings-page/src/Traits/Subsection.php:35
 #: tmp-846724d539/source/vendor/krokedil/settings-page/src/Traits/Subsection.php:35
 #: tmp-a0f5d0a80a/source/vendor/krokedil/settings-page/src/Traits/Subsection.php:35
 #: tmp-a486e13b82/source/vendor/krokedil/settings-page/src/Traits/Subsection.php:35
@@ -1411,6 +1419,7 @@ msgid "Sections"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:45
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:47
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:45
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:47
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:45
@@ -1421,6 +1430,7 @@ msgid "Shipping Information"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:171
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:190
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:171
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:190
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:171
@@ -1431,6 +1441,7 @@ msgid "Selected pickup point"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:179
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:192
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:179
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:192
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:179
@@ -1441,6 +1452,7 @@ msgid "Edit"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:242
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:232
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:242
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:232
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:242
@@ -1451,6 +1463,7 @@ msgid "Change"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:264
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:256
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:264
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:256
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:264
@@ -1461,6 +1474,7 @@ msgid "Invalid order id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:269
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:263
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:269
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:263
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:269
@@ -1471,6 +1485,7 @@ msgid "Invalid shipping line id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:274
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:270
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:274
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:270
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:274
@@ -1481,6 +1496,7 @@ msgid "No pickup points found"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:285
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:284
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:285
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:284
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:285
@@ -1491,6 +1507,7 @@ msgid "Invalid pickup point id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:291
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:292
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:291
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:292
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:291
@@ -1501,6 +1518,7 @@ msgid "Could not save shipping line"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:298
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:304
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:298
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:304
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:298
@@ -1511,6 +1529,7 @@ msgid "Pickup point updated"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Calculations.php:26
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/Calculations.php:27
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/Calculations.php:26
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/Calculations.php:27
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/Calculations.php:26
@@ -1521,6 +1540,7 @@ msgid "Shipping tax"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:332
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:332
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
@@ -1531,6 +1551,7 @@ msgid "Address"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:363
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:363
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
@@ -1541,6 +1562,7 @@ msgid "Open hours"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
+#: tmp-74c932d29a/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:389
 #: tmp-846724d539/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
 #: tmp-846724d539/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:389
 #: tmp-a0f5d0a80a/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
@@ -1548,6 +1570,12 @@ msgstr ""
 #: tmp-a486e13b82/destination/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
 #: tmp-a486e13b82/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:389
 msgid "Show on map"
+msgstr ""
+
+#: dependencies/krokedil/shipping/src/SessionHandler.php:229
+msgid ""
+"The shipping methods have been changed during the checkout process. Please "
+"verify your selected shipping method and try again."
 msgstr ""
 
 #: includes/admin/views/html-order-partial-capture.php:17
@@ -1589,15 +1617,15 @@ msgstr ""
 msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:170 qliro-one-for-woocommerce.php:180
+#: qliro-one-for-woocommerce.php:168 qliro-one-for-woocommerce.php:178
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:212
+#: qliro-one-for-woocommerce.php:210
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:385 qliro-one-for-woocommerce.php:395
+#: qliro-one-for-woocommerce.php:383 qliro-one-for-woocommerce.php:393
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
@@ -1625,6 +1653,7 @@ msgid "https://krokedil.com/"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:172
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:214
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:172
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:214
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:172
@@ -1636,6 +1665,7 @@ msgid "The %s plugin is up to date."
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:175
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:216
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:175
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:216
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:175
@@ -1647,6 +1677,7 @@ msgid "A new version of the %s plugin is available."
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:178
+#: tmp-74c932d29a/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:218
 #: tmp-846724d539/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:178
 #: tmp-846724d539/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:218
 #: tmp-a0f5d0a80a/destination/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:178

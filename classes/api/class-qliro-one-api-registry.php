@@ -37,9 +37,11 @@ class Qliro_One_API_Registry {
 		// Include the controllers.
 		include_once __DIR__ . '/controllers/class-qliro-one-api-controller-base.php';
 		include_once __DIR__ . '/controllers/class-qliro-one-api-controller-save-card.php';
+		include_once __DIR__ . '/controllers/class-qliro-one-api-controller-notifications.php';
 
 		// Register the controllers.
 		$this->register_controller( new Qliro_One_API_Controller_Save_Card() );
+		$this->register_controller( new Qliro_One_API_Controller_Notifications() );
 	}
 
 	/**
