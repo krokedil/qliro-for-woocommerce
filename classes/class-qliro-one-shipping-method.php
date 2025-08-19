@@ -21,9 +21,9 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	public function __construct( $instance_id = 0 ) {
 		$this->id                 = 'qliro_shipping';
 		$this->instance_id        = absint( $instance_id );
-		$this->title              = __( 'Qliro Shipping', 'qliro-checkout-for-woocommerce' );
-		$this->method_title       = __( 'Qliro Shipping', 'qliro-checkout-for-woocommerce' );
-		$this->method_description = __( 'A dynamic shipping method, that will get its prices set by Qliro and the integration towards a shipping provider. When Qliro is the selected payment method, the other shipping methods for this region wont be shown to the customer.', 'avarda-checkout-for-woocommerce' );
+		$this->title              = __( 'Qliro Shipping', 'qliro-one-for-woocommerce' );
+		$this->method_title       = __( 'Qliro Shipping', 'qliro-one-for-woocommerce' );
+		$this->method_description = __( 'A dynamic shipping method, that will get its prices set by Qliro and the integration towards a shipping provider. When Qliro is the selected payment method, the other shipping methods for this region wont be shown to the customer.', 'qliro-one-for-woocommerce' );
 		$this->supports           = array(
 			'shipping-zones',
 			// 'instance-settings',
@@ -103,7 +103,7 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 		$data = get_transient( 'qoc_shipping_data_' . WC()->session->get( 'qliro_one_order_id' ) );
 		// If the data is not set, return.
 		if ( ! $data ) {
-			$this->add_error( __( 'No shipping data found.', 'qliro-checkout-for-woocommerce' ) );
+			$this->add_error( __( 'No shipping data found.', 'qliro-one-for-woocommerce' ) );
 			return;
 		}
 

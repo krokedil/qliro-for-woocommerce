@@ -8,6 +8,8 @@
  * Version: 1.13.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
+ * License: GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
  * WC tested up to: 10.1.0
