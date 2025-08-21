@@ -182,7 +182,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.' ) );
+		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.', 'qliro-one-for-woocommerce' ) );
 	}
 
 	/**
@@ -222,7 +222,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-one-for-woocommerce' ) );
 		$order->save();
 	}
 
@@ -250,7 +250,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
 		$order->save();
 	}
 } new Qliro_One_Callbacks();

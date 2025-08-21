@@ -133,7 +133,7 @@ function qliro_one_wc_show_another_gateway_button() {
 
 	if ( count( $available_gateways ) > 1 ) {
 		$settings                   = get_option( 'woocommerce_qliro_one_settings' );
-		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-checkout-for-woocommerce' );
+		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-for-woocommerce' );
 
 		?>
 		<p class="qliro-one-checkout-select-other-wrapper">
@@ -361,8 +361,8 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 	$key    = '_qliro_one_order_confirmation_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => $confirmation_id,
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
@@ -388,8 +388,8 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
 	$key    = '_qliro_one_order_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => strval( $qliro_order_id ),
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => strval( $qliro_order_id ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
@@ -650,4 +650,34 @@ function qliro_one_has_country_changed() {
 	}
 
 	return $country_from_session !== $country_from_checkout;
+}
+
+/**
+ * Ensure that a value is numeric. If the value is not numeric, it will attempt to convert it.
+ * If the value is an empty value, it will be set to 0.
+ * If the value cannot be converted to a numeric value, it will return the default value.
+ *
+ * @param mixed     $value The value to ensure is numeric.
+ * @param float|int $default The default value to return if the value is not numeric and $throw_error is false. Default 0.
+ *
+ * @return float|int Returns the numeric value of the input, or the default value if the input is not numeric and cannot be converted.
+ */
+function qliro_ensure_numeric( $value, $default = 0 ) {
+	if ( is_numeric( $value ) ) {
+		return floatval( $value );
+	}
+
+	// If the value is empty, return 0 instead of default to reflect that the value is not set.
+	if ( empty( $value ) ) {
+		return 0;
+	}
+
+	// Try to convert the value to a numeric value.
+	$converted_value = floatval( $value );
+
+	if ( is_numeric( $converted_value ) ) {
+		return $converted_value;
+	}
+
+	return $default; // Return the default value if the value is still not numeric.
 }

@@ -390,8 +390,8 @@ class Qliro_One_Order_Management {
 	 * @return array
 	 */
 	public function hide_shipping_metadata( $hidden_order_itemmeta ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['debug'] ) ) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $hidden_order_itemmeta;
 		}
 
@@ -482,7 +482,7 @@ class Qliro_One_Order_Management {
 		}
 		?>
 		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
-			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ); ?></span>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ', 'qliro-one-for-woocommerce' ); ?></span>
 			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
 		</span>
 		<?php

@@ -230,12 +230,12 @@ class Qliro_One_Shipping_Method_Instance {
 				),
 			),
 			'tax_status'                  => array(
-				'title'   => __( 'Tax status', 'woocommerce' ),
+				'title'   => __( 'Tax status', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 				'type'    => 'select',
 				'class'   => 'wc-enhanced-select',
 				'default' => 'taxable',
 				'options' => array(
-					'taxable' => __( 'Taxable', 'woocommerce' ),
+					'taxable' => __( 'Taxable', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
 				),
 			),

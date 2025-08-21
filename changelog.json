@@ -195,8 +195,23 @@
             "tested": "6.8.1"
       }, 
       "1.11.1": {
-            "description": "<ul><li>Fix - Pay for order should now be working as expected.</li><li>Fix - Fixed a potential fatal error that could occur if dependencies failed to install properly.</li><li>Fix - Fixed the province data sometimes being incorrectly set on the order confirmation page.</li><li>Enhancement - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.</li><li>Tweak - Added the option to include a merchant integrity policy URL link in the Qliro iframe.</li><li>Tweak - Readme changes.</li></ul>",
+            "description": "<ul><li>Fix - Fixed a potential fatal error during checkout that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.1"
+      },
+      "1.11.2": {
+            "description": "<ul><li>Fix - Pay for order should now be working as expected.</li><li>Fix - Fixed a potential fatal error that could occur if dependencies failed to install properly.</li><li>Fix - Fixed the province data sometimes being incorrectly set on the order confirmation page.</li><li>Fix - Fixed a potential fatal error that could occur during order management actions when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.</li><li>Enhancement - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.</li><li>Tweak - Added the option to include a merchant integrity policy URL link in the Qliro iframe.</li><li>Tweak - Readme changes.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.1"
+      },
+      "1.12.0": {
+            "description": "<ul><li>Feature - Redesigned the layout, structure and navigation of the settings page.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.1"
+      },
+      "1.13.0": {
+            "description": "<ul><li>Feature - Added support for handling notification callbacks from Qliro after the order is placed. For now this only supports saving Ingrid shipping data when using the Qliro integrated shipping with Ingrid.</li><li>Feature - Added the action 'qliro_notification_{event_type}_{provider}' for custom handling of Qliro notification events. 'event_type' and 'provider' are the lowercase values sent by Qliro in the notification request.</li><li>Fix - Fixed an issue that could affect the Google Analytics tracking of the Qliro checkout.</li><li>Fix - Fixed the refund fee text not being removed when refund amount was zero.</li><li>Tweak - Renamed 'Order synchronization' to 'Order Management' in the Qliro order metabox.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.2"
       }
 }
