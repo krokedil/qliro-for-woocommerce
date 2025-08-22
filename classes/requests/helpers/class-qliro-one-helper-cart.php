@@ -69,6 +69,7 @@ class Qliro_One_Helper_Cart {
 					'Quantity'           => $retrieved_giftcard->get_quantity(),
 					'PricePerItemIncVat' => $retrieved_giftcard->get_total_amount(),
 					'PricePerItemExVat'  => $retrieved_giftcard->get_total_amount(),
+					'VatRate'            => self::format_vat_rate( 0 ),
 				);
 			}
 		}
@@ -96,6 +97,7 @@ class Qliro_One_Helper_Cart {
 			'Quantity'           => $cart_item['quantity'],
 			'PricePerItemIncVat' => self::get_product_unit_price( $cart_item ),
 			'PricePerItemExVat'  => self::get_product_unit_price_no_tax( $cart_item ),
+			'VatRate'            => self::get_product_vat_rate( $product ),
 		);
 
 		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
@@ -144,19 +146,6 @@ class Qliro_One_Helper_Cart {
 	}
 
 	/**
-	 * Gets the tax rate for the product.
-	 *
-	 * @param object $cart_item The cart item.
-	 * @return float
-	 */
-	public static function get_product_tax_rate( $cart_item ) {
-		if ( 0 === intval( $cart_item['line_total'] ) ) {
-			return 0;
-		}
-		return ( round( $cart_item['line_tax'] / $cart_item['line_total'], 2 ) );
-	}
-
-	/**
 	 * Gets the product SKU for the merchant reference.
 	 *
 	 * @param object $product The WooCommerce Product.
@@ -186,6 +175,7 @@ class Qliro_One_Helper_Cart {
 			'Type'               => $fee->amount < 0 ? 'Discount' : 'Fee',
 			'PricePerItemIncVat' => wc_format_decimal( abs( $fee->amount + $fee->tax ), min( wc_get_price_decimals(), 2 ) ),
 			'PricePerItemExVat'  => wc_format_decimal( abs( $fee->amount ), min( wc_get_price_decimals(), 2 ) ),
+			'VatRate'            => self::get_fee_tax_rate( $fee ),
 		);
 	}
 
@@ -199,28 +189,31 @@ class Qliro_One_Helper_Cart {
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
 		$chosen_shipping = $chosen_methods[0];
 		foreach ( $packages as $i => $package ) {
+			/** @var WC_Shipping_Rate $method */
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
 				if ( $chosen_shipping === $method->id ) {
 					if ( $method_cost > 0 ) {
 						return array(
-							'MerchantReference'  => $method->id,
-							'Description'        => $method->label,
+							'MerchantReference'  => $method->get_id(),
+							'Description'        => $method->get_label(),
 							'Type'               => 'Shipping',
 							'Quantity'           => 1,
 							'PricePerItemIncVat' => wc_format_decimal( WC()->cart->get_shipping_total() + WC()->cart->get_shipping_tax(), min( wc_get_price_decimals(), 2 ) ),
 							'PricePerItemExVat'  => wc_format_decimal( WC()->cart->get_shipping_total(), min( wc_get_price_decimals(), 2 ) ),
+							'VatRate'            => self::get_shipping_tax_rate( $method ),
 						);
 					}
 
 					return array(
-						'MerchantReference'  => $method->id,
-						'Description'        => $method->label,
+						'MerchantReference'  => $method->get_id(),
+						'Description'        => $method->get_label(),
 						'Type'               => 'Shipping',
 						'Quantity'           => 1,
 						'PricePerItemIncVat' => 0,
 						'PricePerItemExVat'  => 0,
+						'VatRate'            => self::format_vat_rate( 0 ),
 					);
 				}
 			}
@@ -396,5 +389,65 @@ class Qliro_One_Helper_Cart {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Gets the tax rate for the product.
+	 *
+	 * @param WC_Product $product The product.
+	 *
+	 * @return float
+	 */
+	private static function get_product_vat_rate( $product ) {
+		// Check if 'data' exists and get the tax class, and ensure get_tax_class exists as a method to prevent errors.
+		if ( is_a( $product, WC_Product::class ) ) {
+			$tax_class = $product->get_tax_class();
+
+			// Get the tax rates from the tax class.
+			$rates = WC_Tax::get_rates( $tax_class );
+			if ( ! empty( $rates ) ) {
+				$first_rate = reset( $rates ); // Only use the first rate returned.
+				// Check if 'rate' key exists; otherwise, fallback to 0
+				return self::format_vat_rate( $first_rate['rate'] ) ?? "0.00";
+			}
+		}
+
+		// Return a default value if no rate is found.
+		return '0.00';
+	}
+
+	/**
+	 * Get the tax rate for a shipping rate.
+	 *
+	 * @param WC_Shipping_Rate $shipping_rate The shipping rate.
+	 *
+	 * @return string
+	 */
+	private static function get_shipping_tax_rate( $shipping_rate ) {
+		$rate = $shipping_rate->get_cost() != 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
+
+		return self::format_vat_rate( $rate );
+	}
+
+	/**
+	 * Get the tax rate for a fee.
+	 *
+	 * @param object $fee The WooCommerce fee.
+	 *
+	 * @return string
+	 */
+	private static function get_fee_tax_rate( $fee ) {
+		return self::format_vat_rate( $fee->tax / $fee->amount * 100 );
+	}
+
+	/**
+	 * Format the rate to ensure its a string, and always has 2 decimals.
+	 *
+	 * @param float $rate The rate to format.
+	 *
+	 * @return string
+	 */
+	public static function format_vat_rate( $rate ) {
+		return number_format( (float) $rate, 2, '.', '' );
 	}
 }
