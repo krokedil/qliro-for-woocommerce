@@ -5,7 +5,7 @@
  * @package Qliro_One_For_WooCommerce/Classes/Requests/Helpers
  */
 
-use KrokedilQliroDeps\Krokedil\WooCommerce\OrderUtility;
+use KrokedilQliroDeps\Krokedil\WooCommerce\Subscription;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -105,7 +105,7 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// If the cart item is a subscription item, we need to add the metadata to the cart item.
-		if ( OrderUtility::is_subscription_item( $cart_item ) ) {
+		if ( Subscription::is_subscription_item( $cart_item ) ) {
 			$formatted_cart_item['Metadata']['Subscription']['Enabled'] = true;
 		}
 
