@@ -175,6 +175,7 @@ class Qliro_One_Helper_Order {
 			'Type'               => 'Product',
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
+			'VatRate'            => self::get_tax_rate( $order, $order_item ),
 		);
 	}
 
@@ -193,6 +194,7 @@ class Qliro_One_Helper_Order {
 			'Type'               => 'Shipping',
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
+			'VatRate'            => self::get_tax_rate( $order, $order_item ),
 		);
 	}
 
@@ -217,6 +219,7 @@ class Qliro_One_Helper_Order {
 			'Type'               => $type,
 			'PricePerItemIncVat' => self::get_unit_price_inc_vat( $order_item ),
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
+			'VatRate'            => self::get_tax_rate( $order, $order_item ),
 		);
 	}
 
@@ -420,5 +423,37 @@ class Qliro_One_Helper_Order {
 		}
 
 		return $fee;
+	}
+
+	/**
+	 * Get the tax rate.
+	 *
+	 * @param WC_Order                                                       $order The WooCommerce order.
+	 *
+	 * @param WC_Order_Item_Product|WC_Order_Item_Shipping|WC_Order_Item_Fee $order_item The WooCommerce order item.
+	 * @return string
+	 */
+	public static function get_tax_rate( $order, $order_item ) {
+		// If we don't have any tax, return 0.
+		if ( '0' === $order_item->get_total_tax() ) {
+			return Qliro_One_Helper_Cart::format_vat_rate( 0 );
+		}
+
+		$tax_items = $order->get_items( 'tax' );
+
+		/**
+		 * Process the tax items.
+		 *
+		 * @var WC_Order_Item_Tax $tax_item The WooCommerce order tax item.
+		 */
+		foreach ( $tax_items as $tax_item ) {
+			$rate_id = $tax_item->get_rate_id();
+			if ( key( $order_item->get_taxes()['total'] ) === $rate_id ) {
+				// Return the tax rate percent value.
+				$rate = (float) WC_Tax::get_rate_percent_value( $rate_id );
+				return Qliro_One_Helper_Cart::format_vat_rate( $rate * 100 );
+			}
+		}
+		return Qliro_One_Helper_Cart::format_vat_rate( 0 );
 	}
 }
