@@ -437,7 +437,7 @@ class Qliro_One_Helper_Cart {
 	 * @return string
 	 */
 	private static function get_fee_tax_rate( $fee ) {
-		return self::format_vat_rate( $fee->tax / $fee->amount * 100 );
+		return self::format_vat_rate( ( $fee->tax / $fee->amount ) * 100 );
 	}
 
 	/**
