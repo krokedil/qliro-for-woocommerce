@@ -71,7 +71,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		if ( $order_sync_disabled ) {
-			self::output_info( __( 'Order synchronization', 'qliro-one-for-woocommerce' ), __( 'Disabled', 'qliro-one-for-woocommerce' ) );
+			self::output_info( __( 'Order management', 'qliro-one-for-woocommerce' ), __( 'Disabled', 'qliro-one-for-woocommerce' ) );
 		}
 		echo '<br />';
 
@@ -117,7 +117,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order_sync = 'yes';
 		}
 
-		$title   = __( 'Order synchronization', 'qliro-one-for-woocommerce' );
+		$title   = __( 'Order management', 'qliro-one-for-woocommerce' );
 		$tip     = __( 'Disable this to turn off the automatic synchronization with the Qliro Merchant Portal. When disabled, any changes in either system have to be done manually.', 'qliro-one-for-woocommerce' );
 		$enabled = 'yes' === $order_sync;
 
