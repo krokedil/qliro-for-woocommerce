@@ -396,7 +396,7 @@ class Qliro_One_Helper_Cart {
 	 *
 	 * @param WC_Product $product The product.
 	 *
-	 * @return float
+	 * @return string
 	 */
 	private static function get_product_vat_rate( $product ) {
 		// Check if 'data' exists and get the tax class, and ensure get_tax_class exists as a method to prevent errors.
@@ -408,7 +408,7 @@ class Qliro_One_Helper_Cart {
 			if ( ! empty( $rates ) ) {
 				$first_rate = reset( $rates ); // Only use the first rate returned.
 				// Check if 'rate' key exists; otherwise, fallback to 0
-				return self::format_vat_rate( $first_rate['rate'] ) ?? "0.00";
+				return self::format_vat_rate( $first_rate['rate'] ?? 0 );
 			}
 		}
 
