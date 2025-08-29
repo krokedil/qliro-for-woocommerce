@@ -1,11 +1,11 @@
 # Copyright (C) 2025 Krokedil
-# This file is distributed under the same license as the Qliro for WooCommerce package.
+# This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.12.0\n"
+"Project-Id-Version: Qliro for WooCommerce 1.13.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-05-20 09:53:15+00:00\n"
+"POT-Creation-Date: 2025-08-22 07:09:49+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -95,11 +95,7 @@ msgstr ""
 msgid "The Qliro order is on-hold and awaiting a status update from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:24
-msgid "Manual trigger"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:27 classes/class-qliro-one-fields.php:153
+#: classes/class-qliro-one-fields.php:29 classes/class-qliro-one-fields.php:30
 #: classes/class-qliro-one-shipping-method-instance.php:63
 #: classes/class-qliro-one-shipping-method-instance.php:81
 #: classes/class-qliro-one-shipping-method-instance.php:99
@@ -115,519 +111,745 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:37
+#: classes/class-qliro-one-fields.php:33
+msgid "Completed (recommended)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:34
+msgid "Cancelled (recommended)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:36
+msgid "None (recommended)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:55
+msgid "General configuration"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:57
+msgid ""
+"Get started with Qliro for WooCommerce by adding the API credentials you "
+"recieved from Qliro and enable Qliro as a payment method."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:60
 msgid "Enable/Disable"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:38
-msgid "Enable Qliro payment"
+#: classes/class-qliro-one-fields.php:61
+msgid "Enable Qliro as a payment method"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:44
+#: classes/class-qliro-one-fields.php:67
 msgid "Title"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:46
-msgid "Payment method title."
+#: classes/class-qliro-one-fields.php:69
+msgid ""
+"The title is used throughout WooCommerce to display the payment method name "
+"at checkout and on order/payment admin pages."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:51
+#: classes/class-qliro-one-fields.php:74
 #: classes/class-qliro-one-shipping-method-instance.php:51
 msgid "Description"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:53
-msgid "Payment method description."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:63
-msgid "Production Qliro API key"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:65 classes/class-qliro-one-fields.php:75
-#: classes/class-qliro-one-fields.php:85 classes/class-qliro-one-fields.php:95
+#: classes/class-qliro-one-fields.php:76
 msgid ""
-"Use API key and API secret you downloaded in the Qliro Merchant Portal. "
-"Don’t use your email address."
+"The description could, depending on your theme and setup, be shown in "
+"relation to the payment method name at the checkout."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:73
-msgid "Production Qliro API Secret"
+#: classes/class-qliro-one-fields.php:82
+msgid "API credentials"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:83
-msgid "Test Qliro API key"
+#: classes/class-qliro-one-fields.php:87
+msgid "Production Qliro merchant API key"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:93
-msgid "Test Qliro API Secret"
+#: classes/class-qliro-one-fields.php:89 classes/class-qliro-one-fields.php:99
+msgid ""
+"Please contact your onboarding agent or email integration@qliro.com to get "
+"your API credentials."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:97
+msgid "Production Qliro merchant API secret"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:107
-msgid "Test mode"
+msgid "Test Qliro merchant API key"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:108
-msgid "Enable Test Mode"
+#: classes/class-qliro-one-fields.php:109
+#: classes/class-qliro-one-fields.php:119
+msgid ""
+"Used when test mode is enabled below. More information about how to test "
+"before becoming a Qliro customer <a target=\"_blank\" "
+"href=\"https://krokedil.com/product/qliro-for-woocommerce/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:110
-msgid "Place the payment gateway in test mode using test API keys."
+#: classes/class-qliro-one-fields.php:117
+msgid "Test Qliro merchant API secret"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:115
-msgid "Logging"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:116
-msgid "Log debug messages"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:118
-msgid "Save debug messages to the WooCommerce System Status log."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:127
-msgid "Display Shipping in the iframe"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:129
-msgid "Will display the shipping options inside of the Qliro checkout iframe."
+#: classes/class-qliro-one-fields.php:128
+msgid "Debug"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:133
-msgid "No"
+msgid "Test mode"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:134
-msgid "WooCommerce shipping methods"
+msgid "Enable test mode"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:135
-msgid "Qliro integrated shipping methods"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:139
-msgid "Shipping additional header"
+#: classes/class-qliro-one-fields.php:136
+msgid "Disable test mode when testing is complete and you want to go live."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:141
+msgid "Logging"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:142
+msgid "Log debug messages"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:146
+#. translators: %s is the link to the WooCommerce logs.
 msgid ""
-"An introductory text to be displayed in the payment form's shipping "
-"section. Up to 300 characters."
+"Save debug messages from the plugin to the WooCommerce logs. Existing "
+"plugin logs can be found %s."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:150
-msgid "Enforced juridical type"
+#: classes/class-qliro-one-fields.php:147
+#: classes/class-qliro-one-fields.php:236
+#: classes/class-qliro-one-fields.php:529
+msgid "here"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:154
-msgid "Physical"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:155
-msgid "Company"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:157
-msgid "Select juridical type"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:161
-msgid "Minimum age"
+#: classes/class-qliro-one-fields.php:160
+msgid ""
+"Configure your checkout in relation to shipping, B2C/B2B purchases, "
+"newsletter signup and risk mitigations."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:163
-msgid ""
-"The minimum customer age for all purchases. Can also be set on an "
-"individual product level."
+msgid "Shipping within the Qliro iframe"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:168
-msgid "Require identity verification"
+#: classes/class-qliro-one-fields.php:165
+msgid ""
+"Integrating with shipping service like nShift, Ingrid or Fraktjakt? Want to "
+"customize how WooCommerce shipping methods looks within the Qliro iframe? "
+"Read more about shipping related compatibility and configurations <a "
+"target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/get-started/shipping-"
+"settings/\">here</a>."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:170
-msgid ""
-"If this box is checked and the customer is from Sweden, BankID identity "
-"verification will be mandatory for each purchase. As a consequence, there "
-"will be a double BankID verification requirement in certain instances. We "
-"recommend setting this requirement on an individual product level instead, "
-"as it should only be applied when there are additional perceived risks."
+msgid "No"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:175
+#: classes/class-qliro-one-fields.php:171
+msgid "WooCommerce shipping methods"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:172
+msgid "Qliro integrated shipping with Ingrid"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:176
+msgid "Shipping section description"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:178
+msgid ""
+"Display a custom text right under the shipping section’s main title. Useful "
+"to eg inform about a certain campaign or discounts on delivery for "
+"purchases over certain amount."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:184
+msgid "Country selector placement"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:187
+#: classes/class-qliro-one-fields.php:483
+#: classes/class-qliro-one-fields.php:501
+#: classes/class-qliro-one-fields.php:538
+msgid "Inactive/shortcode placement"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:188
+msgid "Above checkout form"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:189
+msgid "Above order review"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:190
+msgid "Above payment form"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:191
+msgid "Below order review"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:192
+msgid "Below payment form"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:193
+msgid "Below checkout form"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:196
+msgid ""
+"Enables the possibility to switch billing country from the checkout page. "
+"Choose where on the checkout page you want it to be visible. Please note "
+"that you can also display it with the shortcode [qliro_country_selector], "
+"read more about it <a "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/get-started/"
+"introduction/#country-selector\">here</a>."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:200
+msgid "Allowed customer types"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:203
+msgid "Both B2B & B2C"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:204
+msgid "Only B2C"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:205
+msgid "Only B2B"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:207
+msgid ""
+"Qliro supports both B2C and B2B checkout flows. Change the setting if you "
+"only want to allow B2C or B2B checkout flow."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:211
+msgid "Ask for newsletter signup"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:213
+msgid "Show signup newsletter field"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:214
+msgid ""
+"If enabled, Qliro Checkout will ask the customer if they want to sign up "
+"for a newsletter. Read more about how you can use the response from this "
+"field <a target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/get-started/"
+"newsletter-settings/\">here</a>."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:220
+msgid "Ask for newsletter signup checked by default"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:222
+msgid "Set signup newsletter field as checked by default"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:223
+msgid "If enabled, Qliro Checkout will set signup newsletter as checked by default."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:230
+msgid "Risk mitigation"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:235
+#. translators: %s: link to product-level settings documentation
+msgid ""
+"Below you have the possibility to apply site-wide risk mitigation settings. "
+"Please note that you also have the possibility to set these settings on an "
+"individual product level, read more about it %s."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:240
+#: classes/class-qliro-one-product-tab.php:55
+msgid "Minimum customer age"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:242
+msgid ""
+"Sets minimum customer age for all purchases, which then also prevents B2B "
+"purchases."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:248
+msgid "Require identity verification"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:249
+msgid "Verify customers identity with BankID"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:251
+msgid ""
+"If enabled and the order country is Sweden, the customer will always be "
+"asked to verify their identity with BankID when completing the purchase. "
+"This could lead to double BankID verification requirement in certain "
+"instances."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:256
 #: classes/class-qliro-one-product-tab.php:70
 msgid "Has risk"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:177
-msgid "If this box is checked, the product is a risk item."
+#: classes/class-qliro-one-fields.php:258
+msgid "Flag all products as has risk products"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:182
-msgid "Ask for newsletter signup"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:184
+#: classes/class-qliro-one-fields.php:259
 msgid ""
-"Will display an unchecked checkbox for newsletter sign-up in the Qliro "
-"Checkout."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:189
-msgid "Ask for newsletter signup checked"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:191
-msgid ""
-"Will display an already checked checkbox for newsletter sign-up on the "
-"Qliro Checkout"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:201
-msgid "Capture status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:204
-msgid ""
-"Select what order status to use to initiate capturing the order in Qliros "
-"system."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:209
-msgid "Pending capture status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:212
-msgid ""
-"Select what order status to set the order to while we wait for Qliro to "
-"tell us if the capture was successful or not."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:217
-msgid "OK capture status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:220
-msgid ""
-"Select what order status to set the order to when we get notified of a "
-"successful order capture."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:225
-msgid "Cancel status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:228
-msgid ""
-"Select what order status to use to initiate canceling the order in Qliros "
-"system."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:233
-msgid "Pending cancel status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:236
-msgid ""
-"Select what order status to set the order to while we wait for Qliro to "
-"tell us if the cancelation was successful or not."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:241
-msgid "OK cancel status"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:244
-msgid ""
-"Select what order status to set the order to when we get notified of a "
-"successful order cancelation."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:249
-msgid "Calculate return fee"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:252
-msgid ""
-"Calculate return fee when returning items automatically if the refunded "
-"amount of a order line is less then the unit amount."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:261
-msgid "Checkout layout"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:264
-msgid "One column checkout"
+"If enabled, all products in the order will be flagged as has risk products. "
+"This can be used to eg limit the list of available payment methods shown "
+"for customer."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:265
-msgid "Two column checkout (Qliro in right column)"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:266
-msgid "Two column checkout (Qliro in left column)"
+msgid "Upsell on WooCommerce thank you page"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:267
-msgid "Two column checkout (Qliro in left column) - Storefront light"
+msgid ""
+"The plugin \"Post Purchase Upsell for WooCommerce\" is needed to enable "
+"upsell on the WooCommerce thank you page. Read more about it <a "
+"target=\"_blank\" "
+"href=\"https://krokedil.com/product/post-purchase-upsell-for-woocommerce/\""
+">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:269
-msgid "Select the Checkout layout."
+#: classes/class-qliro-one-fields.php:271
+msgid "Upsell percentage"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:274
-msgid "Other payment method button text"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:276
 msgid ""
-"Customize the <em>Select another payment method</em> button text that is "
-"displayed in checkout if using other payment methods than Qliro. Leave "
-"blank to use the default (and translatable) text."
+"Set the max amount above the order value a customer can add to a Qliro "
+"order paid with a After Delivery payment. If you want higher than 10% you "
+"will first need to contact Qliro. Read more about upsell <a "
+"target=\"_blank\" "
+"href=\"https://docs.krokedil.com/post-purchase-upsell-for-woocommerce/\""
+">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:284
-msgid "Background color"
+#: classes/class-qliro-one-fields.php:292
+msgid ""
+"Manage settings related to an order after it has been created, such as when "
+"capture and cancelation with Qliro should be initiated etc."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:286
-msgid "Hex color code to use as background color in Qliro."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:291
-msgid "Primary color"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:293
-msgid "Define the color for the selected options throughout the checkout."
+#: classes/class-qliro-one-fields.php:295
+msgid "Capture order status"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:298
-msgid "Call to action color"
+msgid ""
+"Select WooCommerce order status used to initiate capturing the order in "
+"Qliros system. Suggested and default is to use Completed. Please note that "
+"you also have the possibility to disable order management on specific "
+"orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:300
-msgid "Define the color for the CTA buttons throughout the checkout."
+#: classes/class-qliro-one-fields.php:303
+msgid "Cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:305
-msgid "Call to action hover color"
+#: classes/class-qliro-one-fields.php:306
+msgid ""
+"Select WooCommerce order status used to initiate canceling the order in "
+"Qliros system. Suggested and default is to use Cancelled. Please note that "
+"you also have the possibility to disable order management on specific "
+"orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:307
-msgid "Define the color for the CTA buttons hoovered throughout the checkout."
+#: classes/class-qliro-one-fields.php:311
+msgid "Calculate return fee"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:312
-msgid "Corner radius"
+msgid "Automatically calculate return fee on refunds"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:314
-msgid "A pixel value to be used on corners throughout Qliro."
+#: classes/class-qliro-one-fields.php:315
+msgid ""
+"If enabled, then the Qliro return fee will be automatically calculated in "
+"the background if a refunded order line is less than the unit amount."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:319
+msgid "Advanced pending status configuration"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:320
-msgid "Button corner radius"
+msgid "Enable advanced pending status configuration"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:322
-msgid "Define the corners for the CTA buttons. Can be either boxy or rounded."
+#: classes/class-qliro-one-fields.php:321
+msgid ""
+"There is a delay when a capture or cancellation is initiated and "
+"WooCommerce receives the response. Therefore you have the possibility to "
+"customize what order status an order should have during this process. Use "
+"only in advanced situations."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:328
-msgid "Banner widget"
+msgid "Pending capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:334
-msgid "Enable banner widget on product page"
+#: classes/class-qliro-one-fields.php:331
+msgid ""
+"Select what WooCommerce order status to set the order to while WooCommerce "
+"wait for Qliro to tell us if the capture was successful or not."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:337
-msgid "Banner widget product page placement"
+msgid "OK capture order status"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:340
-#: classes/class-qliro-one-fields.php:399
-msgid "Above Title"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:341
-#: classes/class-qliro-one-fields.php:400
-msgid "Between Title and Price"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:342
-#: classes/class-qliro-one-fields.php:401
-msgid "Between Price and Excerpt"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:343
-#: classes/class-qliro-one-fields.php:402
-msgid "Between Excerpt and Add to cart button"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:344
-#: classes/class-qliro-one-fields.php:403
-msgid "Between Add to cart button and Product meta"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:345
-#: classes/class-qliro-one-fields.php:404
-msgid "Between Product meta and Product sharing buttons"
+msgid ""
+"Select what WooCommerce order status to set the order to when we get "
+"notified of a successful order capture from Qliro."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:346
-#: classes/class-qliro-one-fields.php:405
-msgid "After Product sharing-buttons"
+msgid "Pending cancel order status"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:349
-#: classes/class-qliro-one-fields.php:408
-msgid "Select where to display the widget in your product pages."
+msgid ""
+"Select what WooCommerce order status to set the order to while we wait for "
+"Qliro to tell us if the cancelation was successful or not."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:354
-msgid "Enable banner widget on cart page"
+#: classes/class-qliro-one-fields.php:355
+msgid "OK cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:357
-msgid "Banner widget cart placement"
+#: classes/class-qliro-one-fields.php:358
+msgid ""
+"Select what WooCommerce order status to set the order to when we get "
+"notified of a successful order cancelation from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:360
-msgid "Above cross-sell"
+#: classes/class-qliro-one-fields.php:371
+msgid ""
+"Customize your checkout related to page layout, other payment method button "
+"text, colors and corner radius to make the look and feel of the checkout "
+"fit into your website in the best possible way."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:361
-msgid "Above cart totals"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:362
-msgid "Between cart totals and proceed to checkout button"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:363
-msgid "After proceed to checkout button"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:364
-msgid "Bottom of the page"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:367
-msgid "Select where to display the widget on the cart page."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:372
-#: classes/class-qliro-one-metabox.php:63
-msgid "Payment method"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:373
-msgid "The payment method to be presented in the banner . "
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:375
-msgid "Campaign"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:376
-msgid "Invoice"
+#: classes/class-qliro-one-fields.php:374
+msgid "Checkout page layout"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:377
-msgid "Part payment"
+msgid "One column checkout"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:383
-msgid "Display with a Qliro style shadow"
+#: classes/class-qliro-one-fields.php:378
+msgid "Two column checkout (Qliro in right column)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:379
+msgid "Two column checkout (Qliro in left column)"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:380
+msgid "Two column checkout (Qliro in left column) - Storefront light"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:382
+msgid ""
+"Choose layout to use on the Qliro checkout page. Read more about the "
+"options and how the checkout page template can be further customized <a "
+"target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/get-started/"
+"introduction/#checkout-customization\">here</a>."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:387
-msgid "Payment widget"
+msgid "Customize other payment method button text"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:393
-msgid "Enable payment widget"
+#: classes/class-qliro-one-fields.php:389
+msgid ""
+"Customize the <em>Select another payment method</em> button text that is "
+"displayed on the checkout page if other payment methods than Qliro is "
+"enabled. Leave blank to use the default (and translatable) text."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:396
-msgid "Payment widget placement"
+#: classes/class-qliro-one-fields.php:398
+msgid "Look and feel"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:413
-msgid "Display in a condensed (shorter) style"
+#: classes/class-qliro-one-fields.php:403
+msgid "Background color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:416
-msgid "Country selector"
+#: classes/class-qliro-one-fields.php:405
+msgid ""
+"If the background should be something else than white, set the preferred "
+"hex color. Only colors with saturation <= 10% are supported. If a color "
+"with saturation > 10% is provided, the saturation will be lowered to 10%."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:420
-msgid "Country selector placement"
+#: classes/class-qliro-one-fields.php:410
+msgid "Primary color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:423
-msgid "Inactive/shortcode placement"
+#: classes/class-qliro-one-fields.php:412
+msgid ""
+"Define the hex color for the selected options throughout the checkout. The "
+"spinner for loading in the checkout will have the same color."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:417
+msgid "Call to action color"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:419
+msgid "Define the hex color for the CTA buttons throughout the checkout."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:424
-msgid "Above checkout form"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:425
-msgid "Above order review"
+msgid "Call to action hover color"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:426
-msgid "Above payment form"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:427
-msgid "Below order review"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:428
-msgid "Below payment form"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:429
-msgid "Below checkout form"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:432
-msgid "Select where to display the selector on the checkout page."
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:443
-msgid "Upsell Percentage"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:445
 msgid ""
-"Set the max amount above the order value a customer can add to a Qliro "
-"order paid with a After Delivery payment . The default is 10 % , if you "
-"want higher than that you will first need to contact Qliro . "
+"Define the hex color for the CTA buttons hoovered throughout the checkout. "
+"If not provided, the hover color will be a blend between the call to action "
+"color and the background color."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:39
-#: classes/class-qliro-one-product-tab.php:30
-msgid "Qliro"
+#: classes/class-qliro-one-fields.php:431
+msgid "Corner radius"
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:40
-msgid "Qliro replaces the standard WooCommerce checkout page."
+#: classes/class-qliro-one-fields.php:433
+msgid ""
+"A pixel value to be used on corners throughout Qliro Checkout, eg for the "
+"outline of payment or shipping methods. Changes will also apply on all "
+"fields to be filled in by customer, e.g. fields when customer authenticate."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:154
+#: classes/class-qliro-one-fields.php:439
+msgid "Button corner radius"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:441
+msgid ""
+"A pixel value to be used on corners of CTA buttons throughout Qliro "
+"Checkout."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:452
+msgid "Widgets"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:454
+msgid "Setup Qliro payment widgets and banner widgets on your website."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:457
+msgid "Banner widget"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:460
+msgid ""
+"Promote Qliro payment methods and campaigns, without having to manually "
+"update banners continuously. You can also display it with the shortcode "
+"[qliro_one_banner_widget], read more about it <a target=\"_blank\" "
+"href=\"https://docs.krokedil.com/qliro-for-woocommerce/customization/"
+"display-widget-via-shortcode/\">here</a>."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:468
+msgid "Banner widget payment method"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:469
+msgid "Choose the payment method to be presented in the banner widget."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:471
+msgid "Campaign"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:472
+msgid "Invoice"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:473
+msgid "Part payment"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:478
+msgid "Banner widget placement on product pages"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:480
+msgid "Choose where on the product page that you want to display the banner widget."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:484
+#: classes/class-qliro-one-fields.php:539
+msgid "Above Title"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:485
+#: classes/class-qliro-one-fields.php:540
+msgid "Between Title and Price"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:486
+#: classes/class-qliro-one-fields.php:541
+msgid "Between Price and Excerpt"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:487
+#: classes/class-qliro-one-fields.php:542
+msgid "Between Excerpt and Add to cart button"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:488
+#: classes/class-qliro-one-fields.php:543
+msgid "Between Add to cart button and Product meta"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:489
+#: classes/class-qliro-one-fields.php:544
+msgid "Between Product meta and Product sharing buttons"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:490
+#: classes/class-qliro-one-fields.php:545
+msgid "After Product sharing-buttons"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:493
+#: classes/class-qliro-one-fields.php:548
+msgid "Select where to display the widget in your product pages."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:496
+msgid "Banner widget placement on cart page"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:497
+msgid "Choose where on the cart page that you want to display the banner widget."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:502
+msgid "Above cross-sell"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:503
+msgid "Above cart totals"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:504
+msgid "Between cart totals and proceed to checkout button"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:505
+msgid "After proceed to checkout button"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:506
+msgid "Bottom of the page"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:509
+msgid "Select where to display the widget on the cart page."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:513
+msgid "Banner widget styled shadow"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:514
+msgid "Whether or not the banner should be rendered with a Qliro style shadow."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:516
+msgid "Display with a Qliro style shadow"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:520
+msgid "Product widget"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:525
+#. translators: %s: Link to the documentation for displaying the widget via
+#. shortcode.
+msgid ""
+"Presents a suitable payment method based on the price of the current "
+"product. You can also display it with the shortcode "
+"[qliro_one_payment_widget], read more about it %s."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:533
+msgid "Payment widget placement on product pages"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:535
+msgid ""
+" Choose where on the product page that you want to display the product "
+"widget."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:552
+msgid "Payment widget condensed copy"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:553
+msgid "Display with a condensed and shorter copy"
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:555
+msgid "If enabled, the product widget will be rendered with shorter copy."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Qliro for WooCommerce"
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:43
+msgid ""
+"Safe and simple payment. An embedded checkout with high conversion rates "
+"and the most popular payment methods on the market — giving your customers "
+"a first-class shopping experience."
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:158
 msgid "The order could not be processed. Please reload the page and try again."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:260
+#: classes/class-qliro-one-gateway.php:264
 msgid "Qliro order was upsold with transaction id"
 msgstr ""
 
@@ -641,6 +863,10 @@ msgstr ""
 
 #: classes/class-qliro-one-metabox.php:60
 msgid "Order status was not found."
+msgstr ""
+
+#: classes/class-qliro-one-metabox.php:63
+msgid "Payment method"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:64
@@ -661,7 +887,7 @@ msgstr ""
 
 #: classes/class-qliro-one-metabox.php:74
 #: classes/class-qliro-one-metabox.php:120
-msgid "Order synchronization"
+msgid "Order management"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:74
@@ -731,8 +957,8 @@ msgstr ""
 
 #: classes/class-qliro-one-order-management.php:180
 msgid ""
-"The order synchronization with Qliro is disabled for this order, either "
-"enable it and try again or use the manual refund option."
+"The order management with Qliro is disabled for this order, either enable "
+"it and try again or use the manual refund option."
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:202
@@ -794,8 +1020,8 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: classes/class-qliro-one-product-tab.php:55
-msgid "Minimum customer age"
+#: classes/class-qliro-one-product-tab.php:30
+msgid "Qliro"
 msgstr ""
 
 #: classes/class-qliro-one-product-tab.php:63
@@ -903,6 +1129,8 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
+#: dependencies/krokedil/settings-page/src/Addons.php:209
+#. translators: %s is the plugin name.
 msgid "Free"
 msgstr ""
 
@@ -1056,43 +1284,94 @@ msgstr ""
 msgid "There is no changelog available."
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:42
+#: dependencies/krokedil/settings-page/src/Addons.php:42
+#: dependencies/krokedil/settings-page/src/Navigation.php:57
+msgid "Addons"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:241
+msgid "Active"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:245
+msgid "Activate"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:251
+msgid "Install Now"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Navigation.php:52
+msgid "General"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Navigation.php:54
+#: dependencies/krokedil/settings-page/src/Support.php:30
+#: qliro-one-for-woocommerce.php:213
+msgid "Support"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Support.php:100
+msgid "If you still need help, please open a support ticket with Krokedil."
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Support.php:103
+msgid "Open support ticket with Krokedil"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Traits/Layout.php:76
+msgid "Return to payments"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+msgid "Plugin resources"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+msgid "Additional resources"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+msgid "Sections"
+msgstr ""
+
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:45
 msgid "Shipping Information"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:168
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:171
 msgid "Selected pickup point"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:176
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:179
 msgid "Edit"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:239
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:242
 msgid "Change"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:261
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:264
 msgid "Invalid order id"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:266
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:269
 msgid "Invalid shipping line id"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:271
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:274
 msgid "No pickup points found"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:282
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:285
 msgid "Invalid pickup point id"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:288
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:291
 msgid "Could not save shipping line"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:295
+#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:298
 msgid "Pickup point updated"
 msgstr ""
 
@@ -1100,16 +1379,22 @@ msgstr ""
 msgid "Shipping tax"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:301
+#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
 msgid "Address"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:324
+#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
 msgid "Open hours"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:362
+#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
 msgid "Show on map"
+msgstr ""
+
+#: dependencies/krokedil/shipping/src/SessionHandler.php:229
+msgid ""
+"The shipping methods have been changed during the checkout process. Please "
+"verify your selected shipping method and try again."
 msgstr ""
 
 #: includes/admin/views/html-order-partial-capture.php:17
@@ -1151,19 +1436,15 @@ msgstr ""
 msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:159 qliro-one-for-woocommerce.php:169
+#: qliro-one-for-woocommerce.php:170 qliro-one-for-woocommerce.php:180
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:211
+#: qliro-one-for-woocommerce.php:212
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:212
-msgid "Support"
-msgstr ""
-
-#: qliro-one-for-woocommerce.php:374 qliro-one-for-woocommerce.php:384
+#: qliro-one-for-woocommerce.php:385 qliro-one-for-woocommerce.php:395
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
@@ -1172,10 +1453,6 @@ msgstr ""
 
 #: templates/qliro-one-checkout.php:15
 msgid "You must be logged in to checkout."
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "Qliro for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

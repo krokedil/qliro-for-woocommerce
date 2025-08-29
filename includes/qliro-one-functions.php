@@ -133,7 +133,7 @@ function qliro_one_wc_show_another_gateway_button() {
 
 	if ( count( $available_gateways ) > 1 ) {
 		$settings                   = get_option( 'woocommerce_qliro_one_settings' );
-		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-checkout-for-woocommerce' );
+		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-for-woocommerce' );
 
 		?>
 		<p class="qliro-one-checkout-select-other-wrapper">
@@ -361,8 +361,8 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 	$key    = '_qliro_one_order_confirmation_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => $confirmation_id,
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
@@ -388,8 +388,8 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
 	$key    = '_qliro_one_order_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => strval( $qliro_order_id ),
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => strval( $qliro_order_id ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
