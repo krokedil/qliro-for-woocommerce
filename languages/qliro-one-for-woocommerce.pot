@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.13.0\n"
+"Project-Id-Version: Qliro for WooCommerce 1.14.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-08-22 07:09:49+00:00\n"
+"POT-Creation-Date: 2025-09-01 08:50:18+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1129,8 +1129,7 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
-#: dependencies/krokedil/settings-page/src/Addons.php:209
-#. translators: %s is the plugin name.
+#: dependencies/krokedil/settings-page/src/Addons.php:212
 msgid "Free"
 msgstr ""
 
@@ -1289,15 +1288,25 @@ msgstr ""
 msgid "Addons"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:241
+#: dependencies/krokedil/settings-page/src/Addons.php:141
+#. translators: %s is the plugin name.
+msgid "the plugin"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:143
+#. translators: %s is the plugin name.
+msgid "These are other plugins from Krokedil that work well together with %s."
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:244
 msgid "Active"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:245
+#: dependencies/krokedil/settings-page/src/Addons.php:248
 msgid "Activate"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:251
+#: dependencies/krokedil/settings-page/src/Addons.php:254
 msgid "Install Now"
 msgstr ""
 
@@ -1311,11 +1320,17 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Support.php:100
-msgid "If you still need help, please open a support ticket with Krokedil."
+#: dependencies/krokedil/settings-page/src/Support.php:90
+msgid ""
+"Before opening a support ticket, please make sure you have read the "
+"relevant plugin resources for a solution to your problem"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:103
+msgid "If you still need help, please open a support ticket with Krokedil."
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Support.php:106
 msgid "Open support ticket with Krokedil"
 msgstr ""
 
@@ -1323,15 +1338,15 @@ msgstr ""
 msgid "Return to payments"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:84
 msgid "Plugin resources"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:108
 msgid "Additional resources"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:37
 msgid "Sections"
 msgstr ""
 
@@ -1389,12 +1404,6 @@ msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
 msgid "Show on map"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/SessionHandler.php:229
-msgid ""
-"The shipping methods have been changed during the checkout process. Please "
-"verify your selected shipping method and try again."
 msgstr ""
 
 #: includes/admin/views/html-order-partial-capture.php:17
