@@ -12,7 +12,7 @@ do_action( 'woocommerce_before_checkout_form', WC()->checkout() );
 
 // If checkout registration is disabled and not logged in, the user cannot checkout.
 if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
-	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
+	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 	return;
 }
 ?>
@@ -20,7 +20,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 <form name="checkout" class="checkout woocommerce-checkout">
 	<?php do_action( 'qliro_one_wc_before_wrapper' ); ?>
 	<div id="qliro-one-wrapper">
-		<div id="order_review">
+		<div id="qliro-order-review">
 			<?php do_action( 'qliro_one_wc_before_order_review' ); ?>
 			<?php woocommerce_order_review(); ?>
 			<?php do_action( 'qliro_one_wc_after_order_review' ); ?>

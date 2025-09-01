@@ -175,9 +175,9 @@ class Qliro_One_Order_Management {
 	public function refund( $order_id, $amount, $return_fees = array() ) {
 		$order = wc_get_order( $order_id );
 
-		// Skip the order is order sync is not enabled for it, and return an error.
+		// Skip the order is order management is not enabled for it, and return an error.
 		if ( ! self::is_order_sync_enabled( $order ) ) {
-			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order synchronization with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
+			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
 		}
 
 		$refund_order_id = $order->get_refunds()[0]->get_id();
@@ -390,8 +390,8 @@ class Qliro_One_Order_Management {
 	 * @return array
 	 */
 	public function hide_shipping_metadata( $hidden_order_itemmeta ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['debug'] ) ) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $hidden_order_itemmeta;
 		}
 
@@ -482,7 +482,7 @@ class Qliro_One_Order_Management {
 		}
 		?>
 		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
-			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ' ); ?></span>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ', 'qliro-one-for-woocommerce' ); ?></span>
 			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
 		</span>
 		<?php

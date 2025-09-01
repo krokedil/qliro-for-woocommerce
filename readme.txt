@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.8.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.1.0
-Stable tag: 1.13.0
+WC tested up to: 10.1.2
+Stable tag: 1.14.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,14 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.09.01    - version 1.14.0 =
+* Feature       - Added support for sending VatRate on order lines to Qliro.
+* Fix           - Resolved fatal error that could occur for merchants using PHP version 7.4 and below.
+* Fix           - Updated some spelling and dead documentation links for the Qliro settings page.
+* Enhancement   - Prepared the plugin for deployment to wordpress.org.
+* Tweak         - Slightly updated the design of the checkout template.
+* Tweak         - Renamed the Qliro metabox setting 'Order synchronization' to 'Order Management'.
+
 = 2025.08.18    - version 1.13.0 =
 * Feature       - Added support for handling notification callbacks from Qliro after the order is placed. For now this only supports saving Ingrid shipping data when using the Qliro integrated shipping with Ingrid.
 * Feature       - Added the action 'qliro_notification_{event_type}_{provider}' for custom handling of Qliro notification events. 'event_type' and 'provider' are the lowercase values sent by Qliro in the notification request.
