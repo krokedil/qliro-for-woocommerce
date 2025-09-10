@@ -343,7 +343,7 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get if we should ask for newsletter signup.
+	 * Get if we should display a custom checkbox in the Qliro iframe.
 	 *
 	 * @return bool
 	 */
@@ -357,16 +357,30 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get if newsletter signup should be checked by default.
+	 * Get if the custom checkbox should be checked by default.
 	 *
 	 * @return bool
 	 */
 	public function get_asked_for_newsletter_checked() {
 		$default_value = false;
-		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup'] ) ) {
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'] ) ) {
 			return $default_value;
 		}
 
-		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
+		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'];
+	}
+
+	/**
+	 * Get the label for the custom checkbox.
+	 *
+	 * @return string
+	 */
+	public function get_ask_for_newsletter_label() {
+		$default_value = __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' );
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_label'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_button_ask_for_newsletter_signup_label'];
 	}
 }
