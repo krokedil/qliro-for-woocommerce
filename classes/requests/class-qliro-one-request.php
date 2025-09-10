@@ -369,4 +369,18 @@ abstract class Qliro_One_Request {
 
 		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
 	}
+
+	/**
+	 * Get the label for the newsletter signup checkbox.
+	 *
+	 * @return string
+	 */
+	public function get_ask_for_newsletter_label() {
+		$default_value = __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' );
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_label'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_button_ask_for_newsletter_signup_label'];
+	}
 }
