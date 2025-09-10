@@ -61,8 +61,8 @@
         grid-column-gap: 70px;
     }
 
-    .qliro-two-column-left #order_review,
-    .qliro-two-column-left-sf #order_review {
+    .qliro-two-column-left #qliro-order-review,
+    .qliro-two-column-left-sf #qliro-order-review {
         order: 2;
     }
 
@@ -71,7 +71,7 @@
         order: 1;
     }
 
-    #qliro-one-wrapper #order_review {
+    #qliro-one-wrapper #qliro-order-review {
         width: 100%;
     }
 }
