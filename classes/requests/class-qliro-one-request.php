@@ -363,11 +363,11 @@ abstract class Qliro_One_Request {
 	 */
 	public function get_asked_for_newsletter_checked() {
 		$default_value = false;
-		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup'] ) ) {
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'] ) ) {
 			return $default_value;
 		}
 
-		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
+		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'];
 	}
 
 	/**
