@@ -218,5 +218,11 @@
             "description": "<ul><li>Feature - Added support for sending VatRate on order lines to Qliro.</li><li>Fix - Resolved fatal error that could occur for merchants using PHP version 7.4 and below.</li><li>Fix - Updated some spelling and dead documentation links for the Qliro settings page.</li><li>Enhancement - Prepared the plugin for deployment to wordpress.org.</li><li>Tweak - Slightly updated the design of the checkout template.</li><li>Tweak - Renamed the Qliro metabox setting 'Order synchronization' to 'Order Management'.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.2"
+      },
+      "1.14.1": {
+            "description": "<ul><li>Fix - Resolved the checkout page layout not working as expected for some layout options.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.2"
       }
+
 }
