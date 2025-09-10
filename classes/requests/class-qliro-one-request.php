@@ -343,7 +343,7 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get if we should ask for newsletter signup.
+	 * Get if we should display a custom checkbox in the Qliro iframe.
 	 *
 	 * @return bool
 	 */
@@ -357,7 +357,7 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get if newsletter signup should be checked by default.
+	 * Get if the custom checkbox should be checked by default.
 	 *
 	 * @return bool
 	 */
@@ -371,7 +371,7 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get the label for the newsletter signup checkbox.
+	 * Get the label for the custom checkbox.
 	 *
 	 * @return string
 	 */
