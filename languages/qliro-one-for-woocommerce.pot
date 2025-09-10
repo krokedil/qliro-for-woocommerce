@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Qliro for WooCommerce 1.14.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-09-10 12:31:27+00:00\n"
+"POT-Creation-Date: 2025-09-10 12:42:51+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1130,6 +1130,7 @@ msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
 #: dependencies/krokedil/settings-page/src/Addons.php:209
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Addons.php:199
 #. translators: %s is the plugin name.
 msgid "Free"
 msgstr ""
@@ -1265,133 +1266,167 @@ msgid ""
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:56
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:54
 msgid "View details"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:71
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:77
 msgid "More information about %s"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:107
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:128
 msgid "Check for updates"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:183
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:224
 msgid "Unknown update checker status \"%s\""
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:84
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:101
 msgid "There is no changelog available."
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:42
 #: dependencies/krokedil/settings-page/src/Navigation.php:57
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Addons.php:46
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Navigation.php:63
 msgid "Addons"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:241
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Addons.php:230
 msgid "Active"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:245
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Addons.php:234
 msgid "Activate"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Addons.php:251
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Addons.php:239
 msgid "Install Now"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Navigation.php:52
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Navigation.php:55
 msgid "General"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Navigation.php:54
 #: dependencies/krokedil/settings-page/src/Support.php:30
 #: qliro-one-for-woocommerce.php:213
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Navigation.php:59
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Support.php:31
 msgid "Support"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:100
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Support.php:115
 msgid "If you still need help, please open a support ticket with Krokedil."
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:103
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Support.php:116
 msgid "Open support ticket with Krokedil"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Layout.php:76
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Traits/Layout.php:67
 msgid "Return to payments"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:74
 msgid "Plugin resources"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Traits/Sidebar.php:86
 msgid "Additional resources"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+#: tmp-1fa46f33b6/source/vendor/krokedil/settings-page/src/Traits/Subsection.php:35
 msgid "Sections"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:45
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:47
 msgid "Shipping Information"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:171
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:190
 msgid "Selected pickup point"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:179
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:192
 msgid "Edit"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:242
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:232
 msgid "Change"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:264
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:256
 msgid "Invalid order id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:269
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:263
 msgid "Invalid shipping line id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:274
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:270
 msgid "No pickup points found"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:285
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:284
 msgid "Invalid pickup point id"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:291
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:292
 msgid "Could not save shipping line"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:298
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Admin/EditOrderPage.php:304
 msgid "Pickup point updated"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/Calculations.php:26
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/Calculations.php:27
 msgid "Shipping tax"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:332
 msgid "Address"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:363
 msgid "Open hours"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/PickupPoint/PickupPoint.php:389
 msgid "Show on map"
 msgstr ""
 
 #: dependencies/krokedil/shipping/src/SessionHandler.php:229
+#: tmp-1fa46f33b6/source/vendor/krokedil/shipping/src/SessionHandler.php:250
 msgid ""
 "The shipping methods have been changed during the checkout process. Please "
 "verify your selected shipping method and try again."
@@ -1472,16 +1507,19 @@ msgid "https://krokedil.com/"
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:172
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:214
 msgctxt "the plugin title"
 msgid "The %s plugin is up to date."
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:175
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:216
 msgctxt "the plugin title"
 msgid "A new version of the %s plugin is available."
 msgstr ""
 
 #: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:178
+#: tmp-1fa46f33b6/source/vendor/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:218
 msgctxt "the plugin title"
 msgid "Could not determine if updates are available for %s."
 msgstr ""
