@@ -255,7 +255,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
-			$items = array(
+			$fee_item = array(
 				array(
 					'MerchantReference'  => $discount_id,
 					'Description'        => $fee->get_name(),
@@ -267,15 +267,26 @@ class Qliro_One_Metabox extends OrderMetabox {
 			);
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
-			$is_captured = qoc_is_fully_captured( $order );
-			$response    = $is_captured ? QOC_WC()->api->add_items_qliro_order( $order_id, $items ) : QOC_WC()->api->update_items_qliro_order( $order_id, $items );
+			if ( qoc_is_fully_captured( $order ) ) {
+				$response = QOC_WC()->api->add_items_qliro_order( $order_id, $fee_item );
+			} else {
+				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
+				$items    = array_merge( Qliro_One_Helper_Order::get_order_lines( $order_id ), $fee_item );
+				$response = QOC_WC()->api->update_items_qliro_order( $order_id, $items );
+			}
+
 			if ( is_wp_error( $response ) ) {
 				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
 			}
 
+			// Get the new payment transaction id from the response, and update the order meta with it.
+			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
+			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
+
 			$order->add_item( $fee );
 			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
 			$order->save();
+
 		} catch ( Exception $e ) {
 			$order->add_order_note( $e->getMessage() );
 		} finally {
