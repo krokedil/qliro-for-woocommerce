@@ -208,5 +208,15 @@
             "description": "<ul><li>Feature - Redesigned the layout, structure and navigation of the settings page.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.1"
+      },
+      "1.13.0": {
+            "description": "<ul><li>Feature - Added support for handling notification callbacks from Qliro after the order is placed. For now this only supports saving Ingrid shipping data when using the Qliro integrated shipping with Ingrid.</li><li>Feature - Added the action 'qliro_notification_{event_type}_{provider}' for custom handling of Qliro notification events. 'event_type' and 'provider' are the lowercase values sent by Qliro in the notification request.</li><li>Fix - Fixed an issue that could affect the Google Analytics tracking of the Qliro checkout.</li><li>Fix - Fixed the refund fee text not being removed when refund amount was zero.</li><li>Tweak - Renamed 'Order synchronization' to 'Order Management' in the Qliro order metabox.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.2"
+      },
+      "1.14.0": {
+            "description": "<ul><li>Feature - Added support for sending VatRate on order lines to Qliro.</li><li>Fix - Resolved fatal error that could occur for merchants using PHP version 7.4 and below.</li><li>Fix - Updated some spelling and dead documentation links for the Qliro settings page.</li><li>Enhancement - Prepared the plugin for deployment to wordpress.org.</li><li>Tweak - Slightly updated the design of the checkout template.</li><li>Tweak - Renamed the Qliro metabox setting 'Order synchronization' to 'Order Management'.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.2"
       }
 }
