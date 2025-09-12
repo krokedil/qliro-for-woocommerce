@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro_One_Cancel_Order class.
+ * Qliro_One_Request_Return_Items class.
  */
 class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 

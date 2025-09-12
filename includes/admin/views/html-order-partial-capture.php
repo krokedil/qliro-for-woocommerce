@@ -2,7 +2,7 @@
 /**
  * HTML Code for the Partial Capture selection.
  *
- * @package WooCommerce_Partial_Delivery/Includes/Admin/Views
+ * @package Qliro_One_For_WooCommerce/Includes/Admin/Views
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

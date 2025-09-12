@@ -38,7 +38,7 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "OM Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "OM Callback received: {$body}." );
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
@@ -76,7 +76,7 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Checkout Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "Checkout Callback received: {$body}." );
 
 		if ( isset( $data['Status'] ) ) {
 			switch ( $data['Status'] ) {

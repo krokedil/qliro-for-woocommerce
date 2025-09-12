@@ -1,3 +1,24 @@
+.qliro-discount-form-modal {
+	--error: firebrick;
+	
+	.error {
+		color: var(--error);
+	}
+
+	#qliro-discount-form-heading {
+		padding: 0;
+	}
+
+	#qliro-discount-form {
+		padding: 0 1rem !important;
+	}
+
+	#qliro-discount-id-error {
+		margin-top: 0;
+	}
+
+}
+
 .qoc-shipping, .qoc-fee {
 	width:15px !important;
 	height:15px !important;

@@ -127,10 +127,10 @@ class Qliro_One_API {
 	/**
 	 * Refund a Qliro order.
 	 *
-	 * @param int $order_id Order ID.
-	 * @param int $refund_order_id Refund order ID.
-	 * @param string $capture_id Capture ID.
-	 * @param array $items Items to refund.
+	 * @param int                 $order_id Order ID.
+	 * @param int                 $refund_order_id Refund order ID.
+	 * @param string              $capture_id Capture ID.
+	 * @param array               $items Items to refund.
 	 * @param array Fee to refund.
 	 *
 	 * @return array|WP_Error
@@ -143,6 +143,42 @@ class Qliro_One_API {
 				'capture_id'      => $capture_id,
 				'items'           => $items,
 				'return_fee'      => $return_fees,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
+	 * Add items to a shipped Qliro order.
+	 *
+	 * @param int   $order_id Order ID.
+	 * @param array $items Items to add.
+	 * @return array|WP_Error
+	 */
+	public function add_items_qliro_order( $order_id, $items ) {
+		$request  = new Qliro_One_Request_Add_Items(
+			array(
+				'order_id' => $order_id,
+				'items'    => $items,
+			)
+		);
+		$response = $request->request();
+		return $this->check_for_api_error( $response );
+	}
+
+	/**
+	 * Update items on a Qliro order not yet shipped.
+	 *
+	 * @param int   $order_id Order ID.
+	 * @param array $items Items to add.
+	 * @return array|WP_Error
+	 */
+	public function update_items_qliro_order( $order_id, $items ) {
+		$request  = new Qliro_One_Request_Update_Items(
+			array(
+				'order_id' => $order_id,
+				'items'    => $items,
 			)
 		);
 		$response = $request->request();
