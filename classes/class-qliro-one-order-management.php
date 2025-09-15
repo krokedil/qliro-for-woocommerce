@@ -31,6 +31,8 @@ class Qliro_One_Order_Management {
 		add_action( 'woocommerce_admin_order_items_after_shipping', array( $this, 'add_return_fee_order_lines_html' ), PHP_INT_MAX );
 		add_action( 'woocommerce_after_order_refund_item_name', array( $this, 'show_return_fee_info' ) );
 
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999, 2 );
+
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -522,5 +524,66 @@ class Qliro_One_Order_Management {
 		}
 
 		return $return_fee;
+	}
+
+	/**
+	 * Maybe sync the order with Qliro when the order is updated.
+	 *
+	 * @param int $order_id The WooCommerce Order ID.
+	 */
+	public function maybe_sync_order( $order_id ) {
+
+		// If the order automatic sync on update is not enabled, bail.
+		if ( ! apply_filters( 'qliro_sync_order_on_update', false ) ) {
+			return;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return;
+		}
+
+		self::sync_order_with_qliro( $order_id, $order->get_meta( '_qliro_one_order_id' ) );
+	}
+
+	/**
+	 * Sync the order with Qliro.
+	 *
+	 * @param int    $order_id The WooCommerce Order ID.
+	 * @param string $qliro_order_id The Qliro Order ID.
+	 */
+	public static function sync_order_with_qliro( $order_id, $qliro_order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order || 'qliro_one' !== $order->get_payment_method() ) {
+			return;
+		}
+
+		$response = QOC_WC()->api->om_update_qliro_one_order( $qliro_order_id, $order_id );
+
+		if ( is_wp_error( $response ) ) {
+			$order->add_order_note(
+				sprintf(
+					/* translators: %s: error message */
+					__( 'Failed to sync order with Qliro. Error: %s', 'qliro-one-for-woocommerce' ),
+					$response->get_error_message()
+				)
+			);
+			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+			exit;
+		}
+
+		// Get the new payment transaction id from the response, and update the order meta with it.
+		$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
+		$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
+		$order->save();
+
+		$order->add_order_note(
+			// translators: %s: new transaction id from Qliro.
+			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-one-for-woocommerce' ), $transaction_id )
+		);
+
+		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+		exit;
 	}
 }
