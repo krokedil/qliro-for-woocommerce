@@ -529,9 +529,10 @@ class Qliro_One_Order_Management {
 	/**
 	 * Maybe sync the order with Qliro when the order is updated.
 	 *
-	 * @param int $order_id The WooCommerce Order ID.
+	 * @param int     $order_id The WooCommerce Order ID.
+	 * @param WP_Post $post The post object.
 	 */
-	public function maybe_sync_order( $order_id ) {
+	public function maybe_sync_order( $order_id, $post ) {
 
 		// If the order automatic sync on update is not enabled, bail.
 		if ( ! apply_filters( 'qliro_sync_order_on_update', false ) ) {
