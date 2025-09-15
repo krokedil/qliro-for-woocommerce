@@ -91,7 +91,8 @@ class Qliro_One_Templates {
 			return;
 		}
 
-		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+		$first_gateway = reset( WC()->payment_gateways()->get_available_payment_gateways() );
+		if ( ! isset( WC()->session ) || ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) && 'qliro_one' !== $first_gateway->id ) ) {
 			return;
 		}
 
