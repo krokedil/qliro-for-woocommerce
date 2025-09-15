@@ -155,9 +155,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		Qliro_One_Order_Management::sync_order_with_qliro( $order_id, $qliro_order_id );
-
-		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-		exit;
 	}
 
 	/**
