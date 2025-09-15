@@ -231,6 +231,19 @@ jQuery(function ($) {
 
 			qliroOneForWooCommerce.setCustomerType(customerInfo);
 
+			(email == null) ? null : $('#billing_email').val(email);
+			(phone == null) ? null : $('#billing_phone').val(phone);
+			(firstName == null) ? null : $('#billing_first_name').val(firstName);
+			(lastName == null) ? null : $('#billing_last_name').val(lastName);
+			(street == null) ? null : $('#billing_address_1').val(street);
+			(postalCode == null) ? null : $('#billing_postcode').val(postalCode);
+			(city == null) ? null : $('#billing_city').val(city);
+			(area == null) ? null : qliroOneForWooCommerce.setStateField('billing', area);
+
+			$("form.checkout").trigger('update_checkout');
+			$('#billing_email').change();
+			$('#billing_email').blur();
+
 			const shippingFirstName = shippingAddress?.FirstName ?? customerInfo?.address?.firstName;
 			const shippingLastName = shippingAddress?.LastName ?? customerInfo?.address?.lastName;
 			const shippingStreet = shippingAddress?.Street ?? customerInfo?.address?.street;
@@ -250,7 +263,6 @@ jQuery(function ($) {
 			$('body').trigger('update_checkout');
 			$('#shipping_email').change();
 			$('#shipping_email').blur();
-			
 		},
 
 		/*
