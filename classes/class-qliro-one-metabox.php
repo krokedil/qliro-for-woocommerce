@@ -17,11 +17,21 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'qliro-one', __( 'Qliro order data', 'qliro-one-for-woocommerce' ), 'qliro_one' );
+		parent::__construct( 'qliro-one', 'Qliro order data', 'qliro_one' );
 
+		add_action( 'init', array( $this, 'set_metabox_title' ) );
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
 
 		$this->scripts[] = 'qliro-one-metabox';
+	}
+
+	/**
+	 * Set the metabox title.
+	 *
+	 * @return void
+	 */
+	public function set_metabox_title() {
+		$this->title = __( 'Qliro order data', 'qliro-one-for-woocommerce' );
 	}
 
 	/**

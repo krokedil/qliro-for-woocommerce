@@ -458,11 +458,11 @@ jQuery(function ($) {
 			callback({ shouldProceed: false, errorMessage: error_message });
 
 			// Re-enable the form.
-			$('body').trigger('updated_checkout');
 			var className = 'form.checkout';
 			$(qliroOneForWooCommerce.checkoutFormSelector).removeClass('processing');
 			$(qliroOneForWooCommerce.checkoutFormSelector).unblock();
 			$('.woocommerce-checkout-review-order-table').unblock();
+			$('body').trigger('update_checkout');
 		},
 
 		placeWooOrder: function (data, callback) {
