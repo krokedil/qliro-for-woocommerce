@@ -570,8 +570,7 @@ class Qliro_One_Order_Management {
 					$response->get_error_message()
 				)
 			);
-			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-			exit;
+			return;
 		}
 
 		// Get the new payment transaction id from the response, and update the order meta with it.
@@ -583,8 +582,5 @@ class Qliro_One_Order_Management {
 			// translators: %s: new transaction id from Qliro.
 			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-one-for-woocommerce' ), $transaction_id )
 		);
-
-		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-		exit;
 	}
 }
