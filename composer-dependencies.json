@@ -20,9 +20,9 @@
             "type": "vcs",
             "url": "git@github.com:krokedil/woocommerce.git"
         },
-         {
-        "type": "vcs",
-        "url": "git@github.com:krokedil/settings-page.git"
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/settings-page.git"
         }
     ],
     "minimum-stability": "dev",
