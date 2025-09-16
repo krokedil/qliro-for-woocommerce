@@ -240,7 +240,6 @@ jQuery(function ($) {
 			(city == null) ? null : $('#billing_city').val(city);
 			(area == null) ? null : qliroOneForWooCommerce.setStateField('billing', area);
 
-			$("form.checkout").trigger('update_checkout');
 			$('#billing_email').change();
 			$('#billing_email').blur();
 
