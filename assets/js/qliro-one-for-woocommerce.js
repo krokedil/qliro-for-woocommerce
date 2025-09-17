@@ -321,7 +321,11 @@ jQuery(function ($) {
 			$('#billing_last_name').val(addressData.billingAddress.LastName);
 			$('#billing_company').val(addressData.billingAddress.CompanyName);
 			$('#billing_address_1').val(addressData.billingAddress.Street);
-			$('#billing_address_2').val(addressData.billingAddress.Street2);
+			$('#billing_address_2').val(
+				addressData.billingAddress.CareOf
+					? addressData.billingAddress.CareOf + (addressData.billingAddress.Street2 ? ' ' + addressData.billingAddress.Street2 : '')
+					: addressData.billingAddress.Street2
+			);
 			$('#billing_city').val(addressData.billingAddress.City);
 			$('#billing_postcode').val(addressData.billingAddress.PostalCode);
 			qliroOneForWooCommerce.setStateField('billing', addressData.billingAddress.Area);
@@ -334,7 +338,11 @@ jQuery(function ($) {
 			$('#shipping_last_name').val(addressData.shippingAddress.LastName);
 			$('#shipping_company').val(addressData.shippingAddress.CompanyName);
 			$('#shipping_address_1').val(addressData.shippingAddress.Street);
-			$('#shipping_address_2').val(addressData.shippingAddress.Street2);
+			$('#shipping_address_2').val(
+				addressData.shippingAddress.CareOf
+					? addressData.shippingAddress.CareOf + (addressData.shippingAddress.Street2 ? ' ' + addressData.shippingAddress.Street2 : '')
+					: addressData.shippingAddress.Street2
+			);
 			$('#shipping_city').val(addressData.shippingAddress.City);
 			$('#shipping_postcode').val(addressData.shippingAddress.PostalCode);
 			qliroOneForWooCommerce.setStateField('shipping', addressData.shippingAddress.Area);
@@ -450,11 +458,11 @@ jQuery(function ($) {
 			callback({ shouldProceed: false, errorMessage: error_message });
 
 			// Re-enable the form.
-			$('body').trigger('updated_checkout');
 			var className = 'form.checkout';
 			$(qliroOneForWooCommerce.checkoutFormSelector).removeClass('processing');
 			$(qliroOneForWooCommerce.checkoutFormSelector).unblock();
 			$('.woocommerce-checkout-review-order-table').unblock();
+			$('body').trigger('update_checkout');
 		},
 
 		placeWooOrder: function (data, callback) {

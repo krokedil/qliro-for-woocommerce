@@ -17,11 +17,21 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'qliro-one', __( 'Qliro order data', 'qliro-one-for-woocommerce' ), 'qliro_one' );
+		parent::__construct( 'qliro-one', 'Qliro order data', 'qliro_one' );
 
+		add_action( 'init', array( $this, 'set_metabox_title' ) );
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
 
 		$this->scripts[] = 'qliro-one-metabox';
+	}
+
+	/**
+	 * Set the metabox title.
+	 *
+	 * @return void
+	 */
+	public function set_metabox_title() {
+		$this->title = __( 'Qliro order data', 'qliro-one-for-woocommerce' );
 	}
 
 	/**
@@ -154,38 +164,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 			exit;
 		}
 
-		$order = wc_get_order( $order_id );
-
-		if ( ! $order || $this->payment_method_id !== $order->get_payment_method() ) {
-			return;
-		}
-
-		$response = QOC_WC()->api->om_update_qliro_one_order( $qliro_order_id, $order_id );
-
-		if ( is_wp_error( $response ) ) {
-			$order->add_order_note(
-				sprintf(
-					/* translators: %s: error message */
-					__( 'Failed to sync order with Qliro. Error: %s', 'qliro-one-for-woocommerce' ),
-					$response->get_error_message()
-				)
-			);
-			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-			exit;
-		}
-
-		// Get the new payment transaction id from the response, and update the order meta with it.
-		$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
-		$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
-		$order->save();
-
-		$order->add_order_note(
-			// translators: %s: new transaction id from Qliro.
-			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-one-for-woocommerce' ), $transaction_id )
-		);
+		Qliro_One_Order_Management::sync_order_with_qliro( $order_id, $qliro_order_id );
 
 		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-		exit;
 	}
 
 	/**

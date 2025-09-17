@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36aae2106893d1e6c302f666eb22021f",
+    "content-hash": "f0ec169047c298d7062e33cba212d8fd",
     "packages": [
         {
             "name": "kernl/kernl-update-checker",
@@ -103,16 +103,16 @@
         },
         {
             "name": "krokedil/shipping",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/shipping.git",
-                "reference": "6b1718d8822dd8555f0cd865d209ecf11832f5af"
+                "reference": "dbb898599861fec20d8e2818a245fba7891f0211"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/shipping/zipball/6b1718d8822dd8555f0cd865d209ecf11832f5af",
-                "reference": "6b1718d8822dd8555f0cd865d209ecf11832f5af",
+                "url": "https://api.github.com/repos/krokedil/shipping/zipball/dbb898599861fec20d8e2818a245fba7891f0211",
+                "reference": "dbb898599861fec20d8e2818a245fba7891f0211",
                 "shasum": ""
             },
             "require": {
@@ -160,10 +160,10 @@
             },
             "description": "Shipping method extensions from Krokedil",
             "support": {
-                "source": "https://github.com/krokedil/shipping/tree/2.3.0",
+                "source": "https://github.com/krokedil/shipping/tree/2.3.1",
                 "issues": "https://github.com/krokedil/shipping/issues"
             },
-            "time": "2025-07-16T11:36:50+00:00"
+            "time": "2025-09-16T12:52:02+00:00"
         },
         {
             "name": "krokedil/woocommerce",
@@ -278,7 +278,7 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
