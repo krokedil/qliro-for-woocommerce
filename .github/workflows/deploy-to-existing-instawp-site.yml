@@ -12,7 +12,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      PLUGIN_SLUG: qliro-one-for-woocommerce
+      PLUGIN_SLUG: qliro-for-woocommerce
       # You can change the default below to push to another site by default
       INSTA_WP_URL: ${{ github.event.inputs.instawp_url || 'qliro-settings.krokedil.site' }}
       INSTAWP_API_TOKEN: ${{ secrets.INSTAWP_API_TOKEN }}
