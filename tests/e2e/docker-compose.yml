@@ -25,7 +25,7 @@ services:
       - "8000:80"
     restart: on-failure
     volumes:
-      - "../../:/var/www/html/wp-content/plugins/qliro-one-for-woocommerce"
+      - "../../:/var/www/html/wp-content/plugins/qliro-for-woocommerce"
       - "wordpress:/var/www/html"
   wordpress-cli:
     image: wordpress:cli-php7.4
@@ -39,13 +39,13 @@ services:
     restart: on-failure
     user: xfs
     volumes:
-      - "../../:/var/www/html/wp-content/plugins/qliro-one-for-woocommerce"
+      - "../../:/var/www/html/wp-content/plugins/qliro-for-woocommerce"
       - "wordpress:/var/www/html"
 volumes:
   db:
   wordpress:
 
 
-networks: 
-  kronet: 
+networks:
+  kronet:
     driver: bridge
