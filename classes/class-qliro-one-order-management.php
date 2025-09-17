@@ -535,7 +535,7 @@ class Qliro_One_Order_Management {
 	public function maybe_sync_order( $order_id, $post ) {
 
 		// If the order automatic sync on update is not enabled, bail.
-		if ( ! apply_filters( 'qliro_sync_order_on_update', false ) ) {
+		if ( ! apply_filters( 'qliro_sync_order_on_update', false, $order_id ) ) {
 			return;
 		}
 
