@@ -544,6 +544,19 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		$order_sync = $order->get_meta( '_qliro_order_sync_enabled' );
+		// If the order sync is disabled for this order, bail.
+		if ( 'no' === $order_sync ) {
+			return;
+		}
+
+		$is_captured  = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
+		$is_cancelled = $order->get_meta( '_qliro_order_cancelled' );
+		// If the order is captured or cancelled, bail.
+		if ( $is_captured || $is_cancelled ) {
+			return;
+		}
+
 		self::sync_order_with_qliro( $order_id, $order->get_meta( '_qliro_one_order_id' ) );
 	}
 
