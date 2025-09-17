@@ -7,7 +7,7 @@ Tested up to: 6.8.2
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.1.2
-Stable tag: 1.14.2
+Stable tag: 1.15.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,11 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
-= 2025.09.17    - version 1.14.2 =
-* Enhancement   - Added support for the 'CareOf' field.
-* Enhancement   - Added support for 'All Products for WooCommerce Subscriptions' by Woo.
+= 2025.09.17    - version 1.15.0 =
+* Feature       - Added support for the 'CareOf' field.
+* Feature       - Added support for 'All Products for WooCommerce Subscriptions' by Woo.
+* Feature       - Introduced a filter to allow automatic syncing of WooCommerce orders to Qliro whenever an order is updated.
 * Fix           - Fixed an issue where shipping methods are re-calculated when placing an order, causing WooCommerce to default to the first shipping method available.
 * Fix           - Fixed an issue where the country selector was not displayed on the checkout page for guest users until the page was reloaded.
+* Fix           - Fixed a deprecation error related to translations.
 
 = 2025.09.10    - version 1.14.1 =
 * Fix           - Resolved the checkout page layout not working as expected for some layout options.

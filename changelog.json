@@ -224,8 +224,8 @@
             "requires": "5.9.0",
             "tested": "6.8.2"
       },
-      "1.14.2": {
-            "description": "<ul><li>Enhancement - Added support for the 'CareOf' field.</li><li>Enhancement - Added support for 'All Products for WooCommerce Subscriptions' by Woo.</li><li>Fix - Fixed an issue where shipping methods are re-calculated when placing an order, causing WooCommerce to default to the first shipping method available.</li><li>Fix - Fixed an issue where the country selector was not displayed on the checkout page for guest users until the page was reloaded.</li></ul>",
+      "1.15.0": {
+            "description": "<ul><li>Feature - Added support for the 'CareOf' field.</li><li>Feature - Added support for 'All Products for WooCommerce Subscriptions' by Woo.</li><li>Feature - Introduced a filter to allow automatic syncing of WooCommerce orders to Qliro whenever an order is updated.</li><li>Fix - Fixed an issue where shipping methods are re-calculated when placing an order, causing WooCommerce to default to the first shipping method available.</li><li>Fix - Fixed an issue where the country selector was not displayed on the checkout page for guest users until the page was reloaded.</li><li>Fix - Fixed a deprecation error related to translations.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.2"
       }
