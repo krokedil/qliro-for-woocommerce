@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 			target: {
 				options: {
 					domainPath: '/languages',
-					mainFile: 'qliro-one-for-woocommerce.php',
+					mainFile: 'qliro-for-woocommerce.php',
 					potFilename: 'qliro-one-for-woocommerce.pot',
 					processPot: function (pot, options) {
 						// add header options
