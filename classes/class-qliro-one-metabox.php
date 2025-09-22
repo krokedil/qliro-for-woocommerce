@@ -454,7 +454,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		);
 
 		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
-		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add discount</a>";
+		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>";
 
 		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
