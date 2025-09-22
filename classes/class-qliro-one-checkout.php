@@ -31,6 +31,8 @@ class Qliro_One_Checkout {
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'update_qliro_order' ), 9999 );
 
 		add_filter( 'woocommerce_states', array( $this, 'maybe_unset_states_from_countries' ), PHP_INT_MAX ); // Make sure we run this last.
+
+		add_filter( 'krokedil_shipping_should_verify_shipping', array( $this, 'maybe_verify_shipping' ) );
 	}
 
 	/**
@@ -277,5 +279,27 @@ class Qliro_One_Checkout {
 		}
 
 		return $country_states;
+	}
+
+	/**
+	 * Check if we should verify the shipping rate during checkout, and report errors to the customer instead of WooCommerce silently changing the shipping method.
+	 *
+	 * @param bool $should_verify_shipping If we should verify the shipping rate.
+	 *
+	 * @return bool
+	 */
+	public function maybe_verify_shipping( $should_verify_shipping ) {
+		// If its already true, no need to do anything.
+		if ( $should_verify_shipping ) {
+			return $should_verify_shipping;
+		}
+
+		$chosen_payment_method = WC()->session->get( 'chosen_payment_method' );
+		// If Qliro is the chosen payment method, and we are showing shipping methods inside the Qliro iframe.
+		if ( $this->is_shipping_in_iframe_enabled() && 'qliro_one' === $chosen_payment_method ) {
+			return true;
+		}
+
+		return $should_verify_shipping;
 	}
 }
