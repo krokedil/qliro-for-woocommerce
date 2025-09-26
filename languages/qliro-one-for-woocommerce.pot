@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.15.0\n"
+"Project-Id-Version: Qliro for WooCommerce 2.0.0\n"
 "Report-Msgid-Bugs-To: "
-"https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
-"POT-Creation-Date: 2025-09-17 12:04:32+00:00\n"
+"https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
+"POT-Creation-Date: 2025-09-26 08:52:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1264,26 +1264,6 @@ msgid ""
 "select a different payment method or country."
 msgstr ""
 
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:56
-msgid "View details"
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:71
-msgid "More information about %s"
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:107
-msgid "Check for updates"
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:183
-msgid "Unknown update checker status \"%s\""
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Vcs/PluginUpdateChecker.php:84
-msgid "There is no changelog available."
-msgstr ""
-
 #: dependencies/krokedil/settings-page/src/Addons.php:42
 #: dependencies/krokedil/settings-page/src/Navigation.php:57
 msgid "Addons"
@@ -1444,7 +1424,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: qliro-for-woocommerce.php:385 qliro-for-woocommerce.php:395
+#: qliro-for-woocommerce.php:384 qliro-for-woocommerce.php:394
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
@@ -1469,19 +1449,4 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "https://krokedil.com/"
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:172
-msgctxt "the plugin title"
-msgid "The %s plugin is up to date."
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:175
-msgctxt "the plugin title"
-msgid "A new version of the %s plugin is available."
-msgstr ""
-
-#: dependencies/kernl/kernl-update-checker/Puc/v4p13/Plugin/Ui.php:178
-msgctxt "the plugin title"
-msgid "Could not determine if updates are available for %s."
 msgstr ""
