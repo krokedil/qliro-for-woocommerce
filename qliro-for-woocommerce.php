@@ -5,7 +5,7 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.15.0
+ * Version: 2.0.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.15.0' );
+define( 'QLIRO_WC_VERSION', '2.0.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -321,7 +321,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 			add_filter( 'woocommerce_shipping_methods', Qliro_One_Shipping_Method::class . '::register' );
-			add_action( 'admin_init', array( $this, 'check_version' ) );
 		}
 
 		/**
@@ -475,20 +474,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function subscriptions() {
 			return $this->subscriptions;
-		}
-
-		/**
-		 * Checks the plugin version.
-		 *
-		 * @return void
-		 */
-		public function check_version() {
-			$update_checker = KrokedilQliroDeps\Puc_v4_Factory::buildUpdateChecker(
-				'https://kernl.us/api/v1/updates/6239a998af2c275613f57d25/',
-				__FILE__,
-				'qliro-one-for-woocommerce',
-				1
-			);
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
