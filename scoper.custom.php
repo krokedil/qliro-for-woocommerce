@@ -8,7 +8,8 @@ function customize_php_scoper_config( array $config ): array {
 
 	$config['exclude-classes'][] = 'WC_Subscriptions_Product';
 	$config['exclude-classes'][] = 'WCS_ATT_Cart';
-	$config['exclude-classes'][] = 'WP_Error';
+	
+	$config['expose-classes'][] = 'WP_Error';
 
 	return $config;
 }
