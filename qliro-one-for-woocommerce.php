@@ -501,7 +501,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function admin_notice_testmode() {
 			$settings         = get_option( 'woocommerce_qliro_one_settings', array() );
-			$testmode_enabled = 'yes' === $settings['testmode'] ?? 'no';
+			$testmode_enabled = 'yes' === $settings['testmode'] ?? 'yes';
 
 			if ( $testmode_enabled ) {
 				?>
