@@ -5,14 +5,14 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.15.0
+ * Version: 1.16.0
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 10.1.2
+ * WC tested up to: 10.2.2
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2025 Krokedil
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '1.15.0' );
+define( 'QLIRO_WC_VERSION', '1.16.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -277,6 +277,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-merchant-payment.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-add-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-items.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-om-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-upsell-order.php';
 

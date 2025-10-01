@@ -335,6 +335,117 @@ jQuery(function ($) {
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 
+			const discount = $('#qliro-discount-form');
+			if (discount.length > 0) {
+				const fees = JSON.parse($('#qliro-discount-form').attr('data-fees'));
+				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+				const discountIdEl = $('#qliro-discount-id');
+				const discountAmountEl = $('#qliro-discount-amount');
+				const discountPercentageEl = $('#qliro-discount-percentage');
+				const newDiscountPercentageEl = $('#qliro-new-discount-percentage');
+				const newTotalAmountEl = $('#qliro-new-total-amount');
+				const modal = $('.qliro-discount-form-modal');
+				const submitButton = $('#qliro-discount-form-submit');
+				const closeButtons = $('.qliro-discount-form-modal .modal-close')
+
+				const updateURL = () => {
+					const actionURL = submitButton.attr('formaction')
+					const url = new URL(actionURL, location.origin);
+
+					const discountAmount = parseFloat(discountAmountEl.val());
+					if (!isNaN(discountAmount)) {
+						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
+					}
+
+					url.searchParams.set('discount_id', discountIdEl.val());
+
+					submitButton.attr('formaction', url.toString());
+				}
+
+				const updateView = (amount, percentage) => {
+					const discountedTotalAmount = totalAmount - amount;
+					newTotalAmountEl.val(`${discountedTotalAmount.toFixed(2)} SEK`);
+					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
+
+					const isFullyDiscounted = amount >= totalAmount;
+					const hasDiscountAmount = amount > 0
+					const hasDiscountId = discountIdEl.val().length > 0;
+					const isDuplicateId = fees.includes(discountIdEl.val());
+					submitButton.attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
+
+					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
+					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);
+					
+					updateURL()
+				}
+
+				discountIdEl.on('input', function () {
+					const alreadyExists = fees.includes($(this).val());
+					$('#qliro-discount-id-error').toggleClass('hidden', !alreadyExists);
+
+					const discountAmount = parseFloat(discountAmountEl.val());
+					const discountPercentage = parseFloat(discountPercentageEl.val());
+					if (!isNaN(discountAmount) && !isNaN(discountPercentage)) {
+						updateView(discountAmount, discountPercentage);
+					}
+
+					updateURL()
+				})
+
+				discountAmountEl.on('input', function () {
+					let discountAmount = parseFloat($(this).val());
+					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
+
+					// Do not allow exceeding the total amount.
+					if (discountAmount > totalAmount) {
+						discountAmount = totalAmount;
+						$(this).val(discountAmount.toFixed(2));
+
+					// Do not allow negative values.
+					} else if (discountAmount < 0) {
+						discountAmount = 0;
+						$(this).val(discountAmount.toFixed(2));
+					}
+
+					const percentage = ((discountAmount / totalAmount) * 100);
+					discountPercentageEl.val(percentage.toFixed(2));
+
+					updateView(discountAmount, percentage);
+				})
+
+				discountPercentageEl.on('input', function () {
+					let discountPercentage = parseFloat($(this).val());
+					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
+
+					// Do not allow exceeding 100%.
+					if (discountPercentage > 100) {
+						discountPercentage = 100;
+						$(this).val(discountPercentage.toFixed(2));
+					// Do not allow negative values.
+					} else if (discountPercentage <= 0) {
+						discountPercentage = 0;
+						$(this).val(discountPercentage.toFixed(2));
+					} 
+
+					const discountAmount = ((totalAmount * discountPercentage) / 100);
+					discountAmountEl.val(discountAmount.toFixed(2));
+
+					updateView(discountAmount, discountPercentage);
+				})
+
+				$('#qliro_add_order_discount').on('click', function (e) {
+					e.preventDefault();
+					modal.show();
+				})
+
+				const toggleModal = (e) => {
+					e.preventDefault();
+					modal.hide();
+				}
+
+				closeButtons.on('click', toggleModal)
+
+			}
 		}
 	}
 	qoc.init();

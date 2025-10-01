@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.1.2
-Stable tag: 1.15.0
+WC tested up to: 10.2.2
+Stable tag: 1.16.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.10.01    - version 1.16.0 =
+* Feature       - Added support for applying discounts to orders after purchase.
+* Fix           - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.
+* Fix           - Fixed an issue where clicking the 'Sync order with Qliro' button redirected users to a blank page after syncing.
+
 = 2025.09.17    - version 1.15.0 =
 * Feature       - Added support for the 'CareOf' field.
 * Feature       - Added support for 'All Products for WooCommerce Subscriptions' by Woo.
