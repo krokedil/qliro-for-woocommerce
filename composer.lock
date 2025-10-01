@@ -588,12 +588,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSUtils.git",
-                "reference": "71648cb692ca4d6dbf79030aba93181ebdd0778b"
+                "reference": "8e1aa9fc388f408a9e56bccb9441320f90f1f880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/71648cb692ca4d6dbf79030aba93181ebdd0778b",
-                "reference": "71648cb692ca4d6dbf79030aba93181ebdd0778b",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/8e1aa9fc388f408a9e56bccb9441320f90f1f880",
+                "reference": "8e1aa9fc388f408a9e56bccb9441320f90f1f880",
                 "shasum": ""
             },
             "require": {
@@ -674,20 +674,15 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-09-19T22:53:46+00:00"
+            "time": "2025-09-30T01:38:34+00:00"
         },
         {
             "name": "phpstan/phpstan",
             "version": "2.1.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "4b4836a3b52b35aa8691ef9d5911cd885cb344b1"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4b4836a3b52b35aa8691ef9d5911cd885cb344b1",
-                "reference": "4b4836a3b52b35aa8691ef9d5911cd885cb344b1",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b6a97952ad845980d29ebd13106dc11511c282c1",
+                "reference": "b6a97952ad845980d29ebd13106dc11511c282c1",
                 "shasum": ""
             },
             "require": {
@@ -733,7 +728,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-21T19:04:37+00:00"
+            "time": "2025-10-01T05:46:38+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -741,12 +736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "91fbbd54f66dc1bd40f0e7e4271be5c4ca9df955"
+                "reference": "63b78c49263a84007cd2fb131b83d63cf3b4e65d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/91fbbd54f66dc1bd40f0e7e4271be5c4ca9df955",
-                "reference": "91fbbd54f66dc1bd40f0e7e4271be5c4ca9df955",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/63b78c49263a84007cd2fb131b83d63cf3b4e65d",
+                "reference": "63b78c49263a84007cd2fb131b83d63cf3b4e65d",
                 "shasum": ""
             },
             "require": {
@@ -812,7 +807,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-09-19T23:00:16+00:00"
+            "time": "2025-09-30T00:00:15+00:00"
         },
         {
             "name": "symplify/phpstan-rules",
@@ -935,12 +930,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
-                "reference": "5765daef3b5c37f5d41066f28ee0bd395f40a91c"
+                "reference": "8e6628faee4169b46feeee839f1f706fab711dae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/5765daef3b5c37f5d41066f28ee0bd395f40a91c",
-                "reference": "5765daef3b5c37f5d41066f28ee0bd395f40a91c",
+                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/8e6628faee4169b46feeee839f1f706fab711dae",
+                "reference": "8e6628faee4169b46feeee839f1f706fab711dae",
                 "shasum": ""
             },
             "require": {
@@ -994,7 +989,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-09-19T06:43:32+00:00"
+            "time": "2025-09-30T08:50:23+00:00"
         },
         {
             "name": "wpify/php-scoper",
@@ -1107,7 +1102,7 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
     },
