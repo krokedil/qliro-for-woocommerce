@@ -50,7 +50,7 @@ class Qliro_One_Assets {
 	 */
 	public function qoc_load_js() {
 
-		if ( ! qliro_is_enabled() ) {
+		if ( ! qliro_is_enabled( false ) ) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ class Qliro_One_Assets {
 			'qliro-one-for-woocommerce',
 			'qliroOneParams',
 			array(
-				'isEnabled'                   => qliro_is_enabled() ? 'yes' : 'no',
+				'isEnabled'                   => qliro_is_enabled( false ) ? 'yes' : 'no',
 				'shipping_in_iframe'          => $settings['shipping_in_iframe'],
 				'change_payment_method_url'   => WC_AJAX::get_endpoint( 'qliro_one_wc_change_payment_method' ),
 				'change_payment_method_nonce' => wp_create_nonce( 'qliro_one_wc_change_payment_method' ),

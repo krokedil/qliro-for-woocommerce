@@ -689,7 +689,7 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
  *
  * @return bool
  */
-function qliro_is_enabled() {
+function qliro_is_enabled( $check_demo_coupon = true ) {
 	$settings   = get_option( 'woocommerce_qliro_one_settings', array() );
 	$is_enabled = isset( $settings['enabled'] ) && 'yes' === $settings['enabled'];
 
@@ -709,7 +709,7 @@ function qliro_is_enabled() {
 
 		// Check if the cart contains the demo mode coupon. If not, return false.
 		$applied_coupons = WC()->cart->get_applied_coupons();
-		if ( ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
+		if ( $check_demo_coupon && ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
 			return false;
 		}
 	}
