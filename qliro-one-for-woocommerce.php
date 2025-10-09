@@ -187,6 +187,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notice_testmode' ) );
 		}
 
 		/**
@@ -491,6 +492,28 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				'qliro-one-for-woocommerce',
 				1
 			);
+		}
+
+		/**
+		 * Show admin notice if test mode is enabled.
+		 *
+		 * @return void
+		 */
+		public function admin_notice_testmode() {
+			$settings         = get_option( 'woocommerce_qliro_one_settings', array() );
+			$testmode_enabled = 'yes' === $settings['testmode'] ?? 'yes';
+
+			if ( $testmode_enabled ) {
+				?>
+				<div class="notice notice-warning">
+					<p>
+						<?php
+							esc_html_e( 'Qliro for WooCommerce is currently running in test mode. Remember to disable test mode and enter your live credentials before going live.', 'qliro-one-for-woocommerce' );
+						?>
+					</p>
+				</div>
+				<?php
+			}
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
