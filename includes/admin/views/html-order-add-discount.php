@@ -4,7 +4,6 @@
  * @package Qliro_One_For_WooCommerce/Includes/Admin/Views
  */
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -20,16 +19,15 @@ foreach ( $order->get_fees() as $fee ) {
 }
 $fees = wp_json_encode( $fees );
 
-
 $section_1 = array(
 	'section_title' => array(
 		'name' => '',
 		'type' => 'title',
 	),
 	'discount_id'   => array(
-		'name'     => 'Rabatt-ID',
+		'name'     => __( 'Discount ID', 'qliro-one-for-woocommerce' ),
 		'desc_tip' => true,
-		'desc'     => 'Innehåller artikelnummer och rabattnummer. Ex. artikelnummer_rabatt01',
+		'desc'     => __( 'Contains article number and discount number. E.g. articleno_discount01', 'qliro-one-for-woocommerce' ),
 		'id'       => 'qliro-discount-id',
 		'type'     => 'text',
 	),
@@ -40,14 +38,14 @@ $section_1 = array(
 
 $section_2 = array(
 	'section_title'       => array(
-		'name' => 'Fyll i SEK eller procent',
+		'name' => __( 'Enter amount or percentage', 'qliro-one-for-woocommerce' ),
 		'type' => 'title',
 	),
 	'discount_amount'     => array(
-		'name'              => 'Totalbelopp (SEK)',
+		'name'              => __( 'Total amount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-discount-amount',
 		'type'              => 'number',
-		'placeholder'       => 'SEK',
+		'placeholder'       => '',
 		'custom_attributes' => array(
 			'step' => 'any',
 			'min'  => '0.00',
@@ -55,7 +53,7 @@ $section_2 = array(
 		),
 	),
 	'discount_percentage' => array(
-		'name'              => 'Procent (%)',
+		'name'              => __( 'Percentage (%)', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-discount-percentage',
 		'type'              => 'number',
 		'placeholder'       => '%',
@@ -72,20 +70,20 @@ $section_2 = array(
 
 $section_3 = array(
 	'section_title'           => array(
-		'name' => 'Nytt belopp att betala',
+		'name' => __( 'New amount to pay', 'qliro-one-for-woocommerce' ),
 		'type' => 'title',
 	),
 	'total_amount'            => array(
-		'name'              => 'Totalbelopp innan',
+		'name'              => __( 'Total amount before discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-total-amount',
 		'type'              => 'text',
-		'value'             => "$total_amount SEK",
+		'value'             => $total_amount,
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
 	),
 	'new_discount_percentage' => array(
-		'name'              => 'Rabatt',
+		'name'              => __( 'Discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-discount-percentage',
 		'type'              => 'text',
 		'value'             => '0.00',
@@ -94,10 +92,10 @@ $section_3 = array(
 		),
 	),
 	'new_total_amount'        => array(
-		'name'              => 'Nytt belopp att betala',
+		'name'              => __( 'New total amount to pay', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-total-amount',
 		'type'              => 'text',
-		'value'             => "$total_amount SEK",
+		'value'             => $total_amount,
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -113,19 +111,19 @@ $section_3 = array(
 		<div class="wc-backbone-modal-content" tabindex="0">
 			<section class="wc-backbone-modal-main" role="main">
 				<header class="wc-backbone-modal-header">
-					<h1 id='qliro-discount-form-heading'>Lägg till rabatt</h1>
+					<h1 id='qliro-discount-form-heading'><?php esc_html_e( 'Add discount', 'qliro-one-for-woocommerce' ); ?></h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
-						<span class="screen-reader-text">Close modal panel</span>
+						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'qliro-one-for-woocommerce' ); ?></span>
 					</button>
 				</header>
 				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php echo esc_attr( $fees ); ?>" data-total-amount="<?php echo esc_attr( $total_amount ); ?>">
 					<?php woocommerce_admin_fields( $section_1 ); ?>
-					<p id="qliro-discount-id-error" class="explanation hidden error">Rabatt-ID måste vara unikt</p>
+					<p id="qliro-discount-id-error" class="explanation hidden error"><?php esc_html_e( 'Discount ID must be unique', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
 
 					<?php woocommerce_admin_fields( $section_2 ); ?>
-					<p id="qliro-discount-notice" class="explanation">Procentsatsen är baserad på totalbelopp</p>
-					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden">Beloppet får inte vara lika med eller överstiga totalbelopp.</p>
+					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is based on the total amount', 'qliro-one-for-woocommerce' ); ?></p>
+					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden"><?php esc_html_e( 'The amount must not be equal to or exceed the total amount.', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
 
 					<?php woocommerce_admin_fields( $section_3 ); ?>
@@ -135,11 +133,11 @@ $section_3 = array(
 					<div class="inner">
 						<div class="wc-action-button-group">
 							<span class="wc-action-button-group__items">
-								<button id="qliro-discount-form-close modal-close" class="button wc-action-button wc-action-button-complete complete" aria-label="Tillbaka" title="Tillbaka">Tillbaka</button>
+								<button id="qliro-discount-form-close modal-close" class="button wc-action-button wc-action-button-complete complete" aria-label="<?php esc_attr_e( 'Back', 'qliro-one-for-woocommerce' ); ?>" title="<?php esc_attr_e( 'Back', 'qliro-one-for-woocommerce' ); ?>"><?php esc_html_e( 'Back', 'qliro-one-for-woocommerce' ); ?></button>
 							</span>
 						</div>
 
-						<button type="submit" disabled id="qliro-discount-form-submit" class="button button-primary button-large" aria-label="Bekräfta" formaction="<?php echo $action_url; ?>">Bekräfta</button>
+						<button type="submit" disabled id="qliro-discount-form-submit" class="button button-primary button-large" aria-label="<?php esc_attr_e( 'Confirm', 'qliro-one-for-woocommerce' ); ?>" formaction="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Confirm', 'qliro-one-for-woocommerce' ); ?></button>
 					</div>
 				</footer>
 			</section>
