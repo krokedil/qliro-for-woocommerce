@@ -19,6 +19,8 @@ foreach ( $order->get_fees() as $fee ) {
 }
 $fees = wp_json_encode( $fees );
 
+$currency = $order->get_currency();
+
 $section_1 = array(
 	'section_title' => array(
 		'name' => '',
@@ -42,10 +44,11 @@ $section_2 = array(
 		'type' => 'title',
 	),
 	'discount_amount'     => array(
-		'name'              => __( 'Total amount', 'qliro-one-for-woocommerce' ),
+		// translators: %s: Currency code, e.g. SEK.
+		'name'              => sprintf( __( 'Total amount (%s)', 'qliro-one-for-woocommerce' ), $currency ),
 		'id'                => 'qliro-discount-amount',
 		'type'              => 'number',
-		'placeholder'       => '',
+		'placeholder'       => $currency,
 		'custom_attributes' => array(
 			'step' => 'any',
 			'min'  => '0.00',
@@ -77,7 +80,7 @@ $section_3 = array(
 		'name'              => __( 'Total amount before discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-total-amount',
 		'type'              => 'text',
-		'value'             => $total_amount,
+		'value'             => $total_amount . ' ' . $currency,
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -95,7 +98,7 @@ $section_3 = array(
 		'name'              => __( 'New total amount to pay', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-total-amount',
 		'type'              => 'text',
-		'value'             => $total_amount,
+		'value'             => $total_amount . ' ' . $currency,
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
