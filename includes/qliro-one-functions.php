@@ -690,15 +690,16 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
  * @return bool
  */
 function qliro_is_enabled( $check_demo_coupon = true ) {
+
+	// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
+	if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+		return false;
+	}
+
 	$settings   = get_option( 'woocommerce_qliro_one_settings', array() );
 	$is_enabled = isset( $settings['enabled'] ) && 'yes' === $settings['enabled'];
 
 	if ( ! $is_enabled ) {
-
-		// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
-		if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
-			return false;
-		}
 
 		$is_demomode     = isset( $settings['demomode'] ) && 'yes' === $settings['demomode'];
 		$demomode_coupon = isset( $settings['demomode_coupon'] ) ? $settings['demomode_coupon'] : '';
