@@ -80,7 +80,7 @@ $section_3 = array(
 		'name'              => __( 'Total amount before discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-total-amount',
 		'type'              => 'text',
-		'value'             => $total_amount . ' ' . $currency,
+		'value'             => wp_strip_all_tags( wc_price( $total_amount, array( 'currency' => $currency ) ) ),
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -98,7 +98,7 @@ $section_3 = array(
 		'name'              => __( 'New total amount to pay', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-total-amount',
 		'type'              => 'text',
-		'value'             => $total_amount . ' ' . $currency,
+		'value'             => wp_strip_all_tags( wc_price( $total_amount, array( 'currency' => $currency ) ) ),
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
