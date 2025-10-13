@@ -7,7 +7,7 @@ Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.2.2
-Stable tag: 1.16.0
+Stable tag: 1.16.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.10.13    - version 1.16.1 =
+* Enhancement   - An admin notice is now displayed when Qliro is running in test mode.
+* Enhancement   - Improved handling of shipping when a separate shipping address is entered.
+* Fix           - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.
+
 = 2025.10.01    - version 1.16.0 =
 * Feature       - Added support for applying discounts to orders after purchase.
 * Fix           - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.

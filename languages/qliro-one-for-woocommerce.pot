@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.16.0\n"
+"Project-Id-Version: Qliro for WooCommerce 1.16.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-10-01 09:03:14+00:00\n"
+"POT-Creation-Date: 2025-10-13 08:38:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1327,7 +1327,7 @@ msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Navigation.php:54
 #: dependencies/krokedil/settings-page/src/Support.php:30
-#: qliro-one-for-woocommerce.php:213
+#: qliro-one-for-woocommerce.php:214
 msgid "Support"
 msgstr ""
 
@@ -1460,15 +1460,21 @@ msgstr ""
 msgid "Nope"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:212
+#: qliro-one-for-woocommerce.php:213
 msgid "Settings"
 msgstr ""
 
-#: qliro-one-for-woocommerce.php:387 qliro-one-for-woocommerce.php:397
+#: qliro-one-for-woocommerce.php:388 qliro-one-for-woocommerce.php:398
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
 "README.DEV.md file in the plugin."
+msgstr ""
+
+#: qliro-one-for-woocommerce.php:511
+msgid ""
+"Qliro for WooCommerce is currently running in test mode. Remember to "
+"disable test mode and enter your live credentials before going live."
 msgstr ""
 
 #: templates/qliro-one-checkout.php:15
