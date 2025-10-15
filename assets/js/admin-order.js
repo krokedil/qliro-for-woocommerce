@@ -364,11 +364,7 @@ jQuery(function ($) {
 
 				const updateView = (amount, percentage) => {
 					const discountedTotalAmount = totalAmount - amount;
-					// Get currency from the old price value.
-					const oldPrice = newTotalAmountEl.val();
-					const currencyMatch = oldPrice.match(/([A-Z]{3}|[^\d\s.,]+)/);
-					const currency = currencyMatch ? currencyMatch[0] : '';
-					newTotalAmountEl.val(`${discountedTotalAmount.toFixed(2)} ${currency}`);
+					newTotalAmountEl.val(qoc.format_number(discountedTotalAmount));
 					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
 
 					const isFullyDiscounted = amount >= totalAmount;
