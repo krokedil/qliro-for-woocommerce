@@ -233,6 +233,11 @@
             "description": "<ul><li>Feature - Added support for applying discounts to orders after purchase.</li><li>Fix - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.</li><li>Fix - Fixed an issue where clicking the 'Sync order with Qliro' button redirected users to a blank page after syncing.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.3"
+      },
+      "1.16.1": {
+            "description": "<ul><li>Enhancement - An admin notice is now displayed when Qliro is running in test mode.</li><li>Enhancement - Improved handling of shipping when a separate shipping address is entered.</li><li>Fix - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.3"
       }
      
 }
