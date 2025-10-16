@@ -364,7 +364,7 @@ jQuery(function ($) {
 
 				const updateView = (amount, percentage) => {
 					const discountedTotalAmount = totalAmount - amount;
-					newTotalAmountEl.val(`${discountedTotalAmount.toFixed(2)} SEK`);
+					newTotalAmountEl.val(qoc.format_number(discountedTotalAmount));
 					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
 
 					const isFullyDiscounted = amount >= totalAmount;
