@@ -65,7 +65,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$this->init_settings();
 		$this->title             = $this->get_option( 'title' );
 		$this->description       = $this->get_option( 'description' );
-		$this->enabled           = $this->get_option( 'enabled' );
+		$this->enabled           = qliro_is_enabled() ? 'yes' : 'no';
 		$this->testmode          = 'yes' === $this->get_option( 'testmode' );
 		$this->logging           = 'yes' === $this->get_option( 'logging' );
 		$this->upsell_percentage = $this->get_option( 'upsell_percentage', 10 );
