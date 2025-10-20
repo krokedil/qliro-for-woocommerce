@@ -50,11 +50,14 @@ class Qliro_One_Assets {
 	 */
 	public function qoc_load_js() {
 
-		if ( ! qliro_is_enabled( false ) ) {
+		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+		if ( ! isset( $settings['enabled'] ) || 'yes' !== $settings['enabled'] ) {
 			return;
 		}
-
-		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+		// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
+		if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+			return;
+		}
 
 		$script_version               = $this->qoc_is_script_debug_enabled();
 		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
@@ -94,7 +97,7 @@ class Qliro_One_Assets {
 			'qliro-one-for-woocommerce',
 			'qliroOneParams',
 			array(
-				'isEnabled'                   => qliro_is_enabled( false ) ? 'yes' : 'no',
+				'isEnabled'                   => $settings['enabled'],
 				'shipping_in_iframe'          => $settings['shipping_in_iframe'],
 				'change_payment_method_url'   => WC_AJAX::get_endpoint( 'qliro_one_wc_change_payment_method' ),
 				'change_payment_method_nonce' => wp_create_nonce( 'qliro_one_wc_change_payment_method' ),
