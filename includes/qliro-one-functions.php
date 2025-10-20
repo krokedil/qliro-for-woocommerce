@@ -685,13 +685,18 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
 /**
  * Check if Qliro One is enabled.
  *
- * If Qliro One is not enabled in the settings, it will check if demo mode is enabled and if the demo mode coupon is applied to the cart.
+ * Check if Qliro One is enabled in the settings, and if demo mode is enabled, check if the demo mode coupon is applied.
  *
  * @return bool
  */
-function qliro_is_enabled( $check_demo_coupon = true ) {
+function qliro_is_enabled_with_demo_check() {
 	$settings   = get_option( 'woocommerce_qliro_one_settings', array() );
 	$is_enabled = isset( $settings['enabled'] ) && 'yes' === $settings['enabled'];
+
+	// Only check for demo mode if we are on the checkout page, and not on the order received page or the pay for order page.
+	if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+		return $is_enabled;
+	}
 
 	if ( $is_enabled ) {
 
@@ -706,7 +711,7 @@ function qliro_is_enabled( $check_demo_coupon = true ) {
 
 			// Check if the cart contains the demo mode coupon. If not, return false.
 			$applied_coupons = WC()->cart->get_applied_coupons();
-			if ( $check_demo_coupon && ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
+			if ( ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
 				return false;
 			}
 		}
