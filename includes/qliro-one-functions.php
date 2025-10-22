@@ -70,6 +70,11 @@ function qliro_one_maybe_create_order() {
  * @return string|null
  */
 function qliro_wc_get_snippet() {
+
+	if ( ! qliro_is_enabled_with_demo_check() ) {
+		return;
+	}
+
 	$qliro_one_order = qliro_one_maybe_create_order();
 	$snippet         = $qliro_one_order['OrderHtmlSnippet'] ?? null;
 
