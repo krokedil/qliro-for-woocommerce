@@ -238,6 +238,11 @@
             "description": "<ul><li>Enhancement - An admin notice is now displayed when Qliro is running in test mode.</li><li>Enhancement - Improved handling of shipping when a separate shipping address is entered.</li><li>Fix - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.3"
+      },
+      "1.17.0": {
+            "description": "<ul><li>Feature - Added Advanced demo mode, allowing testing of the Qliro payment solution in the store without enabling it for all customers.</li><li>Fix - Improved the new discount feature to support all markets, with proper currency handling and translations.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.3"
       }
      
 }

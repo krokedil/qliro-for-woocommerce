@@ -7,7 +7,7 @@ Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.2.2
-Stable tag: 1.16.1
+Stable tag: 1.17.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.10.22    - version 1.17.0 =
+* Feature       - Added Advanced demo mode, allowing testing of the Qliro payment solution in the store without enabling it for all customers.
+* Fix           - Improved the new discount feature to support all markets, with proper currency handling and translations.
+
 = 2025.10.13    - version 1.16.1 =
 * Enhancement   - An admin notice is now displayed when Qliro is running in test mode.
 * Enhancement   - Improved handling of shipping when a separate shipping address is entered.
