@@ -146,7 +146,7 @@ class Qliro_One_Fields {
 				'description' => sprintf(
 					__( 'Configure coupons in %1$s. For detailed instructions, see the %2$s.', 'qliro-one-for-woocommerce' ),
 					'<a target="_blank" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-one-for-woocommerce' ) . '</a>',
-					'<a target="_blank" href="https://docs.krokedil.com">' . __( 'documentation', 'qliro-one-for-woocommerce' ) . '</a>'
+					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-one-for-woocommerce' ) . '</a>'
 				),
 				'default'     => 'no',
 				'desc_tip'    => false,
