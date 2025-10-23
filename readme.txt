@@ -1,13 +1,13 @@
-=== Qliro One for WooCommerce ===
+=== Qliro for WooCommerce ===
 Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.7.1
+Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 9.5.0
-Stable tag: 1.9.0
+WC tested up to: 10.2.2
+Stable tag: 1.17.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,90 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.10.22    - version 1.17.0 =
+* Feature       - Added Advanced demo mode, allowing testing of the Qliro payment solution in the store without enabling it for all customers.
+* Fix           - Improved the new discount feature to support all markets, with proper currency handling and translations.
+
+= 2025.10.13    - version 1.16.1 =
+* Enhancement   - An admin notice is now displayed when Qliro is running in test mode.
+* Enhancement   - Improved handling of shipping when a separate shipping address is entered.
+* Fix           - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.
+
+= 2025.10.01    - version 1.16.0 =
+* Feature       - Added support for applying discounts to orders after purchase.
+* Fix           - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.
+* Fix           - Fixed an issue where clicking the 'Sync order with Qliro' button redirected users to a blank page after syncing.
+
+= 2025.09.17    - version 1.15.0 =
+* Feature       - Added support for the 'CareOf' field.
+* Feature       - Added support for 'All Products for WooCommerce Subscriptions' by Woo.
+* Feature       - Introduced a filter to allow automatic syncing of WooCommerce orders to Qliro whenever an order is updated.
+* Fix           - Fixed an issue where shipping methods are re-calculated when placing an order, causing WooCommerce to default to the first shipping method available.
+* Fix           - Fixed an issue where the country selector was not displayed on the checkout page for guest users until the page was reloaded.
+* Fix           - Fixed a deprecation error related to translations.
+
+= 2025.09.10    - version 1.14.1 =
+* Fix           - Resolved the checkout page layout not working as expected for some layout options.
+
+= 2025.09.01    - version 1.14.0 =
+* Feature       - Added support for sending VatRate on order lines to Qliro.
+* Fix           - Resolved fatal error that could occur for merchants using PHP version 7.4 and below.
+* Fix           - Updated some spelling and dead documentation links for the Qliro settings page.
+* Enhancement   - Prepared the plugin for deployment to wordpress.org.
+* Tweak         - Slightly updated the design of the checkout template.
+* Tweak         - Renamed the Qliro metabox setting 'Order synchronization' to 'Order Management'.
+
+= 2025.08.18    - version 1.13.0 =
+* Feature       - Added support for handling notification callbacks from Qliro after the order is placed. For now this only supports saving Ingrid shipping data when using the Qliro integrated shipping with Ingrid.
+* Feature       - Added the action 'qliro_notification_{event_type}_{provider}' for custom handling of Qliro notification events. 'event_type' and 'provider' are the lowercase values sent by Qliro in the notification request.
+* Fix           - Fixed an issue that could affect the Google Analytics tracking of the Qliro checkout.
+* Fix           - Fixed the refund fee text not being removed when refund amount was zero.
+* Tweak         - Renamed 'Order synchronization' to 'Order Management' in the Qliro order metabox.
+
+= 2025.06.24    - version 1.12.0 =
+* Feature       - Redesigned the layout, structure and navigation of the settings page.
+
+= 2025.06.17    - version 1.11.2 =
+* Fix           - Pay for order should now be working as expected.
+* Fix           - Fixed a potential fatal error that could occur if dependencies failed to install properly.
+* Fix           - Fixed the province data sometimes being incorrectly set on the order confirmation page.
+* Fix           - Fixed a potential fatal error that could occur during order management actions when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
+* Enhancement   - Added support for other plugins to set a description on shipping rates shown in the Qliro checkout. Supported by Krokedil Shipping Connector from version 3.16.0.
+* Tweak         - Added the option to include a merchant integrity policy URL link in the Qliro iframe.
+* Tweak         - Readme changes.
+
+= 2025.06.12    - version 1.11.1 =
+* Fix           - Fixed a potential fatal error during checkout that could occur when the shipping option price was returned as a string that is not a valid number, caused by WooCommerce version 9.9.x.
+
+= 2025.05.20    - version 1.11.0 =
+* Feature       - Added support for adding a return fee when making a refund on a Qliro order.
+* Feature       - Added a setting to automatically calculate a return fee for Qliro orders, if a refund is made when the full amount of a order line is not refunded.
+* Feature       - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'. 
+* Enhancement   - Changed so the refund with Qliro button is not shown for orders that have not been completed with Qliro, preventing the refund from causing a API error when it can't be made.
+* Enhancement   - Improved logging to handle situations where the remote requests returns WP_Error that is not properly logged.
+* Tweak         - The sync order button will now always be available on the order edit page for all Qliro orders regardless of payment method.
+* Tweak         - Checks if the order was paid with Qliro before showing the partial capture button on the order edit page.
+* Tweak         - Removed pending, refunded and failed order statuses from part of the statuses in the order management where it is not relevant.
+* Tweak         - Relabeling from "Qliro One" to "Qliro".
+
+= 2025.04.28    - version 1.10.1 =
+* Fix           - Fixed an undefined array key warning.
+* Fix           - Added 'Tax status' setting for shipping method to be compatible with WooCommerce 9.7+.
+
+= 2025.04.14    - version 1.10.0 =
+* Feature       - Added compatibility with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
+* Fix           - Fixed country sometimes being set to null in checkout, when restricting selling locations.
+* Fix           - Limited the max size of a log message from the frontend to 1000 characters to prevent large logs from being created.
+
+= 2025.04.09    - version 1.9.2 =
+* Fix           - Include cart hash when testing if we need to update a Qliro session or not to catch changes that effects products but not the order total.
+* Fix           - Add a check when reading the Qliro order before submitting the WooCommerce order to ensure the Qliro order has not already been completed.
+
+= 2025.04.07    - version 1.9.1 =
+* Fix           - Fixed a critical error that could occur when the merchant reference for fees was too long or included special characters.
+* Fix           - Fixed an undefined array key warning.
+* Tweak         - Improved logging by keeping track of user sessions with unique IDs.
+
 = 2025.03.25    - version 1.9.0 =
 * Feature       - Added 'Type' (discount, fee, shipping) to order lines.
 * Fix           - Fixed an issue where free shipping coupons did not always update the order in checkout.
@@ -32,10 +116,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Fix           - Fixed a critical error that could occur while editing the checkout page.
 
 = 2025.02.17    - version 1.8.0 =
+* Feature       - Added support for gift cards.
 * Feature       - Added support for subscriptions.
 * Feature       - Added support for pay for order.
 * Feature       - Added support for gift cards.
-* Feature       - Added 'qoc_order_confirmed' to enable custom actions when a Qliro order is confirmed.
+* Feature       - Added 'qoc_order_confirmed' to enable newsletter support, together with other custom actions when a Qliro order is confirmed.
 * Tweak         - Allow order status 'Completed' if order is captured through portal.
 * Tweak         - Added redirect to 'Thank you' page if order is already completed, but user is still on the checkout page.
 * Fix           - Fixed PHP 8.3.0 array_sum warnings.

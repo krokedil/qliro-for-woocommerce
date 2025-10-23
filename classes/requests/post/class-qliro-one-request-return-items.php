@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Qliro_One_Cancel_Order class.
+ * Qliro_One_Request_Return_Items class.
  */
 class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 
@@ -43,8 +43,15 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 		$order                  = wc_get_order( $order_id );
 		$refund_order_id        = $this->arguments['refund_order_id'];
 		$items                  = $this->arguments['items'];
+		$return_fee             = $this->arguments['return_fee'];
 		$this->qliro_order_id   = $order->get_meta( '_qliro_one_order_id' );
 		$capture_transaction_id = ! empty( $this->arguments['capture_id'] ) ? $this->arguments['capture_id'] : $order->get_meta( '_qliro_order_captured' );
+		$calc_return_fee        = wc_string_to_bool( $this->settings['calculate_return_fee'] ?? 'no' );
+
+		$order_items = ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id );
+		$return_fees = apply_filters( 'qliro_one_return_fees', $order_data->get_return_fees( $return_fee, $order_items, $order, $calc_return_fee ), $order_id, $refund_order_id, $order_items );
+		add_filter( 'qliro_applied_return_fees', fn( $fees ) => array_merge( $fees, $return_fees ), 10, 1 );
+
 		return array(
 			'RequestId'      => $request_id,
 			'MerchantApiKey' => $this->get_qliro_key(),
@@ -53,8 +60,8 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 			'Returns'        => array(
 				array(
 					'PaymentTransactionId' => $capture_transaction_id,
-					'OrderItems'           => ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id ),
-					'Fees'                 => apply_filters( 'qliro_one_return_fees', array() ),
+					'OrderItems'           => $order_items,
+					'Fees'                 => $return_fees,
 				),
 			),
 		);

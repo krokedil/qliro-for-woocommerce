@@ -63,7 +63,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$mer_ref       = null;
 		$session       = WC()->session;
 
-		$billing_country = WC()->checkout()->get_value( 'billing_country' );
+		$billing_country = qliro_one_get_billing_country();
 		$session->set( 'qliro_one_billing_country', $billing_country );
 
 		// Merchant reference.
@@ -77,12 +77,14 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$body = array(
 			'MerchantReference'                    => $mer_ref,
 			'Currency'                             => get_woocommerce_currency(),
-			'Country'                              => WC()->checkout()->get_value( 'billing_country' ),
+			'Country'                              => $billing_country,
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
+			'MerchantNotificationUrl'              => QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Notifications::class, 'notifications' ),
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
+			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
@@ -156,6 +158,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
+			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'OrderItems'                           => Qliro_One_Helper_Order::get_order_lines( $this->order_id ),
@@ -177,5 +180,20 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		$body = array_filter( $body );
 
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
+	}
+
+	/**
+	 * Get the privacy policy url if set.
+	 *
+	 * @return string
+	 */
+	protected function get_integrity_url() {
+		$wc_privacy_policy_page_id = wc_privacy_policy_page_id();
+
+		if ( 0 === $wc_privacy_policy_page_id ) {
+			return null;
+		}
+
+		return get_permalink( $wc_privacy_policy_page_id ) ?: null;
 	}
 }

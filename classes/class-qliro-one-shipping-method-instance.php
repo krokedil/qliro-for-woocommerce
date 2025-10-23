@@ -44,7 +44,7 @@ class Qliro_One_Shipping_Method_Instance {
 			'qliro_shipping_settings'     => array(
 				'title'       => __( 'Qliro shipping settings', 'qliro-one-for-woocommerce' ),
 				'type'        => 'title',
-				'description' => __( 'These settings let you customize the shipping methods in Qliro One checkout, and only apply when you show the shipping options in the iframe. ', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'These settings let you customize the shipping methods in Qliro checkout, and only apply when you show the shipping options in the iframe. ', 'qliro-one-for-woocommerce' ),
 				'default'     => '',
 			),
 			'qliro_description'           => array(
@@ -229,11 +229,20 @@ class Qliro_One_Shipping_Method_Instance {
 					'textIcon' => __( 'Text and icon', 'qliro-one-for-woocommerce' ),
 				),
 			),
+			'tax_status'                  => array(
+				'title'   => __( 'Tax status', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+				'type'    => 'select',
+				'class'   => 'wc-enhanced-select',
+				'default' => 'taxable',
+				'options' => array(
+					'taxable' => __( 'Taxable', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
+				),
+			),
 		);
 
 		$shipping_method_fields = array_merge( $shipping_method_fields, $settings_fields );
 		return $shipping_method_fields;
 	}
-
 }
 new Qliro_One_Shipping_Method_Instance();

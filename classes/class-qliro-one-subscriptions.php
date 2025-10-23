@@ -61,9 +61,6 @@ class Qliro_One_Subscriptions {
 			return;
 		}
 
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
-
 		// Set the required order meta for the renewal order.
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
@@ -73,11 +70,14 @@ class Qliro_One_Subscriptions {
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: Order ID */
-				__( 'Qliro One recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
+				__( 'Qliro recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
 				$order->get_id()
 			)
 		);
 		$order->save();
+
+		// If the result is not a WP_Error, complete the payment.
+		$subscription->payment_complete( $result['OrderId'] );
 	}
 
 	/**
@@ -108,9 +108,6 @@ class Qliro_One_Subscriptions {
 			return;
 		}
 
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
-
 		// Set the required order meta for the renewal order.
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
@@ -120,11 +117,14 @@ class Qliro_One_Subscriptions {
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: Order ID */
-				__( 'Qliro One recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
+				__( 'Qliro recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
 				$order->get_id()
 			)
 		);
 		$order->save();
+
+		// If the result is not a WP_Error, complete the payment.
+		$subscription->payment_complete( $result['OrderId'] );
 	}
 
 	/**

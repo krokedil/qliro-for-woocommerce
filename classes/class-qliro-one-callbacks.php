@@ -1,12 +1,12 @@
 <?php
 /**
- * Handles the callbacks for the Qliro One integration.
+ * Handles the callbacks for the Qliro integration.
  *
  * @package Qliro_One_For_WooCommerce/Classes
  */
 
 /**
- * Class for handling the callbacks for the Qliro One integration
+ * Class for handling the callbacks for the Qliro integration
  */
 class Qliro_One_Callbacks {
 	/**
@@ -38,7 +38,7 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "OM Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "OM Callback received: {$body}." );
 
 		if ( isset( $data['PaymentType'] ) ) {
 			$order_number = $data['MerchantReference'];
@@ -76,7 +76,7 @@ class Qliro_One_Callbacks {
 		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
 		$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "Checkout Callback recieved: {$body}." );
+		Qliro_One_Logger::log( "Checkout Callback received: {$body}." );
 
 		if ( isset( $data['Status'] ) ) {
 			switch ( $data['Status'] ) {
@@ -93,7 +93,7 @@ class Qliro_One_Callbacks {
 					as_schedule_single_action( time() + 30, 'qliro_onhold_checkout', array( $confirmation_id ) );
 					break;
 				default:
-					Qliro_One_Logger::log( "Unknown Qliro One checkout callback status: {$data['Status']}" );
+					Qliro_One_Logger::log( "Unknown Qliro checkout callback status: {$data['Status']}" );
 					break;
 			}
 		}
@@ -182,7 +182,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.' ) );
+		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.', 'qliro-one-for-woocommerce' ) );
 	}
 
 	/**
@@ -222,7 +222,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'failed', __( 'The Qliro one order was rejected by Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-one-for-woocommerce' ) );
 		$order->save();
 	}
 
@@ -250,7 +250,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-checkout-for-woocommerce' ) );
+		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
 		$order->save();
 	}
 } new Qliro_One_Callbacks();

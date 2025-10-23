@@ -5,9 +5,9 @@
  * @package Qliro_One/Classes
  */
 
- /**
-  * Class for the product tab.
-  */
+/**
+ * Class for the product tab.
+ */
 class Qliro_One_Product_Tab {
 	/**
 	 * Class constructor.
@@ -20,14 +20,14 @@ class Qliro_One_Product_Tab {
 	}
 
 	/**
-	 * Adds custom product tab for Qliro One.
+	 * Adds custom product tab for Qliro.
 	 *
 	 * @param array $tabs of product panel.
 	 * @return array
 	 */
 	public function register_product_tab( $tabs ) {
 		$tabs['qliro-product-settings'] = array(
-			'label'  => __( 'Qliro One', 'qliro-one-for-woocommerce' ),
+			'label'  => __( 'Qliro', 'qliro-one-for-woocommerce' ),
 			'target' => 'qliro-product-settings',
 			'class'  => array( 'show_if_simple', 'show_if_variable', 'show_if_external', 'qliro-tab' ),
 		);

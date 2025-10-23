@@ -61,8 +61,8 @@
         grid-column-gap: 70px;
     }
 
-    .qliro-two-column-left #order_review,
-    .qliro-two-column-left-sf #order_review {
+    .qliro-two-column-left #qliro-order-review,
+    .qliro-two-column-left-sf #qliro-order-review {
         order: 2;
     }
 
@@ -70,10 +70,10 @@
     .qliro-two-column-left-sf #qliro-one-iframe {
         order: 1;
     }
-}
 
-#qliro-one-wrapper #order_review {
-    width: 100%;
+    #qliro-one-wrapper #qliro-order-review {
+        width: 100%;
+    }
 }
 
 /* Hide shipping methods in order review if displayed in Qliro iframe */

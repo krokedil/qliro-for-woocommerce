@@ -30,6 +30,18 @@ class Qliro_One_Logger {
 
 		if ( 'yes' === $settings['logging'] ) {
 			$message = self::format_data( $data );
+
+			if ( isset( WC()->session ) ) {
+				$tracking_id = WC()->session->get( 'qliro_one_merchant_reference' );
+				if ( ! empty( $tracking_id ) ) {
+					if ( is_array( $message ) ) {
+						$message['log_id'] = $tracking_id;
+					} else {
+						$message = "[{$tracking_id}]: {$message}";
+					}
+				}
+			}
+
 			if ( empty( self::$log ) ) {
 				self::$log = new WC_Logger();
 			}
@@ -57,7 +69,7 @@ class Qliro_One_Logger {
 	/**
 	 * Formats the log data to be logged.
 	 *
-	 * @param string          $qliro_order_id The Qliro One order id.
+	 * @param string          $qliro_order_id The Qliro order id.
 	 * @param string          $method The method.
 	 * @param string          $title The title for the log.
 	 * @param array           $request_args The request args.

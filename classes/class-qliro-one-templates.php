@@ -1,6 +1,6 @@
 <?php
 /**
- * Templates class for Qliro One checkout.
+ * Templates class for Qliro checkout.
  *
  * @package  Qliro_One_For_WooCommerce/Classes
  */
@@ -44,9 +44,9 @@ class Qliro_One_Templates {
 	 */
 	public function __construct() {
 		$qliro_settings        = get_option( 'woocommerce_qliro_one_settings' );
-		$this->checkout_layout = ( isset( $qliro_settings['checkout_layout'] ) ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
+		$this->checkout_layout = isset( $qliro_settings['checkout_layout'] ) ? $qliro_settings['checkout_layout'] : 'one_column_checkout';
 
-		// Override template if Qliro One Checkout page.
+		// Override template if Qliro Checkout page.
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
 
 		// Template hooks.
@@ -56,10 +56,96 @@ class Qliro_One_Templates {
 
 		// Body class modifications. For checkout layout setting.
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
+
+		// Country selector.
+		if ( 'shortcode' !== ( $qliro_settings['country_selector_placement'] ?? 'shortcode' ) ) {
+			// Defaults to 'qliro_one_wc_before_snippet' hook.
+			$placement = $qliro_settings['country_selector_placement'] ?? 'qliro_one_wc_before_snippet';
+			add_action( $placement, array( $this, 'add_country_selector' ) );
+		}
+
+		// Shortcode: country selector. Should always be available.
+		add_shortcode( 'qliro_country_selector', array( $this, 'country_selector_shortcode' ) );
+
+		// Unhook the country field if it has the country selector shortcode, and Qliro is the chosen gateway. We'll inject the country field instead.
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'unhook_country_field' ) );
 	}
 
 	/**
-	 * Override checkout form template if Qliro One Checkout is the selected payment method.
+	 * Shortcode: `qliro_country_selector`.
+	 *
+	 * @param array       $atts Shortcode attributes.
+	 * @param string|null $content Shortcode content.
+	 * @param string      $shortcode_tag Shortcode tag.
+	 */
+	public function country_selector_shortcode( $atts, $content, $shortcode_tag ) {
+		$this->add_country_selector();
+	}
+
+	/**
+	 * Add country selector to the checkout page.
+	 */
+	public function add_country_selector() {
+		// The order received page is a checkout page, but we don't want to show the country selector there.
+		if ( ! is_checkout() || is_order_received_page() ) {
+			return;
+		}
+
+		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+		$first_gateway = reset( $available_gateways );
+		if ( ! isset( WC()->session ) || ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) && 'qliro_one' !== $first_gateway->id ) ) {
+			return;
+		}
+
+		if ( function_exists( 'WC' ) && ! WC()->checkout ) {
+			return;
+		}
+
+		$checkout = WC()->checkout();
+		$fields   = $checkout->get_checkout_fields( 'billing' );
+		$args     = array_merge(
+			$fields['qliro_billing_country'] ?? $fields['billing_country'],
+			array(
+				'type'     => 'country',
+				'required' => true,
+			)
+		);
+		$value    = $checkout->get_value( 'billing_country' );
+
+		do_action( 'before_qliro_country_selector' );
+		woocommerce_form_field( 'billing_country', $args, $value );
+		do_action( 'after_qliro_country_selector' );
+	}
+
+	/**
+	 * Maybe unhook the billing country field.
+	 *
+	 * @param array $fields Checkout fields.
+	 *
+	 * @return array
+	 */
+	public function unhook_country_field( $fields ) {
+		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+			return $fields;
+		}
+
+		global $post;
+		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_country_selector' ) ) {
+			return $fields;
+		}
+
+		// If we unhook the billing field, it won't be available when we call get_checkout_fields in the `add_country_selector` method which we need to re-use WC defaults.
+		$fields['billing']['qliro_billing_country']             = $fields['billing']['billing_country'];
+		$fields['billing']['qliro_billing_country']['type']     = 'hidden';
+		$fields['billing']['qliro_billing_country']['required'] = false;
+
+		// We do not want it to appear on the checkout field since we'll replace it with our own country field.
+		unset( $fields['billing']['billing_country'] );
+		return $fields;
+	}
+
+	/**
+	 * Override checkout form template if Qliro Checkout is the selected payment method.
 	 *
 	 * @param string $template      Template.
 	 * @param string $template_name Template name.
@@ -69,14 +155,14 @@ class Qliro_One_Templates {
 	public function override_template( $template, $template_name ) {
 		if ( is_checkout() ) {
 			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-			// Don't display Qliro One template if we have a cart that doesn't needs payment.
+			// Don't display Qliro template if we have a cart that doesn't needs payment.
 			if ( apply_filters( 'qliro_check_if_needs_payment', true ) && ! is_wc_endpoint_url( 'order-pay' ) && null !== WC()->cart ) {
 				if ( ! WC()->cart->needs_payment() ) {
 					return $template;
 				}
 			}
 
-			// QLiro One Checkout.
+			// Qliro Checkout.
 			if ( 'checkout/form-checkout.php' === $template_name ) {
 				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 
@@ -86,7 +172,7 @@ class Qliro_One_Templates {
 					$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout.php';
 				}
 
-				// Qliro One checkout page.
+				// Qliro checkout page.
 				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
 					// If chosen payment method exists.
 					if ( 'qliro_one' === WC()->session->get( 'chosen_payment_method' ) ) {
@@ -95,7 +181,7 @@ class Qliro_One_Templates {
 						}
 					}
 
-					// If chosen payment method does not exist and Qliro One is the first gateway.
+					// If chosen payment method does not exist and Qliro is the first gateway.
 					if ( null === WC()->session->get( 'chosen_payment_method' ) || '' === WC()->session->get( 'chosen_payment_method' ) ) {
 						reset( $available_gateways );
 
@@ -115,38 +201,6 @@ class Qliro_One_Templates {
 								if ( empty( $confirm ) ) {
 									$template = $qliro_one_checkout_template;
 								}
-							}
-						}
-					}
-				}
-			}
-
-			// Qliro One Checkout Pay for order.
-			if ( 'checkout/form-pay.php' === $template_name ) {
-				global $wp;
-				$order_id           = $wp->query_vars['order-pay'];
-				$order              = wc_get_order( $order_id );
-				$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-				if ( array_key_exists( 'qliro_one', $available_gateways ) ) {
-					if ( locate_template( 'woocommerce/qliro-one-checkout-pay.php' ) ) {
-						$qliro_one_checkout_template = locate_template( 'woocommerce/qliro-one-checkout-pay.php' );
-					} else {
-						$qliro_one_checkout_template = QLIRO_WC_PLUGIN_PATH . '/templates/qliro-one-checkout-pay.php';
-					}
-
-					if ( 'qliro_one' === $order->get_payment_method() ) {
-						$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_STRING );
-						if ( empty( $confirm ) ) {
-							$template = $qliro_one_checkout_template;
-						}
-					}
-
-					// If chosen payment method does not exist and Qliro One is the first gateway.
-					if ( empty( $order->get_payment_method() ) ) {
-						reset( $available_gateways );
-						if ( 'qliro_one' === key( $available_gateways ) ) {
-							if ( empty( $confirm ) ) {
-								$template = $qliro_one_checkout_template;
 							}
 						}
 					}

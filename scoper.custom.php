@@ -6,5 +6,10 @@ function customize_php_scoper_config( array $config ): array {
 	$config['exclude-constants'][] = 'WP_INSTALLING_NETWORK';
 	$config['exclude-namespaces'][] = 'Automattic';
 
+	$config['exclude-classes'][] = 'WC_Subscriptions_Product';
+	$config['exclude-classes'][] = 'WCS_ATT_Cart';
+	
+	$config['expose-classes'][] = 'WP_Error';
+
 	return $config;
 }

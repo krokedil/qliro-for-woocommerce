@@ -236,6 +236,82 @@ jQuery(function ($) {
 			}
 		},
 
+		refund_items: function() {
+			$qliroReturnFee = $('#qliro_return_fee');
+			$qliroReturnFee.show();
+		},
+
+		cancel_refund: function() {
+			$qliroReturnFee = $('#qliro_return_fee');
+
+			if ($qliroReturnFee.attr('data-qliro-hide') === 'no' ) {
+				return;
+			}
+
+			$qliroReturnFee.hide();
+		},
+
+		modify_refund_button_text: function() {
+			const $qliroRefundButton = $("button.do-api-refund");
+			$qliroRefundButton.append( '<span id="qliro_return_fee_total"></span>' );
+		},
+
+		update_qliro_refund_amount: function() {
+			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
+			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
+			const $qliroReturnFeeTotalSpan = $("span#qliro_return_fee_total");
+
+			const refundFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
+
+			if (refundFeeAmount === 0) {
+				$qliroReturnFeeTotalSpan.text('');
+				return;
+			}
+
+			// Update the button text with the return fee amount by replacing inner text of the span#qliro_return_fee_total with the refund fee amount.
+			//$qliroReturnFeeTotalSpan.text( qoc_admin_params.return_fee_text + ' ' + accounting.formatMoney(refundFeeAmount, {
+			$qliroReturnFeeTotalSpan.text(' (' + qoc_admin_params.with_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ')' );
+		},
+
+		format_number: function (number) {
+			return accounting.formatMoney(
+				number,
+				{
+					symbol: woocommerce_admin_meta_boxes.currency_format_symbol,
+					decimal: woocommerce_admin_meta_boxes.currency_format_decimal_sep,
+					thousand: woocommerce_admin_meta_boxes.currency_format_thousand_sep,
+					precision: woocommerce_admin_meta_boxes.currency_format_num_decimals,
+					format: woocommerce_admin_meta_boxes.currency_format
+				}
+			);
+		},
+
+		unformat_number: function (number) {
+			return accounting.unformat(
+				number,
+				woocommerce_admin.mon_decimal_point
+			);
+		},
+
+		on_refund_submit: function (e) {
+			// Get the refund amount from the input field.
+			const $refundAmount = $('#refund_amount');
+			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
+			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
+
+			const diff = qoc.unformat_number($refundAmount.val()) - (qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val()));
+
+			if (diff < 0) {
+				// Show an alert box with the message "Refund amount is less than the return fee amount."
+				window.alert(qoc_admin_params.refund_amount_less_than_return_fee_text);
+
+				// Pause the default action of the button.
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+		},
+
 		/**
 		 * Function that initiates the events for this file.
 		 */
@@ -243,14 +319,133 @@ jQuery(function ($) {
 			$('#woocommerce-order-items')
 				.on('click', 'button.partial-capture', this.capture)
 				.on('click', '.capture-actions .cancel-action', this.cancel_capture)
-				.on('click', '.do-capture', this.create_capture);
+				.on('click', '.do-capture', this.create_capture)
+				.on('click', '.button.refund-items', this.refund_items)
+				.on('click', '.refund-actions .cancel-action', this.cancel_refund);
+
+			$('button.do-api-refund').on('click', this.on_refund_submit);
+
 			$(document)
 				.ready(this.move_element)
 				.ready(this.add_checkboxes)
-				.ready(this.add_input_fields);
+				.ready(this.add_input_fields)
+				.ready(this.modify_refund_button_text)
+				.on('change', '#refund_amount', this.update_qliro_refund_amount)
+				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount)
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 
+			const discount = $('#qliro-discount-form');
+			if (discount.length > 0) {
+				const fees = JSON.parse($('#qliro-discount-form').attr('data-fees'));
+				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+				const discountIdEl = $('#qliro-discount-id');
+				const discountAmountEl = $('#qliro-discount-amount');
+				const discountPercentageEl = $('#qliro-discount-percentage');
+				const newDiscountPercentageEl = $('#qliro-new-discount-percentage');
+				const newTotalAmountEl = $('#qliro-new-total-amount');
+				const modal = $('.qliro-discount-form-modal');
+				const submitButton = $('#qliro-discount-form-submit');
+				const closeButtons = $('.qliro-discount-form-modal .modal-close')
+
+				const updateURL = () => {
+					const actionURL = submitButton.attr('formaction')
+					const url = new URL(actionURL, location.origin);
+
+					const discountAmount = parseFloat(discountAmountEl.val());
+					if (!isNaN(discountAmount)) {
+						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
+					}
+
+					url.searchParams.set('discount_id', discountIdEl.val());
+
+					submitButton.attr('formaction', url.toString());
+				}
+
+				const updateView = (amount, percentage) => {
+					const discountedTotalAmount = totalAmount - amount;
+					newTotalAmountEl.val(qoc.format_number(discountedTotalAmount));
+					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
+
+					const isFullyDiscounted = amount >= totalAmount;
+					const hasDiscountAmount = amount > 0
+					const hasDiscountId = discountIdEl.val().length > 0;
+					const isDuplicateId = fees.includes(discountIdEl.val());
+					submitButton.attr('disabled', !hasDiscountId || !hasDiscountAmount || isDuplicateId || isFullyDiscounted);
+
+					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
+					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);
+					
+					updateURL()
+				}
+
+				discountIdEl.on('input', function () {
+					const alreadyExists = fees.includes($(this).val());
+					$('#qliro-discount-id-error').toggleClass('hidden', !alreadyExists);
+
+					const discountAmount = parseFloat(discountAmountEl.val());
+					const discountPercentage = parseFloat(discountPercentageEl.val());
+					if (!isNaN(discountAmount) && !isNaN(discountPercentage)) {
+						updateView(discountAmount, discountPercentage);
+					}
+
+					updateURL()
+				})
+
+				discountAmountEl.on('input', function () {
+					let discountAmount = parseFloat($(this).val());
+					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
+
+					// Do not allow exceeding the total amount.
+					if (discountAmount > totalAmount) {
+						discountAmount = totalAmount;
+						$(this).val(discountAmount.toFixed(2));
+
+					// Do not allow negative values.
+					} else if (discountAmount < 0) {
+						discountAmount = 0;
+						$(this).val(discountAmount.toFixed(2));
+					}
+
+					const percentage = ((discountAmount / totalAmount) * 100);
+					discountPercentageEl.val(percentage.toFixed(2));
+
+					updateView(discountAmount, percentage);
+				})
+
+				discountPercentageEl.on('input', function () {
+					let discountPercentage = parseFloat($(this).val());
+					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
+
+					// Do not allow exceeding 100%.
+					if (discountPercentage > 100) {
+						discountPercentage = 100;
+						$(this).val(discountPercentage.toFixed(2));
+					// Do not allow negative values.
+					} else if (discountPercentage <= 0) {
+						discountPercentage = 0;
+						$(this).val(discountPercentage.toFixed(2));
+					} 
+
+					const discountAmount = ((totalAmount * discountPercentage) / 100);
+					discountAmountEl.val(discountAmount.toFixed(2));
+
+					updateView(discountAmount, discountPercentage);
+				})
+
+				$('#qliro_add_order_discount').on('click', function (e) {
+					e.preventDefault();
+					modal.show();
+				})
+
+				const toggleModal = (e) => {
+					e.preventDefault();
+					modal.hide();
+				}
+
+				closeButtons.on('click', toggleModal)
+
+			}
 		}
 	}
 	qoc.init();

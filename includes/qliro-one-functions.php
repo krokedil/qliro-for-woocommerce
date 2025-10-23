@@ -24,6 +24,12 @@ function qliro_one_maybe_create_order() {
 	$cart->calculate_fees();
 	$cart->calculate_shipping();
 	$cart->calculate_totals();
+
+	if ( qliro_one_has_country_changed() ) {
+		qliro_one_unset_sessions();
+		return qliro_one_maybe_create_order();
+	}
+
 	if ( $qliro_one_order_id ) {
 		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
@@ -50,19 +56,25 @@ function qliro_one_maybe_create_order() {
 		// If failed then bail.
 		return;
 	}
+
 	// store id.
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
-	$session->set( 'qliro_one_last_update_hash', WC()->cart->get_cart_hash() );
+	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
 	// get qliro order.
 	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }
 
 /**
- * Echoes Qliro One Checkout iframe snippet.
+ * Echoes Qliro Checkout iframe snippet.
  *
  * @return string|null
  */
 function qliro_wc_get_snippet() {
+
+	if ( ! qliro_is_enabled_with_demo_check() ) {
+		return null;
+	}
+
 	$qliro_one_order = qliro_one_maybe_create_order();
 	$snippet         = $qliro_one_order['OrderHtmlSnippet'] ?? null;
 
@@ -99,13 +111,14 @@ function qliro_one_print_error_message( $wp_error ) {
 		if ( function_exists( 'wc_add_notice' ) ) {
 			wc_add_notice( $error_message, 'error' );
 		}
-	} elseif ( function_exists( 'wc_print_notice' ) ) {
-			wc_print_notice( $error_message, 'error' );
+	} elseif ( function_exists( 'wc_add_notice' ) ) {
+		// Add to the queue to be printed later. This allows the notice to be displayed along the other notices.
+		wc_add_notice( $error_message, 'error' );
 	}
 }
 
 /**
- * Unsets the sessions used by the plguin.
+ * Unsets the sessions used by the plugin.
  *
  * @return void
  */
@@ -118,14 +131,14 @@ function qliro_one_unset_sessions() {
 }
 
 /**
- * Shows select another payment method button in Qliro One Checkout page.
+ * Shows select another payment method button in Qliro Checkout page.
  */
 function qliro_one_wc_show_another_gateway_button() {
 	$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 
 	if ( count( $available_gateways ) > 1 ) {
 		$settings                   = get_option( 'woocommerce_qliro_one_settings' );
-		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-checkout-for-woocommerce' );
+		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-for-woocommerce' );
 
 		?>
 		<p class="qliro-one-checkout-select-other-wrapper">
@@ -184,12 +197,12 @@ function qliro_confirm_order( $order ) {
 
 	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
 		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro One order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
+		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 	// translators: %s - the Qliro order ID.
-	$note = sprintf( __( 'Payment via Qliro One, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
@@ -353,8 +366,8 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
 	$key    = '_qliro_one_order_confirmation_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => $confirmation_id,
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
@@ -380,8 +393,8 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
 	$key    = '_qliro_one_order_id';
 	$orders = wc_get_orders(
 		array(
-			'meta_key'     => $key,
-			'meta_value'   => strval( $qliro_order_id ),
+			'meta_key'     => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'   => strval( $qliro_order_id ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'limit'        => 1,
 			'orderby'      => 'date',
 			'order'        => 'DESC',
@@ -404,9 +417,9 @@ function qoc_get_order_by_qliro_id( $qliro_order_id ) {
  * @return bool
  */
 function qliro_one_is_valid_order( $qliro_order ) {
-	$is_in_process     = ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] );
-	$is_currency_match = ( get_woocommerce_currency() === $qliro_order['Currency'] );
-	$is_country_match  = ( WC()->customer->get_billing_country() === $qliro_order['Country'] );
+	$is_in_process     = 'InProcess' === $qliro_order['CustomerCheckoutStatus'];
+	$is_currency_match = get_woocommerce_currency() === $qliro_order['Currency'];
+	$is_country_match  = WC()->customer->get_billing_country() === $qliro_order['Country'];
 
 	if ( ! $is_in_process || ! $is_currency_match || ! $is_country_match ) {
 		return false;
@@ -570,6 +583,18 @@ function qliro_one_is_completed( $qliro_order ) {
  * @return void
  */
 function qliro_one_redirect_to_thankyou_page() {
+	// Redirect the customer to the thankyou page for the order, with the orders confirmation id as a query parameter.
+	$redirect_url = qliro_one_get_thankyou_page_redirect_url();
+	wp_safe_redirect( $redirect_url );
+	exit;
+}
+
+/**
+ * Get the thankyou page redirect URL for the order.
+ *
+ * @return string
+ */
+function qliro_one_get_thankyou_page_redirect_url() {
 	// Get the WC Order for the Qliro order.
 	$confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
 	$order           = qoc_get_order_by_confirmation_id( $confirmation_id );
@@ -585,8 +610,8 @@ function qliro_one_redirect_to_thankyou_page() {
 
 	// Redirect the customer to the thankyou page for the order, with the orders confirmation id as a query parameter.
 	$redirect_url = add_query_arg( 'qliro_one_confirm_page', $confirmation_id, $redirect_url );
-	wp_safe_redirect( $redirect_url );
-	exit;
+
+	return $redirect_url;
 }
 
 /**
@@ -609,4 +634,95 @@ function qliro_one_format_fee_reference( $fee_name ) {
 	$merchant_reference = implode( '', $matches[0] );
 
 	return apply_filters( 'qliro_one_format_fee_reference', $merchant_reference, $fee_name );
+}
+
+/**
+ * Get the billing country from the checkout, or the store base location if not set.
+ *
+ * @return string
+ */
+function qliro_one_get_billing_country() {
+	$base_location = wc_get_base_location();
+	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
+}
+
+function qliro_one_has_country_changed() {
+	$country_from_session  = WC()->session->get( 'qliro_one_billing_country' );
+	$country_from_checkout = WC()->checkout()->get_value( 'billing_country' );
+
+	if ( empty( $country_from_session ) || empty( $country_from_checkout ) ) {
+		return false;
+	}
+
+	return $country_from_session !== $country_from_checkout;
+}
+
+/**
+ * Ensure that a value is numeric. If the value is not numeric, it will attempt to convert it.
+ * If the value is an empty value, it will be set to 0.
+ * If the value cannot be converted to a numeric value, it will return the default value.
+ *
+ * @param mixed     $value The value to ensure is numeric.
+ * @param float|int $default The default value to return if the value is not numeric and $throw_error is false. Default 0.
+ *
+ * @return float|int Returns the numeric value of the input, or the default value if the input is not numeric and cannot be converted.
+ */
+function qliro_ensure_numeric( $value, $default = 0 ) {
+	if ( is_numeric( $value ) ) {
+		return floatval( $value );
+	}
+
+	// If the value is empty, return 0 instead of default to reflect that the value is not set.
+	if ( empty( $value ) ) {
+		return 0;
+	}
+
+	// Try to convert the value to a numeric value.
+	$converted_value = floatval( $value );
+
+	if ( is_numeric( $converted_value ) ) {
+		return $converted_value;
+	}
+
+	return $default; // Return the default value if the value is still not numeric.
+}
+
+/**
+ * Check if Qliro One is enabled.
+ *
+ * Check if Qliro One is enabled in the settings, and if demo mode is enabled, check if the demo mode coupon is applied.
+ *
+ * @return bool
+ */
+function qliro_is_enabled_with_demo_check() {
+	$settings   = get_option( 'woocommerce_qliro_one_settings', array() );
+	$is_enabled = isset( $settings['enabled'] ) && 'yes' === $settings['enabled'];
+
+	// Only check for demo mode if we are on the checkout page, and not on the order received page or the pay for order page.
+	if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+		return $is_enabled;
+	}
+
+	if ( $is_enabled ) {
+
+		$is_demomode = isset( $settings['demomode'] ) && 'yes' === $settings['demomode'];
+		if ( $is_demomode ) {
+			$demomode_coupon = isset( $settings['demomode_coupon'] ) ? $settings['demomode_coupon'] : '';
+
+			// If we are not in demo mode, or the demo mode coupon is not set, return false.
+			if ( empty( $demomode_coupon ) ) {
+				return false;
+			}
+
+			// Check if the cart contains the demo mode coupon. If not, return false.
+			$applied_coupons = WC()->cart->get_applied_coupons();
+			if ( ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }

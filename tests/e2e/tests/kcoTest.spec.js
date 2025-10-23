@@ -24,7 +24,7 @@ let context;
 let timeOutTime = 2500;
 let json = data;
 
-describe("Qliro One E2E tests", () => {
+describe("Qliro E2E tests", () => {
     beforeAll(async () => {
         // try {
         //     json = await setup.setupStore(json);
