@@ -186,7 +186,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount = floatval( filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? 0 );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
@@ -217,10 +217,15 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			// Description length allowed by Qliro.
 			$discount_id = substr( $discount_id, 0, 200 );
+
+			// We must exclude shipping and any fees from the available discount amount.
+			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) );
+
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
-			$order_total = $order->get_total();
-			if ( ( $discount_amount * 100 ) >= ( $order_total * 100 ) ) {
-				throw new Exception( __( 'Discount amount must be less than the order total.', 'qliro' ) );
+			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
+				throw new Exception( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro' ), wc_price( max( 0, $available_amount ) ) ) );
 			}
 
 			foreach ( $order->get_fees() as $fee ) {
