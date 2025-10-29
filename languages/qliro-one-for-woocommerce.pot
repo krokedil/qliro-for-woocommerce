@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 1.17.0\n"
+"Project-Id-Version: Qliro for WooCommerce 1.17.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-10-22 09:12:29+00:00\n"
+"POT-Creation-Date: 2025-10-29 10:02:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -940,31 +940,31 @@ msgstr ""
 msgid "Invalid nonce."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:223
-msgid "Discount amount must be less than the order total."
+#: classes/class-qliro-one-metabox.php:228
+msgid "Discount amount must be less than the remaining amount of %s."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:229
+#: classes/class-qliro-one-metabox.php:234
 msgid "Discount already added to order."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:261
+#: classes/class-qliro-one-metabox.php:266
 msgid "Failed to add discount to Qliro order."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:269
+#: classes/class-qliro-one-metabox.php:274
 msgid "Discount added to order."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:363
+#: classes/class-qliro-one-metabox.php:368
 msgid "Qliro payment method"
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:406
+#: classes/class-qliro-one-metabox.php:411
 msgid "Sync order with Qliro"
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:474
+#: classes/class-qliro-one-metabox.php:479
 msgid "Shipping reference"
 msgstr ""
 
@@ -1180,8 +1180,7 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
-#: dependencies/krokedil/settings-page/src/Addons.php:209
-#. translators: %s is the plugin name.
+#: dependencies/krokedil/settings-page/src/Addons.php:212
 msgid "Free"
 msgstr ""
 
@@ -1340,15 +1339,25 @@ msgstr ""
 msgid "Addons"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:241
+#: dependencies/krokedil/settings-page/src/Addons.php:141
+#. translators: %s is the plugin name.
+msgid "the plugin"
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:143
+#. translators: %s is the plugin name.
+msgid "These are other plugins from Krokedil that work well together with %s."
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Addons.php:244
 msgid "Active"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:245
+#: dependencies/krokedil/settings-page/src/Addons.php:248
 msgid "Activate"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:251
+#: dependencies/krokedil/settings-page/src/Addons.php:254
 msgid "Install Now"
 msgstr ""
 
@@ -1362,11 +1371,17 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Support.php:100
-msgid "If you still need help, please open a support ticket with Krokedil."
+#: dependencies/krokedil/settings-page/src/Support.php:90
+msgid ""
+"Before opening a support ticket, please make sure you have read the "
+"relevant plugin resources for a solution to your problem"
 msgstr ""
 
 #: dependencies/krokedil/settings-page/src/Support.php:103
+msgid "If you still need help, please open a support ticket with Krokedil."
+msgstr ""
+
+#: dependencies/krokedil/settings-page/src/Support.php:106
 msgid "Open support ticket with Krokedil"
 msgstr ""
 
@@ -1374,15 +1389,15 @@ msgstr ""
 msgid "Return to payments"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:84
 msgid "Plugin resources"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:108
 msgid "Additional resources"
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:37
 msgid "Sections"
 msgstr ""
 
@@ -1442,74 +1457,68 @@ msgstr ""
 msgid "Show on map"
 msgstr ""
 
-#: dependencies/krokedil/shipping/src/SessionHandler.php:229
-msgid ""
-"The shipping methods have been changed during the checkout process. Please "
-"verify your selected shipping method and try again."
-msgstr ""
-
-#: includes/admin/views/html-order-add-discount.php:30
+#: includes/admin/views/html-order-add-discount.php:34
 msgid "Discount ID"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:32
+#: includes/admin/views/html-order-add-discount.php:36
 msgid "Contains article number and discount number. E.g. articleno_discount01"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:43
+#: includes/admin/views/html-order-add-discount.php:47
 msgid "Enter amount or percentage"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:48
+#: includes/admin/views/html-order-add-discount.php:52
 #. translators: %s: Currency code, e.g. SEK.
 msgid "Total amount (%s)"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:59
+#: includes/admin/views/html-order-add-discount.php:63
 msgid "Percentage (%)"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:76
+#: includes/admin/views/html-order-add-discount.php:80
 msgid "New amount to pay"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:80
+#: includes/admin/views/html-order-add-discount.php:84
 msgid "Total amount before discount"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:89
+#: includes/admin/views/html-order-add-discount.php:93
 msgid "Discount"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:98
+#: includes/admin/views/html-order-add-discount.php:102
 msgid "New total amount to pay"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:117
+#: includes/admin/views/html-order-add-discount.php:121
 msgid "Add discount"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:119
+#: includes/admin/views/html-order-add-discount.php:123
 msgid "Close modal panel"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:124
+#: includes/admin/views/html-order-add-discount.php:128
 msgid "Discount ID must be unique"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:128
+#: includes/admin/views/html-order-add-discount.php:132
 msgid "The percentage is based on the total amount"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:129
+#: includes/admin/views/html-order-add-discount.php:133
 msgid "The amount must not be equal to or exceed the total amount."
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:139
+#: includes/admin/views/html-order-add-discount.php:143
 msgid "Back"
 msgstr ""
 
-#: includes/admin/views/html-order-add-discount.php:143
+#: includes/admin/views/html-order-add-discount.php:147
 msgid "Confirm"
 msgstr ""
 

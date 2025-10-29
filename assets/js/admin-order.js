@@ -339,6 +339,7 @@ jQuery(function ($) {
 			if (discount.length > 0) {
 				const fees = JSON.parse($('#qliro-discount-form').attr('data-fees'));
 				const totalAmount = parseFloat(discount.attr('data-total-amount'));
+				const availableAmount = parseFloat(discount.attr('data-available-amount'));
 				const discountIdEl = $('#qliro-discount-id');
 				const discountAmountEl = $('#qliro-discount-amount');
 				const discountPercentageEl = $('#qliro-discount-percentage');
@@ -363,11 +364,11 @@ jQuery(function ($) {
 				}
 
 				const updateView = (amount, percentage) => {
-					const discountedTotalAmount = totalAmount - amount;
+					const discountedTotalAmount = Math.max(0, availableAmount - amount);
 					newTotalAmountEl.val(qoc.format_number(discountedTotalAmount));
 					newDiscountPercentageEl.val(`${-1 * percentage.toFixed(2)}%`);
 
-					const isFullyDiscounted = amount >= totalAmount;
+					const isFullyDiscounted = amount > availableAmount;
 					const hasDiscountAmount = amount > 0
 					const hasDiscountId = discountIdEl.val().length > 0;
 					const isDuplicateId = fees.includes(discountIdEl.val());
@@ -397,8 +398,8 @@ jQuery(function ($) {
 					discountAmount = isNaN(discountAmount) ? 0 : discountAmount;
 
 					// Do not allow exceeding the total amount.
-					if (discountAmount > totalAmount) {
-						discountAmount = totalAmount;
+					if (discountAmount > availableAmount) {
+						discountAmount = availableAmount;
 						$(this).val(discountAmount.toFixed(2));
 
 					// Do not allow negative values.
@@ -407,28 +408,36 @@ jQuery(function ($) {
 						$(this).val(discountAmount.toFixed(2));
 					}
 
-					const percentage = ((discountAmount / totalAmount) * 100);
+					const percentage = availableAmount > 0 ? ((discountAmount / availableAmount) * 100) : 0;
 					discountPercentageEl.val(percentage.toFixed(2));
 
 					updateView(discountAmount, percentage);
 				})
 
 				discountPercentageEl.on('input', function () {
+					// debugger
 					let discountPercentage = parseFloat($(this).val());
 					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
 
 					// Do not allow exceeding 100%.
 					if (discountPercentage > 100) {
 						discountPercentage = 100;
-						$(this).val(discountPercentage.toFixed(2));
 					// Do not allow negative values.
 					} else if (discountPercentage <= 0) {
 						discountPercentage = 0;
-						$(this).val(discountPercentage.toFixed(2));
 					} 
 
-					const discountAmount = ((totalAmount * discountPercentage) / 100);
+					let discountAmount = ((availableAmount * discountPercentage) / 100);
 					discountAmountEl.val(discountAmount.toFixed(2));
+
+					if (discountAmount > availableAmount) { 
+						discountAmount = availableAmount;
+						discountPercentage = 100;
+					} else if (0 === discountAmount) {
+						discountPercentage = 0;
+					}
+
+					$(this).val(discountPercentage);
 
 					updateView(discountAmount, discountPercentage);
 				})
