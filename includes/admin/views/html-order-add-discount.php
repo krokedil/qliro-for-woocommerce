@@ -8,6 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// We must exclude shipping and any fees from the available discount amount.
+$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) );
+
 $total_amount = wc_format_decimal( $order->get_total() );
 
 $fees = array();
@@ -17,8 +22,7 @@ foreach ( $order->get_fees() as $fee ) {
 		$fees[] = $id;
 	}
 }
-$fees = wp_json_encode( $fees );
-
+$fees     = wp_json_encode( $fees );
 $currency = $order->get_currency();
 
 $section_1 = array(
@@ -80,7 +84,7 @@ $section_3 = array(
 		'name'              => __( 'Total amount before discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-total-amount',
 		'type'              => 'text',
-		'value'             => wp_strip_all_tags( wc_price( $total_amount, array( 'currency' => $currency ) ) ),
+		'value'             => wp_strip_all_tags( wc_price( $available_amount, array( 'currency' => $currency ) ) ),
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -89,7 +93,7 @@ $section_3 = array(
 		'name'              => __( 'Discount', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-discount-percentage',
 		'type'              => 'text',
-		'value'             => '0.00',
+		'value'             => '0%',
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -98,7 +102,7 @@ $section_3 = array(
 		'name'              => __( 'New total amount to pay', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-new-total-amount',
 		'type'              => 'text',
-		'value'             => wp_strip_all_tags( wc_price( $total_amount, array( 'currency' => $currency ) ) ),
+		'value'             => wp_strip_all_tags( wc_price( $available_amount, array( 'currency' => $currency ) ) ),
 		'custom_attributes' => array(
 			'readonly' => 'readonly',
 		),
@@ -119,7 +123,7 @@ $section_3 = array(
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'qliro-one-for-woocommerce' ); ?></span>
 					</button>
 				</header>
-				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php echo esc_attr( $fees ); ?>" data-total-amount="<?php echo esc_attr( $total_amount ); ?>">
+				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php esc_attr_e( $fees ); ?>" data-total-amount="<?php esc_attr_e( $total_amount ); ?>" data-available-amount="<?php esc_attr_e( wc_format_decimal( $available_amount ) ); ?>">
 					<?php woocommerce_admin_fields( $section_1 ); ?>
 					<p id="qliro-discount-id-error" class="explanation hidden error"><?php esc_html_e( 'Discount ID must be unique', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
