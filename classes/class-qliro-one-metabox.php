@@ -219,9 +219,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$discount_id = mb_substr( trim( $discount_id ), 0, 200 );
 
 			// We must exclude shipping and any fees from the available discount amount.
-			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
-			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
-			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) );
+			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
+			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() * 100 ) ) ) ?? 0;
+			$available_amount   = max( 0, ( $items_total_amount ) - abs( $fees_total_amount ) ) / 100;
 
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
 			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
