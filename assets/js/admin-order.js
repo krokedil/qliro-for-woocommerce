@@ -343,6 +343,7 @@ jQuery(function ($) {
 				const discountIdEl = $('#qliro-discount-id');
 				const discountAmountEl = $('#qliro-discount-amount');
 				const discountPercentageEl = $('#qliro-discount-percentage');
+				const discountVATPercentageEl = $('#qliro-discount-vat-percentage');
 				const newDiscountPercentageEl = $('#qliro-new-discount-percentage');
 				const newTotalAmountEl = $('#qliro-new-total-amount');
 				const modal = $('.qliro-discount-form-modal');
@@ -356,6 +357,11 @@ jQuery(function ($) {
 					const discountAmount = parseFloat(discountAmountEl.val());
 					if (!isNaN(discountAmount)) {
 						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
+					}
+
+					const discountVATPercentage = parseFloat(discountVATPercentageEl.val());
+					if (!isNaN(discountVATPercentage)) {
+						url.searchParams.set('discount_vat_percentage', discountVATPercentage.toFixed(2));
 					}
 
 					url.searchParams.set('discount_id', discountIdEl.val());
@@ -415,7 +421,6 @@ jQuery(function ($) {
 				})
 
 				discountPercentageEl.on('input', function () {
-					// debugger
 					let discountPercentage = parseFloat($(this).val());
 					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
 
@@ -440,6 +445,20 @@ jQuery(function ($) {
 					$(this).val(discountPercentage);
 
 					updateView(discountAmount, discountPercentage);
+				})
+
+				discountVATPercentageEl.on('input', function () {
+					let discountVATPercentage = parseFloat($(this).val());
+					discountVATPercentage = isNaN(discountVATPercentage) ? 0 : discountVATPercentage;
+
+					if (discountVATPercentage > 100) {
+						discountVATPercentage = 100;
+					} else if (discountVATPercentage < 0) {
+						discountVATPercentage = 0;
+					} 
+
+					$(this).val(discountVATPercentage);
+					updateURL()
 				})
 
 				$('#qliro_add_order_discount').on('click', function (e) {

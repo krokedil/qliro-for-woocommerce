@@ -182,14 +182,15 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$nonce                   = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$action                  = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_id                = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key               = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount         = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_vat_percentage = filter_input( INPUT_GET, 'discount_vat_percentage', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_id             = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
+		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_vat_percentage, $discount_id ) ) {
 			return;
 		}
 
@@ -209,7 +210,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		try {
-			$discount_amount = floatval( $discount_amount );
+			$discount_amount         = floatval( $discount_amount );
+			$discount_vat_percentage = floatval( $discount_vat_percentage );
+			$discount_vat_amount     = $discount_amount * ( $discount_vat_percentage / 100 );
 
 			// These controls should throw to inform the customer about what happened.
 			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
@@ -239,7 +242,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name( $discount_id );
 			$fee->set_total( -1 * $discount_amount );
-			$fee->set_total_tax( 0 );
+			// $fee->set_total_tax( -1 * $discount_vat_amount );
+			$fee->set_tax_status( 'taxable' );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
@@ -250,6 +254,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Quantity'           => $fee->get_quantity(),
 					'Type'               => 'Discount',
 					'PricePerItemIncVat' => $fee->get_total(),
+					// 'PricePerItemExVat'  => floatval( $fee->get_total() - $fee->get_total_tax() ),
 					'PricePerItemExVat'  => $fee->get_total(),
 				),
 			);

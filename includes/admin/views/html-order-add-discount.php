@@ -43,11 +43,11 @@ $section_1 = array(
 );
 
 $section_2 = array(
-	'section_title'       => array(
+	'section_title'           => array(
 		'name' => __( 'Enter amount or percentage', 'qliro-one-for-woocommerce' ),
 		'type' => 'title',
 	),
-	'discount_amount'     => array(
+	'discount_amount'         => array(
 		// translators: %s: Currency code, e.g. SEK.
 		'name'              => sprintf( __( 'Total amount (%s)', 'qliro-one-for-woocommerce' ), $currency ),
 		'id'                => 'qliro-discount-amount',
@@ -59,7 +59,7 @@ $section_2 = array(
 			'max'  => $total_amount,
 		),
 	),
-	'discount_percentage' => array(
+	'discount_percentage'     => array(
 		'name'              => __( 'Percentage (%)', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-discount-percentage',
 		'type'              => 'number',
@@ -70,7 +70,19 @@ $section_2 = array(
 			'max'  => '100.00',
 		),
 	),
-	'section_end'         => array(
+	'discount_vat_percentage' => array(
+		'name'              => __( 'VAT Percentage (%)', 'qliro-one-for-woocommerce' ),
+		'id'                => 'qliro-discount-vat-percentage',
+		'type'              => 'number',
+		'value'             => 25,
+		'placeholder'       => '%',
+		'custom_attributes' => array(
+			'step' => 'any',
+			'min'  => '0.00',
+			'max'  => '100.00',
+		),
+	),
+	'section_end'             => array(
 		'type' => 'sectionend',
 	),
 );
