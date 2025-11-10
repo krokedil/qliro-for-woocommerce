@@ -129,7 +129,7 @@ $section_3 = array(
 					<hr>
 
 					<?php woocommerce_admin_fields( $section_2 ); ?>
-					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is based on the total amount', 'qliro-one-for-woocommerce' ); ?></p>
+					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is calculated based on the total amount, excluding shipping and fees.', 'qliro-one-for-woocommerce' ); ?></p>
 					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden"><?php esc_html_e( 'The amount must not be equal to or exceed the total amount.', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
 
