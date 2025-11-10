@@ -186,7 +186,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount = floatval( filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? 0 );
+		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
@@ -209,6 +209,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		try {
+			$discount_amount = floatval( $discount_amount );
 
 			// These controls should throw to inform the customer about what happened.
 			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
@@ -221,7 +222,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			// We must exclude shipping and any fees from the available discount amount.
 			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
 			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() * 100 ) ) ) ?? 0;
-			$available_amount   = max( 0, ( $items_total_amount ) - abs( $fees_total_amount ) ) / 100;
+			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) ) / 100;
 
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
 			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
