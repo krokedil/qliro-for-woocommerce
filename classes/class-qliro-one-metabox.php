@@ -216,7 +216,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			// Description length allowed by Qliro.
-			$discount_id = substr( $discount_id, 0, 200 );
+			$discount_id = mb_substr( trim( $discount_id ), 0, 200 );
 
 			// We must exclude shipping and any fees from the available discount amount.
 			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
