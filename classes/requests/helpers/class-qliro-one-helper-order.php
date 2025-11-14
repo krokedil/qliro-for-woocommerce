@@ -78,7 +78,7 @@ class Qliro_One_Helper_Order {
 		// Process gift cards.
 		$order_lines = self::process_gift_cards( $order_id, $order, $order_lines );
 
-		return apply_filters( 'qliro_one_helper_cart_items', array_values( $order_lines ), $order );
+		return apply_filters( 'qliro_one_helper_order_items', array_values( $order_lines ), $order );
 	}
 
 	/**
