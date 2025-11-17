@@ -20,7 +20,7 @@ class Qliro_One_Helper_Order {
 	 * @param array $items The order items (optional).
 	 * @return array
 	 */
-	public static function get_order_lines( $order_id, $items = array() ) {
+	public static function get_order_items( $order_id, $items = array() ) {
 		$order       = wc_get_order( $order_id );
 		$order_lines = array();
 
@@ -113,7 +113,7 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function get_return_items( $order_id ) {
-		$order_lines  = self::get_order_lines( $order_id );
+		$order_lines  = self::get_order_items( $order_id );
 		$return_lines = array();
 
 		foreach ( $order_lines as $order_line ) {

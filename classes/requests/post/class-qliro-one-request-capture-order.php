@@ -57,7 +57,7 @@ class Qliro_One_Capture_Order extends Qliro_One_Request_Post {
 			'Currency'       => $order->get_currency(),
 			'Shipments'      => array(
 				array(
-					'OrderItems' => $order_data::get_order_lines( $order_id, $items ),
+					'OrderItems' => $order_data::get_order_items( $order_id, $items ),
 				),
 			),
 		);
