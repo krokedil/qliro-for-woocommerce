@@ -163,7 +163,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
 			'AskForNewsletterSignUpText'           => $this->get_ask_for_newsletter_label(),
-			'OrderItems'                           => Qliro_One_Helper_Order::get_order_lines( $this->order_id ),
+			'OrderItems'                           => Qliro_One_Helper_Order::get_order_items( $this->order_id ),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 			'EnforcedJuridicalType'                => $this->get_enforced_juridicial_type(),
 			'PrimaryColor'                         => $this->get_primary_color(),

@@ -17,11 +17,22 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'qliro-one', __( 'Qliro order data', 'qliro-one-for-woocommerce' ), 'qliro_one' );
+		parent::__construct( 'qliro-one', 'Qliro order data', 'qliro_one' );
 
+		add_action( 'init', array( $this, 'set_metabox_title' ) );
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
+		add_action( 'init', array( $this, 'handle_add_order_discount_action' ), 9999 );
 
 		$this->scripts[] = 'qliro-one-metabox';
+	}
+
+	/**
+	 * Set the metabox title.
+	 *
+	 * @return void
+	 */
+	public function set_metabox_title() {
+		$this->title = __( 'Qliro order data', 'qliro-one-for-woocommerce' );
 	}
 
 	/**
@@ -76,7 +87,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
-		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one-for-woocommerce' ), self::get_advanced_section_content( $order ) );
+		self::output_order_discount_button( $order, $qliro_order );
+		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
 
 	/**
@@ -154,42 +166,124 @@ class Qliro_One_Metabox extends OrderMetabox {
 			exit;
 		}
 
-		$order = wc_get_order( $order_id );
-
-		if ( ! $order || $this->payment_method_id !== $order->get_payment_method() ) {
-			return;
-		}
-
-		$response = QOC_WC()->api->om_update_qliro_one_order( $qliro_order_id, $order_id );
-
-		if ( is_wp_error( $response ) ) {
-			$order->add_order_note(
-				sprintf(
-					/* translators: %s: error message */
-					__( 'Failed to sync order with Qliro. Error: %s', 'qliro-one-for-woocommerce' ),
-					$response->get_error_message()
-				)
-			);
-			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
-			exit;
-		}
-
-		// Get the new payment transaction id from the response, and update the order meta with it.
-		$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
-		$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
-		$order->save();
-
-		$order->add_order_note(
-			// translators: %s: new transaction id from Qliro.
-			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-one-for-woocommerce' ), $transaction_id )
-		);
+		Qliro_One_Order_Management::sync_order_with_qliro( $order_id, $qliro_order_id );
 
 		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
 		exit;
 	}
 
 	/**
-	 * Get the last transaction from a Qliro order.
+	 * Handle the add order discount action request.
+	 *
+	 * @return void
+	 */
+	public function handle_add_order_discount_action() {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+
+		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount = floatval( filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? 0 );
+		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
+			return;
+		}
+
+		// Check if this event even concerns us.
+		if ( 'qliro_add_order_discount' !== $action ) {
+			return;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( empty( $order ) || $this->payment_method_id !== $order->get_payment_method() ) {
+			return;
+		}
+
+		$order_key = $order->get_order_key();
+		if ( ! hash_equals( $order->get_order_key(), $order_key ) ) {
+			return;
+		}
+
+		try {
+
+			// These controls should throw to inform the customer about what happened.
+			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
+				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
+			}
+
+			// Description length allowed by Qliro.
+			$discount_id = substr( $discount_id, 0, 200 );
+
+			// We must exclude shipping and any fees from the available discount amount.
+			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) );
+
+			// Ensure there is actually a discounted amount, and that is less than the total amount.
+			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
+				throw new Exception( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro' ), wc_price( max( 0, $available_amount ) ) ) );
+			}
+
+			foreach ( $order->get_fees() as $fee ) {
+				// To avoid the form being submitted multiple times, we check if the discount already exists.
+				if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
+					throw new Exception( __( 'Discount already added to order.', 'qliro' ) );
+				}
+			}
+
+			$fee = new WC_Order_Item_Fee();
+			$fee->set_name( $discount_id );
+			$fee->set_total( -1 * $discount_amount );
+			$fee->set_total_tax( 0 );
+			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
+			$fee->save();
+
+			$fee_item = array(
+				array(
+					'MerchantReference'  => $discount_id,
+					'Description'        => $fee->get_name(),
+					'Quantity'           => $fee->get_quantity(),
+					'Type'               => 'Discount',
+					'PricePerItemIncVat' => $fee->get_total(),
+					'PricePerItemExVat'  => $fee->get_total(),
+				),
+			);
+
+			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
+			if ( qoc_is_fully_captured( $order ) ) {
+				$response = QOC_WC()->api->add_items_qliro_order( $order_id, $fee_item );
+			} else {
+				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
+				$items    = array_merge( Qliro_One_Helper_Order::get_order_items( $order_id ), $fee_item );
+				$response = QOC_WC()->api->update_items_qliro_order( $order_id, $items );
+			}
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
+			}
+
+			// Get the new payment transaction id from the response, and update the order meta with it.
+			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
+			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
+
+			$order->add_item( $fee );
+			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
+			$order->save();
+
+		} catch ( Exception $e ) {
+			$order->add_order_note( $e->getMessage() );
+		} finally {
+			wp_safe_redirect( $order->get_edit_order_url() );
+			exit;
+		}
+	}
+
+	/**
+	 * Get the last transaction from a Qliro One order.
 	 *
 	 * @param array $transactions
 	 *
@@ -319,6 +413,37 @@ class Qliro_One_Metabox extends OrderMetabox {
 			false,
 			$classes
 		);
+	}
+
+	/**
+	 * Output the "Add discount" action button.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param array    $qliro_order The Qliro order.
+	 *
+	 * @return void
+	 */
+	private static function output_order_discount_button( $order, $qliro_order ) {
+		// Referenced within the template.
+		$action_url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action'          => 'qliro_add_order_discount',
+					'order_id'        => $order->get_id(),
+					'order_key'       => $order->get_order_key(),
+					'qliro_order_id'  => $qliro_order['OrderId'] ?? '',
+					'discount_amount' => 0,
+					'discount_id'     => '',
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+			'qliro_add_order_discount'
+		);
+
+		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
+		echo "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>";
+
+		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
 
 	/**

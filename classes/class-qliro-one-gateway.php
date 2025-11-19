@@ -65,7 +65,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$this->init_settings();
 		$this->title             = $this->get_option( 'title' );
 		$this->description       = $this->get_option( 'description' );
-		$this->enabled           = $this->get_option( 'enabled' );
+		$this->enabled           = qliro_is_enabled_with_demo_check() ? 'yes' : 'no';
 		$this->testmode          = 'yes' === $this->get_option( 'testmode' );
 		$this->logging           = 'yes' === $this->get_option( 'logging' );
 		$this->upsell_percentage = $this->get_option( 'upsell_percentage', 10 );
@@ -101,7 +101,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		// If the cart contains a subscription, we only support swedish customers for now.
-		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+		if ( Qliro_One_Subscriptions::cart_has_subscription() ) {
 			$billing_country = WC()->customer->get_billing_country();
 			if ( 'SE' !== $billing_country ) { // Qliro only supports Swedish customers for subscriptions.
 				return false;
@@ -363,9 +363,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		$args['general_content'] = array( $gateway_page, 'output' );
 		$settings_page           = ( SettingsPage::get_instance() )
-			->set_plugin_name( 'Qliro Checkout' )
-			->register_page( $this->id, $args, $this )
-			->output( $this->id );
+		->set_plugin_name( 'Qliro Checkout' )
+		->register_page( $this->id, $args, $this )
+		->output( $this->id );
 	}
 
 	/**

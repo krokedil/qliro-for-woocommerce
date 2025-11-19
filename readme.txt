@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.1.2
-Stable tag: 1.14.0
+WC tested up to: 10.3.3
+Stable tag: 1.17.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,35 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.10.29    - version 1.17.1 =
+* Fix           - Corrected the display of pickup point addresses in checkout when choosing home delivery with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
+* Tweak         - Discounts are now applied only to products, excluding shipping costs and fees.
+
+= 2025.10.22    - version 1.17.0 =
+* Feature       - Added Advanced demo mode, allowing testing of the Qliro payment solution in the store without enabling it for all customers.
+* Fix           - Improved the new discount feature to support all markets, with proper currency handling and translations.
+
+= 2025.10.13    - version 1.16.1 =
+* Enhancement   - An admin notice is now displayed when Qliro is running in test mode.
+* Enhancement   - Improved handling of shipping when a separate shipping address is entered.
+* Fix           - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.
+
+= 2025.10.01    - version 1.16.0 =
+* Feature       - Added support for applying discounts to orders after purchase.
+* Fix           - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.
+* Fix           - Fixed an issue where clicking the 'Sync order with Qliro' button redirected users to a blank page after syncing.
+
+= 2025.09.17    - version 1.15.0 =
+* Feature       - Added support for the 'CareOf' field.
+* Feature       - Added support for 'All Products for WooCommerce Subscriptions' by Woo.
+* Feature       - Introduced a filter to allow automatic syncing of WooCommerce orders to Qliro whenever an order is updated.
+* Fix           - Fixed an issue where shipping methods are re-calculated when placing an order, causing WooCommerce to default to the first shipping method available.
+* Fix           - Fixed an issue where the country selector was not displayed on the checkout page for guest users until the page was reloaded.
+* Fix           - Fixed a deprecation error related to translations.
+
+= 2025.09.10    - version 1.14.1 =
+* Fix           - Resolved the checkout page layout not working as expected for some layout options.
+
 = 2025.09.01    - version 1.14.0 =
 * Feature       - Added support for sending VatRate on order lines to Qliro.
 * Fix           - Resolved fatal error that could occur for merchants using PHP version 7.4 and below.
