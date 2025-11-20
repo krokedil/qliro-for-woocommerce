@@ -241,6 +241,15 @@ class Qliro_One_Fields {
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_toggler krokedil_toggler_newsletter_settings',
 			),
+			'qliro_one_button_ask_for_newsletter_signup_label' => array(
+				'title'       => __( 'Newsletter label', 'qliro-one-for-woocommerce' ),
+				'type'        => 'text',
+				'label'       => __( 'Newsletter signup label', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Customize the label for the newsletter signup checkbox.', 'qliro-one-for-woocommerce' ),
+				'default'     => __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' ),
+				'desc_tip'    => true,
+				'class'       => 'krokedil_conditional_setting krokedil_conditional_newsletter_settings',
+			),
 			'qliro_one_button_ask_for_newsletter_signup_checked' => array(
 				'title'       => __( 'Ask for newsletter signup checked by default', 'qliro-one-for-woocommerce' ),
 				'type'        => 'checkbox',
