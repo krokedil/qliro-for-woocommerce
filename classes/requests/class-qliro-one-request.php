@@ -357,7 +357,7 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
-	 * Get the label for the custom checkbox.
+	 * Get the label for the newsletter signup checkbox.
 	 *
 	 * @return string
 	 */
