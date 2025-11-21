@@ -85,7 +85,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 		}
 
 		$order_id        = WC()->session->get( 'qliro_one_order_id' );
-		$qliro_one_order = QOC_WC()->api->get_qliro_one_order( $order_id );
+		$qliro_one_order = QLIRO_WC()->api->get_qliro_one_order( $order_id );
 		if ( is_wp_error( $qliro_one_order ) ) {
 			wp_send_json_error( $qliro_one_order->get_error_message() );
 		}
@@ -154,7 +154,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 			$order_id = filter_input( INPUT_POST, 'order_id', FILTER_SANITIZE_SPECIAL_CHARS );
 			$order    = wc_get_order( $order_id );
 
-			$response = QOC_WC()->api->capture_qliro_one_order( $order_id, $items );
+			$response = QLIRO_WC()->api->capture_qliro_one_order( $order_id, $items );
 			if ( is_wp_error( $response ) ) {
 				$prefix        = 'Evaluation, ';
 				$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );

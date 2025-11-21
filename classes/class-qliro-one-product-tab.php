@@ -41,7 +41,7 @@ class Qliro_One_Product_Tab {
 	 * @return void
 	 */
 	public function product_options() {
-		$product                 = wc_get_product( qoc_get_the_ID() );
+		$product                 = wc_get_product( qliro_get_the_ID() );
 		$minimum_age             = $product->get_meta( 'qoc_min_age' );
 		$require_id_verification = $product->get_meta( 'qoc_require_id_verification' );
 		$has_risk                = $product->get_meta( 'qoc_has_risk' );

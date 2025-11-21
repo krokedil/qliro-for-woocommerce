@@ -44,12 +44,14 @@
     "extra": {
         "wpify-scoper": {
             "prefix": "KrokedilQliroDeps",
-            "folder": "dependencies",
+            "folder": "vendor/dependencies",
             "autorun": true,
             "globals": [
                 "wordpress",
                 "woocommerce"
-            ]
+            ],
+            "composerjson": "composer-dependencies.json",
+            "composerlock": "composer-dependencies.lock"
         }
     }
 }

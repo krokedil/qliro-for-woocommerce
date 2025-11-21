@@ -60,7 +60,7 @@ class Qliro_One_Merchant_URLS {
 
 		// If the cart contains a subscription, add the save card callback url.
 		if ( Qliro_One_Subscriptions::is_subscription( $order ) ) {
-			$merchant_urls['save_card'] = QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+			$merchant_urls['save_card'] = QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
 		}
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );

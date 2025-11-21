@@ -59,7 +59,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body_from_cart() {
-		$merchant_urls = QOC_WC()->merchant_urls->get_urls();
+		$merchant_urls = QLIRO_WC()->merchant_urls->get_urls();
 		$mer_ref       = null;
 		$session       = WC()->session;
 
@@ -82,7 +82,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'MerchantConfirmationUrl'              => $merchant_urls['confirmation'],
 			'MerchantCheckoutStatusPushUrl'        => $merchant_urls['push'],
 			'MerchantOrderManagementStatusPushUrl' => $merchant_urls['om_push'],
-			'MerchantNotificationUrl'              => QOC_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Notifications::class, 'notifications' ),
+			'MerchantNotificationUrl'              => QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Notifications::class, 'notifications' ),
 			'MerchantTermsUrl'                     => get_permalink( wc_get_page_id( 'terms' ) ),
 			'MerchantIntegrityPolicyUrl'           => $this->get_integrity_url(),
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
@@ -120,7 +120,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			$body['ButtonCornerRadius'] = $this->get_button_corder_radius();
 		}
 
-		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			$body['MerchantProvidedMetadata'] = Qliro_One_Helper_Cart::get_ingrid_merchant_provided_metadata();
 		}
 
@@ -143,7 +143,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			return array();
 		}
 
-		$merchant_urls = QOC_WC()->merchant_urls->get_urls( $order );
+		$merchant_urls = QLIRO_WC()->merchant_urls->get_urls( $order );
 		$session       = WC()->session;
 
 		$billing_country = WC()->checkout()->get_value( 'billing_country' );

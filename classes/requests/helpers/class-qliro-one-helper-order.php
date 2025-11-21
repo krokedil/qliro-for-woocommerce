@@ -312,7 +312,7 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_gift_cards( $order_id, $order, $items ) {
-		foreach ( QOC_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
+		foreach ( QLIRO_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
 			if ( false !== ( strpos( get_class( $giftcards ), 'WCGiftCards', true ) ) && ! function_exists( 'WC_GC' ) ) {
 				continue;
 			}

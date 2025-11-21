@@ -84,7 +84,7 @@ class Qliro_One_Checkout {
 				WC()->session->set( 'qoc_shipping_data', $post_data['qoc_shipping_data'] );
 				WC()->session->set( 'qoc_shipping_data_set', true );
 				$data = json_decode( $post_data['qoc_shipping_data'], true );
-				qoc_update_wc_shipping( $data );
+				qliro_update_wc_shipping( $data );
 			}
 		}
 	}
@@ -137,7 +137,7 @@ class Qliro_One_Checkout {
 			}
 		}
 
-		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
 			qliro_one_print_error_message( $qliro_order );
 			return;
@@ -162,7 +162,7 @@ class Qliro_One_Checkout {
 		}
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
-			$qliro_order = QOC_WC()->api->update_qliro_one_order( $qliro_order_id );
+			$qliro_order = QLIRO_WC()->api->update_qliro_one_order( $qliro_order_id );
 		}
 
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
@@ -209,12 +209,12 @@ class Qliro_One_Checkout {
 			// Loop each rate in the package.
 			foreach ( $package['rates'] as $rate ) {
 				/** @var WC_Shipping_Rate $rate */
-				$pickup_point = QOC_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
+				$pickup_point = QLIRO_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
 				if ( ! $pickup_point ) {
 					continue;
 				}
 
-				QOC_WC()->pickup_points_service()->save_selected_pickup_point_to_rate( $rate, $pickup_point );
+				QLIRO_WC()->pickup_points_service()->save_selected_pickup_point_to_rate( $rate, $pickup_point );
 			}
 		}
 

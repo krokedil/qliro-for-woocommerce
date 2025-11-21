@@ -160,14 +160,14 @@ class Qliro_One_Assets {
 			return;
 		}
 
-		$order_id = qoc_get_the_ID();
+		$order_id = qliro_get_the_ID();
 		$order    = wc_get_order( $order_id );
 
 		if ( ! $order ) {
 			return;
 		}
 
-		$captured_items = qoc_get_captured_items( $order );
+		$captured_items = qliro_get_captured_items( $order );
 
 		// Script Params.
 		$params = array(

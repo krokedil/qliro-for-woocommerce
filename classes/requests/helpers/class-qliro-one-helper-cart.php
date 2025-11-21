@@ -49,14 +49,14 @@ class Qliro_One_Helper_Cart {
 		}
 
 		// Get cart shipping.
-		if ( WC()->cart->needs_shipping() && ! QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
+		if ( WC()->cart->needs_shipping() && ! QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			$shipping = self::get_shipping();
 			if ( null !== $shipping ) {
 				$formatted_cart_items[] = $shipping;
 			}
 		}
 
-		foreach ( QOC_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
+		foreach ( QLIRO_WC()->krokedil->compatibility()->giftcards() as $giftcards ) {
 			if ( false !== ( strpos( get_class( $giftcards ), 'WCGiftCards', true ) ) && ! function_exists( 'WC_GC' ) ) {
 				continue;
 			}
@@ -102,7 +102,7 @@ class Qliro_One_Helper_Cart {
 			'VatRate'            => self::get_product_vat_rate( $product ),
 		);
 
-		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			$formatted_cart_item = self::get_ingrid_metadata( $formatted_cart_item, $cart_item, $product );
 		}
 

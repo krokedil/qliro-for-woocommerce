@@ -48,7 +48,7 @@ class Qliro_One_Request_Update_Order extends Qliro_One_Request_Put {
 			$body['shippingadditionalheader'] = trim( mb_substr( $additional_header, 0, 300 ) );
 		}
 
-		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			$meta_data = Qliro_One_Helper_Cart::get_ingrid_merchant_provided_metadata();
 			if ( ! empty( $meta_data ) ) {
 				$body['MerchantProvidedMetadata'] = $meta_data;

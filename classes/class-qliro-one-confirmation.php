@@ -28,7 +28,7 @@ class Qliro_One_Confirmation {
 			return;
 		}
 
-		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
+		$order = qliro_get_order_by_confirmation_id( $confirmation_id );
 		if ( empty( $order ) ) {
 			return;
 		}

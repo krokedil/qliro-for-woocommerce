@@ -80,13 +80,13 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $order The WooCommerce order.
 	 */
 	public function capture_qliro_one_order( $order_id, $order ) {
-		if ( qoc_is_fully_captured( $order ) ) {
+		if ( qliro_is_fully_captured( $order ) ) {
 			return;
 		}
 
-		$items = qoc_is_partially_captured( $order ) ? qoc_get_remaining_items_to_capture( $order ) : '';
+		$items = qliro_is_partially_captured( $order ) ? qliro_get_remaining_items_to_capture( $order ) : '';
 
-		$response = QOC_WC()->api->capture_qliro_one_order( $order_id, $items );
+		$response = QLIRO_WC()->api->capture_qliro_one_order( $order_id, $items );
 		if ( is_wp_error( $response ) ) {
 			$prefix        = 'Evaluation, ';
 			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
@@ -124,7 +124,7 @@ class Qliro_One_Order_Management {
 
 		// translators: %s is transaction ID.
 		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
-		if ( 'none' !== $this->settings['capture_pending_status'] && qoc_is_fully_captured( $order ) ) {
+		if ( 'none' !== $this->settings['capture_pending_status'] && qliro_is_fully_captured( $order ) ) {
 			$order->update_status( $this->settings['capture_pending_status'], $order_note );
 		} else {
 			$order->add_order_note( $order_note );
@@ -143,7 +143,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		$response = QOC_WC()->api->cancel_qliro_one_order( $order_id );
+		$response = QLIRO_WC()->api->cancel_qliro_one_order( $order_id );
 		if ( is_wp_error( $response ) ) {
 			$prefix        = 'Evaluation, ';
 			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
@@ -327,7 +327,7 @@ class Qliro_One_Order_Management {
 	 * @return bool|WP_Error
 	 */
 	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '', $return_fees = array() ) {
-		$response = QOC_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fees );
+		$response = QLIRO_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fees );
 
 		if ( is_wp_error( $response ) ) {
 			// Regex matches any string that starts with "Evaluation," or "Message:" and ends with "Evaluation," or "Property: " or end of string.
@@ -417,7 +417,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		if ( ! qoc_is_fully_captured( $order ) ) {
+		if ( ! qliro_is_fully_captured( $order ) ) {
 			return;
 		}
 
@@ -550,7 +550,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		$is_captured  = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
+		$is_captured  = qliro_is_fully_captured( $order ) || qliro_is_partially_captured( $order );
 		$is_cancelled = $order->get_meta( '_qliro_order_cancelled' );
 		// If the order is captured or cancelled, bail.
 		if ( $is_captured || $is_cancelled ) {
@@ -573,7 +573,7 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		$response = QOC_WC()->api->om_update_qliro_one_order( $qliro_order_id, $order_id );
+		$response = QLIRO_WC()->api->om_update_qliro_one_order( $qliro_order_id, $order_id );
 
 		if ( is_wp_error( $response ) ) {
 			$order->add_order_note(

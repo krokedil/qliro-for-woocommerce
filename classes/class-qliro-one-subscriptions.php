@@ -52,7 +52,7 @@ class Qliro_One_Subscriptions {
 	 * @return void
 	 */
 	private function process_recurring_invoice_payment( $order, $subscription ) {
-		$result = QOC_WC()->api->create_merchant_payment( $order->get_id() );
+		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id() );
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
@@ -99,7 +99,7 @@ class Qliro_One_Subscriptions {
 			}
 		}
 
-		$result = QOC_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
+		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {

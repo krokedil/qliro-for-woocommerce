@@ -58,7 +58,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$qliro_reference = $order->get_meta( '_qliro_one_merchant_reference' );
 		$order_sync      = $order->get_meta( '_qliro_order_sync_enabled' );
 
-		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			self::output_error( $qliro_order->get_error_message() );
@@ -76,7 +76,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		self::output_info( __( 'Order status', 'qliro-one-for-woocommerce' ), $transaction_type, $transaction_status );
 		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), self::get_amount( $last_transaction ) );
 
-		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			self::maybe_output_shipping_reference( $qliro_order );
 		}
 
@@ -268,7 +268,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
-		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
+		$is_captured             = qliro_is_fully_captured( $order ) || qliro_is_partially_captured( $order );
 		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
 		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
 

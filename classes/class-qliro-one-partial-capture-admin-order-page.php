@@ -42,7 +42,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 			return;
 		}
 
-		if ( qoc_is_fully_captured( $order ) ) {
+		if ( qliro_is_fully_captured( $order ) ) {
 			return;
 		}
 
@@ -73,7 +73,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 	 */
 	public function add_order_item_header( $order ) {
 		// Only add the column for orders that are partially delivered.
-		if ( ! qoc_is_partially_captured( $order ) ) {
+		if ( ! qliro_is_partially_captured( $order ) ) {
 			return;
 		}
 
@@ -98,7 +98,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 
 		// Only add the values for orders that are partially captured.
 		$order = wc_get_order( $order_item->get_order_id() );
-		if ( ! qoc_is_partially_captured( $order ) ) {
+		if ( ! qliro_is_partially_captured( $order ) ) {
 			return;
 		}
 
@@ -109,7 +109,7 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 
 		$captured_amount        = '';
 		$qliro_captured_data    = $order_item->get_meta( '_qliro_captured_data' );
-		$captured_item_quantity = qoc_get_captured_item_quantity( $qliro_captured_data );
+		$captured_item_quantity = qliro_get_captured_item_quantity( $qliro_captured_data );
 
 		if ( ! empty( $captured_item_quantity ) ) {
 			if ( $order_item->get_type() === 'line_item' ) {
@@ -131,7 +131,8 @@ class Qliro_One_Partial_Capture_Admin_Order_Page {
 	 */
 	protected function get_allowed_statuses() {
 		$statuses = array( 'on-hold', 'processing', 'part-capture' );
-		return apply_filters( 'qoc_allowed_statuses_for_creating_capture', $statuses );
+		$statuses = apply_filters_deprecated( 'qoc_allowed_statuses_for_creating_capture', array( $statuses ), '2.0.0', 'qliro_allowed_statuses_for_creating_capture' );
+		return apply_filters( 'qliro_allowed_statuses_for_creating_capture', $statuses );
 	}
 }
 new Qliro_One_Partial_Capture_Admin_Order_Page();

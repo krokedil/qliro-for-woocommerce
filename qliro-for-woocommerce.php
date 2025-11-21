@@ -358,7 +358,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return mixed
 		 */
 		private static function init_composer() {
-			$autoloader = QLIRO_WC_PLUGIN_PATH . '/dependencies/autoload.php';
+			$autoloader = QLIRO_WC_PLUGIN_PATH . '/vendor/dependencies/autoload.php';
 
 			if ( ! is_readable( $autoloader ) ) {
 				self::missing_autoloader();
@@ -486,6 +486,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
  *
  * @return Qliro_One_For_WooCommerce
  */
-function QOC_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
+function QLIRO_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
 	return Qliro_One_For_WooCommerce::get_instance();
 }

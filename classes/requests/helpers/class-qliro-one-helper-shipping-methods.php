@@ -15,7 +15,7 @@ class Qliro_One_Helper_Shipping_Methods {
 	 * @return array
 	 */
 	public static function get_shipping_methods() {
-		if ( ! QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
+		if ( ! QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			return array();
 		}
 
@@ -110,7 +110,7 @@ class Qliro_One_Helper_Shipping_Methods {
 	 */
 	private static function set_pickup_points( &$options, $method ) {
 		// Get any pickup points for the shipping method.
-		$pickup_points = QOC_WC()->pickup_points_service()->get_pickup_points_from_rate( $method ) ?? array();
+		$pickup_points = QLIRO_WC()->pickup_points_service()->get_pickup_points_from_rate( $method ) ?? array();
 
 		// Loop through the pickup points and set the pickup point data for the Qliro api.
 		$secondary_options = array();
@@ -156,7 +156,7 @@ class Qliro_One_Helper_Shipping_Methods {
 		// Description.
 		$description = $method_settings['qliro_description'] ?? '';
 		if ( empty( $description ) ) {
-			$description = QOC_WC()->shipping_rate_service()->get_shipping_rate_description( $method );
+			$description = QLIRO_WC()->shipping_rate_service()->get_shipping_rate_description( $method );
 		}
 
 		if ( ! empty( $description ) ) {

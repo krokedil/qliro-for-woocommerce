@@ -31,7 +31,7 @@ function qliro_one_maybe_create_order() {
 	}
 
 	if ( $qliro_one_order_id ) {
-		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_one_order_id );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_one_order_id );
 		if ( is_wp_error( $qliro_order ) ) {
 			qliro_one_print_error_message( $qliro_order );
 			return;
@@ -51,7 +51,7 @@ function qliro_one_maybe_create_order() {
 		return $qliro_order;
 	}
 	// create.
-	$qliro_order = QOC_WC()->api->create_qliro_one_order();
+	$qliro_order = QLIRO_WC()->api->create_qliro_one_order();
 	if ( is_wp_error( $qliro_order ) || ! isset( $qliro_order['OrderId'] ) ) {
 		// If failed then bail.
 		return;
@@ -61,7 +61,7 @@ function qliro_one_maybe_create_order() {
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
 	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
 	// get qliro order.
-	return QOC_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
+	return QLIRO_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }
 
 /**
@@ -162,7 +162,7 @@ function qliro_confirm_order( $order ) {
 	$order_id       = $order->get_id();
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 
 	if ( is_wp_error( $qliro_order ) ) {
 		return false;
@@ -180,7 +180,7 @@ function qliro_confirm_order( $order ) {
 
 	// If the order number and the qliro reference already match, we don't need to update the merchant reference.
 	if ( $order->get_order_number() !== $qliro_order['MerchantReference'] ) {
-		$qliro_order = QOC_WC()->api->update_qliro_one_merchant_reference( $order_id );
+		$qliro_order = QLIRO_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			// translators: %s - Response error message.
@@ -202,7 +202,7 @@ function qliro_confirm_order( $order ) {
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
 
-	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
 	if ( is_wp_error( $qliro_order ) ) {
 		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
 	}
@@ -241,7 +241,8 @@ function qliro_confirm_order( $order ) {
 		}
 	}
 
-	do_action( 'qoc_order_confirmed', $qliro_order, $order );
+	do_action_deprecated( 'qoc_order_confirmed', array( $qliro_order, $order ), '2.0.0', 'qliro_order_confirmed' );
+	do_action( 'qliro_order_confirmed', $qliro_order, $order );
 	$order->save();
 	return true;
 }
@@ -252,7 +253,7 @@ function qliro_confirm_order( $order ) {
  * @param array|bool $data The shipping data from Qliro. False if not set.
  * @return void
  */
-function qoc_update_wc_shipping( $data ) {
+function qliro_update_wc_shipping( $data ) {
 	// Set cart definition.
 	$qliro_order_id = WC()->session->get( 'qliro_one_order_id' );
 
@@ -266,10 +267,11 @@ function qoc_update_wc_shipping( $data ) {
 		return;
 	}
 
-	do_action( 'qoc_update_shipping_data', $data );
+	do_action_deprecated( 'qoc_update_shipping_data', array( $data ), '2.0.0', 'qliro_update_shipping_data' );
+	do_action( 'qliro_update_shipping_data', $data );
 
 	// If we are using integrated shipping, we don't need to set the chosen method, but we need to update the shipping.
-	if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+	if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 		$data['secondaryOption'] ??= $data['method'];
 		set_transient( 'qoc_shipping_data_' . $qliro_order_id, $data, HOUR_IN_SECONDS );
 		qliro_clear_shipping_package_hashes(); // Clear shipping packages to ensure we recalculate the shipping rates, and save the new pickup point.
@@ -279,7 +281,8 @@ function qoc_update_wc_shipping( $data ) {
 	set_transient( 'qoc_shipping_data_' . $qliro_order_id, $data, HOUR_IN_SECONDS );
 	$chosen_shipping_methods   = array();
 	$chosen_shipping_methods[] = wc_clean( $data['method'] );
-	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qoc_chosen_shipping_method', $chosen_shipping_methods ) );
+	$chosen_shipping_methods   = apply_filters_deprecated( 'qoc_chosen_shipping_method', array( $chosen_shipping_methods ), '2.0.0', 'qliro_chosen_shipping_method' );
+	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qliro_chosen_shipping_method', $chosen_shipping_methods ) );
 }
 
 function qliro_clear_shipping_package_hashes() {
@@ -300,11 +303,11 @@ function qliro_clear_shipping_package_hashes() {
  * @param string $qliro_order_id The Qliro Order id.
  * @return array|WP_Error
  */
-function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
+function qliro_get_thankyou_page_qliro_order( $qliro_order_id ) {
 	$qliro_order = json_decode( get_transient( "qliro_thankyou_order_$qliro_order_id" ), true );
 
 	if ( empty( $qliro_order ) ) {
-		$qliro_order = QOC_WC()->api->get_qliro_one_order( $qliro_order_id );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_order_id );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			return $qliro_order;
@@ -322,8 +325,8 @@ function qoc_get_thankyou_page_qliro_order( $qliro_order_id ) {
  * @return int|false the order ID or false.
  */
 //phpcs:ignore -- ignore snake-case here to match get_the_ID().
-function qoc_get_the_ID() {
-	$hpos_enabled = qoc_is_hpos_enabled();
+function qliro_get_the_ID() {
+	$hpos_enabled = qliro_is_hpos_enabled();
 	$order_id     = $hpos_enabled ? filter_input( INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT ) : get_the_ID();
 	if ( empty( $order_id ) ) {
 		if ( ! $hpos_enabled ) {
@@ -341,7 +344,7 @@ function qoc_get_the_ID() {
  *
  * @return bool true if HPOS is enabled, otherwise false.
  */
-function qoc_is_hpos_enabled() {
+function qliro_is_hpos_enabled() {
 	// CustomOrdersTableController was introduced in WC 6.4.
 	if ( class_exists( CustomOrdersTableController::class ) ) {
 		return wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
@@ -357,7 +360,7 @@ function qoc_is_hpos_enabled() {
  * @param string $confirmation_id The confirmation id saved in the meta field.
  * @return WC_Order|int WC_Order on success, otherwise 0.
  */
-function qoc_get_order_by_confirmation_id( $confirmation_id ) {
+function qliro_get_order_by_confirmation_id( $confirmation_id ) {
 	$key    = '_qliro_one_order_confirmation_id';
 	$orders = wc_get_orders(
 		array(
@@ -384,7 +387,7 @@ function qoc_get_order_by_confirmation_id( $confirmation_id ) {
  * @param string $qliro_order_id The Qliro order id.
  * @return WC_Order|int WC_Order on success, otherwise 0.
  */
-function qoc_get_order_by_qliro_id( $qliro_order_id ) {
+function qliro_get_order_by_qliro_id( $qliro_order_id ) {
 	$key    = '_qliro_one_order_id';
 	$orders = wc_get_orders(
 		array(
@@ -429,14 +432,14 @@ function qliro_one_is_valid_order( $qliro_order ) {
  * @param WC_Order $order The WooCommerce order.
  * @return bool
  */
-function qoc_is_partially_captured( $order ) {
+function qliro_is_partially_captured( $order ) {
 	$is_partially_captured             = false;
 	$order_line_count                  = 0;
 	$order_line_with_refund_data_count = 0;
 
 	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 		// Check if the order item has captured data and if the quantity is less than the captured quantity.
-		if ( ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) && $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+		if ( ! empty( $order_item->get_meta( '_qliro_captured_data' ) ) && $order_item->get_quantity() > qliro_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			$is_partially_captured = true;
 			break;
 		}
@@ -462,7 +465,7 @@ function qoc_is_partially_captured( $order ) {
  * @param WC_Order $order The WooCommerce order.
  * @return bool
  */
-function qoc_is_fully_captured( $order ) {
+function qliro_is_fully_captured( $order ) {
 
 	if ( $order->get_meta( '_qliro_order_captured' ) ) {
 		return true;
@@ -472,7 +475,7 @@ function qoc_is_fully_captured( $order ) {
 
 	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
 		// Iterate over the order items and make sure that all line items have been captured.
-		if ( $order_item->get_quantity() > qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+		if ( $order_item->get_quantity() > qliro_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			$is_fully_captured = false;
 			break;
 		}
@@ -487,13 +490,13 @@ function qoc_is_fully_captured( $order ) {
  * @param WC_Order $order The WooCommerce order.
  * @return array
  */
-function qoc_get_remaining_items_to_capture( $order ) {
+function qliro_get_remaining_items_to_capture( $order ) {
 	$items = array();
 	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
-		if ( $order_item->get_quantity() <= qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
+		if ( $order_item->get_quantity() <= qliro_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) ) ) {
 			continue;
 		}
-		$items[ $order_item->get_id() ] = $order_item->get_quantity() - qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+		$items[ $order_item->get_id() ] = $order_item->get_quantity() - qliro_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
 	}
 
 	return $items;
@@ -505,7 +508,7 @@ function qoc_get_remaining_items_to_capture( $order ) {
  * @param string $qliro_captured_data The WooCommerce order item meta data field _qliro_captured_data (each capture comma separated from the other and each capture gathered as {payment_transaction_id}:{amount_of_items}).
  * @return int
  */
-function qoc_get_captured_item_quantity( $qliro_captured_data ) {
+function qliro_get_captured_item_quantity( $qliro_captured_data ) {
 
 	// If the captured data is empty, return 0.
 	if ( empty( $qliro_captured_data ) ) {
@@ -533,10 +536,10 @@ function qoc_get_captured_item_quantity( $qliro_captured_data ) {
  * @param WC_Order $order The WooCommerce order.
  * @return array
  */
-function qoc_get_captured_items( $order ) {
+function qliro_get_captured_items( $order ) {
 	$captured_items = array();
 	foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
-		$captured_items[ $order_item->get_id() ] = qoc_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
+		$captured_items[ $order_item->get_id() ] = qliro_get_captured_item_quantity( $order_item->get_meta( '_qliro_captured_data' ) );
 	}
 
 	return $captured_items;
@@ -592,7 +595,7 @@ function qliro_one_redirect_to_thankyou_page() {
 function qliro_one_get_thankyou_page_redirect_url() {
 	// Get the WC Order for the Qliro order.
 	$confirmation_id = WC()->session->get( 'qliro_order_confirmation_id' );
-	$order           = qoc_get_order_by_confirmation_id( $confirmation_id );
+	$order           = qliro_get_order_by_confirmation_id( $confirmation_id );
 
 	$redirect_url = '';
 	if ( empty( $order ) ) {

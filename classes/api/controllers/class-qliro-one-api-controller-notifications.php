@@ -74,7 +74,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			$provider   = strtolower( $body['Provider'] ?? '' );
 
 			// Get the WooCommerce order by the Qliro order id.
-			$order = qoc_get_order_by_qliro_id( $qliro_order_id );
+			$order = qliro_get_order_by_qliro_id( $qliro_order_id );
 
 			// If the order is returned as 0, set it to null.
 			if ( 0 === $order ) {

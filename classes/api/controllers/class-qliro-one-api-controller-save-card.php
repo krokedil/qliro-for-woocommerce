@@ -50,7 +50,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 		$qliro_order_id = $body['OrderId'];
 
 		// Get the WooCommerce order by the Qliro order id.
-		$order = qoc_get_order_by_qliro_id( $qliro_order_id );
+		$order = qliro_get_order_by_qliro_id( $qliro_order_id );
 
 		// If we did not get an order, return an error, and Qliro will try again later.
 		if ( empty( $order ) ) {

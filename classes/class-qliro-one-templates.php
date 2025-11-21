@@ -112,9 +112,11 @@ class Qliro_One_Templates {
 		);
 		$value    = $checkout->get_value( 'billing_country' );
 
-		do_action( 'before_qliro_country_selector' );
+		do_action_deprecated( 'before_qliro_country_selector', array(), '2.0.0', 'qliro_before_country_selector' );
+		do_action( 'qliro_before_country_selector' );
 		woocommerce_form_field( 'billing_country', $args, $value );
-		do_action( 'after_qliro_country_selector' );
+		do_action_deprecated( 'after_qliro_country_selector', array(), '2.0.0', 'qliro_after_country_selector' );
+		do_action( 'qliro_after_country_selector' );
 	}
 
 	/**
@@ -294,7 +296,7 @@ class Qliro_One_Templates {
 			}
 
 			// If the setting for shipping in iframe is yes, then add the class.
-			if ( 'qliro_one' === $first_gateway && QOC_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
+			if ( 'qliro_one' === $first_gateway && QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 				$class[] = 'qliro-shipping-display';
 			}
 		}

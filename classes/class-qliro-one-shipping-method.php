@@ -40,7 +40,7 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	 */
 	public function is_available( $package ) {
 		// Only if the integrated shipping setting is enabled.
-		if ( ! QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( ! QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			return false;
 		}
 
@@ -83,7 +83,7 @@ class Qliro_One_Shipping_Method extends WC_Shipping_Method {
 	 */
 	public static function register( $methods ) {
 		// Only if the integrated shipping setting is enabled.
-		if ( ! QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
+		if ( ! QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			return $methods;
 		}
 

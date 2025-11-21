@@ -125,7 +125,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
 			// Create a new order and return the redirect url.
-			$result = QOC_WC()->api->create_qliro_one_order( $order_id );
+			$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
 
 			if ( is_wp_error( $result ) ) {
 				return array(
@@ -184,7 +184,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$return_fee = Qliro_One_Order_Management::get_return_fee_from_post();
 
-		return QOC_WC()->order_management->refund( $order_id, $amount, array( $return_fee ) );
+		return QLIRO_WC()->order_management->refund( $order_id, $amount, array( $return_fee ) );
 	}
 
 	/**
@@ -196,7 +196,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	public function show_thank_you_snippet( $order_id = null ) {
 		$order          = wc_get_order( $order_id );
 		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
-		$qliro_order    = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
+		$qliro_order    = qliro_get_thankyou_page_qliro_order( $qliro_order_id );
 		$order          = wc_get_order( $order_id );
 		// Check if the order has been confirmed already.
 		if ( ! empty( $order->get_date_paid() ) ) {
@@ -228,7 +228,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 		// Unused variable. What for?
-		$qliro_order = qoc_get_thankyou_page_qliro_order( $qliro_order_id );
+		$qliro_order = qliro_get_thankyou_page_qliro_order( $qliro_order_id );
 
 		// Check if we have a urgency time.
 		$urgency_deadline = $order->get_meta( '_ppu_upsell_urgency_deadline' );
@@ -253,7 +253,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 * @return bool|WP_Error
 	 */
 	public function upsell( $order_id, $upsell_uuid ) {
-		$upsell_order = QOC_WC()->api->upsell_qliro_one_order( $order_id, $upsell_uuid );
+		$upsell_order = QLIRO_WC()->api->upsell_qliro_one_order( $order_id, $upsell_uuid );
 
 		if ( is_wp_error( $upsell_order ) ) {
 			return $upsell_order;
@@ -314,7 +314,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return false;
 		}
 
-		if ( ! qoc_is_fully_captured( $order ) ) {
+		if ( ! qliro_is_fully_captured( $order ) ) {
 			return false;
 		}
 
