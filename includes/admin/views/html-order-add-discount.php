@@ -8,6 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+$tax_rates = array_column(
+	qliro_get_available_tax_rates( $order ),
+	'rate',
+	'tax_class'
+);
+
+
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
 $fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
@@ -43,11 +50,11 @@ $section_1 = array(
 );
 
 $section_2 = array(
-	'section_title'           => array(
+	'section_title'       => array(
 		'name' => __( 'Enter amount or percentage', 'qliro-one-for-woocommerce' ),
 		'type' => 'title',
 	),
-	'discount_amount'         => array(
+	'discount_amount'     => array(
 		// translators: %s: Currency code, e.g. SEK.
 		'name'              => sprintf( __( 'Total amount (%s)', 'qliro-one-for-woocommerce' ), $currency ),
 		'id'                => 'qliro-discount-amount',
@@ -59,7 +66,7 @@ $section_2 = array(
 			'max'  => $total_amount,
 		),
 	),
-	'discount_percentage'     => array(
+	'discount_percentage' => array(
 		'name'              => __( 'Percentage (%)', 'qliro-one-for-woocommerce' ),
 		'id'                => 'qliro-discount-percentage',
 		'type'              => 'number',
@@ -70,19 +77,17 @@ $section_2 = array(
 			'max'  => '100.00',
 		),
 	),
-	'discount_vat_percentage' => array(
-		'name'              => __( 'VAT Percentage (%)', 'qliro-one-for-woocommerce' ),
-		'id'                => 'qliro-discount-vat-percentage',
-		'type'              => 'number',
-		'value'             => 25,
-		'placeholder'       => '%',
-		'custom_attributes' => array(
-			'step' => 'any',
-			'min'  => '0.00',
-			'max'  => '100.00',
+	'discount_tax_class'  => array(
+		'name'    => __( 'VAT Percentage (%)', 'qliro-one-for-woocommerce' ),
+		'id'      => 'qliro-discount-tax-class',
+		'type'    => 'select',
+		'default' => (string) array_key_first( $tax_rates ),
+		'options' => array_combine(
+			array_keys( $tax_rates ),
+			array_map( fn( $rate ) => "{$rate}%", $tax_rates )
 		),
 	),
-	'section_end'             => array(
+	'section_end'         => array(
 		'type' => 'sectionend',
 	),
 );

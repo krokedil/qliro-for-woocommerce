@@ -182,15 +182,15 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		$nonce                   = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$action                  = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_id                = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_key               = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount         = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_vat_percentage = filter_input( INPUT_GET, 'discount_vat_percentage', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_id             = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$tax_class       = filter_input( INPUT_GET, 'discount_tax_class', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_vat_percentage, $discount_id ) ) {
+		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
 			return;
 		}
 
@@ -210,10 +210,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		try {
-			$discount_amount         = floatval( $discount_amount );
-			$discount_vat_percentage = floatval( $discount_vat_percentage );
-			$discount_vat_amount     = $discount_amount * ( $discount_vat_percentage / 100 );
-
 			// These controls should throw to inform the customer about what happened.
 			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
 				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
@@ -241,9 +237,20 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name( $discount_id );
-			$fee->set_total( -1 * $discount_amount );
-			// $fee->set_total_tax( -1 * $discount_vat_amount );
+			$fee->set_total( $discount_amount ); // must be positive for tax calculation.
 			$fee->set_tax_status( 'taxable' );
+			$fee->set_tax_class( $tax_class );
+			$fee->calculate_taxes(
+				array(
+					'country'  => $order->get_billing_country(),
+					'state'    => $order->get_billing_state(),
+					'postcode' => $order->get_billing_postcode(),
+					'city'     => $order->get_billing_city(),
+				)
+			);
+
+			// WC only allows calculating the tax on nonnegative fees. So we set the total again to negative.
+			$fee->set_total( -1 * $discount_amount );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
@@ -254,8 +261,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Quantity'           => $fee->get_quantity(),
 					'Type'               => 'Discount',
 					'PricePerItemIncVat' => $fee->get_total(),
-					// 'PricePerItemExVat'  => floatval( $fee->get_total() - $fee->get_total_tax() ),
-					'PricePerItemExVat'  => $fee->get_total(),
+					'PricePerItemExVat'  => floatval( $fee->get_total() - $fee->get_total_tax() ),
 				),
 			);
 
@@ -279,6 +285,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order->add_item( $fee );
 			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
 			$order->save();
+
+			$order->calculate_totals();
 
 		} catch ( Exception $e ) {
 			$order->add_order_note( $e->getMessage() );
