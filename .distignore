@@ -1,8 +1,6 @@
 .babelrc
 .gitignore
 .kernlignore
-composer.json
-composer.lock
 package-lock.json
 package.json
 readme.dev.md
