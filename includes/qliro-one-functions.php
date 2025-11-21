@@ -741,6 +741,7 @@ function qliro_is_enabled_with_demo_check() {
  *     'label'    => '00',
  *     'shipping' => 'yes',
  *     'compound' => 'no',
+ *     'tax_class'=> 'Zero Rate',
  * ]
  *
  * @param WC_Order|null $order The WC order. If provided, the tax rates will be limited to the order's billing country, state and postcode.
@@ -751,8 +752,9 @@ function qliro_get_available_tax_rates( $order = null ) {
 
 	// If an order is available, we'll limit the tax rates to the order's billing country and state.
 	if ( ! empty( $order ) ) {
-		$args = array(
-			'country'  => $order->get_billing_country(),
+		$country = $order->get_billing_country();
+		$args    = array(
+			'country'  => $country,
 			'state'    => $order->get_billing_state(),
 			'postcode' => $order->get_billing_postcode(),
 		);
@@ -767,7 +769,9 @@ function qliro_get_available_tax_rates( $order = null ) {
 		$args['tax_class'] = $tax_class;
 		$found             = WC_TAX::find_rates( $args );
 		if ( ! empty( $found ) ) {
-			$found_rates = array_merge( $found_rates, $found );
+			$found              = reset( $found );
+			$found['tax_class'] = $tax_class;
+			$found_rates[]      = $found;
 		}
 	}
 
