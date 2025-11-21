@@ -90,10 +90,10 @@ class Qliro_One_Assets {
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$pay_for_order = true;
 		}
-		wp_register_script( 'qliro-one-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, false );
+		wp_register_script( 'qliro-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, false );
 
 		wp_localize_script(
-			'qliro-one-for-woocommerce',
+			'qliro-for-woocommerce',
 			'qliroOneParams',
 			array(
 				'isEnabled'                   => $settings['enabled'],
@@ -111,7 +111,7 @@ class Qliro_One_Assets {
 				'customerTypeCookieName'      => apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' ),
 			)
 		);
-		wp_enqueue_script( 'qliro-one-for-woocommerce' );
+		wp_enqueue_script( 'qliro-for-woocommerce' );
 	}
 
 
@@ -175,13 +175,13 @@ class Qliro_One_Assets {
 			'make_capture_url'                        => WC_AJAX::get_endpoint( 'qliro_one_make_capture' ),
 			'make_capture_nonce'                      => wp_create_nonce( 'qliro_one_make_capture' ),
 			'order_id'                                => $order_id,
-			'make_capture_confirm'                    => __( 'Are you sure you wish to process this capture?', 'qliro-one-for-woocommerce' ),
-			'make_capture_no_items'                   => __( 'You must select at least one item to deliver.', 'qliro-one-for-woocommerce' ),
+			'make_capture_confirm'                    => __( 'Are you sure you wish to process this capture?', 'qliro-for-woocommerce' ),
+			'make_capture_no_items'                   => __( 'You must select at least one item to deliver.', 'qliro-for-woocommerce' ),
 			'captured_items'                          => ! empty( $captured_items ) ? wp_json_encode( $captured_items ) : '{}',
-			'shipping_checkbox_text'                  => __( 'Check this checkbox to include this shipping line in this capture.', 'qliro-one-for-woocommerce' ),
-			'fee_checkbox_text'                       => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-one-for-woocommerce' ),
-			'with_return_fee_text'                    => __( 'with a return fee of', 'qliro-one-for-woocommerce' ),
-			'refund_amount_less_than_return_fee_text' => __( 'Refund amount is less than the return fee.', 'qliro-one-for-woocommerce' ),
+			'shipping_checkbox_text'                  => __( 'Check this checkbox to include this shipping line in this capture.', 'qliro-for-woocommerce' ),
+			'fee_checkbox_text'                       => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-for-woocommerce' ),
+			'with_return_fee_text'                    => __( 'with a return fee of', 'qliro-for-woocommerce' ),
+			'refund_amount_less_than_return_fee_text' => __( 'Refund amount is less than the return fee.', 'qliro-for-woocommerce' ),
 		);
 
 		// Checkout script.

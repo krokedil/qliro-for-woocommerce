@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Qliro for WooCommerce 2.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2025-09-26 08:52:39+00:00\n"
+"POT-Creation-Date: 2025-11-21 13:47:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1129,7 +1129,7 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
-#: dependencies/krokedil/settings-page/src/Addons.php:209
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:209
 #. translators: %s is the plugin name.
 msgid "Free"
 msgstr ""
@@ -1264,119 +1264,6 @@ msgid ""
 "select a different payment method or country."
 msgstr ""
 
-#: dependencies/krokedil/settings-page/src/Addons.php:42
-#: dependencies/krokedil/settings-page/src/Navigation.php:57
-msgid "Addons"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Addons.php:241
-msgid "Active"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Addons.php:245
-msgid "Activate"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Addons.php:251
-msgid "Install Now"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Navigation.php:52
-msgid "General"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Navigation.php:54
-#: dependencies/krokedil/settings-page/src/Support.php:30
-#: qliro-for-woocommerce.php:213
-msgid "Support"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Support.php:100
-msgid "If you still need help, please open a support ticket with Krokedil."
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Support.php:103
-msgid "Open support ticket with Krokedil"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Traits/Layout.php:76
-msgid "Return to payments"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
-msgid "Plugin resources"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
-msgid "Additional resources"
-msgstr ""
-
-#: dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
-msgid "Sections"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:45
-msgid "Shipping Information"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:171
-msgid "Selected pickup point"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:179
-msgid "Edit"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:242
-msgid "Change"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:264
-msgid "Invalid order id"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:269
-msgid "Invalid shipping line id"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:274
-msgid "No pickup points found"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:285
-msgid "Invalid pickup point id"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:291
-msgid "Could not save shipping line"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:298
-msgid "Pickup point updated"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/Calculations.php:26
-msgid "Shipping tax"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
-msgid "Address"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
-msgid "Open hours"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
-msgid "Show on map"
-msgstr ""
-
-#: dependencies/krokedil/shipping/src/SessionHandler.php:229
-msgid ""
-"The shipping methods have been changed during the checkout process. Please "
-"verify your selected shipping method and try again."
-msgstr ""
-
 #: includes/admin/views/html-order-partial-capture.php:17
 msgid "This will create a partial capture for this order."
 msgstr ""
@@ -1424,7 +1311,13 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: qliro-for-woocommerce.php:384 qliro-for-woocommerce.php:394
+#: qliro-for-woocommerce.php:213
+#: vendor/dependencies/krokedil/settings-page/src/Navigation.php:54
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:30
+msgid "Support"
+msgstr ""
+
+#: qliro-for-woocommerce.php:383 qliro-for-woocommerce.php:393
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
@@ -1433,6 +1326,113 @@ msgstr ""
 
 #: templates/qliro-one-checkout.php:15
 msgid "You must be logged in to checkout."
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:42
+#: vendor/dependencies/krokedil/settings-page/src/Navigation.php:57
+msgid "Addons"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:241
+msgid "Active"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:245
+msgid "Activate"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:251
+msgid "Install Now"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Navigation.php:52
+msgid "General"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:100
+msgid "If you still need help, please open a support ticket with Krokedil."
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:103
+msgid "Open support ticket with Krokedil"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Layout.php:76
+msgid "Return to payments"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Sidebar.php:90
+msgid "Plugin resources"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Sidebar.php:114
+msgid "Additional resources"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Subsection.php:34
+msgid "Sections"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:45
+msgid "Shipping Information"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:171
+msgid "Selected pickup point"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:179
+msgid "Edit"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:242
+msgid "Change"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:264
+msgid "Invalid order id"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:269
+msgid "Invalid shipping line id"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:274
+msgid "No pickup points found"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:285
+msgid "Invalid pickup point id"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:291
+msgid "Could not save shipping line"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Admin/EditOrderPage.php:298
+msgid "Pickup point updated"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/Calculations.php:26
+msgid "Shipping tax"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:302
+msgid "Address"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:328
+msgid "Open hours"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/PickupPoint/PickupPoint.php:369
+msgid "Show on map"
+msgstr ""
+
+#: vendor/dependencies/krokedil/shipping/src/SessionHandler.php:229
+msgid ""
+"The shipping methods have been changed during the checkout process. Please "
+"verify your selected shipping method and try again."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

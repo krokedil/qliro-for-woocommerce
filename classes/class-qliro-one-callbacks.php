@@ -118,17 +118,17 @@ class Qliro_One_Callbacks {
 		}
 
 		if ( 'Success' !== $data['Status'] ) {
-			$order->update_status( 'on-hold', __( 'The order failed to be captured by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->update_status( 'on-hold', __( 'The order failed to be captured by Qliro.', 'qliro-for-woocommerce' ) );
 			$order->save();
 			return;
 		}
 
 		// Add order note.
-		$order->add_order_note( __( 'The order has been successfully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
+		$order->add_order_note( __( 'The order has been successfully captured by Qliro.', 'qliro-for-woocommerce' ) );
 
 		// Check if the order is fully captured and update the status accordingly.
 		if ( 'none' !== $this->settings['capture_ok_status'] && qliro_is_fully_captured( $order ) ) {
-			$order->update_status( $this->settings['capture_ok_status'], __( 'The order has been fully captured by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->update_status( $this->settings['capture_ok_status'], __( 'The order has been fully captured by Qliro.', 'qliro-for-woocommerce' ) );
 			$order->save();
 		}
 	}
@@ -148,18 +148,18 @@ class Qliro_One_Callbacks {
 		}
 
 		if ( 'Success' !== $data['Status'] ) {
-			$order->update_status( 'on-hold', __( 'The order failed to be cancelled by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->update_status( 'on-hold', __( 'The order failed to be cancelled by Qliro.', 'qliro-for-woocommerce' ) );
 			$order->save();
 			return;
 		}
 
 		if ( 'none' === $this->settings['cancel_ok_status'] ) {
-			$order->add_order_note( __( 'The order has been successfully cancelled by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->add_order_note( __( 'The order has been successfully cancelled by Qliro.', 'qliro-for-woocommerce' ) );
 			$order->save();
 			return;
 		}
 
-		$order->update_status( $this->settings['cancel_ok_status'], __( 'The order has been successfully cancelled by Qliro.', 'qliro-one-for-woocommerce' ) );
+		$order->update_status( $this->settings['cancel_ok_status'], __( 'The order has been successfully cancelled by Qliro.', 'qliro-for-woocommerce' ) );
 		$order->save();
 	}
 
@@ -178,11 +178,11 @@ class Qliro_One_Callbacks {
 		}
 
 		if ( 'Success' !== $data['Status'] ) {
-			$order->update_status( 'on-hold', __( 'The order failed to be refunded by Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->update_status( 'on-hold', __( 'The order failed to be refunded by Qliro.', 'qliro-for-woocommerce' ) );
 			return;
 		}
 
-		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.', 'qliro-one-for-woocommerce' ) );
+		$order->add_order_note( __( 'The order has been successfully refunded by Qliro.', 'qliro-for-woocommerce' ) );
 	}
 
 	/**
@@ -222,7 +222,7 @@ class Qliro_One_Callbacks {
 			return;
 		}
 
-		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-one-for-woocommerce' ) );
+		$order->update_status( 'failed', __( 'The Qliro order was rejected by Qliro.', 'qliro-for-woocommerce' ) );
 		$order->save();
 	}
 
@@ -246,11 +246,11 @@ class Qliro_One_Callbacks {
 		// Do not put the order to on on-hold if it has been processed. This can happen if the on-hold push happens too late, after the order is successfully completed.
 		if ( ! empty( $order->get_date_paid() ) ) {
 			// translators: %s - WooCommerce order number, %s - Qliro Confirmation ID.
-			Qliro_One_Logger::log( sprintf( __( 'Aborting onhold_checkout function. WooCommerce order %1$s with confirmation_id %2$s already confirmed.', 'qliro-one-for-woocommerce' ), $order->get_order_number(), $confirmation_id ) );
+			Qliro_One_Logger::log( sprintf( __( 'Aborting onhold_checkout function. WooCommerce order %1$s with confirmation_id %2$s already confirmed.', 'qliro-for-woocommerce' ), $order->get_order_number(), $confirmation_id ) );
 			return;
 		}
 
-		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
+		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-for-woocommerce' ) );
 		$order->save();
 	}
 } new Qliro_One_Callbacks();

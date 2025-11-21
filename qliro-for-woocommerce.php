@@ -6,7 +6,7 @@
  * Author: Krokedil
  * Author URI: https://krokedil.com/
  * Version: 2.0.0
- * Text Domain: qliro-one-for-woocommerce
+ * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -167,7 +167,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		private function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -177,7 +177,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-one-for-woocommerce' ), '1.0' );
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope', 'qliro-for-woocommerce' ), '1.0' );
 		}
 
 		/**
@@ -209,8 +209,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public function plugin_action_links( $links ) {
 			$setting_link = $this->get_setting_link();
 			$plugin_links = array(
-				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-one-for-woocommerce' ) . '</a>',
-				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-one-for-woocommerce' ) . '</a>',
+				'<a href="' . $setting_link . '">' . __( 'Settings', 'qliro-for-woocommerce' ) . '</a>',
+				'<a href="https://krokedil.se/">' . __( 'Support', 'qliro-for-woocommerce' ) . '</a>',
 			);
 
 			return array_merge( $plugin_links, $links );
@@ -316,7 +316,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 
 			$this->wcpns = new Qliro_One_Compatibility_WCPNS();
 
-			load_plugin_textdomain( 'qliro-one-for-woocommerce', false, plugin_basename( __DIR__ ) . '/languages' );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
 
 			add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
@@ -381,7 +380,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		private static function missing_autoloader() {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( // phpcs:ignore
-					esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' )
+					esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-for-woocommerce' )
 				);
 			}
 
@@ -391,7 +390,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 					?>
 						<div class="notice notice-error">
 							<p>
-								<?php echo esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-one-for-woocommerce' ); ?>
+								<?php echo esc_html__( 'Your installation of Qliro for WooCommerce is not complete. If you installed this plugin directly from Github please refer to the README.DEV.md file in the plugin.', 'qliro-for-woocommerce' ); ?>
 							</p>
 						</div>
 					<?php

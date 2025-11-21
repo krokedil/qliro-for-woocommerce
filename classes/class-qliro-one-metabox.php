@@ -31,7 +31,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	public function set_metabox_title() {
-		$this->title = __( 'Qliro order data', 'qliro-one-for-woocommerce' );
+		$this->title = __( 'Qliro order data', 'qliro-for-woocommerce' );
 	}
 
 	/**
@@ -66,27 +66,27 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		$last_transaction    = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
-		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-one-for-woocommerce' );
-		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one-for-woocommerce' );
+		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-for-woocommerce' );
+		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-for-woocommerce' );
 		$order_sync_disabled = 'no' === $order_sync;
 
-		self::output_info( __( 'Payment method', 'qliro-one-for-woocommerce' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
-		self::output_info( __( 'Order id', 'qliro-one-for-woocommerce' ), $qliro_order_id );
-		self::output_info( __( 'Reference', 'qliro-one-for-woocommerce' ), $qliro_reference );
-		self::output_info( __( 'Order status', 'qliro-one-for-woocommerce' ), $transaction_type, $transaction_status );
-		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), self::get_amount( $last_transaction ) );
+		self::output_info( __( 'Payment method', 'qliro-for-woocommerce' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
+		self::output_info( __( 'Order id', 'qliro-for-woocommerce' ), $qliro_order_id );
+		self::output_info( __( 'Reference', 'qliro-for-woocommerce' ), $qliro_reference );
+		self::output_info( __( 'Order status', 'qliro-for-woocommerce' ), $transaction_type, $transaction_status );
+		self::output_info( __( 'Total amount', 'qliro-for-woocommerce' ), self::get_amount( $last_transaction ) );
 
 		if ( QLIRO_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			self::maybe_output_shipping_reference( $qliro_order );
 		}
 
 		if ( $order_sync_disabled ) {
-			self::output_info( __( 'Order management', 'qliro-one-for-woocommerce' ), __( 'Disabled', 'qliro-one-for-woocommerce' ) );
+			self::output_info( __( 'Order management', 'qliro-for-woocommerce' ), __( 'Disabled', 'qliro-for-woocommerce' ) );
 		}
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
-		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one-for-woocommerce' ), self::get_advanced_section_content( $order ) );
+		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-for-woocommerce' ), self::get_advanced_section_content( $order ) );
 	}
 
 	/**
@@ -127,8 +127,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order_sync = 'yes';
 		}
 
-		$title   = __( 'Order management', 'qliro-one-for-woocommerce' );
-		$tip     = __( 'Disable this to turn off the automatic synchronization with the Qliro Merchant Portal. When disabled, any changes in either system have to be done manually.', 'qliro-one-for-woocommerce' );
+		$title   = __( 'Order management', 'qliro-for-woocommerce' );
+		$tip     = __( 'Disable this to turn off the automatic synchronization with the Qliro Merchant Portal. When disabled, any changes in either system have to be done manually.', 'qliro-for-woocommerce' );
 		$enabled = 'yes' === $order_sync;
 
 		ob_start();
@@ -252,7 +252,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		// If the payment method starts with QLIRO_, it is a Qliro payment method.
 		if ( strpos( $payment_method, 'QLIRO_' ) === 0 ) {
 			$payment_method = str_replace( 'QLIRO_', '', $payment_method );
-			$subtype        = __( 'Qliro payment method', 'qliro-one-for-woocommerce' );
+			$subtype        = __( 'Qliro payment method', 'qliro-for-woocommerce' );
 		}
 
 		return $subtype;
@@ -295,7 +295,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		self::output_action_button(
-			__( 'Sync order with Qliro', 'qliro-one-for-woocommerce' ),
+			__( 'Sync order with Qliro', 'qliro-for-woocommerce' ),
 			$action_url,
 			false,
 			$classes
@@ -332,6 +332,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		self::output_info( __( 'Shipping reference', 'qliro-one-for-woocommerce' ), $shipping_ref );
+		self::output_info( __( 'Shipping reference', 'qliro-for-woocommerce' ), $shipping_ref );
 	}
 }

@@ -27,7 +27,7 @@ class Qliro_One_Product_Tab {
 	 */
 	public function register_product_tab( $tabs ) {
 		$tabs['qliro-product-settings'] = array(
-			'label'  => __( 'Qliro', 'qliro-one-for-woocommerce' ),
+			'label'  => __( 'Qliro', 'qliro-for-woocommerce' ),
 			'target' => 'qliro-product-settings',
 			'class'  => array( 'show_if_simple', 'show_if_variable', 'show_if_external', 'qliro-tab' ),
 		);
@@ -52,7 +52,7 @@ class Qliro_One_Product_Tab {
 			woocommerce_wp_text_input(
 				array(
 					'id'    => 'qoc_min_age',
-					'label' => __( 'Minimum customer age', 'qliro-one-for-woocommerce' ),
+					'label' => __( 'Minimum customer age', 'qliro-for-woocommerce' ),
 					'value' => ( ! empty( $minimum_age ) ) ? $minimum_age : '',
 					'type'  => 'number',
 				)
@@ -60,14 +60,14 @@ class Qliro_One_Product_Tab {
 			woocommerce_wp_checkbox(
 				array(
 					'id'    => 'qoc_require_id_verification',
-					'label' => __( 'Require ID verification', 'qliro-one-for-woocommerce' ),
+					'label' => __( 'Require ID verification', 'qliro-for-woocommerce' ),
 					'value' => ( ! empty( $require_id_verification ) ) ? $require_id_verification : '',
 				)
 			);
 			woocommerce_wp_checkbox(
 				array(
 					'id'    => 'qoc_has_risk',
-					'label' => __( 'Has risk', 'qliro-one-for-woocommerce' ),
+					'label' => __( 'Has risk', 'qliro-for-woocommerce' ),
 					'value' => ( ! empty( $has_risk ) ) ? $has_risk : '',
 				)
 			);

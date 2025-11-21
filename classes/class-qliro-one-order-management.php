@@ -94,11 +94,11 @@ class Qliro_One_Order_Management {
 			// The Qliro error code.
 			$system_code = $response->get_error_data()['ErrorCode'] ?? null;
 			if ( 'NO_ITEMS_LEFT_IN_RESERVATION' === $system_code ) {
-				$order->add_order_note( __( 'The order has already been captured.', 'qliro-one-for-woocommerce' ) );
+				$order->add_order_note( __( 'The order has already been captured.', 'qliro-for-woocommerce' ) );
 				$order->update_meta_data( '_qliro_order_captured', $order->get_meta( '_qliro_payment_transaction_id' ) );
 			} else {
 				// translators: %s is the error message from Qliro.
-				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
+				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-for-woocommerce' ), $error_message ) );
 			}
 
 			return;
@@ -123,7 +123,7 @@ class Qliro_One_Order_Management {
 		}
 
 		// translators: %s is transaction ID.
-		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-one-for-woocommerce' ), $payment_transaction_id );
+		$order_note = sprintf( __( 'The order has been requested to be captured with Qliro and is in process. Payment transaction id: %s ', 'qliro-for-woocommerce' ), $payment_transaction_id );
 		if ( 'none' !== $this->settings['capture_pending_status'] && qliro_is_fully_captured( $order ) ) {
 			$order->update_status( $this->settings['capture_pending_status'], $order_note );
 		} else {
@@ -149,14 +149,14 @@ class Qliro_One_Order_Management {
 			$error_message = trim( str_replace( $prefix, '', $response->get_error_message() ) );
 
 			// translators: %s is the error message from Qliro.
-			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be cancelled with Qliro: %s.', 'qliro-one-for-woocommerce' ), $error_message ) );
+			$order->update_status( 'on-hold', sprintf( __( 'The order failed to be cancelled with Qliro: %s.', 'qliro-for-woocommerce' ), $error_message ) );
 			$order->save();
 			return;
 		}
 
 		$payment_transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'];
 		$order->update_meta_data( '_qliro_order_canceled', true );
-		$order_note = __( 'The order has been requested to be cancelled with Qliro and is in process. Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $payment_transaction_id;
+		$order_note = __( 'The order has been requested to be cancelled with Qliro and is in process. Payment transaction id: ', 'qliro-for-woocommerce' ) . $payment_transaction_id;
 		if ( 'none' !== $this->settings['cancel_pending_status'] ) {
 			$order->update_status( $this->settings['cancel_pending_status'], $order_note );
 		} else {
@@ -179,7 +179,7 @@ class Qliro_One_Order_Management {
 
 		// Skip the order is order management is not enabled for it, and return an error.
 		if ( ! self::is_order_sync_enabled( $order ) ) {
-			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
+			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-for-woocommerce' ) );
 		}
 
 		$refund_order_id = $order->get_refunds()[0]->get_id();
@@ -201,7 +201,7 @@ class Qliro_One_Order_Management {
 		// If the prepped items array is empty, return false.
 		if ( empty( $prepped_items ) ) {
 			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-for-woocommerce' ) ) );
 			return false;
 		}
 
@@ -221,8 +221,8 @@ class Qliro_One_Order_Management {
 		// Do not allow refunds with more than one capture id.
 		if ( count( $prepped_items ) > 1 ) {
 			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
-			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
+			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-for-woocommerce' ) ) );
+			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro. Multiple capture IDs can not be used in one refund request.', 'qliro-for-woocommerce' ) );
 		}
 
 		// Create one or more refunds based on the prepped items array.
@@ -334,7 +334,7 @@ class Qliro_One_Order_Management {
 			preg_match_all( '/(?:Evaluation,\s*|Message:\s*)(.*?)(?=(Evaluation,|Property: |$))/s', $response->get_error_message(), $matches );
 
 			// translators: %s is the error message from Qliro (if any).
-			$note = sprintf( __( 'Failed to refund the order with Qliro%s', 'qliro-one-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : $response->get_error_message() );
+			$note = sprintf( __( 'Failed to refund the order with Qliro%s', 'qliro-for-woocommerce' ), isset( $matches[1] ) ? ': ' . trim( implode( ' ', $matches[1] ) ) : $response->get_error_message() );
 			$order->add_order_note( $note );
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
@@ -343,7 +343,7 @@ class Qliro_One_Order_Management {
 		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
 
 		// translators: refund amount, refund id.
-		$text = __( 'Processing a refund of %1$s with Qliro', 'qliro-one-for-woocommerce' );
+		$text = __( 'Processing a refund of %1$s with Qliro', 'qliro-for-woocommerce' );
 
 		if ( ! empty( $applied_return_fees ) ) {
 			$total_return_fees = 0;
@@ -354,7 +354,7 @@ class Qliro_One_Order_Management {
 			$formatted_total_return_fees = wc_price( $total_return_fees, array( 'currency' => $order->get_currency() ) );
 
 			// translators: return frees amount.
-			$extra_text = sprintf( __( ' (including return fees of %1$s)', 'qliro-one-for-woocommerce' ), $formatted_total_return_fees );
+			$extra_text = sprintf( __( ' (including return fees of %1$s)', 'qliro-for-woocommerce' ), $formatted_total_return_fees );
 			$text      .= $extra_text;
 		}
 
@@ -428,7 +428,7 @@ class Qliro_One_Order_Management {
 				<td class="thumb"><div></div></td>
 				<td class="name" >
 					<div class="view">
-						<?php esc_html_e( 'Qliro return fee', 'qliro-one-for-woocommerce' ); ?>
+						<?php esc_html_e( 'Qliro return fee', 'qliro-for-woocommerce' ); ?>
 					</div>
 				</td>
 				<td class="item_cost" width="1%">&nbsp;</td>
@@ -484,7 +484,7 @@ class Qliro_One_Order_Management {
 		}
 		?>
 		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
-			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ', 'qliro-one-for-woocommerce' ); ?></span>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ', 'qliro-for-woocommerce' ); ?></span>
 			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
 		</span>
 		<?php
@@ -579,7 +579,7 @@ class Qliro_One_Order_Management {
 			$order->add_order_note(
 				sprintf(
 					/* translators: %s: error message */
-					__( 'Failed to sync order with Qliro. Error: %s', 'qliro-one-for-woocommerce' ),
+					__( 'Failed to sync order with Qliro. Error: %s', 'qliro-for-woocommerce' ),
 					$response->get_error_message()
 				)
 			);
@@ -593,7 +593,7 @@ class Qliro_One_Order_Management {
 
 		$order->add_order_note(
 			// translators: %s: new transaction id from Qliro.
-			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-one-for-woocommerce' ), $transaction_id )
+			sprintf( __( 'Order synced with Qliro. Transaction ID: %s', 'qliro-for-woocommerce' ), $transaction_id )
 		);
 	}
 }

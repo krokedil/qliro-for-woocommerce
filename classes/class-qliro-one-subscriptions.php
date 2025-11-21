@@ -73,7 +73,7 @@ class Qliro_One_Subscriptions {
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
+				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
 				$order->get_id()
 			)
 		);
@@ -120,7 +120,7 @@ class Qliro_One_Subscriptions {
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-one-for-woocommerce' ),
+				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
 				$order->get_id()
 			)
 		);

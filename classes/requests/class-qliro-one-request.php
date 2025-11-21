@@ -185,14 +185,14 @@ abstract class Qliro_One_Request {
 	protected function get_message_by_error_code( $error_code, $default ) {
 		switch ( $error_code ) {
 			case 'PAYMENT_METHOD_NOT_CONFIGURED':
-				$message            = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-one-for-woocommerce' );
+				$message            = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-for-woocommerce' );
 				$gateways_available = count( WC()->payment_gateways()->get_available_payment_gateways() );
 				if ( $gateways_available > 1 ) {
-					$message = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-one-for-woocommerce' );
+					$message = __( 'Qliro is not configured for the selected country and currency. Please select a different payment method or country.', 'qliro-for-woocommerce' );
 				}
 				break;
 			case 'NO_ITEMS_LEFT_IN_RESERVATION':
-				$message = __( 'The order has already been captured.', 'qliro-one-for-woocommerce' );
+				$message = __( 'The order has already been captured.', 'qliro-for-woocommerce' );
 				break;
 			default:
 				return $default;

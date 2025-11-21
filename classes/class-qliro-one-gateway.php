@@ -39,8 +39,8 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		$this->id                 = 'qliro_one';
-		$this->method_title       = __( 'Qliro for WooCommerce', 'qliro-one-for-woocommerce' );
-		$this->method_description = __( 'Safe and simple payment. An embedded checkout with high conversion rates and the most popular payment methods on the market — giving your customers a first-class shopping experience.', 'qliro-one-for-woocommerce' );
+		$this->method_title       = __( 'Qliro for WooCommerce', 'qliro-for-woocommerce' );
+		$this->method_description = __( 'Safe and simple payment. An embedded checkout with high conversion rates and the most popular payment methods on the market — giving your customers a first-class shopping experience.', 'qliro-for-woocommerce' );
 		$this->supports           = apply_filters(
 			'qliro_one_gateway_supports',
 			array(
@@ -155,7 +155,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
 			return array(
 				'result'   => 'failure',
-				'messages' => __( 'The order could not be processed. Please reload the page and try again.', 'qliro-one-for-woocommerce' ),
+				'messages' => __( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ),
 			);
 		}
 
@@ -261,7 +261,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		$order = wc_get_order( $order_id );
 		$order->update_meta_data( '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-one-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
+		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
 		$order->save();
 
 		return true;

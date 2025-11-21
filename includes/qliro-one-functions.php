@@ -133,7 +133,7 @@ function qliro_one_wc_show_another_gateway_button() {
 
 	if ( count( $available_gateways ) > 1 ) {
 		$settings                   = get_option( 'woocommerce_qliro_one_settings' );
-		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-one-for-woocommerce' );
+		$select_another_method_text = isset( $settings['other_payment_method_button_text'] ) && '' !== $settings['other_payment_method_button_text'] ? $settings['other_payment_method_button_text'] : __( 'Select another payment method', 'qliro-for-woocommerce' );
 
 		?>
 		<p class="qliro-one-checkout-select-other-wrapper">
@@ -155,7 +155,7 @@ function qliro_confirm_order( $order ) {
 	// Check if the order has been confirmed already.
 	if ( ! empty( $order->get_date_paid() ) ) {
 		// translators: %s - WooCommerce order number.
-		Qliro_One_Logger::log( sprintf( __( 'Aborting qliro_confirm_order function. WooCommerce order %s already confirmed.', 'qliro-one-for-woocommerce' ), $order->get_order_number() ) );
+		Qliro_One_Logger::log( sprintf( __( 'Aborting qliro_confirm_order function. WooCommerce order %s already confirmed.', 'qliro-for-woocommerce' ), $order->get_order_number() ) );
 		return false;
 	}
 
@@ -170,7 +170,7 @@ function qliro_confirm_order( $order ) {
 
 	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
 		if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
-			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );
+			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-for-woocommerce' ) );
 			$order->save();
 			return false;
 		}
@@ -184,7 +184,7 @@ function qliro_confirm_order( $order ) {
 
 		if ( is_wp_error( $qliro_order ) ) {
 			// translators: %s - Response error message.
-			$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-one-for-woocommerce' ), $qliro_order->get_error_message() );
+			$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $qliro_order->get_error_message() );
 			$order->add_order_note( $note );
 			return false;
 		}
@@ -192,12 +192,12 @@ function qliro_confirm_order( $order ) {
 
 	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
 		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-one-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
+		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
 	}
 
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 	// translators: %s - the Qliro order ID.
-	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
