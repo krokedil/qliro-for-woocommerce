@@ -52,7 +52,7 @@ class Qliro_One_Request_OM_Update_Order extends Qliro_One_Request_Post {
 			'Updates'        => array(
 				array(
 					'PaymentTransactionId' => $transaction_id,
-					'OrderItems'           => Qliro_One_Helper_Order::get_order_lines( $order_id ),
+					'OrderItems'           => Qliro_One_Helper_Order::get_order_items( $order_id ),
 				),
 			),
 		);

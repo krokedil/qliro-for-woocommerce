@@ -101,7 +101,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		// If the cart contains a subscription, we only support swedish customers for now.
-		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+		if ( Qliro_One_Subscriptions::cart_has_subscription() ) {
 			$billing_country = WC()->customer->get_billing_country();
 			if ( 'SE' !== $billing_country ) { // Qliro only supports Swedish customers for subscriptions.
 				return false;

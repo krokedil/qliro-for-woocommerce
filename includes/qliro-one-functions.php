@@ -173,6 +173,12 @@ function qliro_confirm_order( $order ) {
 		return false;
 	}
 
+	// Save SignupForNewsletter value to order meta if it exists.
+	if ( isset( $qliro_order['SignupForNewsletter'] ) ) {
+		$order->update_meta_data( '_qliro_one_signup_for_newsletter', wc_bool_to_string( $qliro_order['SignupForNewsletter'] ) );
+		$order->save_meta_data();
+	}
+
 	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
 		if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
 			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-one-for-woocommerce' ) );

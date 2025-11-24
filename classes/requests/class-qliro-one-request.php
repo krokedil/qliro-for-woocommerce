@@ -357,16 +357,30 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
+	 * Get the label for the newsletter signup checkbox.
+	 *
+	 * @return string
+	 */
+	public function get_ask_for_newsletter_label() {
+		$default_value = __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' );
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_label'] ) ) {
+			return $default_value;
+		}
+
+		return $this->settings['qliro_one_button_ask_for_newsletter_signup_label'];
+	}
+
+	/**
 	 * Get if newsletter signup should be checked by default.
 	 *
 	 * @return bool
 	 */
 	public function get_asked_for_newsletter_checked() {
 		$default_value = false;
-		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup'] ) ) {
+		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'] ) ) {
 			return $default_value;
 		}
 
-		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup'];
+		return 'yes' === $this->settings['qliro_one_button_ask_for_newsletter_signup_checked'];
 	}
 }
