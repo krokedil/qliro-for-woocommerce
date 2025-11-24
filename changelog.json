@@ -248,6 +248,11 @@
             "description": "<ul><li>Fix - Corrected the display of pickup point addresses in checkout when choosing home delivery with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.</li><li>Tweak - Discounts are now applied only to products, excluding shipping costs and fees.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.8.3"
+      },
+      "1.17.2": {
+            "description": "<ul><li>Tweak - Improved the newsletter signup feature and added a setting for customizing the newsletter signup checkbox label.</li><li>Tweak - Added the 'qliro_one_helper_cart_items' filter to enable customization of cart items.</li><li>Tweak - Added the 'qliro_one_helper_order_items' filter to enable customization of order items.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.8.3"
       }
      
 }

@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.8.3
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.3.3
-Stable tag: 1.17.1
+WC tested up to: 10.3.5
+Stable tag: 1.17.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.11.24    - version 1.17.2 =
+* Tweak         - Improved the newsletter signup feature and added a setting for customizing the newsletter signup checkbox label.
+* Tweak         - Added the 'qliro_one_helper_cart_items' filter to enable customization of cart items.
+* Tweak         - Added the 'qliro_one_helper_order_items' filter to enable customization of order items.
+
 = 2025.10.29    - version 1.17.1 =
 * Fix           - Corrected the display of pickup point addresses in checkout when choosing home delivery with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
 * Tweak         - Discounts are now applied only to products, excluding shipping costs and fees.
