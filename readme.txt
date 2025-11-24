@@ -23,6 +23,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 * Tweak         - Improved the newsletter signup feature and added a setting for customizing the newsletter signup checkbox label.
 * Tweak         - Added the 'qliro_one_helper_cart_items' filter to enable customization of cart items.
 * Tweak         - Added the 'qliro_one_helper_order_items' filter to enable customization of order items.
+* Fix           - Improved compatibility with 'WooCommerce Subscriptions' by correctly handling additional subscription types, including renewals, switches, and resubscriptions.
 
 = 2025.10.29    - version 1.17.1 =
 * Fix           - Corrected the display of pickup point addresses in checkout when choosing home delivery with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
