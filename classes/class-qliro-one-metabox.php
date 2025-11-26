@@ -215,6 +215,11 @@ class Qliro_One_Metabox extends OrderMetabox {
 				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
 			}
 
+			$available_tax_classes = $order->get_items_tax_classes();
+			if ( ! in_array( $tax_class, $available_tax_classes, true ) ) {
+				throw new Exception( sprintf( __( 'The selected tax class [%s] is not valid for this order. Please choose a valid tax class.', 'qliro' ) ), $tax_class );
+			}
+
 			// Description length allowed by Qliro.
 			$discount_id = mb_substr( trim( $discount_id ), 0, 200 );
 
@@ -224,7 +229,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) ) / 100;
 
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
-			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
+			if ( $discount_amount * 100 > $available_amount * 100 ) {
 				throw new Exception( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro' ), wc_price( max( 0, $available_amount ) ) ) );
 			}
 
@@ -275,7 +280,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
+				throw new Exception( __( 'Qliro responded with an error or the request failed.', 'qliro' ) );
 			}
 
 			// Get the new payment transaction id from the response, and update the order meta with it.
@@ -283,13 +288,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
 
 			$order->add_item( $fee );
-			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
-			$order->save();
+			// translators: %s: Discount ID.
+			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );
 
 			$order->calculate_totals();
 
 		} catch ( Exception $e ) {
-			$order->add_order_note( $e->getMessage() );
+			$order->add_order_note( sprintf( __( 'The discount [%1$s] could not be added due to: %2$s', 'qliro' ), $discount_id, $e->getMessage() ) );
 		} finally {
 			wp_safe_redirect( $order->get_edit_order_url() );
 			exit;

@@ -8,12 +8,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$tax_rates = array_column(
-	qliro_get_available_tax_rates( $order ),
+$tax_classes = $order->get_items_tax_classes();
+$tax_rates   = array_filter(
+	qliro_get_available_tax_rates(),
+	function ( $tax ) use ( $tax_classes ) {
+		return in_array( $tax['tax_class'], $tax_classes, true );
+	}
+);
+$tax_rates   = array_column(
+	$tax_rates,
 	'rate',
 	'tax_class'
 );
-
 
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;

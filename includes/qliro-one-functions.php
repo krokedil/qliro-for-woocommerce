@@ -729,7 +729,7 @@ function qliro_is_enabled_with_demo_check() {
 
 
 /**
- * Get all available tax rates.
+ * Get all available tax rates in the store for a given location.
  *
  * If an order is provided, the tax rates will be determined using the billing country, state and postcode
  * associated with that order. If no order is provided, the tax rates will be determined
