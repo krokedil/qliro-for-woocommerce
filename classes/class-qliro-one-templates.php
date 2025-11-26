@@ -92,7 +92,7 @@ class Qliro_One_Templates {
 		}
 
 		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-		$first_gateway = reset( $available_gateways );
+		$first_gateway      = reset( $available_gateways );
 		if ( ! isset( WC()->session ) || ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) && 'qliro_one' !== $first_gateway->id ) ) {
 			return;
 		}
@@ -113,7 +113,7 @@ class Qliro_One_Templates {
 		$value    = $checkout->get_value( 'billing_country' );
 
 		do_action( 'before_qliro_country_selector' );
-		woocommerce_form_field( 'billing_country', $args, $value );
+		woocommerce_form_field( 'qliro_billing_country', $args, $value );
 		do_action( 'after_qliro_country_selector' );
 	}
 

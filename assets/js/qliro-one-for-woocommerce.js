@@ -18,6 +18,12 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.bodyEl.on('click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.maybeDisplayShippingPrice);
 			qliroOneForWooCommerce.renderIframe();
+
+			$('#qliro_billing_country').on('change', () => {
+				const country = $('#qliro_billing_country').val();
+				$('#billing_country, #shipping_country').val(country);
+				$('body').trigger('update_checkout');
+			});
 		},
 		/**
 		 * Triggers on document ready.
