@@ -179,6 +179,12 @@ jQuery(function ($) {
 			let form = $('form[name="checkout"] input, form[name="checkout"] select, textarea');
 			for (var i = 0; i < form.length; i++) {
 				let name = form[i].name;
+
+				// Skip this field as it is managed through our plugin settings or shortcode.
+				if ("qliro_billing_country" === name) { 
+					continue
+				}
+
 				// Check if field is inside the order review.
 				if ($('table.woocommerce-checkout-review-order-table').find(form[i]).length) {
 					continue;
