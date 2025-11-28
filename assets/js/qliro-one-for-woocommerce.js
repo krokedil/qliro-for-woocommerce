@@ -258,6 +258,11 @@ jQuery(function ($) {
 			(shippingPostalCode == null) ? null : $('#shipping_postcode').val(shippingPostalCode);
 			(shippingCity == null) ? null : $('#shipping_city').val(shippingCity);
 			(shippingArea == null) ? null : qliroOneForWooCommerce.setStateField("shipping", shippingArea);
+			$('body').trigger('qliro_customer_data_fetched', [{
+				customer,
+				billingAddress,
+				shippingAddress
+			}]);
 
 			$('body').trigger('update_checkout');
 			$('#shipping_email').change();
