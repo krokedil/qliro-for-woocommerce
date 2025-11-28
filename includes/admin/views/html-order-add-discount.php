@@ -8,18 +8,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// WC isn't consistent in their tax naming. E.g., "VAT 12" is returned as "vat-12".
 $tax_classes = $order->get_items_tax_classes();
-$tax_rates   = array_filter(
-	qliro_get_available_tax_rates(),
-	function ( $tax ) use ( $tax_classes ) {
-		return in_array( $tax['tax_class'], $tax_classes, true );
+$tax_rates   = array();
+foreach ( $tax_classes as $tax_class ) {
+	$tax_rate = WC_Tax::get_base_tax_rates( $tax_class );
+	if ( empty( $tax_rate ) ) {
+		continue;
 	}
-);
-$tax_rates   = array_column(
-	$tax_rates,
-	'rate',
-	'tax_class'
-);
+
+	$tax_rate                = reset( $tax_rate );
+	$tax_rates[ $tax_class ] = $tax_rate['rate'];
+}
 
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;

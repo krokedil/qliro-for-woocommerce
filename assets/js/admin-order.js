@@ -359,11 +359,7 @@ jQuery(function ($) {
 						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
 					}
 
-					const discountTaxClass = discountTaxClassEl.val();
-					if (!isNaN(discountTaxClass)) {
-						url.searchParams.set('discount_tax_class', discountTaxClass);
-					}
-
+					url.searchParams.set('discount_tax_class', discountTaxClassEl.val());
 					url.searchParams.set('discount_id', discountIdEl.val());
 
 					submitButton.attr('formaction', url.toString());
