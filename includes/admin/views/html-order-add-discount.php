@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // WC isn't consistent in their tax naming. E.g., "VAT 12" is returned as "vat-12".
 $tax_rates = array_column( qliro_get_available_tax_rates( $order ), 'rate', 'tax_class' );
+asort( $tax_rates );
 
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
