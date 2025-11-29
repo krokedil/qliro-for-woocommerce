@@ -240,31 +240,40 @@ class Qliro_One_Metabox extends OrderMetabox {
 				}
 			}
 
+			$rates            = WC_Tax::get_rates( $tax_class );
+			$total_tax_amount = WC_Tax::calc_exclusive_tax( floatval( $discount_amount ), $rates );
+			$total_tax_amount = reset( $total_tax_amount );
+			$total_amount     = max( 0, $discount_amount - $total_tax_amount );
+
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name( $discount_id );
-			$fee->set_total( $discount_amount ); // must be positive for tax calculation.
+			$fee->set_total( -1 * $total_amount ); // must be positive for tax calculation.
+			$fee->set_amount( -1 * $total_amount );
+			$fee->set_total_tax( -1 * $total_tax_amount );
 			$fee->set_tax_status( 'taxable' );
 			$fee->set_tax_class( $tax_class );
-			$fee->calculate_taxes(
-				array(
-					'country'  => $order->get_billing_country(),
-					'state'    => $order->get_billing_state(),
-					'postcode' => $order->get_billing_postcode(),
-					'city'     => $order->get_billing_city(),
-				)
-			);
+			// $fee->calculate_taxes(
+			// array(
+			// 'country'  => $order->get_billing_country(),
+			// 'state'    => $order->get_billing_state(),
+			// 'postcode' => $order->get_billing_postcode(),
+			// 'city'     => $order->get_billing_city(),
+			// )
+			// );
 
 			// WC only allows calculating the tax on nonnegative fees. So we set the total again to negative.
-			$fee->set_total( -1 * $discount_amount );
+			// $fee->set_total( -1 * $fee->get_total() );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
+			$vat_rate = reset( $rates );
 			$fee_item = array(
 				array(
 					'MerchantReference'  => $discount_id,
 					'Description'        => $fee->get_name(),
-					'Quantity'           => $fee->get_quantity(),
+					'Quantity'           => 1,
 					'Type'               => 'Discount',
+					'VatRate'            => $vat_rate['rate'] * 100,
 					'PricePerItemIncVat' => floatval( $fee->get_total() + $fee->get_total_tax() ),
 					'PricePerItemExVat'  => floatval( $fee->get_total() ),
 				),
@@ -280,7 +289,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( __( 'Qliro responded with an error or the request failed.', 'qliro' ) );
+				// translators: %s API error message.
+				throw new Exception( sprintf( __( 'Qliro responded with an error or the request failed: %s', 'qliro' ), $response->get_error_message() ) );
 			}
 
 			// Get the new payment transaction id from the response, and update the order meta with it.
