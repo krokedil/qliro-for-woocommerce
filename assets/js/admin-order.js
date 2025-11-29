@@ -343,6 +343,7 @@ jQuery(function ($) {
 				const discountIdEl = $('#qliro-discount-id');
 				const discountAmountEl = $('#qliro-discount-amount');
 				const discountPercentageEl = $('#qliro-discount-percentage');
+				const discountTaxClassEl = $('#qliro-discount-tax-class');
 				const newDiscountPercentageEl = $('#qliro-new-discount-percentage');
 				const newTotalAmountEl = $('#qliro-new-total-amount');
 				const modal = $('.qliro-discount-form-modal');
@@ -358,6 +359,7 @@ jQuery(function ($) {
 						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
 					}
 
+					url.searchParams.set('discount_tax_class', discountTaxClassEl.val());
 					url.searchParams.set('discount_id', discountIdEl.val());
 
 					submitButton.attr('formaction', url.toString());
@@ -415,7 +417,6 @@ jQuery(function ($) {
 				})
 
 				discountPercentageEl.on('input', function () {
-					// debugger
 					let discountPercentage = parseFloat($(this).val());
 					discountPercentage = isNaN(discountPercentage) ? 0 : discountPercentage;
 
@@ -441,6 +442,8 @@ jQuery(function ($) {
 
 					updateView(discountAmount, discountPercentage);
 				})
+
+				discountTaxClassEl.on('change', updateURL)
 
 				$('#qliro_add_order_discount').on('click', function (e) {
 					e.preventDefault();
