@@ -140,7 +140,13 @@ class Qliro_One_Assets {
 	 */
 	public function register_admin_assets() {
 		$script_version = $this->qoc_is_script_debug_enabled();
-		wp_register_script( 'qliro-one-metabox', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-metabox' . $script_version . '.js', array( 'jquery', 'jquery-blockui' ), QLIRO_WC_VERSION, false );
+
+		$blockui = 'jquery-blockui';
+		if ( version_compare( WC()->version, '10.3.0', '>=' ) ) {
+			$blockui = "wc-{$blockui}";
+		}
+
+		wp_register_script( 'qliro-one-metabox', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-metabox' . $script_version . '.js', array( 'jquery', $blockui ), QLIRO_WC_VERSION, false );
 	}
 
 	/**
@@ -184,11 +190,16 @@ class Qliro_One_Assets {
 			'refund_amount_less_than_return_fee_text' => __( 'Refund amount is less than the return fee.', 'qliro-one-for-woocommerce' ),
 		);
 
+		$tiptip = 'jquery-blockui';
+		if ( version_compare( WC()->version, '10.3.0', '>=' ) ) {
+			$tiptip = "wc-{$tiptip}";
+		}
+
 		// Checkout script.
 		wp_register_script(
 			'qoc_admin',
 			QLIRO_WC_PLUGIN_URL . '/assets/js/admin-order.js',
-			array( 'jquery', 'jquery-tiptip' ),
+			array( 'jquery', $tiptip ),
 			QLIRO_WC_VERSION,
 			true
 		);

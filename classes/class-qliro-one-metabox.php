@@ -260,7 +260,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 				$response = QOC_WC()->api->add_items_qliro_order( $order_id, $fee_item );
 			} else {
 				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
-				$items    = array_merge( Qliro_One_Helper_Order::get_order_lines( $order_id ), $fee_item );
+				$items    = array_merge( Qliro_One_Helper_Order::get_order_items( $order_id ), $fee_item );
 				$response = QOC_WC()->api->update_items_qliro_order( $order_id, $items );
 			}
 
