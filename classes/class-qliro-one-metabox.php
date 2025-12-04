@@ -178,7 +178,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	public function handle_add_order_discount_action() {
-		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
 			return;
 		}
 
