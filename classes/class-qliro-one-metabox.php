@@ -232,7 +232,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			foreach ( $order->get_fees() as $fee ) {
 				// To avoid the form being submitted multiple times, we check if the discount already exists.
 				if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
-					throw new Exception( __( 'Discount already added to order.', 'qliro' ) );
+					// translators: %s: Discount ID.
+					throw new Exception( sprintf( __( 'Discount [%s] already added to order.', 'qliro' ), $discount_id ) );
 				}
 			}
 
@@ -264,7 +265,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( __( 'Failed to add discount to Qliro order.', 'qliro' ) );
+				// translators: %1$s: Discount ID, %2$s: Error message.
+				throw new Exception( sprintf( __( 'Failed to add discount [%1$s] to Qliro order. Reason: %2$s', 'qliro' ), $discount_id, $response->get_error_message() ) );
 			}
 
 			// Get the new payment transaction id from the response, and update the order meta with it.
@@ -272,8 +274,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
 
 			$order->add_item( $fee );
-			$order->add_order_note( __( 'Discount added to order.', 'qliro' ) );
-			$order->save();
+			$order->calculate_totals();
+
+			// translators: %s: Discount ID.
+			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );
 
 		} catch ( Exception $e ) {
 			$order->add_order_note( $e->getMessage() );
