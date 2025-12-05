@@ -8,6 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// WC isn't consistent in their tax naming. E.g., "VAT 12" is returned as "vat-12".
+$tax_rates = array_column( qliro_get_available_tax_rates( $order ), 'rate', 'tax_class' );
+asort( $tax_rates );
+
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
 $fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) + floatval( $item->get_total_tax() ) ) ) ?? 0;
@@ -68,6 +72,16 @@ $section_2 = array(
 			'step' => 'any',
 			'min'  => '0.00',
 			'max'  => '100.00',
+		),
+	),
+	'discount_tax_class'  => array(
+		'name'    => __( 'VAT Percentage (%)', 'qliro-one-for-woocommerce' ),
+		'id'      => 'qliro-discount-tax-class',
+		'type'    => 'select',
+		'default' => (string) array_key_first( $tax_rates ),
+		'options' => array_combine(
+			array_keys( $tax_rates ),
+			array_map( fn( $rate ) => "{$rate}%", $tax_rates )
 		),
 	),
 	'section_end'         => array(

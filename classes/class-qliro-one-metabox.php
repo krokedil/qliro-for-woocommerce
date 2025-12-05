@@ -188,9 +188,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$tax_class       = filter_input( INPUT_GET, 'discount_tax_class', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
+		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
 			return;
 		}
 
@@ -217,6 +218,11 @@ class Qliro_One_Metabox extends OrderMetabox {
 				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
 			}
 
+			$available_tax_classes = $order->get_items_tax_classes();
+			if ( ! in_array( $tax_class, $available_tax_classes, true ) ) {
+				throw new Exception( sprintf( __( 'The selected tax class [%s] is not valid for this order. Please choose a valid tax class.', 'qliro' ) ), $tax_class );
+			}
+
 			// Description length allowed by Qliro.
 			$discount_id = mb_substr( trim( $discount_id ), 0, 200 );
 
@@ -240,15 +246,21 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			$fee = new WC_Order_Item_Fee();
 
+			$tax_rates        = WC_Tax::get_rates( $tax_class );
+			$total_tax_amount = WC_Tax::calc_inclusive_tax( $discount_amount, $tax_rates );
+			$total_tax_amount = floatval( empty( $total_tax_amount ) ? 0 : reset( $total_tax_amount ) );
+
 			// Explicitly set all properties to avoid issues with tax calculations. Refer to WC_Order::add_fee();
 			$fee->set_props(
 				array(
 					'name'      => $discount_id,
-					'tax_class' => 0,
-					'total'     => -1 * $discount_amount,
-					'total_tax' => 0,
+					'tax_class' => $tax_class,
+					'total'     => -1 * ( $discount_amount - $total_tax_amount ),
+					'total_tax' => $total_tax_amount,
 					'taxes'     => array(
-						'total' => array(),
+						'total' => array(
+							key( $tax_rates ) => $total_tax_amount,
+						),
 					),
 					'order_id'  => $order->get_id(),
 				)
@@ -263,7 +275,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Description'        => $fee->get_name(),
 					'Quantity'           => $fee->get_quantity(),
 					'Type'               => 'Discount',
-					'PricePerItemIncVat' => $fee->get_total(),
+					'PricePerItemIncVat' => -1 * abs( abs( $fee->get_total() ) + abs( $fee->get_total_tax() ) ),
 					'PricePerItemExVat'  => $fee->get_total(),
 				),
 			);
