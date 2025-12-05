@@ -19,6 +19,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 	public function __construct() {
 		parent::__construct( 'qliro-one', 'Qliro order data', 'qliro_one' );
 
+		add_action( 'admin_notices', array( $this, 'output_admin_notices' ) );
+
 		add_action( 'init', array( $this, 'set_metabox_title' ) );
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
 		add_action( 'init', array( $this, 'handle_add_order_discount_action' ), 9999 );
@@ -115,6 +117,23 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 	}
 
+	public function output_admin_notices() {
+		if ( ! isset( $_GET['qliro_metabox_notice'] ) ) {
+			return;
+		}
+
+		$notice = sanitize_text_field( wp_unslash( $_GET['qliro_metabox_notice'] ) );
+		$cause  = sanitize_text_field( wp_unslash( $_GET['cause'] ) );
+
+		if ( 'permission_denied' === $notice && 'metabox_discount' === $cause ) {
+			$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-one-for-woocommerce' );
+		}
+
+		echo '<div class="notice notice-error is-dismissible">';
+		echo "<p>{$notice}</p>";
+		echo '</div>';
+	}
+
 	/**
 	 * Get the advanced section content.
 	 *
@@ -179,25 +198,35 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	public function handle_add_order_discount_action() {
-		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+		$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		// Check if this event even concerns us.
+		if ( 'qliro_add_order_discount' !== $action ) {
 			return;
 		}
 
 		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$tax_class       = filter_input( INPUT_GET, 'discount_tax_class', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
-		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
+		if ( ! isset( $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
 			return;
 		}
 
-		// Check if this event even concerns us.
-		if ( 'qliro_add_order_discount' !== $action ) {
-			return;
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+			$redirect_to = wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' );
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'qliro_metabox_notice' => 'permission_denied',
+						'cause'                => 'metabox_discount',
+					),
+					$redirect_to
+				)
+			);
+			exit;
 		}
 
 		$order = wc_get_order( $order_id );
