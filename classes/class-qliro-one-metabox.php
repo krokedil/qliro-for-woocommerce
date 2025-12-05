@@ -70,12 +70,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-one-for-woocommerce' );
 		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one-for-woocommerce' );
 		$order_sync_disabled = 'no' === $order_sync;
+		$total_amount        = $last_transaction['Amount'];
 
 		self::output_info( __( 'Payment method', 'qliro-one-for-woocommerce' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
 		self::output_info( __( 'Order id', 'qliro-one-for-woocommerce' ), $qliro_order_id );
 		self::output_info( __( 'Reference', 'qliro-one-for-woocommerce' ), $qliro_reference );
 		self::output_info( __( 'Order status', 'qliro-one-for-woocommerce' ), $transaction_type, $transaction_status );
-		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), self::get_amount( $last_transaction ) );
+		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), $total_amount < 0 ? __( 'N/A', 'qliro' ) : self::get_amount( $last_transaction ) );
 
 		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			self::maybe_output_shipping_reference( $qliro_order );
