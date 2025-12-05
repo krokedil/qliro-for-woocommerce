@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
-$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
+$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) + floatval( $item->get_total_tax() ) ) ) ?? 0;
 $available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) );
 
 $total_amount = wc_format_decimal( $order->get_total() );
@@ -129,7 +129,7 @@ $section_3 = array(
 					<hr>
 
 					<?php woocommerce_admin_fields( $section_2 ); ?>
-					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is based on the total amount', 'qliro-one-for-woocommerce' ); ?></p>
+					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is calculated based on the total amount, excluding shipping and fees.', 'qliro-one-for-woocommerce' ); ?></p>
 					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden"><?php esc_html_e( 'The amount must not be equal to or exceed the total amount.', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
 
