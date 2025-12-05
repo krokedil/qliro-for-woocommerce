@@ -250,21 +250,25 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$total_tax_amount = WC_Tax::calc_inclusive_tax( $discount_amount, $tax_rates );
 			$total_tax_amount = floatval( empty( $total_tax_amount ) ? 0 : reset( $total_tax_amount ) );
 
-			// Explicitly set all properties to avoid issues with tax calculations. Refer to WC_Order::add_fee();
-			$fee->set_props(
+			$taxes = array();
+			foreach ( $order->get_taxes() as $tax_rate ) {
+				if ( $tax_rate->get_label() === $tax_class ) {
+					$taxes[ $tax_rate->get_rate_id() ] = $total_tax_amount;
+				} else {
+					$taxes[ $tax_rate->get_rate_id() ] = 0;
+				}
+			}
+
+			$fee->set_name( $discount_id );
+			$fee->set_tax_class( $tax_class );
+			$fee->set_total( -1 * ( $discount_amount - $total_tax_amount ) );
+			$fee->set_total_tax( $total_tax_amount );
+			$fee->set_taxes(
 				array(
-					'name'      => $discount_id,
-					'tax_class' => $tax_class,
-					'total'     => -1 * ( $discount_amount - $total_tax_amount ),
-					'total_tax' => $total_tax_amount,
-					'taxes'     => array(
-						'total' => array(
-							key( $tax_rates ) => $total_tax_amount,
-						),
-					),
-					'order_id'  => $order->get_id(),
+					'total' => $taxes,
 				)
 			);
+			$fee->set_order_id( $order->get_id() );
 
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
@@ -300,7 +304,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 			$order->add_item( $fee );
-			$order->calculate_totals();
+			$order->calculate_totals( false );
 
 			// translators: %s: Discount ID.
 			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );
