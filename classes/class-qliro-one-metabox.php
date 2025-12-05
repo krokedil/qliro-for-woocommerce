@@ -280,7 +280,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Quantity'           => $fee->get_quantity(),
 					'Type'               => 'Discount',
 					'PricePerItemIncVat' => -1 * abs( abs( $fee->get_total() ) + abs( $fee->get_total_tax() ) ),
-					'PricePerItemExVat'  => $fee->get_total(),
+					'PricePerItemExVat'  => -1 * abs( $fee->get_total() ),
 				),
 			);
 
