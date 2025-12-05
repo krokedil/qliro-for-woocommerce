@@ -732,3 +732,53 @@ function qliro_is_enabled_with_demo_check() {
 
 	return false;
 }
+
+/**
+ * Get all available tax rates in the store for a given location.
+ *
+ * If an order is provided, only the order items tax rate will be returned.
+ * If no order is provided, the tax rates will be determined using the checkout data or the store's default country location. In this case, the store tax rates will be returned.
+ *
+ * Example of a tax rate element in the returned array:
+ * [
+ *     'rate'     => 12,
+ *     'label'    => 'VAT 12%',
+ *     'shipping' => 'yes',
+ *     'compound' => 'no',
+ *     'tax_class'=> 'vat-12',
+ * ]
+ *
+ * @param WC_Order|null $order The WC order. If provided, the tax rates will be limited to the order's billing country, state and postcode.
+ * @return array An array of tax rates.
+ */
+function qliro_get_available_tax_rates( $order = null ) {
+	$found_rates = array();
+
+	// If an order is available, we'll limit the tax rates to the order's billing country and state.
+	if ( $order instanceof WC_Order ) {
+		$country     = $order->get_billing_country();
+		$args        = array(
+			'country'  => $country,
+			'state'    => $order->get_billing_state(),
+			'postcode' => $order->get_billing_postcode(),
+		);
+		$tax_classes = $order->get_items_tax_classes();
+
+	} else {
+		$tax_classes = WC_Tax::get_tax_classes();
+		$country     = qliro_one_get_billing_country();
+	}
+
+	$args = wp_parse_args( $args, array( 'country' => $country ) );
+	foreach ( $tax_classes as $tax_class ) {
+		$args['tax_class'] = $tax_class;
+		$found             = WC_TAX::find_rates( $args );
+		if ( ! empty( $found ) ) {
+			$found                     = reset( $found );
+			$found['tax_class']        = $tax_class;
+			$found_rates[ $tax_class ] = $found;
+		}
+	}
+
+	return $found_rates;
+}

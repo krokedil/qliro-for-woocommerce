@@ -19,6 +19,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 	public function __construct() {
 		parent::__construct( 'qliro-one', 'Qliro order data', 'qliro_one' );
 
+		add_action( 'admin_notices', array( $this, 'output_admin_notices' ) );
+
 		add_action( 'init', array( $this, 'set_metabox_title' ) );
 		add_action( 'init', array( $this, 'handle_sync_order_action' ), 9999 );
 		add_action( 'init', array( $this, 'handle_add_order_discount_action' ), 9999 );
@@ -115,6 +117,23 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 	}
 
+	public function output_admin_notices() {
+		if ( ! isset( $_GET['qliro_metabox_notice'] ) ) {
+			return;
+		}
+
+		$notice = sanitize_text_field( wp_unslash( $_GET['qliro_metabox_notice'] ) );
+		$cause  = sanitize_text_field( wp_unslash( $_GET['cause'] ) );
+
+		if ( 'permission_denied' === $notice && 'metabox_discount' === $cause ) {
+			$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-one-for-woocommerce' );
+		}
+
+		echo '<div class="notice notice-error is-dismissible">';
+		echo "<p>{$notice}</p>";
+		echo '</div>';
+	}
+
 	/**
 	 * Get the advanced section content.
 	 *
@@ -179,24 +198,35 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @return void
 	 */
 	public function handle_add_order_discount_action() {
-		if ( ! current_user_can( 'edit_shop_orders' ) ) {
-			return;
-		}
-
-		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$action          = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
-		if ( ! isset( $action, $order_id, $order_key, $discount_amount, $discount_id ) ) {
-			return;
-		}
+		$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		// Check if this event even concerns us.
 		if ( 'qliro_add_order_discount' !== $action ) {
 			return;
+		}
+
+		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$tax_class       = filter_input( INPUT_GET, 'discount_tax_class', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! isset( $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+			$redirect_to = wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' );
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'qliro_metabox_notice' => 'permission_denied',
+						'cause'                => 'metabox_discount',
+					),
+					$redirect_to
+				)
+			);
+			exit;
 		}
 
 		$order = wc_get_order( $order_id );
@@ -215,6 +245,11 @@ class Qliro_One_Metabox extends OrderMetabox {
 			// These controls should throw to inform the customer about what happened.
 			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
 				throw new Exception( __( 'Invalid nonce.', 'qliro' ) );
+			}
+
+			$available_tax_classes = $order->get_items_tax_classes();
+			if ( ! in_array( $tax_class, $available_tax_classes, true ) ) {
+				throw new Exception( sprintf( __( 'The selected tax class [%s] is not valid for this order. Please choose a valid tax class.', 'qliro' ) ), $tax_class );
 			}
 
 			// Description length allowed by Qliro.
@@ -240,19 +275,29 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			$fee = new WC_Order_Item_Fee();
 
-			// Explicitly set all properties to avoid issues with tax calculations. Refer to WC_Order::add_fee();
-			$fee->set_props(
+			$tax_rates        = WC_Tax::get_rates( $tax_class );
+			$total_tax_amount = WC_Tax::calc_inclusive_tax( $discount_amount, $tax_rates );
+			$total_tax_amount = floatval( empty( $total_tax_amount ) ? 0 : reset( $total_tax_amount ) );
+
+			$taxes = array();
+			foreach ( $order->get_taxes() as $tax_rate ) {
+				if ( $tax_rate->get_label() === $tax_class ) {
+					$taxes[ $tax_rate->get_rate_id() ] = $total_tax_amount;
+				} else {
+					$taxes[ $tax_rate->get_rate_id() ] = 0;
+				}
+			}
+
+			$fee->set_name( $discount_id );
+			$fee->set_tax_class( $tax_class );
+			$fee->set_total( -1 * ( $discount_amount - $total_tax_amount ) );
+			$fee->set_total_tax( $total_tax_amount );
+			$fee->set_taxes(
 				array(
-					'name'      => $discount_id,
-					'tax_class' => 0,
-					'total'     => -1 * $discount_amount,
-					'total_tax' => 0,
-					'taxes'     => array(
-						'total' => array(),
-					),
-					'order_id'  => $order->get_id(),
+					'total' => $taxes,
 				)
 			);
+			$fee->set_order_id( $order->get_id() );
 
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
@@ -263,8 +308,8 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'Description'        => $fee->get_name(),
 					'Quantity'           => $fee->get_quantity(),
 					'Type'               => 'Discount',
-					'PricePerItemIncVat' => $fee->get_total(),
-					'PricePerItemExVat'  => $fee->get_total(),
+					'PricePerItemIncVat' => -1 * abs( abs( $fee->get_total() ) + abs( $fee->get_total_tax() ) ),
+					'PricePerItemExVat'  => -1 * abs( $fee->get_total() ),
 				),
 			);
 
@@ -288,7 +333,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 			$order->add_item( $fee );
-			$order->calculate_totals();
+			$order->calculate_totals( false );
 
 			// translators: %s: Discount ID.
 			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );
