@@ -238,9 +238,21 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			$fee = new WC_Order_Item_Fee();
-			$fee->set_name( $discount_id );
-			$fee->set_total( -1 * $discount_amount );
-			$fee->set_total_tax( 0 );
+
+			// Explicitly set all properties to avoid issues with tax calculations. Refer to WC_Order::add_fee();
+			$fee->set_props(
+				array(
+					'name'      => $discount_id,
+					'tax_class' => 0,
+					'total'     => -1 * $discount_amount,
+					'total_tax' => 0,
+					'taxes'     => array(
+						'total' => array(),
+					),
+					'order_id'  => $order->get_id(),
+				)
+			);
+
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
@@ -273,6 +285,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
 
+			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 			$order->add_item( $fee );
 			$order->calculate_totals();
 
