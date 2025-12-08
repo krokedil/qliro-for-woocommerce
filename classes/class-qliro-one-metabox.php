@@ -205,12 +205,16 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		$nonce           = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) === false ) {
+			return;
+		}
+
 		$order_id        = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$order_key       = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_amount = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$discount_id     = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		if ( ! isset( $order_id, $order_key, $discount_amount, $tax_class, $discount_id ) ) {
+		if ( ! isset( $order_id, $order_key, $discount_amount, $discount_id ) ) {
 			return;
 		}
 
@@ -247,7 +251,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 
 			// Description length allowed by Qliro.
-			$discount_id = mb_substr( trim( $discount_id ), 0, 200 );
+			$discount_id = mb_substr( trim( wc_clean( $discount_id ) ), 0, 200 );
 
 			// We must exclude shipping and any fees from the available discount amount.
 			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
@@ -267,22 +271,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 				}
 			}
 
+			$discount_amount *= -1;
+
+			// Refer to WC_AJAX::add_order_fee() for how to add a fee to an order.
 			$fee = new WC_Order_Item_Fee();
-
-			// Explicitly set all properties to avoid issues with tax calculations. Refer to WC_Order::add_fee();
-			$fee->set_props(
-				array(
-					'name'      => $discount_id,
-					'tax_class' => 0,
-					'total'     => -1 * $discount_amount,
-					'total_tax' => 0,
-					'taxes'     => array(
-						'total' => array(),
-					),
-					'order_id'  => $order->get_id(),
-				)
-			);
-
+			$fee->set_amount( $discount_amount );
+			$fee->set_total( $discount_amount );
+			$fee->set_name( $discount_id );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee->save();
 
@@ -317,11 +312,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 			$order->add_item( $fee );
-			$order->calculate_totals();
+			$order->calculate_totals( false );
 
 			// translators: %s: Discount ID.
 			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );
-
 		} catch ( Exception $e ) {
 			$order->add_order_note( $e->getMessage() );
 		} finally {
