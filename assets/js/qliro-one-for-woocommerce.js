@@ -18,6 +18,12 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.bodyEl.on('click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.maybeDisplayShippingPrice);
 			qliroOneForWooCommerce.renderIframe();
+
+			$('#qliro_billing_country').on('change', () => {
+				const country = $('#qliro_billing_country').val();
+				$('#billing_country, #shipping_country').val(country);
+				$('body').trigger('update_checkout');
+			});
 		},
 		/**
 		 * Triggers on document ready.
@@ -173,6 +179,12 @@ jQuery(function ($) {
 			let form = $('form[name="checkout"] input, form[name="checkout"] select, textarea');
 			for (var i = 0; i < form.length; i++) {
 				let name = form[i].name;
+
+				// Skip this field as it is managed through our plugin settings or shortcode.
+				if ("qliro_billing_country" === name) { 
+					continue
+				}
+
 				// Check if field is inside the order review.
 				if ($('table.woocommerce-checkout-review-order-table').find(form[i]).length) {
 					continue;
