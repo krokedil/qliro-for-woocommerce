@@ -47,6 +47,7 @@ class Qliro_One_Request_Upsell_Order extends Qliro_One_Request_Post {
 		$body = array(
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'RequestId'      => $upsell_request_id,
+			'UpsellId'       => $upsell_request_id,
 			'Currency'       => $order->get_currency(),
 			'OrderId'        => $order->get_transaction_id(),
 			'OrderItems'     => Qliro_One_Helper_Order::get_upsell_order_lines( $order_id, $upsell_request_id ),
