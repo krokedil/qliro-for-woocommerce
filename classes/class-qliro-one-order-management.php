@@ -261,8 +261,8 @@ class Qliro_One_Order_Management {
 	/**
 	 * Get the items to refund.
 	 *
-	 * @param WC_Order $order The WooCommerce order.
 	 * @param array    $refunded_items The refunded items.
+	 * @param WC_Order $order The WooCommerce order.
 	 * @return array
 	 */
 	public function get_formatted_items_to_refund( $refunded_items, $order ) {
@@ -536,7 +536,7 @@ class Qliro_One_Order_Management {
 
 		foreach ( $line_item_tax_totals as $key => $tax_line ) {
 			if ( 'qliro_return_fee' === $key ) {
-				// Get the rate id from the tax by the first key in the line
+				// Get the rate id from the tax by the first key in the line.
 				$tax_rate_id               = array_keys( $tax_line )[0];
 				$return_fee['tax_rate_id'] = $tax_rate_id;
 				$return_fee['tax_amount']  = str_replace( ',', '.', $tax_line[ $tax_rate_id ] );
