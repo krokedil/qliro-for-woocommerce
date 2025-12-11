@@ -80,7 +80,7 @@ class Qliro_One_Callbacks {
 
 		$notification_type = isset( $data['NotificationType'] ) ? $data['NotificationType'] : '';
 
-		if ( 'UpsellStatus' === $notification_type  ) {
+		if ( 'UpsellStatus' === $notification_type ) {
 			$this->process_upsell_callback( $confirmation_id, $data );
 			header( 'HTTP/1.1 200 OK' );
 			echo '{ "CallbackResponse": "received" }';
