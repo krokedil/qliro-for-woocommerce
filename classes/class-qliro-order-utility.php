@@ -147,10 +147,9 @@ class Qliro_Order_Utility {
 	private static function get_successful_transaction_ids( $transactions ) {
 		$transaction_ids = array();
 		foreach ( $transactions as $transaction ) {
-			$type   = self::get_transaction_type( $transaction );
 			$status = self::get_transaction_status( $transaction );
-			// Skip any transactions that are not of type Debit or Preauthorization and not successful.
-			if ( ! in_array( $type, self::PROCESSING_TRANSACTION_TYPES, true ) && 'Success' !== $status ) {
+			// Skip any transactions that were not successful.
+			if ( 'Success' !== $status ) {
 				continue;
 			}
 			$transaction_ids[] = $transaction['PaymentTransactionId'] ?? '';
