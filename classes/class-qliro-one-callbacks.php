@@ -78,6 +78,15 @@ class Qliro_One_Callbacks {
 
 		Qliro_One_Logger::log( "Checkout Callback received: {$body}." );
 
+		$notification_type = isset( $data['NotificationType'] ) ? $data['NotificationType'] : '';
+
+		if ( 'UpsellStatus' === $notification_type  ) {
+			$this->process_upsell_callback( $confirmation_id, $data );
+			header( 'HTTP/1.1 200 OK' );
+			echo '{ "CallbackResponse": "received" }';
+			die();
+		}
+
 		if ( isset( $data['Status'] ) ) {
 			switch ( $data['Status'] ) {
 				case 'Completed':
@@ -101,6 +110,55 @@ class Qliro_One_Callbacks {
 		header( 'HTTP/1.1 200 OK' );
 		echo '{ "CallbackResponse": "received" }';
 		die();
+	}
+
+	/**
+	 * Process the Upsell callback notification.
+	 *
+	 * @param string $confirmation_id The confirmation ID generated in the create call.
+	 * @param array  $data The data from the callback from Qliro.
+	 *
+	 * @return void
+	 */
+	public function process_upsell_callback( $confirmation_id, $data ) {
+		$order     = qoc_get_order_by_confirmation_id( $confirmation_id );
+		$upsell_id = isset( $data['UpsellId'] ) ? sanitize_text_field( $data['UpsellId'] ) : '';
+
+		switch ( $data['Status'] ) {
+			case 'Success':
+				$original_transaction_id = $data['OriginalPaymentTransactionId'] ?? '';
+				$payment_transaction_id  = $data['PaymentTransactionId'] ?? '';
+
+				$order->update_meta_data( '_qliro_upsell_id', $upsell_id );
+				$order->update_meta_data( '_qliro_original_transaction_id', sanitize_text_field( $original_transaction_id ) );
+				$order->update_meta_data( '_qliro_payment_transaction_id', sanitize_text_field( $payment_transaction_id ) );
+				$order->save_meta_data();
+
+				Qliro_One_Logger::log( "Redirect upsell completed by customer for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
+
+				// If Post Purchase Upsell plugin is active, complete the upsell there directly.
+				if ( function_exists( 'PPU_Abstract_Product_Offer::complete_redirect_upsell' ) ) {
+					PPU_Abstract_Product_Offer::complete_redirect_upsell( $order, $upsell_id );
+				}
+
+				// Trigger action for other integrations to hook into.
+				do_action( 'qliro_upsell_completed', $order, $upsell_id );
+				break;
+			case 'Error':
+				Qliro_One_Logger::log( "Redirect upsell failed for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
+
+				// If Post Purchase Upsell plugin is active, fail the upsell there.
+				if ( function_exists( 'PPU_Abstract_Product_Offer::fail_redirect_upsell' ) ) {
+					PPU_Abstract_Product_Offer::fail_redirect_upsell( $order, $upsell_id );
+				}
+
+				// Trigger action for other integrations to hook into directly.
+				do_action( 'qliro_upsell_failed', $order, $upsell_id );
+				break;
+			default:
+				Qliro_One_Logger::log( "Unknown Qliro checkout callback status: {$data['Status']}" );
+				break;
+		}
 	}
 
 	/**
