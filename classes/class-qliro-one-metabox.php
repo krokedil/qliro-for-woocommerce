@@ -66,16 +66,18 @@ class Qliro_One_Metabox extends OrderMetabox {
 			return;
 		}
 
-		$last_transaction    = self::get_last_transaction( $qliro_order['PaymentTransactions'] ?? array() );
-		$transaction_type    = $last_transaction['Type'] ?? __( 'Not found', 'qliro-one-for-woocommerce' );
-		$transaction_status  = $last_transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one-for-woocommerce' );
+		$last_transaction    = Qliro_Order_Utility::get_last_transaction( $qliro_order );
+		$qliro_total         = Qliro_Order_Utility::get_qliro_order_total( $qliro_order );
+		$currency            = Qliro_Order_Utility::get_qliro_order_currency( $qliro_order );
+		$transaction_type    = Qliro_Order_Utility::get_transaction_type( $last_transaction );
+		$transaction_status  = Qliro_Order_Utility::get_transaction_status( $last_transaction );
 		$order_sync_disabled = 'no' === $order_sync;
 
 		self::output_info( __( 'Payment method', 'qliro-one-for-woocommerce' ), self::get_payment_method_name( $order ), self::get_payment_method_subtype( $order ) );
 		self::output_info( __( 'Order id', 'qliro-one-for-woocommerce' ), $qliro_order_id );
 		self::output_info( __( 'Reference', 'qliro-one-for-woocommerce' ), $qliro_reference );
 		self::output_info( __( 'Order status', 'qliro-one-for-woocommerce' ), $transaction_type, $transaction_status );
-		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), self::get_amount( $last_transaction ) );
+		self::output_info( __( 'Total amount', 'qliro-one-for-woocommerce' ), wc_price( $qliro_total, array( 'currency' => $currency ) ) );
 
 		if ( QOC_WC()->checkout()->is_integrated_shipping_enabled() ) {
 			self::maybe_output_shipping_reference( $qliro_order );
@@ -86,7 +88,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 		echo '<br />';
 
-		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled );
+		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total );
 		self::output_order_discount_button( $order, $qliro_order );
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-one' ), self::get_advanced_section_content( $order ) );
 	}
@@ -283,58 +285,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 	}
 
 	/**
-	 * Get the last transaction from a Qliro One order.
-	 *
-	 * @param array $transactions
-	 *
-	 * @return array
-	 */
-	private static function get_last_transaction( $transactions ) {
-		// Sort the transactions based on the timestamp.
-		usort(
-			$transactions,
-			function ( $a, $b ) {
-				return strtotime( $a['Timestamp'] ?? '' ) - strtotime( $b['Timestamp'] ?? '' );
-			}
-		);
-
-		// Get the last transaction.
-		$last_transaction = end( $transactions );
-
-		return $last_transaction;
-	}
-
-	/**
-	 * Get the amount from the payment transaction.
-	 *
-	 * @param array $transaction
-	 *
-	 * @return string
-	 */
-	private static function get_amount( $transaction ) {
-		$amount   = $transaction['Amount'] ?? '0';
-		$currency = $transaction['Currency'] ?? '';
-		$amount   = wc_price( $amount, array( 'currency' => $currency ) );
-
-		return $amount;
-	}
-
-	/**
-	 * Get the status of a Qliro order from the payment transaction.
-	 *
-	 * @param array $transaction
-	 *
-	 * @return string
-	 */
-	private static function get_order_status( $transaction ) {
-		// Get the status and type from the transaction.
-		$status = $transaction['Status'];
-		$type   = $transaction['Type'];
-
-		return $type . wc_help_tip( $status );
-	}
-
-	/**
 	 * Get the Qliro payment method name.
 	 *
 	 * @param WC_Order $order
@@ -377,13 +327,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @param WC_Order $order The WooCommerce order.
 	 * @param array    $qliro_order The Qliro order.
 	 * @param array    $last_transaction The last transaction from the Qliro order.
+	 * @param float    $qliro_total The total amount from the Qliro order.
 	 *
 	 * @return void
 	 */
-	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled ) {
+	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total ) {
 		$is_captured             = qoc_is_fully_captured( $order ) || qoc_is_partially_captured( $order );
 		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
-		$last_transaction_amount = $last_transaction['Amount'] ?? 0;
 
 		// If the order is captured or cancelled, do not output the sync button.
 		if ( $is_captured || $is_cancelled ) {
@@ -401,7 +351,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			'qliro_one_sync_order'
 		);
 
-		$classes = ( floatval( $order->get_total() ) === $last_transaction_amount ) ? 'button-secondary' : 'button-primary';
+		$classes = ( floatval( $order->get_total() ) === $qliro_total ) ? 'button-secondary' : 'button-primary';
 
 		if ( $order_sync_disabled ) {
 			$classes .= ' disabled';
