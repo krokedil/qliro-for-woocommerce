@@ -29,7 +29,7 @@ class Qliro_Order_Utility {
 	 */
 	public static function get_qliro_order_total( $qliro_order ) {
 		// Loop each transaction and get the sum of all the debit transactions.
-		$total = 0;
+		$total        = 0;
 		$transactions = $qliro_order['PaymentTransactions'] ?? array();
 		foreach ( $transactions as $transaction ) {
 			$type   = $transaction['Type'] ?? '';
@@ -105,7 +105,7 @@ class Qliro_Order_Utility {
 	/**
 	 * Get all PaymentTransactionIds for a Qliro order.
 	 *
-	 * @param array  $qliro_order The Qliro order.
+	 * @param array    $qliro_order The Qliro order.
 	 * @param string[] $types Optional. The types of transactions to filter by.
 	 *
 	 * @return string[] An array of PaymentTransactionIds.
@@ -115,7 +115,7 @@ class Qliro_Order_Utility {
 		$transactions    = $qliro_order['PaymentTransactions'] ?? array();
 
 		foreach ( $transactions as $transaction ) {
-			$type = $transaction['Type'] ?? '';
+			$type                   = $transaction['Type'] ?? '';
 			$payment_transaction_id = $transaction['PaymentTransactionId'] ?? '';
 
 			if ( empty( $payment_transaction_id ) ) {
@@ -135,26 +135,26 @@ class Qliro_Order_Utility {
 	/**
 	 * Get all the transaction ids for the successful transaction ids for transactions from the payment.
 	 *
-	 * @param array $transactions The Qliro transactions. [
-	 * 		@type array {
-	 *  		@type string $PaymentTransactionId The payment transaction id.
-	 *  	 	@type string $Type The type of the transaction.
-	 *  	 	@type string $Status The status of the transaction.
-	 * 		}
+	 * @param array $transactions The Qliro transactions [.
+	 *      @type array {
+	 *          @type string $PaymentTransactionId The payment transaction id.
+	 *          @type string $Type The type of the transaction.
+	 *          @type string $Status The status of the transaction.
+	 *      }
 	 * ]
 	 * @return array
 	 */
 	private static function get_successful_transaction_ids( $transactions ) {
 		$transaction_ids = array();
-	    foreach ( $transactions as $transaction ) {
-	    	$type   = self::get_transaction_type( $transaction );
-	    	$status = self::get_transaction_status( $transaction );
-	    	// Skip any transactions that are not of type Debit or Preauthorization and not successful.
-	    	if ( ! in_array( $type, self::PROCESSING_TRANSACTION_TYPES, true ) && 'Success' !== $status ) {
-	    		continue;
-	    	}
-	    	$transaction_ids[] = $transaction['PaymentTransactionId'] ?? '';
-	    }
+		foreach ( $transactions as $transaction ) {
+			$type   = self::get_transaction_type( $transaction );
+			$status = self::get_transaction_status( $transaction );
+			// Skip any transactions that are not of type Debit or Preauthorization and not successful.
+			if ( ! in_array( $type, self::PROCESSING_TRANSACTION_TYPES, true ) && 'Success' !== $status ) {
+				continue;
+			}
+			$transaction_ids[] = $transaction['PaymentTransactionId'] ?? '';
+		}
 
 		return $transaction_ids;
 	}
@@ -168,14 +168,14 @@ class Qliro_Order_Utility {
 	 * @return array The filtered order lines for the specific payment transaction id.
 	 */
 	private static function get_qliro_transaction_order_lines( $order_lines, $payment_transaction_id ) {
-	    return array_filter(
-	    	$order_lines,
-	    	function ( $line ) use ( $payment_transaction_id ) {
-	    		$line_transaction_id = $line['PaymentTransactionId'] ?? '';
-	    		// Filter for lines that belong to this transaction.
-	    		return ( $line_transaction_id === $payment_transaction_id );
-	    	}
-	    );
+		return array_filter(
+			$order_lines,
+			function ( $line ) use ( $payment_transaction_id ) {
+				$line_transaction_id = $line['PaymentTransactionId'] ?? '';
+				// Filter for lines that belong to this transaction.
+				return ( $line_transaction_id === $payment_transaction_id );
+			}
+		);
 	}
 
 	/**
@@ -184,26 +184,26 @@ class Qliro_Order_Utility {
 	 * @param array $transaction_order_lines The Qliro order lines for a specific payment transaction id.
 	 *
 	 * @return array[] The formatted order lines. [
-	 * 		@type array {
-	 * 			@type string $reference     The order line reference. Either an SKU, shipping, fee or discount reference.
-	 * 			@type string $type          The order line type. One of: Product, Shipping, Fee, Discount.
-	 * 			@type int    $qliro_line_id The Qliro order line id.
-	 * 			@type int    $quantity      The quantity items for the order line.
-	 * 		}
-	 * 	]
+	 *      @type array {
+	 *          @type string $reference     The order line reference. Either an SKU, shipping, fee or discount reference.
+	 *          @type string $type          The order line type. One of: Product, Shipping, Fee, Discount.
+	 *          @type int    $qliro_line_id The Qliro order line id.
+	 *          @type int    $quantity      The quantity items for the order line.
+	 *      }
+	 *  ]
 	 */
 	private static function format_qliro_transaction_order_lines( $transaction_order_lines ) {
-	    $formatted_transaction_order_lines =  array_map(
-	    	function ( $line ) {
-	    		return array(
-	    			'reference'     => $line['MerchantReference'] ?? '',
-	    			'qliro_line_id' => $line['Id'] ?? 0,
-	    			'quantity'      => $line['Quantity'] ?? 0,
-	    			'type'          => $line['Type'] ?? '',
-	    		);
-	    	},
-	    	$transaction_order_lines
-	    );
+		$formatted_transaction_order_lines = array_map(
+			function ( $line ) {
+				return array(
+					'reference'     => $line['MerchantReference'] ?? '',
+					'qliro_line_id' => $line['Id'] ?? 0,
+					'quantity'      => $line['Quantity'] ?? 0,
+					'type'          => $line['Type'] ?? '',
+				);
+			},
+			$transaction_order_lines
+		);
 
 		// Re-index the array to have sequential keys and return.
 		return array_values( $formatted_transaction_order_lines );
@@ -217,55 +217,55 @@ class Qliro_Order_Utility {
 	 * @param array  $transactions The Qliro transactions.
 	 *
 	 * @return array[] The formatted transactions meta data. {
-	 * 		@type string  $hash         A hash of the transactions to quickly check if an update is needed.
-	 * 		@type array[] $transactions An array of payment transaction ids. [
-	 *			@type array {
-	 * 				@type string  $transaction_id The payment transaction id.
-	 * 				@type string  $type           The type of the transaction.
-	 * 				@type array[] $order_lines    An array of order lines associated with the payment transaction id. [
-	 * 					@type array {
-	 * 						@type string $reference     The order line reference. Either an SKU, shipping, fee or discount reference.
-	 * 						@type string $type          The order line type. One of: Product, Shipping, Fee, Discount.
-	 * 						@type int    $qliro_line_id The Qliro order line id.
-	 * 						@type int    $quantity      The quantity items for the order line.
-	 * 					}
-	 * 				]
-	 * 			}
-	 * 		]
+	 *      @type string  $hash         A hash of the transactions to quickly check if an update is needed.
+	 *      @type array[] $transactions An array of payment transaction ids. [
+	 *          @type array {
+	 *              @type string  $transaction_id The payment transaction id.
+	 *              @type string  $type           The type of the transaction.
+	 *              @type array[] $order_lines    An array of order lines associated with the payment transaction id. [
+	 *                  @type array {
+	 *                      @type string $reference     The order line reference. Either an SKU, shipping, fee or discount reference.
+	 *                      @type string $type          The order line type. One of: Product, Shipping, Fee, Discount.
+	 *                      @type int    $qliro_line_id The Qliro order line id.
+	 *                      @type int    $quantity      The quantity items for the order line.
+	 *                  }
+	 *              ]
+	 *          }
+	 *      ]
 	 * }
 	 */
 	private static function format_transactions_meta_data( $current_hash, $qliro_order, $transactions ) {
-	    $transactions_meta = array(
-	    	'hash'         => $current_hash,
-	    	'transactions' => array(),
-	    );
+		$transactions_meta = array(
+			'hash'         => $current_hash,
+			'transactions' => array(),
+		);
 
-	    // Loop each order line in the Qliro order, and set them to the correct transaction.
-	    $order_lines = $qliro_order['OrderItemActions'] ?? array();
-	    foreach ( $transactions as $transaction ) {
-	    	$type   = self::get_transaction_type( $transaction );
-	    	$status = self::get_transaction_status( $transaction );
+		// Loop each order line in the Qliro order, and set them to the correct transaction.
+		$order_lines = $qliro_order['OrderItemActions'] ?? array();
+		foreach ( $transactions as $transaction ) {
+			$type   = self::get_transaction_type( $transaction );
+			$status = self::get_transaction_status( $transaction );
 
 			// Only consider successful transactions.
-	    	if ( 'Success' !== $status ) {
-	    		continue;
-	    	}
+			if ( 'Success' !== $status ) {
+				continue;
+			}
 
-	    	$payment_transaction_id = $transaction['PaymentTransactionId'] ?? '';
+			$payment_transaction_id = $transaction['PaymentTransactionId'] ?? '';
 
-	    	// Get all order lines for this transaction and format them correctly for the meta data.
-	    	$transaction_order_lines           = self::get_qliro_transaction_order_lines($order_lines, $payment_transaction_id);
-	    	$formatted_transaction_order_lines = self::format_qliro_transaction_order_lines($transaction_order_lines);
+			// Get all order lines for this transaction and format them correctly for the meta data.
+			$transaction_order_lines           = self::get_qliro_transaction_order_lines( $order_lines, $payment_transaction_id );
+			$formatted_transaction_order_lines = self::format_qliro_transaction_order_lines( $transaction_order_lines );
 
 			// Create an entry for the transaction with its order lines.
-	    	$transaction_entry = array(
-	    		'transaction_id' => $payment_transaction_id,
+			$transaction_entry = array(
+				'transaction_id' => $payment_transaction_id,
 				'type'           => $type,
-	    		'order_lines'    => $formatted_transaction_order_lines,
-	    	);
+				'order_lines'    => $formatted_transaction_order_lines,
+			);
 
-	    	$transactions_meta['transactions'][] = $transaction_entry;
-	    }
+			$transactions_meta['transactions'][] = $transaction_entry;
+		}
 
 		return $transactions_meta;
 	}
@@ -273,7 +273,7 @@ class Qliro_Order_Utility {
 	/**
 	 * Maybe update the WooCommerce order metadata for the Qliro orders transactions and their order lines.
 	 *
-	 * @param array $qliro_order The Qliro order.
+	 * @param array    $qliro_order The Qliro order.
 	 * @param WC_Order $wc_order The WooCommerce order.
 	 *
 	 * @return void
@@ -300,7 +300,7 @@ class Qliro_Order_Utility {
 
 		// If we don't need to update, just return.
 		if ( ! $needs_update ) {
-			//return;
+			return;
 		}
 
 		// Format the new transactions meta.
@@ -319,88 +319,150 @@ class Qliro_Order_Utility {
 	 * @param WC_Order $wc_order The WooCommerce order.
 	 * @param string[] $transaction_types Optional. The transaction types to filter by.
 	 *
-	 * @return array|false The converted shipments with the payment transaction id set, or false if no conversion was possible.
+	 * @return array|false
 	 */
 	public static function maybe_convert_to_split_transactions( $order_items, $wc_order, $transaction_types = self::PROCESSING_TRANSACTION_TYPES ) {
-		// Try to get the metadata from the WooCommerce order that was stored when reading the Qliro order.
 		$transactions_meta = $wc_order->get_meta( '_qliro_payment_transactions' );
 
-		// If we could not get any metadata, return false to indicate no conversion was possible.
 		if ( empty( $transactions_meta ) || ! is_array( $transactions_meta ) ) {
 			return false;
 		}
-		$shipments = array();
 
-		// Ensure each order line ends up in a shipment with the correct payment transaction id set, and the quantities match for the transaction based on the metadata from the WooCommerce order.
-		foreach ( $transactions_meta['transactions'] as $transaction_entry ) {
-			$type                   = $transaction_entry['type'] ?? '';
-			// Skip any transactions that are not of the specified types.
-			if ( ! in_array( $type, $transaction_types, true ) ) {
+		// Get the map of order items by their MerchantReference for quick lookup.
+		$items_map          = self::build_item_reference_map( $order_items );
+		$split_transactions = array();
+		$transactions       = $transactions_meta['transactions'] ?? array();
+
+		// Loop each transaction and try to satisfy its order lines from the initial order items.
+		foreach ( $transactions as $transaction ) {
+			// Get the split transaction for this transaction.
+			$split_transaction = self::process_single_transaction(
+				$transaction,
+				$order_items, // Note: passed by reference (&) to track quantity depletion between all the transactions.
+				$items_map,
+				$transaction_types
+			);
+
+			// If we got a valid split transaction, add it to the list.
+			if ( ! empty( $split_transaction ) ) {
+				$split_transactions[] = $split_transaction;
+			}
+		}
+
+		// Process any remaining order items that still have quantities left and assign them to the first shipment.
+		self::assign_remaining_items( $split_transactions, $order_items );
+
+		return $split_transactions;
+	}
+
+	/**
+	 * Builds a map of MerchantReferences to their array keys in the order items list.
+	 *
+	 * @param array $order_items The order items to build the map from.
+	 *
+	 * @return array
+	 */
+	private static function build_item_reference_map( $order_items ) {
+		$map = array();
+		foreach ( $order_items as $key => $item ) {
+			$reference = $item['MerchantReference'] ?? '';
+			if ( ! isset( $map[ $reference ] ) ) {
+				$map[ $reference ] = array();
+			}
+			$map[ $reference ][] = $key;
+		}
+		return $map;
+	}
+
+	/**
+	 * Processes a single transaction entry against the order items for a request.
+	 * IMPORTANT: $order_items is passed by reference (&) to track quantity depletion.
+	 *
+	 * @param array $transaction The transaction entry to process.
+	 * @param array $order_items       The order items to modify, passed by reference.
+	 * @param array $items_map         The pre-built map of MerchantReferences to order item keys.
+	 * @param array $allowed_types     The allowed transaction types to process.
+	 *
+	 * @return array|null
+	 */
+	private static function process_single_transaction( $transaction, &$order_items, $items_map, $allowed_types ) {
+		$type = $transaction['type'] ?? '';
+
+		// If this transaction type is not allowed, skip it and return null.
+		if ( ! in_array( $type, $allowed_types, true ) ) {
+			return null;
+		}
+
+		$t_id              = $transaction['transaction_id'] ?? '';
+		$t_order_lines     = $transaction['order_lines'] ?? array();
+		$transaction_lines = array();
+
+		foreach ( $t_order_lines as $t_order_line ) {
+			$t_reference = $t_order_line['reference'] ?? '';
+			$t_quantity  = $t_order_line['quantity'] ?? 0;
+
+			// If the reference does not exist in our order items or the quantity for the transaction line is zero, skip it.
+			if ( ! isset( $items_map[ $t_reference ] ) || $t_quantity <= 0 ) {
 				continue;
 			}
 
-			$payment_transaction_id = $transaction_entry['transaction_id'] ?? '';
-			$transaction_order_lines = $transaction_entry['order_lines'] ?? array();
+			// Look up the item in our pre-built map and set the quantities to match the transaction line.
+			foreach ( $items_map[ $t_reference ] as $order_item_key ) {
+				// Break the loop if we've satisfied the transaction line quantity to avoid adding a line item with zero quantity.
+				if ( $t_quantity <= 0 ) {
+					break;
+				}
 
-			$shipment_lines = array();
+				$current_item_qty = $order_items[ $order_item_key ]['Quantity'] ?? 0;
 
-			// Loop each order item and see if it belongs to this transaction.
-			foreach ( $order_items as $key => $order_item ) {
-				$item_reference = $order_item['MerchantReference'] ?? '';
-				$item_quantity  = $order_item['Quantity'] ?? 0;
-
-				// If the quantity is zero, then we can skip this item.
-				if ( $item_quantity <= 0 ) {
+				// If the current item quantity is zero, skip it.
+				if ( $current_item_qty <= 0 ) {
 					continue;
 				}
 
-				// Find the matching order line in the transaction order lines.
-				foreach ( $transaction_order_lines as $transaction_line ) {
-					$transaction_reference = $transaction_line['reference'] ?? '';
-					$transaction_quantity  = $transaction_line['quantity'] ?? 0;
+				// Get the quantity we can actually take from this item for the transaction line by taking the smaller of the two.
+				$qty_to_take = min( $current_item_qty, $t_quantity );
 
-					// If the references match, update the item with the quantity for this transaction and add it to the shipments lines.
-					if ( $item_reference !== $transaction_reference ) {
-						continue;
-					}
+				// Create the line for this shipment.
+				$line_data             = $order_items[ $order_item_key ];
+				$line_data['Quantity'] = $qty_to_take;
+				$transaction_lines[]   = $line_data;
 
-					// Get the correct quantity for this transaction in-case it is lower then the order item quantity.
-					$quantity = min( $item_quantity, $transaction_quantity );
-
-					// Update the order item quantity to match the transaction quantity before adding it to the shipment lines.
-					$order_item['Quantity'] = $quantity;
-					$shipment_lines[]       = $order_item;
-
-					// Reduce the quantity of the original order item to reflect that part of it has been assigned to this transaction.
-					$item_quantity -= $quantity;
-				}
-				// Update the original order items quantity to reflect any remaining quantity that has not been assigned to a transaction yet.
-				$order_items[ $key ]['Quantity'] = $item_quantity;
-			}
-
-			// If we have shipment lines for this transaction, create a shipment entry.
-			if ( ! empty( $shipment_lines ) ) {
-				$shipments[] = array(
-					'PaymentTransactionId' => $payment_transaction_id,
-					'OrderItems'           => $shipment_lines,
-				);
+				// Update the main list (via reference) and local counter.
+				$order_items[ $order_item_key ]['Quantity'] -= $qty_to_take;
+				$t_quantity                                 -= $qty_to_take;
 			}
 		}
 
-		// If we have any order items that still have a quantity over zero, we need to add them to the first shipment as a fallback.
+		// If we have no lines for this transaction, return null.
+		if ( empty( $transaction_lines ) ) {
+			return null;
+		}
+
+		return array(
+			'PaymentTransactionId' => $t_id,
+			'OrderItems'           => $transaction_lines,
+		);
+	}
+
+	/**
+	 * Appends any unassigned order items to the first shipment.
+	 *
+	 * @param array $shipments Array of shipments to modify, passed by reference.
+	 * @param array $order_items The original order items with remaining quantities.
+	 *
+	 * @return void
+	 */
+	private static function assign_remaining_items( &$shipments, $order_items ) {
+		// Ensure we have at least one shipment to add the remaining items to.
+		if ( empty( $shipments ) ) {
+			return;
+		}
+
 		foreach ( $order_items as $order_item ) {
-			$item_quantity = $order_item['Quantity'] ?? 0;
-
-			if ( $item_quantity <= 0 ) {
-				continue;
-			}
-
-			// Add the remaining order item to the first shipment.
-			if ( ! empty( $shipments ) ) {
+			if ( ( $order_item['Quantity'] ?? 0 ) > 0 ) {
 				$shipments[0]['OrderItems'][] = $order_item;
 			}
 		}
-
-		return $shipments;
 	}
 }
