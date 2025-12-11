@@ -313,9 +313,9 @@ class Qliro_Order_Utility {
 	}
 
 	/**
-	 * Convert the order items for a admin action into split order items for each transaction id.
+	 * Convert the order items for an admin action into split order items for each transaction id.
 	 *
-	 * @param array    $order_items The order items for a admin action request to possibly be split.
+	 * @param array    $order_items The order items for an admin action request to possibly be split.
 	 * @param WC_Order $wc_order The WooCommerce order.
 	 * @param string[] $transaction_types Optional. The transaction types to filter by.
 	 *
