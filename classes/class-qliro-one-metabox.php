@@ -59,7 +59,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$qliro_reference = $order->get_meta( '_qliro_one_merchant_reference' );
 		$order_sync      = $order->get_meta( '_qliro_order_sync_enabled' );
 
-		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		if ( is_wp_error( $qliro_order ) ) {
 			self::output_error( $qliro_order->get_error_message() );

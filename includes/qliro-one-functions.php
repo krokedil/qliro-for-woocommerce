@@ -167,7 +167,7 @@ function qliro_confirm_order( $order ) {
 	$order_id       = $order->get_id();
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 	if ( is_wp_error( $qliro_order ) ) {
 		return false;
@@ -213,7 +213,7 @@ function qliro_confirm_order( $order ) {
 	$order->add_order_note( $note );
 	$order->payment_complete( $qliro_order_id );
 
-	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 	if ( is_wp_error( $qliro_order ) ) {
 		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
 	}

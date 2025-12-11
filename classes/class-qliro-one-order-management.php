@@ -33,6 +33,9 @@ class Qliro_One_Order_Management {
 
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999, 2 );
 
+		// Register the action to set the transaction meta data when reading the Qliro order from the admin endpoint.
+		add_action( 'qliro_admin_order_received', Qliro_Order_Utility::class . '::maybe_update_transaction_meta', 10, 2 );
+
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
