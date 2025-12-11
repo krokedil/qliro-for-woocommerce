@@ -169,6 +169,68 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
+	 * Process legacy refund for orders without payment transactions meta.
+	 *
+	 * @param WC_Order        $order The WooCommerce order being refunded.
+	 * @param WC_Order_Refund $refund_order The refund order.
+	 * @param float           $amount The refund amount.
+	 * @param array           $return_fees The return fee data.
+	 * @return bool|WP_Error
+	 */
+	private function process_legacy_refund( $order, $refund_order, $amount, $return_fees ) {
+	    if ( $order->get_meta( '_qliro_order_captured' ) ) {
+	    	return $this->create_refund( $order, $amount, $refund_order->get_id(), '', array(), $return_fees );
+	    }
+
+	    // If the order has been partially captured, we need to get the capture id from the order item meta.
+	    foreach ( $refund_order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
+	    	$refunded_items[ $order_item->get_meta( '_refunded_item_id' ) ] = $order_item->get_quantity();
+	    }
+
+	    // Prepare the items to refund.
+	    $prepped_items = $this->get_formatted_items_to_refund( $refunded_items, $order );
+
+	    // If the prepped items array is empty, return false.
+	    if ( empty( $prepped_items ) ) {
+	    	// translators: %s is the error message from Qliro.
+	    	$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+	    	return false;
+	    }
+
+	    // Structure the prepped items array so that each capture id has its own array of items.
+	    $prepped_items = array_reduce(
+	    	$prepped_items,
+	    	function ( $carry, $item ) {
+	    		$carry[ $item['capture_id'] ][] = array(
+	    			'item_id'  => $item['item_id'],
+	    			'quantity' => $item['quantity'],
+	    		);
+	    		return $carry;
+	    	},
+	    	array()
+	    );
+
+	    // Do not allow refunds with more than one capture id.
+	    if ( count( $prepped_items ) > 1 ) {
+	    	// translators: %s is the error message from Qliro.
+	    	$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
+	    	return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
+	    }
+
+	    // Create one or more refunds based on the prepped items array.
+	    foreach ( $prepped_items as $capture_id => $items ) {
+	    	$response = $this->create_refund( $order, $amount, $refund_order->get_id(), $capture_id, $items );
+	    	// If the response is an error, continue to the next capture id.
+	    	if ( is_wp_error( $response ) ) {
+	    		continue;
+	    	}
+	    	$this->save_refunded_data_to_order_lines( $order, $capture_id, $items );
+	    }
+
+	    return $response;
+	}
+
+	/**
 	 * Request for refunding a Qliro Order.
 	 *
 	 * @param int   $order_id The WooCommerce order ID.
@@ -188,57 +250,14 @@ class Qliro_One_Order_Management {
 		$refund_order_id = $order->get_refunds()[0]->get_id();
 		$refund_order    = wc_get_order( $refund_order_id );
 
-		// If the order has been fully captured, we can refund the order based on the capture id stored in the order meta.
-		if ( $order->get_meta( '_qliro_order_captured' ) ) {
-			return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
+		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
+		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
+			error_log( 'Processing legacy refund for order ' . $order_id );
+			return $this->process_legacy_refund( $order, $refund_order, $amount, $return_fees );
 		}
 
-		// If the order has been partially captured, we need to get the capture id from the order item meta.
-		foreach ( $refund_order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $order_item ) {
-			$refunded_items[ $order_item->get_meta( '_refunded_item_id' ) ] = $order_item->get_quantity();
-		}
-
-		// Prepare the items to refund.
-		$prepped_items = $this->get_formatted_items_to_refund( $refunded_items, $order );
-
-		// If the prepped items array is empty, return false.
-		if ( empty( $prepped_items ) ) {
-			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'No captured data found for the order items.', 'qliro-one-for-woocommerce' ) ) );
-			return false;
-		}
-
-		// Structure the prepped items array so that each capture id has its own array of items.
-		$prepped_items = array_reduce(
-			$prepped_items,
-			function ( $carry, $item ) {
-				$carry[ $item['capture_id'] ][] = array(
-					'item_id'  => $item['item_id'],
-					'quantity' => $item['quantity'],
-				);
-				return $carry;
-			},
-			array()
-		);
-
-		// Do not allow refunds with more than one capture id.
-		if ( count( $prepped_items ) > 1 ) {
-			// translators: %s is the error message from Qliro.
-			$order->add_order_note( sprintf( __( 'Failed to refund the order with Qliro: %s', 'qliro-one-for-woocommerce' ), __( 'Multiple capture IDs found for the order items.', 'qliro-one-for-woocommerce' ) ) );
-			return new WP_Error( 'qliro_one_refund_issue', __( 'Failed to refund the order with Qliro. Multiple capture IDs can not be used in one refund request.', 'qliro-one-for-woocommerce' ) );
-		}
-
-		// Create one or more refunds based on the prepped items array.
-		foreach ( $prepped_items as $capture_id => $items ) {
-			$response = $this->create_refund( $order, $amount, $refund_order_id, $capture_id, $items );
-			// If the response is an error, continue to the next capture id.
-			if ( is_wp_error( $response ) ) {
-				continue;
-			}
-			$this->save_refunded_data_to_order_lines( $order, $capture_id, $items );
-		}
-
-		return $response;
+		error_log( 'Processing normal refund for order ' . $order_id );
+		return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
 	}
 
 	/**
