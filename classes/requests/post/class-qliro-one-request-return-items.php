@@ -52,18 +52,30 @@ class Qliro_One_Request_Return_Items extends Qliro_One_Request_Post {
 		$return_fees = apply_filters( 'qliro_one_return_fees', $order_data->get_return_fees( $return_fee, $order_items, $order, $calc_return_fee ), $order_id, $refund_order_id, $order_items );
 		add_filter( 'qliro_applied_return_fees', fn( $fees ) => array_merge( $fees, $return_fees ), 10, 1 );
 
-		return array(
-			'RequestId'      => $request_id,
-			'MerchantApiKey' => $this->get_qliro_key(),
-			'OrderId'        => $this->qliro_order_id,
-			'Currency'       => $order->get_currency(),
-			'Returns'        => array(
+		$returns = Qliro_Order_Utility::maybe_convert_to_split_transactions( $order_items, $order, array( Qliro_Order_Utility::TRANSACTION_TYPE_CAPTURE ) );
+		// If we failed to convert the order items to returns, use the old logic to send the returns in a single return.
+		if ( empty( $returns ) ) {
+			$order_items = ! empty( $items ) ? $order_data->get_return_items_from_items( $items, $refund_order_id ) : $order_data->get_return_items( $refund_order_id );
+			$returns = array(
 				array(
 					'PaymentTransactionId' => $capture_transaction_id,
 					'OrderItems'           => $order_items,
 					'Fees'                 => $return_fees,
 				),
-			),
+			);
+		} else {
+			// If we have split returns, we need to add the fees to the first return only.
+			if ( ! empty( $return_fees ) ) {
+				$returns[0]['Fees'] = $return_fees;
+			}
+		}
+
+		return array(
+			'RequestId'      => $request_id,
+			'MerchantApiKey' => $this->get_qliro_key(),
+			'OrderId'        => $this->qliro_order_id,
+			'Currency'       => $order->get_currency(),
+			'Returns'        => $returns,
 		);
 	}
 }

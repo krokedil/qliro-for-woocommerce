@@ -52,17 +52,23 @@ class Qliro_One_Request_Update_Items extends Qliro_One_Request_Post {
 			$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
 		}
 
+		$updates = Qliro_Order_Utility::maybe_convert_to_split_transactions( $this->arguments['items'], $order );
+		// If we failed to convert the order items to updates, use the old logic to send the updates in a single update.
+		if ( empty( $updates ) ) {
+			$updates = array(
+				array(
+					'PaymentTransactionId' => $transaction_id,
+					'OrderItems'           => $this->arguments['items'],
+				),
+			);
+		}
+
 		return array(
 			'RequestId'      => $order_data->generate_request_id(),
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'OrderId'        => $this->qliro_order_id,
 			'Currency'       => $order->get_currency(),
-			'Updates'        => array(
-				array(
-					'PaymentTransactionId' => $transaction_id,
-					'OrderItems'           => $this->arguments['items'],
-				),
-			),
+			'Updates'        => $updates,
 		);
 	}
 }

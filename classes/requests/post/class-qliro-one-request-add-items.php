@@ -52,17 +52,23 @@ class Qliro_One_Request_Add_Items extends Qliro_One_Request_Post {
 			$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
 		}
 
+		$additions = Qliro_Order_Utility::maybe_convert_to_split_transactions( $this->arguments['items'], $order );
+		// If we failed to convert the order items to additions, use the old logic to send the additions in a single addition.
+		if ( empty( $additions ) ) {
+			$additions = array(
+				array(
+					'PaymentTransactionId' => $transaction_id,
+					'OrderItems'           => $this->arguments['items'],
+				),
+			);
+		}
+
 		return array(
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'RequestId'      => $order_data->generate_request_id(),
 			'OrderId'        => $this->qliro_order_id,
 			'Currency'       => $order->get_currency(),
-			'Additions'      => array(
-				array(
-					'PaymentTransactionId' => $transaction_id,
-					'OrderItems'           => $this->arguments['items'],
-				),
-			),
+			'Additions'      => $additions,
 		);
 	}
 }

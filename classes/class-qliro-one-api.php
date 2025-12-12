@@ -44,11 +44,18 @@ class Qliro_One_API {
 	 * Gets a Qliro Admin order
 	 *
 	 * @param string $qliro_one_order_id The Qliro Checkout order id.
-	 * @return mixed
+	 * @param WC_Order|null $wc_order The WooCommerce order. Optional.
+	 *
+	 * @return array|WP_Error
 	 */
-	public function get_qliro_one_admin_order( $qliro_one_order_id ) {
+	public function get_qliro_one_admin_order( $qliro_one_order_id, $wc_order = null ) {
 		$request  = new Qliro_One_Request_Admin_Get_Order( array( 'qliro_order_id' => $qliro_one_order_id ) );
 		$response = $request->request();
+
+		if ( ! is_wp_error( $response ) ) {
+			do_action( 'qliro_admin_order_received', $response, $wc_order );
+		}
+
 		return $response;
 	}
 
