@@ -154,6 +154,11 @@ class Qliro_One_Callbacks {
 			}
 		}
 
+		// If the status is Error and the transaction id is 0, it means no transaction was added by Qliro. Consider this valid to allow failing the upsell.
+		if ( 'Error' === $data['Status'] && '0' === $payment_transaction_id ) {
+			$is_valid = true;
+		}
+
 		// If the callback is not valid, log an error and return.
 		if ( ! $is_valid ) {
 			Qliro_One_Logger::log( "Invalid upsell callback received for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}. No matching transaction found in Qliro order." );
