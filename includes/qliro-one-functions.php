@@ -211,12 +211,17 @@ function qliro_confirm_order( $order ) {
 	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-one-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
-	$order->payment_complete( $qliro_order_id );
 
 	$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 	if ( is_wp_error( $qliro_order ) ) {
 		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
 	}
+
+	if ( ! is_wp_error( $qliro_order ) && isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
+		$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+	}
+
+	$order->payment_complete( $qliro_order_id );
 
 	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
 		if ( 'Success' === $payment_transaction['Status'] ) {
@@ -226,10 +231,6 @@ function qliro_confirm_order( $order ) {
 			$subtype = implode( ' ', array_slice( explode( '_', $payment_transaction['PaymentMethodName'] ), 1 ) );
 			$subtype = $payment_transaction['PaymentMethodSubtypeCode'] ?? $subtype ?? '';
 			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $subtype );
-
-			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
-				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
-			}
 
 			if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
 				// Get the subscriptions for the order.
