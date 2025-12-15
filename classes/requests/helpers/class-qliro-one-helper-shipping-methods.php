@@ -44,6 +44,7 @@ class Qliro_One_Helper_Shipping_Methods {
 					'DisplayName'       => $method_name,
 					'PriceIncVat'       => $method_price_inc_tax,
 					'PriceExVat'        => $method_price_ex_tax,
+					'VatRate'           => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
 				);
 
 				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
