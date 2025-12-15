@@ -3,11 +3,11 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.8.3
+Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.3.5
-Stable tag: 1.17.2
+Stable tag: 1.18.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,18 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.12.15    - version 1.18.0 =
+* Feature       - Added support for Upsell through payment methods like Trustly or Swish, where the customer is redirected to complete the upsell. Requires Post Purchase Upsell for WooCommerce version 4.0.0.
+* Feature       - Added support for refunding orders that have been captured using the partial capture functionality.
+* Feature       - Added a action hook and jQuery event called `qliro_customer_data_fetched`, that is called when we fetch the address data from the Qliro session in the checkout. This can be used to set customer data outside of what the plugin already does.
+* Change        - Changed the needed permissions to add a discount to a Qliro order from 'manage_woocommerce' to 'edit_shop_orders' to allow shop managers to add discounts.
+* Fix           - Fixed an issue where the shipping billing country was not always updated when changing the billing country field in the checkout.
+* Fix           - Fixed some information in the order metabox not always being correct when some transactions had a different order amount than the original order.
+* Fix           - Send the vat rate when shipping methods are sent as shipping options to Qliro when showing shipping selection in the Qliro checkout.
+* Fix           - Fixed a reference to deprecated JavaScript libraries since WooCommerce 10.3.0.
+* Fix           - Fixed showing the incorrect value in the order metabox for the Qliro order total when discounts had been applied, or some other cases.
+* Fix           - Fixed how we calculate the available amount to create a discount for, that could cause issues when fees were added to the order.
+
 = 2025.11.24    - version 1.17.2 =
 * Tweak         - Improved the newsletter signup feature and added a setting for customizing the newsletter signup checkbox label.
 * Tweak         - Added the 'qliro_one_helper_cart_items' filter to enable customization of cart items.
@@ -87,7 +99,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 = 2025.05.20    - version 1.11.0 =
 * Feature       - Added support for adding a return fee when making a refund on a Qliro order.
 * Feature       - Added a setting to automatically calculate a return fee for Qliro orders, if a refund is made when the full amount of a order line is not refunded.
-* Feature       - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'. 
+* Feature       - Added a setting to display a country selector on the checkout page or through the shortcode 'qliro_country_selector'.
 * Enhancement   - Changed so the refund with Qliro button is not shown for orders that have not been completed with Qliro, preventing the refund from causing a API error when it can't be made.
 * Enhancement   - Improved logging to handle situations where the remote requests returns WP_Error that is not properly logged.
 * Tweak         - The sync order button will now always be available on the order edit page for all Qliro orders regardless of payment method.
