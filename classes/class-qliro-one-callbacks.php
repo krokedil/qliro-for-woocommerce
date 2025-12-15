@@ -170,7 +170,7 @@ class Qliro_One_Callbacks {
 				Qliro_One_Logger::log( "Redirect upsell completed by customer for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
 
 				// If Post Purchase Upsell plugin is active, complete the upsell there directly.
-				if ( function_exists( 'PPU_Abstract_Product_Offer::complete_redirect_upsell' ) ) {
+				if ( class_exists( 'PPU_Abstract_Product_Offer' ) &&  method_exists( 'PPU_Abstract_Product_Offer', 'complete_redirect_upsell' ) ) {
 					PPU_Abstract_Product_Offer::complete_redirect_upsell( $order, $upsell_id );
 				}
 
@@ -181,7 +181,7 @@ class Qliro_One_Callbacks {
 				Qliro_One_Logger::log( "Redirect upsell failed for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
 
 				// If Post Purchase Upsell plugin is active, fail the upsell there.
-				if ( function_exists( 'PPU_Abstract_Product_Offer::fail_redirect_upsell' ) ) {
+				if ( class_exists( 'PPU_Abstract_Product_Offer' ) &&  method_exists( 'PPU_Abstract_Product_Offer', 'fail_redirect_upsell' ) ) {
 					PPU_Abstract_Product_Offer::fail_redirect_upsell( $order, $upsell_id );
 				}
 
