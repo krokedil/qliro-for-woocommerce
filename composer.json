@@ -33,8 +33,10 @@
         }
     },
     "scripts": {
-        "lint": "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
-        "lint-fix": "./vendor/bin/phpcbf --standard=phpcs.xml.dist --colors --encoding=utf-8 -p `git ls-files --others --exclude-standard -c|grep \\.php`",
+        "lint": "vendor/bin/phpcs . --standard=phpcs.xml.dist --extensions=php -q",
+        "lint:fix": "vendor/bin/phpcbf . --standard=phpcs.xml.dist --extensions=php -q",
+        "lint:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcs --standard=phpcs.xml.dist --extensions=php -q",
+        "lint:fix:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcbf --standard=phpcs.xml.dist --extensions=php -q",
         "install-codestandards": [
             "PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
         ],
