@@ -256,11 +256,19 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			// We must exclude shipping and any fees from the available discount amount.
 			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
-			$fees_total_amount  = array_reduce( $order->get_fees(), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() * 100 ) ) ) ?? 0;
-			$available_amount   = max( 0, $items_total_amount - abs( $fees_total_amount ) ) / 100;
+
+			// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
+			$previous_discount_amount = 0;
+			foreach ( $order->get_fees() as $fee ) {
+				$id = $fee->get_meta( 'qliro_discount_id' );
+				if ( ! empty( $id ) ) {
+					$previous_discount_amount += ( floatval( $fee->get_total() ) * 100 + floatval( $fee->get_total_tax() ) * 100 );
+				}
+			}
+			$available_amount = $items_total_amount - abs( $previous_discount_amount );
 
 			// Ensure there is actually a discounted amount, and that is less than the total amount.
-			if ( ( $discount_amount * 100 ) > ( $available_amount * 100 ) ) {
+			if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
 				throw new Exception( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro' ), wc_price( max( 0, $available_amount ) ) ) );
 			}
 
@@ -280,9 +288,13 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$fee->set_total( $discount_amount );
 			$fee->set_name( $discount_id );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
-			$fee->save();
-
-			$fee_item = array(
+			$fee_id = $fee->save();
+			error_log( 'before order calc - ' . $fee->get_total());
+			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
+			$order->add_item( $fee );
+			$order->calculate_totals( false );
+			error_log( 'after order calc - ' . $fee->get_total());
+			/*$fee_item = array(
 				array(
 					'MerchantReference'  => $discount_id,
 					'Description'        => $fee->get_name(),
@@ -291,18 +303,22 @@ class Qliro_One_Metabox extends OrderMetabox {
 					'PricePerItemIncVat' => $fee->get_total(),
 					'PricePerItemExVat'  => $fee->get_total(),
 				),
-			);
+			);*/
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
 			if ( qoc_is_fully_captured( $order ) ) {
-				$response = QOC_WC()->api->add_items_qliro_order( $order_id, $fee_item );
+				$response = QOC_WC()->api->add_items_qliro_order( $order_id, array() );
 			} else {
 				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
-				$items    = array_merge( Qliro_One_Helper_Order::get_order_items( $order_id ), $fee_item );
+				$items    = array_merge( Qliro_One_Helper_Order::get_order_items( $order_id ) );
 				$response = QOC_WC()->api->update_items_qliro_order( $order_id, $items );
 			}
 
 			if ( is_wp_error( $response ) ) {
+				// Remove the fee from the order since the update to Qliro failed.
+				$order->remove_item( $fee_id );
+				$order->calculate_totals( false );
+
 				// translators: %1$s: Discount ID, %2$s: Error message.
 				throw new Exception( sprintf( __( 'Failed to add discount [%1$s] to Qliro order. Reason: %2$s', 'qliro' ), $discount_id, $response->get_error_message() ) );
 			}
@@ -310,10 +326,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 			// Get the new payment transaction id from the response, and update the order meta with it.
 			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
-
-			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
-			$order->add_item( $fee );
-			$order->calculate_totals( false );
 
 			// translators: %s: Discount ID.
 			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro' ), $discount_id ) );

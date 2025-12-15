@@ -11,7 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 // We must exclude shipping and any fees from the available discount amount.
 $items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( $item->get_total() + $item->get_total_tax() ) ) ?? 0;
 
-$total_amount = wc_format_decimal( $order->get_total() );
+// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
+$previous_discount_amount = 0;
+foreach ( $order->get_fees() as $fee ) {
+	$id = $fee->get_meta( 'qliro_discount_id' );
+	if ( ! empty( $id ) ) {
+		$previous_discount_amount += ( floatval( $fee->get_total() ) + floatval( $fee->get_total_tax() ) );
+	}
+}
+$available_amount = $items_total_amount - abs( $previous_discount_amount );
+$total_amount     = wc_format_decimal( $order->get_total() );
 
 $fees = array();
 foreach ( $order->get_fees() as $fee ) {
@@ -121,7 +130,7 @@ $section_3 = array(
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'qliro-one-for-woocommerce' ); ?></span>
 					</button>
 				</header>
-				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php esc_attr_e( $fees ); ?>" data-total-amount="<?php esc_attr_e( $total_amount ); ?>" data-available-amount="<?php esc_attr_e( wc_format_decimal( $items_total_amount ) ); ?>">
+				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php esc_attr_e( $fees ); ?>" data-total-amount="<?php esc_attr_e( $total_amount ); ?>" data-available-amount="<?php esc_attr_e( wc_format_decimal( $available_amount ) ); ?>">
 					<?php woocommerce_admin_fields( $section_1 ); ?>
 					<p id="qliro-discount-id-error" class="explanation hidden error"><?php esc_html_e( 'Discount ID must be unique', 'qliro-one-for-woocommerce' ); ?></p>
 					<hr>
