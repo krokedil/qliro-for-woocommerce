@@ -289,21 +289,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 			$fee->set_name( $discount_id );
 			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
 			$fee_id = $fee->save();
-			error_log( 'before order calc - ' . $fee->get_total());
+
 			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 			$order->add_item( $fee );
 			$order->calculate_totals( false );
-			error_log( 'after order calc - ' . $fee->get_total());
-			/*$fee_item = array(
-				array(
-					'MerchantReference'  => $discount_id,
-					'Description'        => $fee->get_name(),
-					'Quantity'           => $fee->get_quantity(),
-					'Type'               => 'Discount',
-					'PricePerItemIncVat' => $fee->get_total(),
-					'PricePerItemExVat'  => $fee->get_total(),
-				),
-			);*/
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
 			if ( qoc_is_fully_captured( $order ) ) {
