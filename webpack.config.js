@@ -2,7 +2,7 @@ const path = require('path');
 module.exports = {
 	mode: 'production', // production
 	entry: {
-		'qliro-for-woocommerce': './assets/js/qliro-one-for-woocommerce.js',
+		'qliro-one-for-woocommerce': './assets/js/qliro-one-for-woocommerce.js',
 	},
 
 	output: {
