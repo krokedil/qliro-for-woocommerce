@@ -258,6 +258,10 @@
             "description": "<ul><li>Feature - Added support for Upsell through payment methods like Trustly or Swish, where the customer is redirected to complete the upsell. Requires Post Purchase Upsell for WooCommerce version 4.0.0.</li><li>Feature - Added support for refunding orders that have been captured using the partial capture functionality.</li><li>Feature - Added a action hook and jQuery event called `qliro_customer_data_fetched`, that is called when we fetch the address data from the Qliro session in the checkout. This can be used to set customer data outside of what the plugin already does.</li><li>Change - Changed the needed permissions to add a discount to a Qliro order from 'manage_woocommerce' to 'edit_shop_orders' to allow shop managers to add discounts.</li><li>Fix - Fixed an issue where the shipping billing country was not always updated when changing the billing country field in the checkout.</li><li>Fix - Fixed some information in the order metabox not always being correct when some transactions had a different order amount than the original order.</li><li>Fix - Send the vat rate when shipping methods are sent as shipping options to Qliro when showing shipping selection in the Qliro checkout.</li><li>Fix - Fixed a reference to deprecated JavaScript libraries since WooCommerce 10.3.0.</li><li>Fix - Fixed showing the incorrect value in the order metabox for the Qliro order total when discounts had been applied, or some other cases.</li><li>Fix - Fixed how we calculate the available amount to create a discount for, that could cause issues when fees were added to the order.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.9.0"
+      },
+      "1.18.1": {
+            "description": "<ul><li>Fix - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.9.0"
       }
-
 }

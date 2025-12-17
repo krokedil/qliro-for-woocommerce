@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.3.5
-Stable tag: 1.18.0
+WC tested up to: 10.4.2
+Stable tag: 1.18.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.12.16    - version 1.18.1 =
+* Fix           - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.
+
 = 2025.12.15    - version 1.18.0 =
 * Feature       - Added support for Upsell through payment methods like Trustly or Swish, where the customer is redirected to complete the upsell. Requires Post Purchase Upsell for WooCommerce version 4.0.0.
 * Feature       - Added support for refunding orders that have been captured using the partial capture functionality.
