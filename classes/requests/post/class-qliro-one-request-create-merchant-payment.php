@@ -46,7 +46,7 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 			'Country'                              => $order->get_billing_country(),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
 			'MerchantOrderManagementStatusPushUrl' => QLIRO_WC()->merchant_urls->get_om_push_url( $confirm_id ),
-			'OrderItems'                           => $order_data::get_order_lines( $this->arguments['order_id'] ),
+			'OrderItems'                           => $order_data::get_order_items( $this->arguments['order_id'] ),
 			'BillingAddress'                       => array(
 				'FirstName'  => $order->get_billing_first_name(),
 				'LastName'   => $order->get_billing_last_name(),

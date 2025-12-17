@@ -101,11 +101,17 @@ class Qliro_One_Ajax extends WC_AJAX {
 			);
 		}
 
+		$customer         = $qliro_one_order['Customer'] ?? array();
+		$billing_address  = $qliro_one_order['BillingAddress'] ?? array();
+		$shipping_address = $qliro_one_order['ShippingAddress'] ?? array();
+
+		do_action( 'qliro_customer_data_fetched', $customer, $billing_address, $shipping_address );
+
 		wp_send_json_success(
 			array(
-				'billingAddress'  => $qliro_one_order['BillingAddress'] ?? array(),
-				'shippingAddress' => $qliro_one_order['ShippingAddress'] ?? array(),
-				'customer'        => $qliro_one_order['Customer'] ?? array(),
+				'billingAddress'  => $billing_address,
+				'shippingAddress' => $shipping_address,
+				'customer'        => $customer,
 			)
 		);
 	}

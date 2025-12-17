@@ -76,7 +76,7 @@ class Qliro_One_Helper_Cart {
 			}
 		}
 
-		return $formatted_cart_items;
+		return apply_filters( 'qliro_one_helper_cart_items', $formatted_cart_items );
 	}
 
 	/**
@@ -425,7 +425,7 @@ class Qliro_One_Helper_Cart {
 	 *
 	 * @return string
 	 */
-	private static function get_shipping_tax_rate( $shipping_rate ) {
+	public static function get_shipping_tax_rate( $shipping_rate ) {
 		$rate = $shipping_rate->get_cost() != 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
 
 		return self::format_vat_rate( $rate );

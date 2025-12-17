@@ -3,10 +3,10 @@ Contributors: krokedil
 Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
 Donate link: https://krokedil.com
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.3.5
+WC tested up to: 10.4.2
 Stable tag: 2.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -19,6 +19,45 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.12.16    - version 1.18.1 =
+* Fix           - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.
+
+= 2025.12.15    - version 1.18.0 =
+* Feature       - Added support for Upsell through payment methods like Trustly or Swish, where the customer is redirected to complete the upsell. Requires Post Purchase Upsell for WooCommerce version 4.0.0.
+* Feature       - Added support for refunding orders that have been captured using the partial capture functionality.
+* Feature       - Added a action hook and jQuery event called `qliro_customer_data_fetched`, that is called when we fetch the address data from the Qliro session in the checkout. This can be used to set customer data outside of what the plugin already does.
+* Change        - Changed the needed permissions to add a discount to a Qliro order from 'manage_woocommerce' to 'edit_shop_orders' to allow shop managers to add discounts.
+* Fix           - Fixed an issue where the shipping billing country was not always updated when changing the billing country field in the checkout.
+* Fix           - Fixed some information in the order metabox not always being correct when some transactions had a different order amount than the original order.
+* Fix           - Send the vat rate when shipping methods are sent as shipping options to Qliro when showing shipping selection in the Qliro checkout.
+* Fix           - Fixed a reference to deprecated JavaScript libraries since WooCommerce 10.3.0.
+* Fix           - Fixed showing the incorrect value in the order metabox for the Qliro order total when discounts had been applied, or some other cases.
+* Fix           - Fixed how we calculate the available amount to create a discount for, that could cause issues when fees were added to the order.
+
+= 2025.11.24    - version 1.17.2 =
+* Tweak         - Improved the newsletter signup feature and added a setting for customizing the newsletter signup checkbox label.
+* Tweak         - Added the 'qliro_one_helper_cart_items' filter to enable customization of cart items.
+* Tweak         - Added the 'qliro_one_helper_order_items' filter to enable customization of order items.
+* Fix           - Improved compatibility with 'WooCommerce Subscriptions' by correctly handling additional subscription types, including renewals, switches, and resubscriptions.
+
+= 2025.10.29    - version 1.17.1 =
+* Fix           - Corrected the display of pickup point addresses in checkout when choosing home delivery with the 'WooCommerce PostNord Shipping' plugin by Redlight Media.
+* Tweak         - Discounts are now applied only to products, excluding shipping costs and fees.
+
+= 2025.10.22    - version 1.17.0 =
+* Feature       - Added Advanced demo mode, allowing testing of the Qliro payment solution in the store without enabling it for all customers.
+* Fix           - Improved the new discount feature to support all markets, with proper currency handling and translations.
+
+= 2025.10.13    - version 1.16.1 =
+* Enhancement   - An admin notice is now displayed when Qliro is running in test mode.
+* Enhancement   - Improved handling of shipping when a separate shipping address is entered.
+* Fix           - Fixed a fatal error that could occur if Kernl returned a temporary update error during plugin updates.
+
+= 2025.10.01    - version 1.16.0 =
+* Feature       - Added support for applying discounts to orders after purchase.
+* Fix           - Fixed an issue where WC Subscription renewal orders failed for auto-completed orders.
+* Fix           - Fixed an issue where clicking the 'Sync order with Qliro' button redirected users to a blank page after syncing.
+
 = 2025.09.17    - version 1.15.0 =
 * Feature       - Added support for the 'CareOf' field.
 * Feature       - Added support for 'All Products for WooCommerce Subscriptions' by Woo.

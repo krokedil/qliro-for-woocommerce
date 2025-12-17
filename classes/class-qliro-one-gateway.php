@@ -65,7 +65,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$this->init_settings();
 		$this->title             = $this->get_option( 'title' );
 		$this->description       = $this->get_option( 'description' );
-		$this->enabled           = $this->get_option( 'enabled' );
+		$this->enabled           = qliro_is_enabled_with_demo_check() ? 'yes' : 'no';
 		$this->testmode          = 'yes' === $this->get_option( 'testmode' );
 		$this->logging           = 'yes' === $this->get_option( 'logging' );
 		$this->upsell_percentage = $this->get_option( 'upsell_percentage', 10 );
@@ -101,7 +101,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		}
 
 		// If the cart contains a subscription, we only support swedish customers for now.
-		if ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) {
+		if ( Qliro_One_Subscriptions::cart_has_subscription() ) {
 			$billing_country = WC()->customer->get_billing_country();
 			if ( 'SE' !== $billing_country ) { // Qliro only supports Swedish customers for subscriptions.
 				return false;
@@ -259,12 +259,23 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return $upsell_order;
 		}
 
-		$order = wc_get_order( $order_id );
-		$order->update_meta_data( '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
+		$result = true;
+		$order  = wc_get_order( $order_id );
+
+		// If we got a link to redirect to for the upsell, we need to handle that.
+		if ( isset( $upsell_order['UpsellLink'] ) ) {
+			$result = $upsell_order['UpsellLink'];
+			$order->add_order_note( __( 'Qliro order was upsold, but the customer was redirected to a new payment page.', 'qliro-for-woocommerce' ) );
+		}
+
+		if ( isset( $upsell_order['PaymentTransactionId'] ) ) {
+			$order->update_meta_data( '_qliro_payment_transaction_id', $upsell_order['PaymentTransactionId'] );
+			$order->add_order_note( __( 'Qliro order was upsold with transaction id', 'qliro-for-woocommerce' ) . ": {$upsell_order['PaymentTransactionId']}" );
+		}
+
 		$order->save();
 
-		return true;
+		return $result;
 	}
 
 	/**
@@ -275,24 +286,26 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 */
 	public function get_upsell_limitations( $order_id ) {
 		$limits              = array(
-			'amount' => 0,
+			'amount' => PHP_INT_MAX, // No limit by default since Qliro should be able to support a higher amount to some payment providers.
 		);
 		$order               = wc_get_order( $order_id );
 		$payment_method_type = $order->get_meta( 'qliro_one_payment_method_name' );
 		$is_qliro_method     = str_contains( $payment_method_type, 'QLIRO' );
 		$is_card_method      = str_contains( $payment_method_type, 'CARD' );
 
+		// If the payment method is a qliro method and not a card method, we need to set the upsell limit based on the upsell percentage.
 		if ( $is_qliro_method && ! $is_card_method ) {
 			$limits['amount'] = $order->get_total() * ( $this->upsell_percentage / 100 );
 		}
 
+		// If the payment method is a card method, we need to set a fixed limit.
 		if ( ! $is_qliro_method && $is_card_method ) {
-			$amount = 300;
+			$amount = 300; // 300 for SEK/NOK/DKK etc for card payments.
 			switch ( $order->get_currency() ) {
 				case 'EUR':
 				case 'USD':
 				case 'GBP':
-					$amount = 30;
+					$amount = 30; // 30 for Euro/Pounds/Dollars for card payments.
 					break;
 			}
 			$limits['amount'] = $amount;
@@ -363,9 +376,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 
 		$args['general_content'] = array( $gateway_page, 'output' );
 		$settings_page           = ( SettingsPage::get_instance() )
-			->set_plugin_name( 'Qliro Checkout' )
-			->register_page( $this->id, $args, $this )
-			->output( $this->id );
+		->set_plugin_name( 'Qliro Checkout' )
+		->register_page( $this->id, $args, $this )
+		->output( $this->id );
 	}
 
 	/**

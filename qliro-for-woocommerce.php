@@ -12,7 +12,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 10.1.2
+ * WC tested up to: 10.4.2
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2025 Krokedil
@@ -187,6 +187,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notice_testmode' ) );
 		}
 
 		/**
@@ -277,6 +278,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-merchant-payment.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-add-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-items.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-om-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-upsell-order.php';
 
@@ -289,6 +292,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-partial-capture-admin-order-page.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-order-utility.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
@@ -473,6 +477,28 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function subscriptions() {
 			return $this->subscriptions;
+		}
+
+		/**
+		 * Show admin notice if test mode is enabled.
+		 *
+		 * @return void
+		 */
+		public function admin_notice_testmode() {
+			$settings         = get_option( 'woocommerce_qliro_one_settings', array() );
+			$testmode_enabled = 'yes' === $settings['testmode'] ?? 'yes';
+
+			if ( $testmode_enabled ) {
+				?>
+				<div class="notice notice-warning">
+					<p>
+						<?php
+							esc_html_e( 'Qliro for WooCommerce is currently running in test mode. Remember to disable test mode and enter your live credentials before going live.', 'qliro-one-for-woocommerce' );
+						?>
+					</p>
+				</div>
+				<?php
+			}
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();

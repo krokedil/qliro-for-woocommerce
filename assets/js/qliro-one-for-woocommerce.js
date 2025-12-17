@@ -18,6 +18,12 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.bodyEl.on('click', qliroOneForWooCommerce.selectAnotherSelector, qliroOneForWooCommerce.changeFromQliroOne);
 			qliroOneForWooCommerce.bodyEl.on('updated_checkout', qliroOneForWooCommerce.maybeDisplayShippingPrice);
 			qliroOneForWooCommerce.renderIframe();
+
+			$('#qliro_billing_country').on('change', () => {
+				const country = $('#qliro_billing_country').val();
+				$('#billing_country, #shipping_country').val(country);
+				$('body').trigger('update_checkout');
+			});
 		},
 		/**
 		 * Triggers on document ready.
@@ -173,6 +179,12 @@ jQuery(function ($) {
 			let form = $('form[name="checkout"] input, form[name="checkout"] select, textarea');
 			for (var i = 0; i < form.length; i++) {
 				let name = form[i].name;
+
+				// Skip this field as it is managed through our plugin settings or shortcode.
+				if ("qliro_billing_country" === name) { 
+					continue
+				}
+
 				// Check if field is inside the order review.
 				if ($('table.woocommerce-checkout-review-order-table').find(form[i]).length) {
 					continue;
@@ -190,6 +202,10 @@ jQuery(function ($) {
 			}
 		},
 		updateAddress: async (customerInfo) => {
+			// The "ship to different address" checkbox should always be checked.
+			$('#ship-to-different-address-checkbox').prop('checked', true);
+			$('.woocommerce-shipping-fields .shipping_address').show();
+
 			// Since the postal code is not always included in the frontend, we need to fetch the address from the backend.
 			let billingAddress, shippingAddress, customer
 			try {
@@ -227,41 +243,42 @@ jQuery(function ($) {
 
 			qliroOneForWooCommerce.setCustomerType(customerInfo);
 
-			// Check if shipping fields or billing fields are to be used.
-			if (!$('#ship-to-different-address-checkbox').is(":checked")) {
-				(email == null) ? null : $('#billing_email').val(email);
-				(phone == null) ? null : $('#billing_phone').val(phone);
-				(firstName == null) ? null : $('#billing_first_name').val(firstName);
-				(lastName == null) ? null : $('#billing_last_name').val(lastName);
-				(street == null) ? null : $('#billing_address_1').val(street);
-				(postalCode == null) ? null : $('#billing_postcode').val(postalCode);
-				(city == null) ? null : $('#billing_city').val(city);
-				(area == null) ? null : qliroOneForWooCommerce.setStateField('billing', area);
+			(email == null) ? null : $('#billing_email').val(email);
+			(phone == null) ? null : $('#billing_phone').val(phone);
+			(firstName == null) ? null : $('#billing_first_name').val(firstName);
+			(lastName == null) ? null : $('#billing_last_name').val(lastName);
+			(street == null) ? null : $('#billing_address_1').val(street);
+			(postalCode == null) ? null : $('#billing_postcode').val(postalCode);
+			(city == null) ? null : $('#billing_city').val(city);
+			(area == null) ? null : qliroOneForWooCommerce.setStateField('billing', area);
 
-				$("form.checkout").trigger('update_checkout');
-				$('#billing_email').change();
-				$('#billing_email').blur();
-			} else {
-				const shippingFirstName = shippingAddress?.FirstName ?? customerInfo?.address?.firstName;
-				const shippingLastName = shippingAddress?.LastName ?? customerInfo?.address?.lastName;
-				const shippingStreet = shippingAddress?.Street ?? customerInfo?.address?.street;
-				const shippingPostalCode = shippingAddress?.PostalCode ?? customerInfo?.address?.postalCode;
-				const shippingCity = shippingAddress?.City ?? customerInfo?.address?.city;
-				const shippingArea = shippingAddress?.Area ?? customerInfo?.address?.area;
+			$('#billing_email').change();
+			$('#billing_email').blur();
 
-				(email == null) ? null : $('#shipping_email').val(email);
-				(phone == null) ? null : $('#shipping_phone').val(phone);
-				(shippingFirstName == null) ? null : $('#shipping_first_name').val(shippingFirstName);
-				(shippingLastName == null) ? null : $('#shipping_last_name').val(shippingLastName);
-				(shippingStreet == null) ? null : $('#shipping_address_1').val(shippingStreet);
-				(shippingPostalCode == null) ? null : $('#shipping_postcode').val(shippingPostalCode);
-				(shippingCity == null) ? null : $('#shipping_city').val(shippingCity);
-				(shippingArea == null) ? null : qliroOneForWooCommerce.setStateField("shipping", shippingArea);
+			const shippingFirstName = shippingAddress?.FirstName ?? customerInfo?.address?.firstName;
+			const shippingLastName = shippingAddress?.LastName ?? customerInfo?.address?.lastName;
+			const shippingStreet = shippingAddress?.Street ?? customerInfo?.address?.street;
+			const shippingPostalCode = shippingAddress?.PostalCode ?? customerInfo?.address?.postalCode;
+			const shippingCity = shippingAddress?.City ?? customerInfo?.address?.city;
+			const shippingArea = shippingAddress?.Area ?? customerInfo?.address?.area;
 
-				$('body').trigger('update_checkout');
-				$('#shipping_email').change();
-				$('#shipping_email').blur();
-			}
+			(email == null) ? null : $('#shipping_email').val(email);
+			(phone == null) ? null : $('#shipping_phone').val(phone);
+			(shippingFirstName == null) ? null : $('#shipping_first_name').val(shippingFirstName);
+			(shippingLastName == null) ? null : $('#shipping_last_name').val(shippingLastName);
+			(shippingStreet == null) ? null : $('#shipping_address_1').val(shippingStreet);
+			(shippingPostalCode == null) ? null : $('#shipping_postcode').val(shippingPostalCode);
+			(shippingCity == null) ? null : $('#shipping_city').val(shippingCity);
+			(shippingArea == null) ? null : qliroOneForWooCommerce.setStateField("shipping", shippingArea);
+			$('body').trigger('qliro_customer_data_fetched', [{
+				customer,
+				billingAddress,
+				shippingAddress
+			}]);
+
+			$('body').trigger('update_checkout');
+			$('#shipping_email').change();
+			$('#shipping_email').blur();
 		},
 
 		/*
@@ -311,6 +328,10 @@ jQuery(function ($) {
 		 * Sets the WooCommerce form field data.
 		 */
 		setAddressData: function (addressData, callback) {
+			// The "ship to different address" checkbox should always be checked.
+			$('#ship-to-different-address-checkbox').prop('checked', true);
+			$('.woocommerce-shipping-fields .shipping_address').show();
+
 			if (0 < $('form.checkout #terms').length) {
 				$('form.checkout #terms').prop('checked', true);
 			}
@@ -333,7 +354,6 @@ jQuery(function ($) {
 			$('#billing_email').val(addressData.customer.Email);
 
 			// Shipping fields.
-			$('#ship-to-different-address-checkbox').prop('checked', true);
 			$('#shipping_first_name').val(addressData.shippingAddress.FirstName);
 			$('#shipping_last_name').val(addressData.shippingAddress.LastName);
 			$('#shipping_company').val(addressData.shippingAddress.CompanyName);
