@@ -87,6 +87,10 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+
 		$items = qoc_is_partially_captured( $order ) ? qoc_get_remaining_items_to_capture( $order ) : '';
 
 		$response = QOC_WC()->api->capture_qliro_one_order( $order_id, $items );
@@ -145,6 +149,10 @@ class Qliro_One_Order_Management {
 		if ( $order->get_meta( '_qliro_order_canceled' ) ) {
 			return;
 		}
+
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		$response = QOC_WC()->api->cancel_qliro_one_order( $order_id );
 		if ( is_wp_error( $response ) ) {
@@ -249,6 +257,10 @@ class Qliro_One_Order_Management {
 
 		$refund_order_id = $order->get_refunds()[0]->get_id();
 		$refund_order    = wc_get_order( $refund_order_id );
+
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
 		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
