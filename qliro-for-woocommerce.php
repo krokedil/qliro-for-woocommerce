@@ -5,7 +5,7 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.0.0
+ * Version: 2.1.0
  * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.0.0' );
+define( 'QLIRO_WC_VERSION', '2.1.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
