@@ -27,5 +27,3 @@ gruntfile.js
 
 tests/**/*
 tmp*
-
-/.wordpress-org
