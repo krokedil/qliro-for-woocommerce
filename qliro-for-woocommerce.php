@@ -12,7 +12,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 10.1.2
+ * WC tested up to: 10.4.2
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2025 Krokedil
