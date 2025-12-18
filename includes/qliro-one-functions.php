@@ -70,6 +70,11 @@ function qliro_one_maybe_create_order() {
  * @return string|null
  */
 function qliro_wc_get_snippet() {
+
+	if ( ! qliro_is_enabled_with_demo_check() ) {
+		return null;
+	}
+
 	$qliro_one_order = qliro_one_maybe_create_order();
 	$snippet         = $qliro_one_order['OrderHtmlSnippet'] ?? null;
 
@@ -162,10 +167,16 @@ function qliro_confirm_order( $order ) {
 	$order_id       = $order->get_id();
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 	if ( is_wp_error( $qliro_order ) ) {
 		return false;
+	}
+
+	// Save SignupForNewsletter value to order meta if it exists.
+	if ( isset( $qliro_order['SignupForNewsletter'] ) ) {
+		$order->update_meta_data( '_qliro_one_signup_for_newsletter', wc_bool_to_string( $qliro_order['SignupForNewsletter'] ) );
+		$order->save_meta_data();
 	}
 
 	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
@@ -200,12 +211,17 @@ function qliro_confirm_order( $order ) {
 	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
 	$order->add_order_note( $note );
-	$order->payment_complete( $qliro_order_id );
 
-	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id );
+	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 	if ( is_wp_error( $qliro_order ) ) {
 		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
 	}
+
+	if ( ! is_wp_error( $qliro_order ) && isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
+		$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+	}
+
+	$order->payment_complete( $qliro_order_id );
 
 	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
 		if ( 'Success' === $payment_transaction['Status'] ) {
@@ -215,10 +231,6 @@ function qliro_confirm_order( $order ) {
 			$subtype = implode( ' ', array_slice( explode( '_', $payment_transaction['PaymentMethodName'] ), 1 ) );
 			$subtype = $payment_transaction['PaymentMethodSubtypeCode'] ?? $subtype ?? '';
 			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $subtype );
-
-			if ( isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
-				$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
-			}
 
 			if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
 				// Get the subscriptions for the order.
@@ -683,4 +695,44 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
 	}
 
 	return $default; // Return the default value if the value is still not numeric.
+}
+
+/**
+ * Check if Qliro One is enabled.
+ *
+ * Check if Qliro One is enabled in the settings, and if demo mode is enabled, check if the demo mode coupon is applied.
+ *
+ * @return bool
+ */
+function qliro_is_enabled_with_demo_check() {
+	$settings   = get_option( 'woocommerce_qliro_one_settings', array() );
+	$is_enabled = isset( $settings['enabled'] ) && 'yes' === $settings['enabled'];
+
+	// Only check for demo mode if we are on the checkout page, and not on the order received page or the pay for order page.
+	if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+		return $is_enabled;
+	}
+
+	if ( $is_enabled ) {
+
+		$is_demomode = isset( $settings['demomode'] ) && 'yes' === $settings['demomode'];
+		if ( $is_demomode ) {
+			$demomode_coupon = isset( $settings['demomode_coupon'] ) ? $settings['demomode_coupon'] : '';
+
+			// If we are not in demo mode, or the demo mode coupon is not set, return false.
+			if ( empty( $demomode_coupon ) ) {
+				return false;
+			}
+
+			// Check if the cart contains the demo mode coupon. If not, return false.
+			$applied_coupons = WC()->cart->get_applied_coupons();
+			if ( ! in_array( $demomode_coupon, $applied_coupons, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }

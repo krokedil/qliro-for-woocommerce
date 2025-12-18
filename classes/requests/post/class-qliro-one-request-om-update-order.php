@@ -44,17 +44,25 @@ class Qliro_One_Request_OM_Update_Order extends Qliro_One_Request_Post {
 		$this->qliro_order_id = $order->get_transaction_id(); // TODO: Test if this can use the meta data _qliro_one_order_id like all other requests.
 		$transaction_id       = $order->get_meta( '_qliro_payment_transaction_id' );
 
+		$order_items = Qliro_One_Helper_Order::get_order_items( $order_id );
+		$updates = Qliro_Order_Utility::maybe_convert_to_split_transactions( $order_items, $order );
+
+		// If we failed to convert the order items to shipments, use the old logic to send the shipments in a single update.
+		if ( empty( $updates ) ) {
+			$updates = array(
+				array(
+					'PaymentTransactionId' => $transaction_id,
+					'OrderItems'           => $order_items,
+				),
+			);
+		}
+
 		$body = array(
 			'MerchantApiKey' => $this->get_qliro_key(),
 			'RequestId'      => $request_id,
 			'Currency'       => $order->get_currency(),
 			'OrderId'        => $order->get_transaction_id(),
-			'Updates'        => array(
-				array(
-					'PaymentTransactionId' => $transaction_id,
-					'OrderItems'           => Qliro_One_Helper_Order::get_order_lines( $order_id ),
-				),
-			),
+			'Updates'        => $updates,
 		);
 
 		return $body;

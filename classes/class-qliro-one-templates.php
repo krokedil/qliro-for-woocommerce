@@ -66,9 +66,6 @@ class Qliro_One_Templates {
 
 		// Shortcode: country selector. Should always be available.
 		add_shortcode( 'qliro_country_selector', array( $this, 'country_selector_shortcode' ) );
-
-		// Unhook the country field if it has the country selector shortcode, and Qliro is the chosen gateway. We'll inject the country field instead.
-		add_filter( 'woocommerce_checkout_fields', array( $this, 'unhook_country_field' ) );
 	}
 
 	/**
@@ -92,7 +89,7 @@ class Qliro_One_Templates {
 		}
 
 		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-		$first_gateway = reset( $available_gateways );
+		$first_gateway      = reset( $available_gateways );
 		if ( ! isset( WC()->session ) || ( 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) && 'qliro_one' !== $first_gateway->id ) ) {
 			return;
 		}
@@ -112,38 +109,9 @@ class Qliro_One_Templates {
 		);
 		$value    = $checkout->get_value( 'billing_country' );
 
-		do_action_deprecated( 'before_qliro_country_selector', array(), '2.0.0', 'qliro_before_country_selector' );
-		do_action( 'qliro_before_country_selector' );
-		woocommerce_form_field( 'billing_country', $args, $value );
-		do_action_deprecated( 'after_qliro_country_selector', array(), '2.0.0', 'qliro_after_country_selector' );
-		do_action( 'qliro_after_country_selector' );
-	}
-
-	/**
-	 * Maybe unhook the billing country field.
-	 *
-	 * @param array $fields Checkout fields.
-	 *
-	 * @return array
-	 */
-	public function unhook_country_field( $fields ) {
-		if ( ! isset( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
-			return $fields;
-		}
-
-		global $post;
-		if ( ! isset( $post ) || ! has_shortcode( $post->post_content, 'qliro_country_selector' ) ) {
-			return $fields;
-		}
-
-		// If we unhook the billing field, it won't be available when we call get_checkout_fields in the `add_country_selector` method which we need to re-use WC defaults.
-		$fields['billing']['qliro_billing_country']             = $fields['billing']['billing_country'];
-		$fields['billing']['qliro_billing_country']['type']     = 'hidden';
-		$fields['billing']['qliro_billing_country']['required'] = false;
-
-		// We do not want it to appear on the checkout field since we'll replace it with our own country field.
-		unset( $fields['billing']['billing_country'] );
-		return $fields;
+		do_action( 'before_qliro_country_selector' );
+		woocommerce_form_field( 'qliro_billing_country', $args, $value );
+		do_action( 'after_qliro_country_selector' );
 	}
 
 	/**

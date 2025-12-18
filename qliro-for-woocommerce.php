@@ -5,7 +5,7 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.0.0
+ * Version: 2.1.0
  * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.0.0' );
+define( 'QLIRO_WC_VERSION', '2.1.0' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -187,6 +187,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		protected function __construct() {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notice_testmode' ) );
 		}
 
 		/**
@@ -277,6 +278,8 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-capture-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-create-merchant-payment.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-return-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-add-items.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-update-items.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-om-update-order.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/post/class-qliro-one-request-upsell-order.php';
 
@@ -289,6 +292,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-partial-capture-admin-order-page.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-order-utility.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
@@ -473,6 +477,28 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 */
 		public function subscriptions() {
 			return $this->subscriptions;
+		}
+
+		/**
+		 * Show admin notice if test mode is enabled.
+		 *
+		 * @return void
+		 */
+		public function admin_notice_testmode() {
+			$settings         = get_option( 'woocommerce_qliro_one_settings', array() );
+			$testmode_enabled = 'yes' === $settings['testmode'] ?? 'yes';
+
+			if ( $testmode_enabled ) {
+				?>
+				<div class="notice notice-warning">
+					<p>
+						<?php
+							esc_html_e( 'Qliro for WooCommerce is currently running in test mode. Remember to disable test mode and enter your live credentials before going live.', 'qliro-one-for-woocommerce' );
+						?>
+					</p>
+				</div>
+				<?php
+			}
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();

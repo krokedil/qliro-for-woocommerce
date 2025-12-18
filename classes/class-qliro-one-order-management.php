@@ -33,6 +33,9 @@ class Qliro_One_Order_Management {
 
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999, 2 );
 
+		// Register the action to set the transaction meta data when reading the Qliro order from the admin endpoint.
+		add_action( 'qliro_admin_order_received', Qliro_Order_Utility::class . '::maybe_update_transaction_meta', 10, 2 );
+
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -83,6 +86,10 @@ class Qliro_One_Order_Management {
 		if ( qliro_is_fully_captured( $order ) ) {
 			return;
 		}
+
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		$items = qliro_is_partially_captured( $order ) ? qliro_get_remaining_items_to_capture( $order ) : '';
 
@@ -143,6 +150,10 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+
 		$response = QLIRO_WC()->api->cancel_qliro_one_order( $order_id );
 		if ( is_wp_error( $response ) ) {
 			$prefix        = 'Evaluation, ';
@@ -166,28 +177,17 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
-	 * Request for refunding a Qliro Order.
+	 * Process legacy refund for orders without payment transactions meta.
 	 *
-	 * @param int   $order_id The WooCommerce order ID.
-	 * @param float $amount The refund amount.
-	 * @param array $return_fees The return fee data.
-	 *
+	 * @param WC_Order        $order The WooCommerce order being refunded.
+	 * @param WC_Order_Refund $refund_order The refund order.
+	 * @param float           $amount The refund amount.
+	 * @param array           $return_fees The return fee data.
 	 * @return bool|WP_Error
 	 */
-	public function refund( $order_id, $amount, $return_fees = array() ) {
-		$order = wc_get_order( $order_id );
-
-		// Skip the order is order management is not enabled for it, and return an error.
-		if ( ! self::is_order_sync_enabled( $order ) ) {
-			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-for-woocommerce' ) );
-		}
-
-		$refund_order_id = $order->get_refunds()[0]->get_id();
-		$refund_order    = wc_get_order( $refund_order_id );
-
-		// If the order has been fully captured, we can refund the order based on the capture id stored in the order meta.
+	private function process_legacy_refund( $order, $refund_order, $amount, $return_fees ) {
 		if ( $order->get_meta( '_qliro_order_captured' ) ) {
-			return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
+			return $this->create_refund( $order, $amount, $refund_order->get_id(), '', array(), $return_fees );
 		}
 
 		// If the order has been partially captured, we need to get the capture id from the order item meta.
@@ -227,7 +227,7 @@ class Qliro_One_Order_Management {
 
 		// Create one or more refunds based on the prepped items array.
 		foreach ( $prepped_items as $capture_id => $items ) {
-			$response = $this->create_refund( $order, $amount, $refund_order_id, $capture_id, $items );
+			$response = $this->create_refund( $order, $amount, $refund_order->get_id(), $capture_id, $items );
 			// If the response is an error, continue to the next capture id.
 			if ( is_wp_error( $response ) ) {
 				continue;
@@ -239,10 +239,42 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
+	 * Request for refunding a Qliro Order.
+	 *
+	 * @param int   $order_id The WooCommerce order ID.
+	 * @param float $amount The refund amount.
+	 * @param array $return_fees The return fee data.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function refund( $order_id, $amount, $return_fees = array() ) {
+		$order = wc_get_order( $order_id );
+
+		// Skip the order is order management is not enabled for it, and return an error.
+		if ( ! self::is_order_sync_enabled( $order ) ) {
+			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
+		}
+
+		$refund_order_id = $order->get_refunds()[0]->get_id();
+		$refund_order    = wc_get_order( $refund_order_id );
+
+		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
+		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+
+		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
+		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
+			return $this->process_legacy_refund( $order, $refund_order, $amount, $return_fees );
+		}
+
+		return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
+	}
+
+	/**
 	 * Get the items to refund.
 	 *
-	 * @param WC_Order $order The WooCommerce order.
 	 * @param array    $refunded_items The refunded items.
+	 * @param WC_Order $order The WooCommerce order.
 	 * @return array
 	 */
 	public function get_formatted_items_to_refund( $refunded_items, $order ) {
@@ -516,7 +548,7 @@ class Qliro_One_Order_Management {
 
 		foreach ( $line_item_tax_totals as $key => $tax_line ) {
 			if ( 'qliro_return_fee' === $key ) {
-				// Get the rate id from the tax by the first key in the line
+				// Get the rate id from the tax by the first key in the line.
 				$tax_rate_id               = array_keys( $tax_line )[0];
 				$return_fee['tax_rate_id'] = $tax_rate_id;
 				$return_fee['tax_amount']  = str_replace( ',', '.', $tax_line[ $tax_rate_id ] );
