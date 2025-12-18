@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.12.18    - version 2.1.0 =
+* Bump WordPress version to to be compatible with version 1.18.1.
+
 = 2025.12.18    - version 2.0.0 =
 * Initial release of Qliro for WooCommerce on wordpress.org, compatible with version 1.15.0.
 
