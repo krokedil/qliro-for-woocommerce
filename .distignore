@@ -1,6 +1,7 @@
 .babelrc
 .gitignore
 .kernlignore
+.distignore
 package-lock.json
 package.json
 readme.dev.md

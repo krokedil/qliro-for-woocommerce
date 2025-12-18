@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2025.12.18    - version 2.0.0 =
+* Initial release of Qliro for WooCommerce on wordpress.org, compatible with version 1.15.0.
+
 = 2025.12.16    - version 1.18.1 =
 * Fix           - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.
 
