@@ -148,6 +148,13 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		public $wcpns;
 
 		/**
+		 * Order discount class instance.
+		 *
+		 * @var Qliro_Order_Discount
+		 */
+		public Qliro_Order_Discount $order_discount;
+
+		/**
 		 * Returns the *Singleton* instance of this class.
 		 *
 		 * @return Qliro_One_For_WooCommerce The *Singleton* instance.
@@ -292,6 +299,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/helpers/class-qliro-one-helper-order-limitations.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-order-management.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-partial-capture-admin-order-page.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-order-discount.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-order-utility.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/includes/qliro-one-functions.php';
 
@@ -306,6 +314,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			$this->merchant_urls         = new Qliro_One_Merchant_URLS();
 			$this->order_management      = new Qliro_One_Order_Management();
 			$this->metabox               = new Qliro_One_Metabox();
+			$this->order_discount        = new Qliro_Order_Discount();
 			$this->checkout              = new Qliro_One_Checkout();
 			$this->api_registry          = new Qliro_One_API_Registry();
 			$this->subscriptions         = new Qliro_One_Subscriptions();

@@ -348,6 +348,7 @@ jQuery(function ($) {
 				const modal = $('.qliro-discount-form-modal');
 				const submitButton = $('#qliro-discount-form-submit');
 				const closeButtons = $('.qliro-discount-form-modal .modal-close')
+				const discountTaxRateEl = $('#qliro-discount-vat-rate');
 
 				const updateURL = () => {
 					const actionURL = submitButton.attr('formaction')
@@ -356,6 +357,11 @@ jQuery(function ($) {
 					const discountAmount = parseFloat(discountAmountEl.val());
 					if (!isNaN(discountAmount)) {
 						url.searchParams.set('discount_amount', discountAmount.toFixed(2));
+					}
+
+					const vatRate = discountTaxRateEl.val();
+					if (vatRate.length > 0) {
+						url.searchParams.set('discount_vat_rate', vatRate);
 					}
 
 					url.searchParams.set('discount_id', discountIdEl.val());
@@ -376,7 +382,7 @@ jQuery(function ($) {
 
 					$('#qliro-discount-error').toggleClass('hidden', !isFullyDiscounted);
 					$('#qliro-discount-notice').toggleClass('hidden', isFullyDiscounted);
-					
+
 					updateURL()
 				}
 
@@ -425,12 +431,12 @@ jQuery(function ($) {
 					// Do not allow negative values.
 					} else if (discountPercentage <= 0) {
 						discountPercentage = 0;
-					} 
+					}
 
 					let discountAmount = ((availableAmount * discountPercentage) / 100);
 					discountAmountEl.val(discountAmount.toFixed(2));
 
-					if (discountAmount > availableAmount) { 
+					if (discountAmount > availableAmount) {
 						discountAmount = availableAmount;
 						discountPercentage = 100;
 					} else if (0 === discountAmount) {
@@ -440,6 +446,10 @@ jQuery(function ($) {
 					$(this).val(discountPercentage);
 
 					updateView(discountAmount, discountPercentage);
+				})
+
+				discountTaxRateEl.on('change', function () {
+					updateURL()
 				})
 
 				$('#qliro_add_order_discount').on('click', function (e) {
