@@ -139,14 +139,14 @@ class Qliro_One_Fields {
 			),
 
 			'demomode'                                   => array(
-				'title'       => __( 'Advanced demo mode', 'qliro-one-for-woocommerce' ),
-				'label'       => __( 'Enable advanced demo mode', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Advanced demo mode', 'qliro-for-woocommerce' ),
+				'label'       => __( 'Enable advanced demo mode', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
 				/* translators: 1: WooCommerce coupon settings link, 2: documentation link */
 				'description' => sprintf(
-					__( 'Configure coupons in %1$s. For detailed instructions, see the %2$s.', 'qliro-one-for-woocommerce' ),
-					'<a target="_blank" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-one-for-woocommerce' ) . '</a>',
-					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-one-for-woocommerce' ) . '</a>'
+					__( 'Configure coupons in %1$s. For detailed instructions, see the %2$s.', 'qliro-for-woocommerce' ),
+					'<a target="_blank" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-for-woocommerce' ) . '</a>',
+					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-for-woocommerce' ) . '</a>'
 				),
 				'default'     => 'no',
 				'desc_tip'    => false,
@@ -154,9 +154,9 @@ class Qliro_One_Fields {
 			),
 
 			'demomode_coupon'                            => array(
-				'title'       => __( 'Demo mode coupon', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Demo mode coupon', 'qliro-for-woocommerce' ),
 				'type'        => 'text',
-				'description' => __( 'Enter the coupon code that can be used at checkout to activate the advanced demo mode.', 'qliro-one-for-woocommerce' ),
+				'description' => __( 'Enter the coupon code that can be used at checkout to activate the advanced demo mode.', 'qliro-for-woocommerce' ),
 				'default'     => 'demo-mode',
 				'desc_tip'    => false,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_demomode',
@@ -242,11 +242,11 @@ class Qliro_One_Fields {
 				'class'       => 'krokedil_conditional_toggler krokedil_toggler_newsletter_settings',
 			),
 			'qliro_one_button_ask_for_newsletter_signup_label' => array(
-				'title'       => __( 'Newsletter label', 'qliro-one-for-woocommerce' ),
+				'title'       => __( 'Newsletter label', 'qliro-for-woocommerce' ),
 				'type'        => 'text',
-				'label'       => __( 'Newsletter signup label', 'qliro-one-for-woocommerce' ),
-				'description' => __( 'Customize the label for the newsletter signup checkbox.', 'qliro-one-for-woocommerce' ),
-				'default'     => __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' ),
+				'label'       => __( 'Newsletter signup label', 'qliro-for-woocommerce' ),
+				'description' => __( 'Customize the label for the newsletter signup checkbox.', 'qliro-for-woocommerce' ),
+				'default'     => __( 'Sign up for our newsletter', 'qliro-for-woocommerce' ),
 				'desc_tip'    => true,
 				'class'       => 'krokedil_conditional_setting krokedil_conditional_newsletter_settings',
 			),

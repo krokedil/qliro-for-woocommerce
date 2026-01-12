@@ -362,7 +362,7 @@ abstract class Qliro_One_Request {
 	 * @return string
 	 */
 	public function get_ask_for_newsletter_label() {
-		$default_value = __( 'Sign up for our newsletter', 'qliro-one-for-woocommerce' );
+		$default_value = __( 'Sign up for our newsletter', 'qliro-for-woocommerce' );
 		if ( empty( $this->settings['qliro_one_button_ask_for_newsletter_signup_label'] ) ) {
 			return $default_value;
 		}
