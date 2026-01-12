@@ -502,7 +502,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				<div class="notice notice-warning">
 					<p>
 						<?php
-							esc_html_e( 'Qliro for WooCommerce is currently running in test mode. Remember to disable test mode and enter your live credentials before going live.', 'qliro-one-for-woocommerce' );
+							esc_html_e( 'Qliro for WooCommerce is currently running in test mode. Remember to disable test mode and enter your live credentials before going live.', 'qliro-for-woocommerce' );
 						?>
 					</p>
 				</div>

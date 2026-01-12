@@ -91,7 +91,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total );
 		Qliro_Order_Discount::output_order_discount_button( $order, $qliro_order );
-		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro' ), self::get_advanced_section_content( $order ) );
+		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-for-woocommerce' ), self::get_advanced_section_content( $order ) );
 	}
 
 	/**
@@ -117,21 +117,28 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 	}
 
+	/**
+	 * Print an admin notice for errors that come from the metabox.
+	 *
+	 * @return void
+	 */
 	public function output_admin_notices() {
-		if ( ! isset( $_GET['qliro_metabox_notice'] ) ) {
+		if ( ! isset( $_GET['qliro_metabox_notice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
-		$notice = sanitize_text_field( wp_unslash( $_GET['qliro_metabox_notice'] ) );
-		$cause  = sanitize_text_field( wp_unslash( $_GET['cause'] ) );
+		$notice = sanitize_text_field( wp_unslash( $_GET['qliro_metabox_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$cause  = sanitize_text_field( wp_unslash( $_GET['cause'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( 'permission_denied' === $notice && 'metabox_discount' === $cause ) {
-			$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-one-for-woocommerce' );
+			$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
 		}
 
-		echo '<div class="notice notice-error is-dismissible">';
-		echo "<p>{$notice}</p>";
-		echo '</div>';
+		$notice  = '<div class="notice notice-error is-dismissible">';
+		$notice .= "<p>{$notice}</p>";
+		$notice .= '</div>';
+
+		echo wp_kses_post( $notice );
 	}
 
 	/**
@@ -195,7 +202,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	/**
 	 * Get the Qliro payment method name.
 	 *
-	 * @param WC_Order $order
+	 * @param WC_Order $order The WooCommerce order.
 	 *
 	 * @return string
 	 */
@@ -212,7 +219,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	/**
 	 * Get the subtype of the Qliro payment method.
 	 *
-	 * @param WC_Order $order
+	 * @param WC_Order $order The WooCommerce order.
 	 *
 	 * @return string
 	 */
@@ -235,13 +242,14 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 * @param WC_Order $order The WooCommerce order.
 	 * @param array    $qliro_order The Qliro order.
 	 * @param array    $last_transaction The last transaction from the Qliro order.
+	 * @param bool     $order_sync_disabled Whether the order sync is disabled.
 	 * @param float    $qliro_total The total amount from the Qliro order.
 	 *
 	 * @return void
 	 */
 	private static function output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total ) {
-		$is_captured             = qliro_is_fully_captured( $order ) || qliro_is_partially_captured( $order );
-		$is_cancelled            = $order->get_meta( '_qliro_order_cancelled' );
+		$is_captured  = qliro_is_fully_captured( $order ) || qliro_is_partially_captured( $order );
+		$is_cancelled = $order->get_meta( '_qliro_order_cancelled' );
 
 		// If the order is captured or cancelled, do not output the sync button.
 		if ( $is_captured || $is_cancelled ) {
@@ -289,7 +297,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 			}
 		);
 
-		// If empty, just return.
+		// If empty, just return since there is no shipping line.
 		if ( empty( $shipping_line ) ) {
 			return;
 		}
