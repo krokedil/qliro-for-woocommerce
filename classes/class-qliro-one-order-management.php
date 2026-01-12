@@ -88,7 +88,7 @@ class Qliro_One_Order_Management {
 		}
 
 		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
-		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		$items = qliro_is_partially_captured( $order ) ? qliro_get_remaining_items_to_capture( $order ) : '';
@@ -150,8 +150,11 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		// Set a metadata to indicate that a cancellation is pending. This is used to prevent processing Reversal callbacks that are not related to cancellations.
+		$order->update_meta_data( '_qliro_order_pending_cancellation', true );
+
 		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
-		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		$response = QLIRO_WC()->api->cancel_qliro_one_order( $order_id );
@@ -252,14 +255,14 @@ class Qliro_One_Order_Management {
 
 		// Skip the order is order management is not enabled for it, and return an error.
 		if ( ! self::is_order_sync_enabled( $order ) ) {
-			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-one-for-woocommerce' ) );
+			return new WP_Error( 'qliro_one_order_sync_disabled', __( 'The order management with Qliro is disabled for this order, either enable it and try again or use the manual refund option.', 'qliro-for-woocommerce' ) );
 		}
 
 		$refund_order_id = $order->get_refunds()[0]->get_id();
 		$refund_order    = wc_get_order( $refund_order_id );
 
 		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
-		$qliro_order_id = $order->get_meta('_qliro_one_order_id' );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
@@ -335,7 +338,7 @@ class Qliro_One_Order_Management {
 			// If the order item is in the refunded items (multidimensional) array, save the refunded data to the order line.
 			foreach ( $items as $item ) {
 				if ( isset( $item['item_id'] ) ) {
-					if ( $order_item->get_id() == $item['item_id'] ) {
+					if ( strval( $order_item->get_id() ) === strval( $item['item_id'] ) ) {
 						// Save refunded data to the order line.
 						$refunded_history = ! empty( $order_item->get_meta( '_qliro_refunded_data' ) ) ? $order_item->get_meta( '_qliro_refunded_data' ) . ',' : '';
 						$order_item->update_meta_data( '_qliro_refunded_data', $refunded_history . $capture_id . ':' . intval( $item['quantity'] ) );
