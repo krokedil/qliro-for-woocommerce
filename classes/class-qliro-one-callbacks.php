@@ -121,7 +121,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function process_upsell_callback( $confirmation_id, $data ) {
-		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
+		$order = qliro_get_order_by_confirmation_id( $confirmation_id );
 		// If we could not get the order, log an error and return.
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when processing the upsell callback" );
@@ -134,7 +134,7 @@ class Qliro_One_Callbacks {
 		$qliro_order_id          = $order->get_meta( '_qliro_one_order_id' );
 
 		// Get the Qliro order to verify the upsell exists.
-		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		// If the Qliro order could not be retrieved, log an error and return.
 		if ( is_wp_error( $qliro_order ) ) {
