@@ -33,6 +33,25 @@ class Qliro_Order_Discount {
 		echo wp_kses_post( "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>" );
 
 		$qliro_discount_data = self::get_order_discount_modal_data( $order );
+		// Enqueue the script and style for the discount modal.
+		wp_enqueue_script( 'qliro-admin-order-discount' );
+		wp_localize_script(
+			'qliro-admin-order-discount',
+			'qliro_discount_data',
+			array(
+				'orderTotalAmount'    => round( $qliro_discount_data['total_amount'], 2 ),
+				'discountableAmount'  => round( $qliro_discount_data['available_amount'], 2 ),
+				'actionUrl'           => $qliro_discount_data['action_url'],
+				'previousDiscountIds' => $qliro_discount_data['fees'],
+				true,
+				'i18n'                => array(
+					'invalidDiscountId' => __( 'Please enter a unique Discount ID.', 'qliro-for-woocommerce' ),
+					'invalidAmount'     => __( 'Please enter a valid Discount Amount.', 'qliro-for-woocommerce' ),
+					'invalidPercent'    => __( 'Please enter a valid Discount Percent.', 'qliro-for-woocommerce' ),
+				),
+			)
+		);
+		wp_enqueue_style( 'qliro-admin-order-discount' );
 
 		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
 	}
@@ -71,6 +90,95 @@ class Qliro_Order_Discount {
 	}
 
 	/**
+	 * Calculate the discount vat amount.
+	 *
+	 * @param float $vat_rate The vat rate percentage.
+	 * @param float $discount_amount The discount amount.
+	 *
+	 * @return float|int
+	 */
+	private function calculate_discount_vat_amount( $vat_rate, $discount_amount ) {
+		return $discount_amount * ( $vat_rate / 100 );
+	}
+
+	/**
+	 * Add the discount to the order as a fee.
+	 *
+	 * @param string   $discount_id The discount id.
+	 * @param int      $rate_id The vat rate id.
+	 * @param float    $vat_rate The vat rate percentage.
+	 * @param float    $vat_amount The vat amount.
+	 * @param float    $discount_amount The discount amount.
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return int The fee item id.
+	 */
+	private function add_discount_to_order( $discount_id, $rate_id, $vat_rate, $vat_amount, $discount_amount, $order ) {
+		$fee = new WC_Order_Item_Fee();
+		$fee->add_meta_data( 'qliro_discount_id', $discount_id );
+		$fee->add_meta_data( 'qliro_discount_vat_rate_id', $rate_id );
+		$fee->add_meta_data( 'qliro_discount_vat_rate', $vat_rate );
+		$fee->add_meta_data( 'qliro_discount_vat_amount', $vat_amount );
+
+		$fee->set_amount( $discount_amount );
+		$fee->set_total( $discount_amount );
+		$fee->set_total_tax( $vat_amount );
+		$fee->set_taxes(
+			array(
+				'total'    => array( $rate_id => $vat_amount ),
+				'subtotal' => array( $rate_id => $vat_amount ),
+			)
+		);
+		$fee->set_tax_status( ( $vat_rate > 0 ) ? 'taxable' : 'none' );
+		$fee->set_name( $discount_id );
+		$fee_id = $fee->save();
+
+		// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
+		$order->add_item( $fee );
+		$order->calculate_totals();
+
+		return $fee_id;
+	}
+
+	/**
+	 * Validate the discount before adding it to the order.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param float    $discount_amount The discount amount.
+	 * @param int      $discount_id The discount ID.
+	 *
+	 * @throws Exception When the discount is invalid.
+	 * @return void
+	 */
+	private function validate_discount( $order, $discount_amount, $discount_id ) {
+		$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
+
+		// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
+		$previous_discount_amount = 0;
+		foreach ( $order->get_fees() as $fee ) {
+			$id = $fee->get_meta( 'qliro_discount_id' );
+			if ( ! empty( $id ) ) {
+				$previous_discount_amount += ( floatval( $fee->get_total() ) * 100 + floatval( $fee->get_total_tax() ) * 100 );
+			}
+		}
+		$available_amount = $items_total_amount - abs( $previous_discount_amount );
+
+		// Ensure there is actually a discounted amount, and that is less than the total amount.
+		if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
+			// translators: %s: Available amount formatted as price.
+			throw new Exception( esc_html( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), wc_price( max( 0, $available_amount ) ) ) ) );
+		}
+
+		foreach ( $order->get_fees() as $fee ) {
+			// To avoid the form being submitted multiple times, we check if the discount already exists.
+			if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
+				// translators: %s: Discount ID.
+				throw new Exception( esc_html( sprintf( __( 'Discount [%s] already added to order.', 'qliro-for-woocommerce' ), $discount_id ) ) );
+			}
+		}
+	}
+
+	/**
 	 * Handle the add order discount action request.
 	 *
 	 * @return void
@@ -79,119 +187,64 @@ class Qliro_Order_Discount {
 	public function handle_add_order_discount_action() {
 		$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-		// Check if this event even concerns us.
+		// Check if this event even concerns us. Just return if its not our action.
 		if ( 'qliro_add_order_discount' !== $action ) {
 			return;
 		}
 
+		// Ensure the nonce is valid.
 		$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) === false ) {
-			return;
+			$this->handle_error_redirect( 'invalid_nonce', 'metabox_discount' );
 		}
 
-		$order_id          = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$order_key         = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_amount   = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_id       = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		$discount_vat_rate = filter_input( INPUT_GET, 'discount_vat_rate', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		// Get the parameters from the request.
+		$order_id         = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$order_key        = filter_input( INPUT_GET, 'order_key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_amount  = filter_input( INPUT_GET, 'discount_amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_id      = filter_input( INPUT_GET, 'discount_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$discount_rate_id = filter_input( INPUT_GET, 'discount_vat_rate', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		// Ensure we have the needed parameters to create the discount.
 		if ( ! isset( $order_id, $order_key, $discount_amount, $discount_id ) ) {
-			return;
+			$this->handle_error_redirect( 'missing_parameters', 'metabox_discount' );
 		}
 
+		// Ensure the user has permission to edit shop orders.
 		if ( ! current_user_can( 'edit_shop_orders' ) ) {
-			$redirect_to = wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' );
-			wp_safe_redirect(
-				add_query_arg(
-					array(
-						'qliro_metabox_notice' => 'permission_denied',
-						'cause'                => 'metabox_discount',
-					),
-					$redirect_to
-				)
-			);
-			exit;
+			$this->handle_error_redirect( 'permission_denied', 'metabox_discount' );
 		}
 
 		$order = wc_get_order( $order_id );
 		if ( empty( $order ) || 'qliro_one' !== $order->get_payment_method() ) {
-			return;
+			$this->handle_error_redirect( 'not_qliro_order', 'metabox_discount' );
 		}
 
 		$order_key = $order->get_order_key();
 		if ( ! hash_equals( $order->get_order_key(), $order_key ) ) {
-			return;
+			$this->handle_error_redirect( 'invalid_hash', 'metabox_discount' );
 		}
 
 		try {
 			$discount_amount = floatval( $discount_amount );
 
-			// These controls should throw to inform the customer about what happened.
-			if ( ! wp_verify_nonce( $nonce, 'qliro_add_order_discount' ) ) {
-				throw new Exception( __( 'Invalid nonce.', 'qliro-for-woocommerce' ) );
-			}
-
 			// Description length allowed by Qliro.
 			$discount_id = mb_substr( trim( wc_clean( $discount_id ) ), 0, 200 );
 
 			// We must exclude shipping and any fees from the available discount amount.
-			$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
-
-			// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
-			$previous_discount_amount = 0;
-			foreach ( $order->get_fees() as $fee ) {
-				$id = $fee->get_meta( 'qliro_discount_id' );
-				if ( ! empty( $id ) ) {
-					$previous_discount_amount += ( floatval( $fee->get_total() ) * 100 + floatval( $fee->get_total_tax() ) * 100 );
-				}
-			}
-			$available_amount = $items_total_amount - abs( $previous_discount_amount );
-
-			// Ensure there is actually a discounted amount, and that is less than the total amount.
-			if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
-				// translators: %s: Available amount formatted as price.
-				throw new Exception( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), wc_price( max( 0, $available_amount ) ) ) );
-			}
-
-			foreach ( $order->get_fees() as $fee ) {
-				// To avoid the form being submitted multiple times, we check if the discount already exists.
-				if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
-					// translators: %s: Discount ID.
-					throw new Exception( sprintf( __( 'Discount [%s] already added to order.', 'qliro-for-woocommerce' ), $discount_id ) );
-				}
-			}
+			$this->validate_discount( $order, $discount_amount, $discount_id );
 
 			// Calculate VAT for the discount.
-			$rate_id    = $discount_vat_rate;
-			$vat_rate   = WC_Tax::get_rate_percent_value( $rate_id ); // Ensure the rate exists.
-			$vat_amount = ( $discount_amount * ( $vat_rate / 100 ) );
+			$vat_rate   = WC_Tax::get_rate_percent_value( $discount_rate_id ); // Ensure the rate exists.
+			$vat_amount = $this->calculate_discount_vat_amount( $vat_rate, $discount_amount );
 
+			// Adjust amounts for fee item.
 			$discount_amount -= $vat_amount; // Discount amount excluding VAT.
 			$discount_amount *= -1; // Fees are positive amounts, so we invert the discount to be negative.
 			$vat_amount      *= -1; // VAT on fees is also negative.
 
-			// Refer to WC_AJAX::add_order_fee() for how to add a fee to an order.
-			$fee = new WC_Order_Item_Fee();
-			$fee->add_meta_data( 'qliro_discount_id', $discount_id );
-			$fee->add_meta_data( 'qliro_discount_vat_rate_id', $rate_id );
-			$fee->add_meta_data( 'qliro_discount_vat_rate', $vat_rate );
-			$fee->add_meta_data( 'qliro_discount_vat_amount', $vat_amount );
-
-			$fee->set_amount( $discount_amount );
-			$fee->set_total( $discount_amount );
-			$fee->set_total_tax( $vat_amount );
-			$fee->set_taxes(
-				array(
-					'total'    => array( $rate_id => $vat_amount ),
-					'subtotal' => array( $rate_id => $vat_amount ),
-				)
-			);
-			$fee->set_tax_status( ( $vat_rate > 0 ) ? 'taxable' : 'none' );
-			$fee->set_name( $discount_id );
-			$fee_id = $fee->save();
-
-			// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
-			$order->add_item( $fee );
-			$order->calculate_totals();
+			// Add the fee to the order.
+			$fee_id = $this->add_discount_to_order( $discount_id, $discount_rate_id, $vat_rate, $vat_amount, $discount_amount, $order );
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
 			if ( qliro_is_fully_captured( $order ) ) {
@@ -215,8 +268,16 @@ class Qliro_Order_Discount {
 			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
 
-			// translators: %s: Discount ID.
-			$order->add_order_note( sprintf( __( 'Discount [%s] added to order.', 'qliro-for-woocommerce' ), $discount_id ) );
+			// Add order note with the discount id, amount and transaction id to the order.
+			$order->add_order_note(
+				sprintf(
+					// translators: %1$s: Discount ID, %2$s: Discount amount formatted as price, %3$s: Payment transaction id.
+					__( 'Added a discount [%1$s] of %2$s to the Qliro order. Payment transaction ID: %3$s', 'qliro-for-woocommerce' ),
+					$discount_id,
+					wc_price( abs( $discount_amount + $vat_amount ), array( 'currency' => $order->get_currency() ) ),
+					$transaction_id
+				)
+			);
 		} catch ( Exception $e ) {
 			$order->add_order_note( $e->getMessage() );
 		} finally {
@@ -300,9 +361,9 @@ class Qliro_Order_Discount {
 	 *
 	 * @param WC_Order $order The WooCommerce order.
 	 *
-	 * @return string
+	 * @return string[]
 	 */
-	private static function get_previous_fees_json( $order ) {
+	private static function get_previous_fees( $order ) {
 		$fees = array();
 		foreach ( $order->get_fees() as $fee ) {
 			$id = $fee->get_meta( 'qliro_discount_id' );
@@ -311,7 +372,7 @@ class Qliro_Order_Discount {
 			}
 		}
 
-		return wp_json_encode( $fees );
+		return $fees;
 	}
 
 	/**
@@ -325,12 +386,13 @@ class Qliro_Order_Discount {
 		$action_url = wp_nonce_url(
 			add_query_arg(
 				array(
-					'action'          => 'qliro_add_order_discount',
-					'order_id'        => $order->get_id(),
-					'order_key'       => $order->get_order_key(),
-					'qliro_order_id'  => $qliro_order['OrderId'] ?? '',
-					'discount_amount' => 0,
-					'discount_id'     => '',
+					'action'            => 'qliro_add_order_discount',
+					'order_id'          => $order->get_id(),
+					'order_key'         => $order->get_order_key(),
+					'qliro_order_id'    => $qliro_order['OrderId'] ?? '',
+					'discount_amount'   => 0,
+					'discount_id'       => '',
+					'discount_vat_rate' => 0,
 				),
 				admin_url( 'admin-ajax.php' )
 			),
@@ -340,160 +402,47 @@ class Qliro_Order_Discount {
 	}
 
 	/**
-	 * Get the discount id section fields.
+	 * Handle error redirect for the order metabox. Exits after redirect.
 	 *
-	 * @return array
+	 * @param string $notice The notice code.
+	 * @param string $cause The cause of the error.
+	 *
+	 * @return void
 	 */
-	public static function get_discount_id_section_fields() {
-		return array(
-			'section_title' => array(
-				'name' => '',
-				'type' => 'title',
-			),
-			'discount_id'   => array(
-				'name'     => __( 'Discount ID', 'qliro-for-woocommerce' ),
-				'desc_tip' => true,
-				'desc'     => __( 'Contains article number and discount number. E.g. articleno_discount01', 'qliro-for-woocommerce' ),
-				'id'       => 'qliro-discount-id',
-				'type'     => 'text',
-			),
-			'section_end'   => array(
-				'type' => 'sectionend',
-			),
+	private function handle_error_redirect( $notice, $cause ) {
+		$redirect_to = wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' );
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'qliro_metabox_notice' => $notice,
+					'cause'                => $cause,
+				),
+				$redirect_to
+			)
 		);
+		exit;
 	}
 
-	/**
-	 * Get the discount amount section fields.
-	 *
-	 * @param string   $currency The currency code.
-	 * @param float    $total_amount The total amount of the order.
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return array
-	 */
-	public static function get_discount_amount_section_fields( $currency, $total_amount, $order ) {
-		$vat_rates   = self::get_order_tax_rates( $order );
-		$vat_options = array();
-		foreach ( $vat_rates as $rate ) {
-			$id                 = $rate['class'] . $rate['id'];
-			$vat_options[ $id ] = wc_format_decimal( $rate['percentage'], 2 ) . '%';
-		}
-
-		$section = array(
-			'section_title'       => array(
-				'name' => __( 'Enter amount or percentage', 'qliro-for-woocommerce' ),
-				'type' => 'title',
-			),
-			'discount_amount'     => array(
-				// translators: %s: Currency code, e.g. SEK.
-				'name'              => sprintf( __( 'Total amount (%s) incl. VAT', 'qliro-for-woocommerce' ), $currency ),
-				'id'                => 'qliro-discount-amount',
-				'type'              => 'number',
-				'placeholder'       => $currency,
-				'custom_attributes' => array(
-					'step' => 'any',
-					'min'  => '0.00',
-					'max'  => $total_amount,
-				),
-			),
-			'discount_percentage' => array(
-				'name'              => __( 'Percentage (%)', 'qliro-for-woocommerce' ),
-				'id'                => 'qliro-discount-percentage',
-				'type'              => 'number',
-				'placeholder'       => '%',
-				'custom_attributes' => array(
-					'step' => 'any',
-					'min'  => '0.00',
-					'max'  => '100.00',
-				),
-			),
-			'vat_rate'            => array(
-				'name'    => __( 'VAT rate (%)', 'qliro-for-woocommerce' ),
-				'id'      => 'qliro-discount-vat-rate',
-				'type'    => 'select',
-				'options' => $vat_options,
-			),
-			'section_end'         => array(
-				'type' => 'sectionend',
-			),
-		);
-
-		if ( count( $vat_options ) <= 1 ) {
-			unset( $section['vat_rate'] );
-		}
-
-		return $section;
-	}
-
-	/**
-	 * Get the summary section fields.
-	 *
-	 * @param string $currency The currency code.
-	 * @param float  $items_total_amount The total amount of the order items.
-	 *
-	 * @return array
-	 */
-	public static function get_summary_section_fields( $currency, $items_total_amount ) {
-		return array(
-			'section_title'           => array(
-				'name' => __( 'New amount to pay', 'qliro-for-woocommerce' ),
-				'type' => 'title',
-			),
-			'total_amount'            => array(
-				'name'              => __( 'Total amount before discount', 'qliro-for-woocommerce' ),
-				'id'                => 'qliro-total-amount',
-				'type'              => 'text',
-				'value'             => wp_strip_all_tags( wc_price( $items_total_amount, array( 'currency' => $currency ) ) ),
-				'custom_attributes' => array(
-					'readonly' => 'readonly',
-				),
-			),
-			'new_discount_percentage' => array(
-				'name'              => __( 'Discount', 'qliro-for-woocommerce' ),
-				'id'                => 'qliro-new-discount-percentage',
-				'type'              => 'text',
-				'value'             => '0%',
-				'custom_attributes' => array(
-					'readonly' => 'readonly',
-				),
-			),
-			'new_total_amount'        => array(
-				'name'              => __( 'New total amount to pay', 'qliro-for-woocommerce' ),
-				'id'                => 'qliro-new-total-amount',
-				'type'              => 'text',
-				'value'             => wp_strip_all_tags( wc_price( $items_total_amount, array( 'currency' => $currency ) ) ),
-				'custom_attributes' => array(
-					'readonly' => 'readonly',
-				),
-			),
-			'section_end'             => array(
-				'type' => 'sectionend',
-			),
-		);
-	}
 
 	/**
 	 * Get the data for the modal to add a discount to an order.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
 	 *
-	 * @return array{ action_url: string, items_total_amount: float, available_amount: float, total_amount: float, currency: string, order: WC_Order|null }
+	 * @return array{ vat_rates: array<int, string>, action_url: string, items_total_amount: float, available_amount: float, total_amount: float, currency: string, order: WC_Order|null }
 	 */
 	public static function get_order_discount_modal_data( $order ) {
 		$items_total_amount       = self::get_item_total_amount( $order );
 		$previous_discount_amount = self::get_previous_discount_amount( $order );
 		$available_amount         = $items_total_amount - $previous_discount_amount;
 		$total_amount             = wc_format_decimal( $order->get_total() );
-		$currency                 = $order->get_currency();
 		return array(
+			'vat_rates'          => self::get_order_tax_rates( $order ),
 			'action_url'         => self::get_add_discount_action_url( $order ),
 			'items_total_amount' => $items_total_amount,
 			'available_amount'   => $available_amount,
 			'total_amount'       => $total_amount,
-			'currency'           => $currency,
-			'fees'               => self::get_previous_fees_json( $order ),
-			'order'              => $order,
+			'fees'               => self::get_previous_fees( $order ),
 		);
 	}
 }
