@@ -130,8 +130,24 @@ class Qliro_One_Metabox extends OrderMetabox {
 		$notice = sanitize_text_field( wp_unslash( $_GET['qliro_metabox_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$cause  = sanitize_text_field( wp_unslash( $_GET['cause'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		if ( 'permission_denied' === $notice && 'metabox_discount' === $cause ) {
-			$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
+		switch ( $notice ) {
+			case 'invalid_nonce':
+				$notice = __( 'Could not verify the security token. Please try again.', 'qliro-for-woocommerce' );
+				break;
+			case 'permission_denied':
+				$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
+				break;
+			case 'not_qliro_order':
+				$notice = __( 'The order is not a Qliro order and a discount cannot be added.', 'qliro-for-woocommerce' );
+				break;
+			case 'invalid_hash':
+				$notice = __( 'The order key is invalid. Please try again.', 'qliro-for-woocommerce' );
+				break;
+			case 'missing_parameters':
+				$notice = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
+				break;
+			default:
+				return;
 		}
 
 		$notice  = '<div class="notice notice-error is-dismissible">';
