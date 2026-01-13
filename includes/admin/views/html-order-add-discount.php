@@ -1,59 +1,77 @@
 <?php
 /**
- * HTML template for the Qliro One discount form modal in the order admin.
+ * HTML for the Add Discount modal in the Order Edit screen.
  *
  * @package Qliro_One_For_WooCommerce/Includes/Admin/Views
  */
 
 defined( 'ABSPATH' ) || exit;
-
-/**
- * Ensure we have the necessary data.
- *
- * @var array{ action_url: string, items_total_amount: float, available_amount: float, total_amount: float, currency: string, order: WC_Order|null } $qliro_discount_data
- */
-if ( ! isset( $qliro_discount_data['currency'], $qliro_discount_data['total_amount'], $qliro_discount_data['available_amount'], $qliro_discount_data['fees'], $qliro_discount_data['order'] ) ) {
-	return;
-}
-
 ?>
 
-<div id="wc-backbone-modal-dialog" class="qliro-discount-form-modal" hidden>
-	<div class="wc-backbone-modal wc-order-preview">
-		<div class="wc-backbone-modal-content" tabindex="0">
-			<section class="wc-backbone-modal-main" role="main">
-				<header class="wc-backbone-modal-header">
-					<h1 id='qliro-discount-form-heading'><?php esc_html_e( 'Add discount', 'qliro-for-woocommerce' ); ?></h1>
-					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
-						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'qliro-for-woocommerce' ); ?></span>
-					</button>
-				</header>
-				<article id="qliro-discount-form" style="max-height: 851.25px;" data-fees="<?php echo esc_attr( $qliro_discount_data['fees'] ); ?>" data-total-amount="<?php echo esc_attr( $qliro_discount_data['total_amount'] ); ?>" data-available-amount="<?php echo esc_attr( wc_format_decimal( $qliro_discount_data['available_amount'] ) ); ?>">
-					<?php woocommerce_admin_fields( Qliro_Order_Discount::get_discount_id_section_fields() ); ?>
-					<p id="qliro-discount-id-error" class="explanation hidden error"><?php esc_html_e( 'Discount ID must be unique', 'qliro-for-woocommerce' ); ?></p>
-					<hr>
-
-					<?php woocommerce_admin_fields( Qliro_Order_Discount::get_discount_amount_section_fields( $qliro_discount_data['currency'] ?? '', $qliro_discount_data['total_amount'] ?? '', $qliro_discount_data['order'] ?? null ) ); ?>
-					<p id="qliro-discount-notice" class="explanation"><?php esc_html_e( 'The percentage is calculated based on the total amount, excluding shipping and fees.', 'qliro-for-woocommerce' ); ?></p>
-					<p id="qliro-discount-error" class="woocommerce-error explanation error hidden"><?php esc_html_e( 'The amount must not be equal to or exceed the total amount.', 'qliro-for-woocommerce' ); ?></p>
-					<hr>
-
-					<?php woocommerce_admin_fields( Qliro_Order_Discount::get_summary_section_fields( $qliro_discount_data['currency'] ?? '', $qliro_discount_data['total_amount'] ?? '' ) ); ?>
-
-				</article>
-				<footer>
-					<div class="inner">
-						<div class="wc-action-button-group">
-							<span class="wc-action-button-group__items">
-								<button id="qliro-discount-form-close modal-close" class="button wc-action-button wc-action-button-complete complete" aria-label="<?php esc_attr_e( 'Back', 'qliro-for-woocommerce' ); ?>" title="<?php esc_attr_e( 'Back', 'qliro-for-woocommerce' ); ?>"><?php esc_html_e( 'Back', 'qliro-for-woocommerce' ); ?></button>
-							</span>
-						</div>
-
-						<button type="submit" disabled id="qliro-discount-form-submit" class="button button-primary button-large" aria-label="<?php esc_attr_e( 'Confirm', 'qliro-for-woocommerce' ); ?>" formaction="<?php echo esc_url( $qliro_discount_data['action_url'] ); ?>"><?php esc_html_e( 'Confirm', 'qliro-for-woocommerce' ); ?></button>
+<div id="qliro-discount-modal" class="qliro-discount-modal">
+	<div class="qliro-discount-modal-content">
+		<div class="qliro-discount-modal-header">
+			<h2 class="qliro-discount-modal-title"><?php esc_html_e( 'Add Discount', 'qliro-for-woocommerce' ); ?></h2>
+		</div>
+		<div class="qliro-discount-modal-info">
+			<span><?php esc_html_e( 'Discounts can only be applied to the products in the order.', 'qliro-for-woocommerce' ); ?></span>
+			<br />
+			<span><?php esc_html_e( 'The totals shown exclude the price for shipping and fees, and including VAT.', 'qliro-for-woocommerce' ); ?></span>
+		</div>
+		<div class="qliro-discount-modal-form-wrapper">
+			<form id="qliro-discount-form" method="POST">
+				<div class="qliro-discount-input-wrapper-full-width qliro-discount-input-wrapper-label-top">
+					<div class="qliro-discount-tip">
+						<?php echo wp_kses_post( wc_help_tip( __( 'Contains article number and discount number. E.g. articleno_discount01', 'qliro-for-woocommerce' ) ) ); ?>
 					</div>
-				</footer>
-			</section>
+					<input type="text" name="qliro-discount-id" id="qliro-discount-id" placeholder="" required />
+					<label for="qliro-discount-id"><?php esc_html_e( 'Discount ID', 'qliro-for-woocommerce' ); ?></label>
+				</div>
+				<div class="qliro-discount-modal-separator"></div>
+				<span class="qliro-discount-label"><?php esc_html_e( 'Enter amount or percent', 'qliro-for-woocommerce' ); ?></span>
+				<div class="qliro-discount-amount-wrapper">
+					<div class="qliro-discount-input-wrapper">
+						<input type="number" step="0.01" min="0" max="9999" name="qliro-discount-amount" id="qliro-discount-amount" placeholder="" required />
+						<label for="qliro-discount-amount"><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></label>
+					</div>
+					<span>=</span>
+					<div class="qliro-discount-input-wrapper">
+						<input type="number" step="0.01" min="0" max="100" name="qliro-discount-percent" id="qliro-discount-percent" placeholder="" required />
+						<label for="qliro-discount-percent"><?php esc_html_e( '%', 'qliro-for-woocommerce' ); ?></label>
+					</div>
+				</div>
+				<?php if ( ! empty( $qliro_discount_data['vat_rates'] ?? array() ) ) : ?>
+					<div class="qliro-discount-modal-separator"></div>
+					<label for="qliro-discount-vat-rate" class="qliro-discount-label"><?php esc_html_e( 'VAT Rate', 'qliro-for-woocommerce' ); ?></label>
+					<select name="qliro-discount-vat-rate" id="qliro-discount-vat-rate" required>
+						<?php foreach ( $qliro_discount_data['vat_rates'] as $qliro_vat_rate ) : ?>
+							<option value="<?php echo esc_attr( $qliro_vat_rate['id'] ); ?>"><?php echo esc_html( $qliro_vat_rate['percentage'] ); ?>%</option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
+			</form>
+		</div>
+		<div class="qliro-discount-modal-summary">
+			<span class="qliro-discount-label"><?php esc_html_e( 'Summary', 'qliro-for-woocommerce' ); ?></span>
+			<div class="qliro-summary-line">
+				<p><?php esc_html_e( 'Total before discount', 'qliro-for-woocommerce' ); ?></p>
+				<p id="qliro-discount-total-summary"></p>
+			</div>
+			<div class="qliro-summary-line">
+				<p><?php esc_html_e( 'Discount', 'qliro-for-woocommerce' ); ?></p>
+				<p>
+					<span id="qliro-discount-percent-summary"></span>
+					<span id="qliro-discount-amount-summary">()</span>
+				</p>
+			</div>
+			<div class="qliro-summary-line">
+				<p><b><?php esc_html_e( 'New total after discount', 'qliro-for-woocommerce' ); ?></b></p>
+				<p id="qliro-discount-total-after-summary"></p>
+			</div>
+		</div>
+		<div class="qliro-discount-modal-footer">
+			<button type="button" id="qliro-discount-cancel-button" class="button"><?php esc_html_e( 'Cancel', 'qliro-for-woocommerce' ); ?></button>
+			<button type="button" id="qliro-discount-add-button" type="submit" form="qliro-discount-form" class="button button-primary" disabled><?php esc_html_e( 'Add Discount', 'qliro-for-woocommerce' ); ?></button>
 		</div>
 	</div>
-	<div class="wc-backbone-modal-backdrop modal-close"></div>
 </div>
