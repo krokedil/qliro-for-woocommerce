@@ -152,7 +152,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 *
 		 * @var Qliro_Order_Discount
 		 */
-		public Qliro_Order_Discount $order_discount;
+		public $order_discount;
 
 		/**
 		 * Returns the *Singleton* instance of this class.
