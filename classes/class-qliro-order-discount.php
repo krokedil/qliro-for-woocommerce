@@ -22,41 +22,6 @@ class Qliro_Order_Discount {
 	}
 
 	/**
-	 * Output the "Add discount" action button.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return void
-	 */
-	public static function output_order_discount_button( $order ) {
-		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
-		echo wp_kses_post( "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>" );
-
-		$qliro_discount_data = self::get_order_discount_modal_data( $order );
-		// Enqueue the script and style for the discount modal.
-		wp_enqueue_script( 'qliro-admin-order-discount' );
-		wp_localize_script(
-			'qliro-admin-order-discount',
-			'qliro_discount_data',
-			array(
-				'orderTotalAmount'    => round( $qliro_discount_data['total_amount'], 2 ),
-				'discountableAmount'  => round( $qliro_discount_data['available_amount'], 2 ),
-				'actionUrl'           => $qliro_discount_data['action_url'],
-				'previousDiscountIds' => $qliro_discount_data['fees'],
-				true,
-				'i18n'                => array(
-					'invalidDiscountId' => __( 'Please enter a unique Discount ID.', 'qliro-for-woocommerce' ),
-					'invalidAmount'     => __( 'Please enter a valid Discount Amount.', 'qliro-for-woocommerce' ),
-					'invalidPercent'    => __( 'Please enter a valid Discount Percent.', 'qliro-for-woocommerce' ),
-				),
-			)
-		);
-		wp_enqueue_style( 'qliro-admin-order-discount' );
-
-		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
-	}
-
-	/**
 	 * Fix the tax calculations for Qliro discounts on order calculations.
 	 *
 	 * @param WC_Order_Item_Fee $fee The fee item.
@@ -89,93 +54,27 @@ class Qliro_Order_Discount {
 		$fee->save();
 	}
 
-	/**
-	 * Calculate the discount vat amount.
-	 *
-	 * @param float $vat_rate The vat rate percentage.
-	 * @param float $discount_amount The discount amount.
-	 *
-	 * @return float|int
-	 */
-	private function calculate_discount_vat_amount( $vat_rate, $discount_amount ) {
-		return $discount_amount * ( $vat_rate / 100 );
-	}
 
 	/**
-	 * Add the discount to the order as a fee.
+	 * Get the data for the modal to add a discount to an order.
 	 *
-	 * @param string   $discount_id The discount id.
-	 * @param int      $rate_id The vat rate id.
-	 * @param float    $vat_rate The vat rate percentage.
-	 * @param float    $vat_amount The vat amount.
-	 * @param float    $discount_amount The discount amount.
 	 * @param WC_Order $order The WooCommerce order.
 	 *
-	 * @return int The fee item id.
+	 * @return array{ vat_rates: array<int, string>, action_url: string, items_total_amount: float, available_amount: float, total_amount: float, currency: string, order: WC_Order|null }
 	 */
-	private function add_discount_to_order( $discount_id, $rate_id, $vat_rate, $vat_amount, $discount_amount, $order ) {
-		$fee = new WC_Order_Item_Fee();
-		$fee->add_meta_data( 'qliro_discount_id', $discount_id );
-		$fee->add_meta_data( 'qliro_discount_vat_rate_id', $rate_id );
-		$fee->add_meta_data( 'qliro_discount_vat_rate', $vat_rate );
-		$fee->add_meta_data( 'qliro_discount_vat_amount', $vat_amount );
-
-		$fee->set_amount( $discount_amount );
-		$fee->set_total( $discount_amount );
-		$fee->set_total_tax( $vat_amount );
-		$fee->set_taxes(
-			array(
-				'total'    => array( $rate_id => $vat_amount ),
-				'subtotal' => array( $rate_id => $vat_amount ),
-			)
+	public static function get_order_discount_modal_data( $order ) {
+		$items_total_amount       = self::get_item_total_amount( $order );
+		$previous_discount_amount = self::get_previous_discount_amount( $order );
+		$available_amount         = $items_total_amount - $previous_discount_amount;
+		$total_amount             = wc_format_decimal( $order->get_total() );
+		return array(
+			'vat_rates'          => self::get_order_tax_rates( $order ),
+			'action_url'         => self::get_add_discount_action_url( $order ),
+			'items_total_amount' => $items_total_amount,
+			'available_amount'   => $available_amount,
+			'total_amount'       => $total_amount,
+			'fees'               => self::get_previous_fees( $order ),
 		);
-		$fee->set_tax_status( ( $vat_rate > 0 ) ? 'taxable' : 'none' );
-		$fee->set_name( $discount_id );
-		$fee_id = $fee->save();
-
-		// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
-		$order->add_item( $fee );
-		$order->calculate_totals();
-
-		return $fee_id;
-	}
-
-	/**
-	 * Validate the discount before adding it to the order.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 * @param float    $discount_amount The discount amount.
-	 * @param int      $discount_id The discount ID.
-	 *
-	 * @throws Exception When the discount is invalid.
-	 * @return void
-	 */
-	private function validate_discount( $order, $discount_amount, $discount_id ) {
-		$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
-
-		// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
-		$previous_discount_amount = 0;
-		foreach ( $order->get_fees() as $fee ) {
-			$id = $fee->get_meta( 'qliro_discount_id' );
-			if ( ! empty( $id ) ) {
-				$previous_discount_amount += ( floatval( $fee->get_total() ) * 100 + floatval( $fee->get_total_tax() ) * 100 );
-			}
-		}
-		$available_amount = $items_total_amount - abs( $previous_discount_amount );
-
-		// Ensure there is actually a discounted amount, and that is less than the total amount.
-		if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
-			// translators: %s: Available amount formatted as price.
-			throw new Exception( esc_html( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), wc_price( max( 0, $available_amount ) ) ) ) );
-		}
-
-		foreach ( $order->get_fees() as $fee ) {
-			// To avoid the form being submitted multiple times, we check if the discount already exists.
-			if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
-				// translators: %s: Discount ID.
-				throw new Exception( esc_html( sprintf( __( 'Discount [%s] already added to order.', 'qliro-for-woocommerce' ), $discount_id ) ) );
-			}
-		}
 	}
 
 	/**
@@ -287,6 +186,129 @@ class Qliro_Order_Discount {
 	}
 
 	/**
+	 * Output the "Add discount" action button.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return void
+	 */
+	public static function output_order_discount_button( $order ) {
+		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
+		echo wp_kses_post( "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>" );
+
+		$qliro_discount_data = self::get_order_discount_modal_data( $order );
+		// Enqueue the script and style for the discount modal.
+		wp_enqueue_script( 'qliro-admin-order-discount' );
+		wp_localize_script(
+			'qliro-admin-order-discount',
+			'qliro_discount_data',
+			array(
+				'orderTotalAmount'    => round( $qliro_discount_data['total_amount'], 2 ),
+				'discountableAmount'  => round( $qliro_discount_data['available_amount'], 2 ),
+				'actionUrl'           => $qliro_discount_data['action_url'],
+				'previousDiscountIds' => $qliro_discount_data['fees'],
+				true,
+				'i18n'                => array(
+					'invalidDiscountId' => __( 'Please enter a unique Discount ID.', 'qliro-for-woocommerce' ),
+					'invalidAmount'     => __( 'Please enter a valid Discount Amount.', 'qliro-for-woocommerce' ),
+					'invalidPercent'    => __( 'Please enter a valid Discount Percent.', 'qliro-for-woocommerce' ),
+				),
+			)
+		);
+		wp_enqueue_style( 'qliro-admin-order-discount' );
+
+		include_once QLIRO_WC_PLUGIN_PATH . '/includes/admin/views/html-order-add-discount.php';
+	}
+
+	/**
+	 * Add the discount to the order as a fee.
+	 *
+	 * @param string   $discount_id The discount id.
+	 * @param int      $rate_id The vat rate id.
+	 * @param float    $vat_rate The vat rate percentage.
+	 * @param float    $vat_amount The vat amount.
+	 * @param float    $discount_amount The discount amount.
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return int The fee item id.
+	 */
+	private function add_discount_to_order( $discount_id, $rate_id, $vat_rate, $vat_amount, $discount_amount, $order ) {
+		$fee = new WC_Order_Item_Fee();
+		$fee->add_meta_data( 'qliro_discount_id', $discount_id );
+		$fee->add_meta_data( 'qliro_discount_vat_rate_id', $rate_id );
+		$fee->add_meta_data( 'qliro_discount_vat_rate', $vat_rate );
+		$fee->add_meta_data( 'qliro_discount_vat_amount', $vat_amount );
+
+		$fee->set_amount( $discount_amount );
+		$fee->set_total( $discount_amount );
+		$fee->set_total_tax( $vat_amount );
+		$fee->set_taxes(
+			array(
+				'total'    => array( $rate_id => $vat_amount ),
+				'subtotal' => array( $rate_id => $vat_amount ),
+			)
+		);
+		$fee->set_tax_status( ( $vat_rate > 0 ) ? 'taxable' : 'none' );
+		$fee->set_name( $discount_id );
+		$fee_id = $fee->save();
+
+		// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
+		$order->add_item( $fee );
+		$order->calculate_totals();
+
+		return $fee_id;
+	}
+
+	/**
+	 * Calculate the discount vat amount.
+	 *
+	 * @param float $vat_rate The vat rate percentage.
+	 * @param float $discount_amount The discount amount.
+	 *
+	 * @return float|int
+	 */
+	private function calculate_discount_vat_amount( $vat_rate, $discount_amount ) {
+		return $discount_amount * ( $vat_rate / 100 );
+	}
+
+	/**
+	 * Get the action url for adding a discount to the order.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return string
+	 */
+	private static function get_add_discount_action_url( $order ) {
+		$action_url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action'            => 'qliro_add_order_discount',
+					'order_id'          => $order->get_id(),
+					'order_key'         => $order->get_order_key(),
+					'qliro_order_id'    => $qliro_order['OrderId'] ?? '',
+					'discount_amount'   => 0,
+					'discount_id'       => '',
+					'discount_vat_rate' => 0,
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+			'qliro_add_order_discount'
+		);
+		return $action_url;
+	}
+
+	/**
+	 * Get the item total amount for the order excluding shipping and fees.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return float
+	 */
+	private static function get_item_total_amount( $order ) {
+		return array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) + floatval( $item->get_total_tax() ) ) ) ?? 0;
+	}
+
+	/**
 	 * Get the valid tax rates from the order that can be used for the discount.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
@@ -328,17 +350,6 @@ class Qliro_Order_Discount {
 	}
 
 	/**
-	 * Get the item total amount for the order excluding shipping and fees.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return float
-	 */
-	private static function get_item_total_amount( $order ) {
-		return array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) + floatval( $item->get_total_tax() ) ) ) ?? 0;
-	}
-
-	/**
 	 * Get the previous discount amount applied to the order.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
@@ -376,32 +387,6 @@ class Qliro_Order_Discount {
 	}
 
 	/**
-	 * Get the action url for adding a discount to the order.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return string
-	 */
-	private static function get_add_discount_action_url( $order ) {
-		$action_url = wp_nonce_url(
-			add_query_arg(
-				array(
-					'action'            => 'qliro_add_order_discount',
-					'order_id'          => $order->get_id(),
-					'order_key'         => $order->get_order_key(),
-					'qliro_order_id'    => $qliro_order['OrderId'] ?? '',
-					'discount_amount'   => 0,
-					'discount_id'       => '',
-					'discount_vat_rate' => 0,
-				),
-				admin_url( 'admin-ajax.php' )
-			),
-			'qliro_add_order_discount'
-		);
-		return $action_url;
-	}
-
-	/**
 	 * Handle error redirect for the order metabox. Exits after redirect.
 	 *
 	 * @param string $notice The notice code.
@@ -423,26 +408,41 @@ class Qliro_Order_Discount {
 		exit;
 	}
 
-
 	/**
-	 * Get the data for the modal to add a discount to an order.
+	 * Validate the discount before adding it to the order.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
+	 * @param float    $discount_amount The discount amount.
+	 * @param int      $discount_id The discount ID.
 	 *
-	 * @return array{ vat_rates: array<int, string>, action_url: string, items_total_amount: float, available_amount: float, total_amount: float, currency: string, order: WC_Order|null }
+	 * @throws Exception When the discount is invalid.
+	 * @return void
 	 */
-	public static function get_order_discount_modal_data( $order ) {
-		$items_total_amount       = self::get_item_total_amount( $order );
-		$previous_discount_amount = self::get_previous_discount_amount( $order );
-		$available_amount         = $items_total_amount - $previous_discount_amount;
-		$total_amount             = wc_format_decimal( $order->get_total() );
-		return array(
-			'vat_rates'          => self::get_order_tax_rates( $order ),
-			'action_url'         => self::get_add_discount_action_url( $order ),
-			'items_total_amount' => $items_total_amount,
-			'available_amount'   => $available_amount,
-			'total_amount'       => $total_amount,
-			'fees'               => self::get_previous_fees( $order ),
-		);
+	private function validate_discount( $order, $discount_amount, $discount_id ) {
+		$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
+
+		// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
+		$previous_discount_amount = 0;
+		foreach ( $order->get_fees() as $fee ) {
+			$id = $fee->get_meta( 'qliro_discount_id' );
+			if ( ! empty( $id ) ) {
+				$previous_discount_amount += ( floatval( $fee->get_total() ) * 100 + floatval( $fee->get_total_tax() ) * 100 );
+			}
+		}
+		$available_amount = $items_total_amount - abs( $previous_discount_amount );
+
+		// Ensure there is actually a discounted amount, and that is less than the total amount.
+		if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
+			// translators: %s: Available amount formatted as price.
+			throw new Exception( esc_html( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), wc_price( max( 0, $available_amount ) ) ) ) );
+		}
+
+		foreach ( $order->get_fees() as $fee ) {
+			// To avoid the form being submitted multiple times, we check if the discount already exists.
+			if ( $fee->get_meta( 'qliro_discount_id' ) === $discount_id ) {
+				// translators: %s: Discount ID.
+				throw new Exception( esc_html( sprintf( __( 'Discount [%s] already added to order.', 'qliro-for-woocommerce' ), $discount_id ) ) );
+			}
+		}
 	}
 }
