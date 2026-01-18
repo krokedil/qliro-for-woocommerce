@@ -5,23 +5,39 @@
   "author": "Krokedil AB <info@krokedil.se>",
   "license": "GPL-3.0+",
   "devDependencies": {
-    "@babel/core": "^7.14.3",
-    "@babel/plugin-transform-object-rest-spread": "^7.25.9",
-    "@babel/plugin-transform-runtime": "^7.14.3",
-    "@babel/preset-env": "^7.14.4",
-    "babel-loader": "^8.2.2",
+    "@babel/core": "^7.28.6",
+    "@babel/plugin-transform-object-rest-spread": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.28.5",
+    "@babel/preset-env": "^7.28.6",
+    "@wordpress/eslint-plugin": "^17.13.0",
+    "@wordpress/scripts": "^30.27.0",
+    "babel-loader": "^8.4.1",
+    "eslint-plugin-jsdoc": "^61.7.1",
     "file-loader": "^6.2.0",
-    "grunt": "^1.4.1",
+    "grunt": "^1.6.1",
     "grunt-contrib-cssmin": "^4.0.0",
-    "grunt-contrib-uglify": "^5.0.1",
-    "grunt-wp-i18n": "^1.0.3",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.9.1"
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-wp-i18n": "^1.0.4",
+    "prettier": "^3.7.4",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^4.10.0"
   },
   "scripts": {
     "makepot": "npx grunt makepot",
     "cssmin": "npx grunt cssmin",
     "jsmin": "npx webpack",
-    "build": "npm run makepot && npm run cssmin && npm run jsmin"
+    "build": "npm run makepot && npm run cssmin && npm run jsmin",
+    "lint:css": "wp-scripts lint-style",
+    "lint:css:fix": "wp-scripts lint-style --fix",
+    "lint:js": "wp-scripts lint-js",
+    "lint:js:fix": "wp-scripts lint-js --fix"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "webpack-dev-server@<=5.2.0": ">=5.2.1"
+    }
   }
 }

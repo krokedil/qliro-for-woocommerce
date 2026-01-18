@@ -147,6 +147,8 @@ class Qliro_One_Assets {
 		}
 
 		wp_register_script( 'qliro-one-metabox', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-metabox' . $script_version . '.js', array( 'jquery', $blockui ), QLIRO_WC_VERSION, false );
+		wp_register_script( 'qliro-admin-order-discount', QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-admin-order-discount.js', array( 'jquery', $blockui ), QLIRO_WC_VERSION, false );
+		wp_register_style( 'qliro-admin-order-discount', QLIRO_WC_PLUGIN_URL . '/assets/css/qliro-admin-order-discount.css', array(), QLIRO_WC_VERSION );
 	}
 
 	/**
