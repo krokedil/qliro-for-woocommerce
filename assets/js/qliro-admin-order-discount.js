@@ -375,6 +375,19 @@ jQuery(document).ready(function ($) {
 		},
 
 		/**
+		 * Toggle the required attribute on input fields.
+		 *
+		 * @param {boolean} isRequired Whether the fields should be required.
+		 * @return {void}
+		 */
+		toggleInputFieldsRequired(isRequired) {
+			qliroDiscount.$discountIdInput.attr('required', isRequired);
+			qliroDiscount.$amountInput.attr('required', isRequired);
+			qliroDiscount.$percentInput.attr('required', isRequired);
+			qliroDiscount.$vatRateSelect.attr('required', isRequired);
+		},
+
+		/**
 		 * Initialize the discount modal functionality.
 		 *
 		 * @return {void}
@@ -392,11 +405,14 @@ jQuery(document).ready(function ($) {
 			qliroDiscount.$addDiscountButton.on('click', function (e) {
 				e.preventDefault();
 				qliroDiscount.$modal.show();
+				qliroDiscount.toggleInputFieldsRequired(true);
+
 			});
 
 			qliroDiscount.$cancelButton.on('click', function (e) {
 				e.preventDefault();
 				qliroDiscount.$modal.hide();
+				qliroDiscount.toggleInputFieldsRequired(false);
 			});
 
 			// On any change to the form fields, set the state variables, validate the form and update the summary.
