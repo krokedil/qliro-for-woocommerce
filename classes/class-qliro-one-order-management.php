@@ -150,6 +150,10 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
+		if ( $order->get_meta( '_qliro_order_refunded' ) ) {
+			return;
+		}
+
 		// Set a metadata to indicate that a cancellation is pending. This is used to prevent processing Reversal callbacks that are not related to cancellations.
 		$order->update_meta_data( '_qliro_order_pending_cancellation', true );
 
@@ -267,10 +271,17 @@ class Qliro_One_Order_Management {
 
 		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
 		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
-			return $this->process_legacy_refund( $order, $refund_order, $amount, $return_fees );
+			$did_refund = $this->process_legacy_refund( $order, $refund_order, $amount, $return_fees );
 		}
 
-		return $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
+		$did_refund = $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
+
+		if ( true === $did_refund ) {
+			$order->update_meta_data( '_qliro_order_refunded', true );
+			$order->save_meta_data();
+		}
+
+		return $did_refund;
 	}
 
 	/**
