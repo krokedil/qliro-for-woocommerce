@@ -263,7 +263,7 @@ class Qliro_One_Order_Management {
 
 		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
 		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
-		QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
 		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
