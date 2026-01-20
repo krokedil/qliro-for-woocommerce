@@ -24,26 +24,26 @@ defined( 'ABSPATH' ) || exit;
 					<div class="qliro-discount-tip">
 						<?php echo wp_kses_post( wc_help_tip( __( 'Contains article number and discount number. E.g. articleno_discount01', 'qliro-for-woocommerce' ) ) ); ?>
 					</div>
-					<input type="text" name="qliro-discount-id" id="qliro-discount-id" placeholder="" required />
+					<input type="text" name="qliro-discount-id" id="qliro-discount-id" placeholder="" />
 					<label for="qliro-discount-id"><?php esc_html_e( 'Discount ID', 'qliro-for-woocommerce' ); ?></label>
 				</div>
 				<div class="qliro-discount-modal-separator"></div>
 				<span class="qliro-discount-label"><?php esc_html_e( 'Enter amount or percent', 'qliro-for-woocommerce' ); ?></span>
 				<div class="qliro-discount-amount-wrapper">
 					<div class="qliro-discount-input-wrapper">
-						<input type="number" step="0.01" min="0" max="9999" name="qliro-discount-amount" id="qliro-discount-amount" placeholder="" required />
+						<input type="number" step="0.01" min="0" max="9999" name="qliro-discount-amount" id="qliro-discount-amount" placeholder="" />
 						<label for="qliro-discount-amount"><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></label>
 					</div>
 					<span>=</span>
 					<div class="qliro-discount-input-wrapper">
-						<input type="number" step="0.01" min="0" max="100" name="qliro-discount-percent" id="qliro-discount-percent" placeholder="" required />
+						<input type="number" step="0.01" min="0" max="100" name="qliro-discount-percent" id="qliro-discount-percent" placeholder="" />
 						<label for="qliro-discount-percent"><?php esc_html_e( '%', 'qliro-for-woocommerce' ); ?></label>
 					</div>
 				</div>
 				<?php if ( ! empty( $qliro_discount_data['vat_rates'] ?? array() ) ) : ?>
 					<div class="qliro-discount-modal-separator"></div>
 					<label for="qliro-discount-vat-rate" class="qliro-discount-label"><?php esc_html_e( 'VAT Rate', 'qliro-for-woocommerce' ); ?></label>
-					<select name="qliro-discount-vat-rate" id="qliro-discount-vat-rate" required>
+					<select name="qliro-discount-vat-rate" id="qliro-discount-vat-rate">
 						<?php foreach ( $qliro_discount_data['vat_rates'] as $qliro_vat_rate ) : ?>
 							<option value="<?php echo esc_attr( $qliro_vat_rate['id'] ); ?>"><?php echo esc_html( $qliro_vat_rate['percentage'] ); ?>%</option>
 						<?php endforeach; ?>
