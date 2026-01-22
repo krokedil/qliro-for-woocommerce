@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Krokedil
+# Copyright (C) 2026 Krokedil
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""

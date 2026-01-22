@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.4.2
-Stable tag: 2.1.0
+WC tested up to: 10.4.3
+Stable tag: 2.2.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,14 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026.01.22    - version 2.2.0 =
+* Feature       - Add support for adding VAT rate to order discounts applied to the Qliro order through the admin page.
+* Enhancement   - Updated the design of the modal for the discount.
+* Enhancement   - Added more error messages for when a discount fails to be applied to a Qliro order.
+* Fix           - Fixed a few incorrect function names leftover from the release on WordPress.org
+* Fix           - Fixed an issue that could cause a callback from Qliro to cancel an order when applying a discount to it. This could happen with Trustly orders when the setting for advanced order management was enabled with a OK cancel order status set.
+* Tweak         - Cancel requests are no longer triggered for orders that have already been refunded.
+
 = 2025.12.18    - version 2.1.0 =
 * Bump WordPress version to to be compatible with version 1.18.1.
 

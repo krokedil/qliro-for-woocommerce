@@ -88,7 +88,7 @@ class Qliro_Order_Utility {
 	 * @return string The type of the Qliro transaction.
 	 */
 	public static function get_transaction_type( $transaction ) {
-		return $transaction['Type'] ?? __( 'Not found', 'qliro-one-for-woocommerce' );
+		return $transaction['Type'] ?? __( 'Not found', 'qliro-for-woocommerce' );
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Qliro_Order_Utility {
 	 * @return string The status of the Qliro transaction.
 	 */
 	public static function get_transaction_status( $transaction ) {
-		return $transaction['Status'] ?? __( 'Order status was not found.', 'qliro-one-for-woocommerce' );
+		return $transaction['Status'] ?? __( 'Order status was not found.', 'qliro-for-woocommerce' );
 	}
 
 	/**

@@ -48,6 +48,13 @@ class Qliro_One_Callbacks {
 					$this->complete_capture( $confirmation_id, $data );
 					break;
 				case 'Reversal':
+					// Only process the callback if the order actually has the metadata '_qliro_order_cancel_pending', since Qliro can send Reversal callbacks for other reasons.
+					$order = qliro_get_order_by_confirmation_id( $confirmation_id );
+					if ( empty( $order ) || ! $order->get_meta( '_qliro_order_pending_cancellation' ) ) {
+						Qliro_One_Logger::log( "Skipping reversal callback for order {$order_number} as no cancellation is pending." );
+						break;
+					}
+
 					Qliro_One_Logger::log( "Processing cancel callback for order {$order_number}." );
 					$this->complete_cancel( $confirmation_id, $data );
 					break;
@@ -121,7 +128,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function process_upsell_callback( $confirmation_id, $data ) {
-		$order = qoc_get_order_by_confirmation_id( $confirmation_id );
+		$order = qliro_get_order_by_confirmation_id( $confirmation_id );
 		// If we could not get the order, log an error and return.
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when processing the upsell callback" );
@@ -134,7 +141,7 @@ class Qliro_One_Callbacks {
 		$qliro_order_id          = $order->get_meta( '_qliro_one_order_id' );
 
 		// Get the Qliro order to verify the upsell exists.
-		$qliro_order = QOC_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		// If the Qliro order could not be retrieved, log an error and return.
 		if ( is_wp_error( $qliro_order ) ) {
@@ -175,7 +182,7 @@ class Qliro_One_Callbacks {
 				Qliro_One_Logger::log( "Redirect upsell completed by customer for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
 
 				// If Post Purchase Upsell plugin is active, complete the upsell there directly.
-				if ( class_exists( 'PPU_Abstract_Product_Offer' ) &&  method_exists( 'PPU_Abstract_Product_Offer', 'complete_redirect_upsell' ) ) {
+				if ( class_exists( 'PPU_Abstract_Product_Offer' ) && method_exists( 'PPU_Abstract_Product_Offer', 'complete_redirect_upsell' ) ) {
 					PPU_Abstract_Product_Offer::complete_redirect_upsell( $order, $upsell_id );
 				}
 
@@ -186,7 +193,7 @@ class Qliro_One_Callbacks {
 				Qliro_One_Logger::log( "Redirect upsell failed for order with confirmation_id {$confirmation_id} and upsell id {$upsell_id}." );
 
 				// If Post Purchase Upsell plugin is active, fail the upsell there.
-				if ( class_exists( 'PPU_Abstract_Product_Offer' ) &&  method_exists( 'PPU_Abstract_Product_Offer', 'fail_redirect_upsell' ) ) {
+				if ( class_exists( 'PPU_Abstract_Product_Offer' ) && method_exists( 'PPU_Abstract_Product_Offer', 'fail_redirect_upsell' ) ) {
 					PPU_Abstract_Product_Offer::fail_redirect_upsell( $order, $upsell_id );
 				}
 
