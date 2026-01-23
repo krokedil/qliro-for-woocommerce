@@ -519,7 +519,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		}
 
 		/**
-		 * Display admin notice to upgrade Qliro plugin if the old version is active.
+		 * Display admin notice to use the new Qliro for WooCommerce plugin.
 		 */
 		public function admin_upgrade_notice() {
 			// Show the notice if only the old version is active.
