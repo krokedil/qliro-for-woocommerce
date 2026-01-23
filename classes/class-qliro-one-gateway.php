@@ -79,6 +79,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		add_action( 'woocommerce_update_options_payment_gateways_qliro_one', array( $this, 'update_conditional_settings' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'show_thank_you_snippet' ) );
 		add_filter( 'woocommerce_order_needs_payment', array( $this, 'maybe_change_needs_payment' ), 999, 3 );
+		add_filter( 'wc_order_is_editable', array( $this, 'can_edit_order' ), 10, 2 );
 	}
 
 
@@ -124,23 +125,39 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
 		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
-			// Create a new order and return the redirect url.
-			$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
+			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-			if ( is_wp_error( $result ) ) {
+			if ( empty( $qliro_order_id ) ) {
+				// Create a new order and return the redirect url.
+				$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
+
+				if ( is_wp_error( $result ) ) {
+					return array(
+						'result'   => 'failure',
+						'messages' => $result->get_error_message(),
+					);
+				}
+
+				$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
+				$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
+				$order->update_meta_data( '_qliro_one_hpp_url', $result['PaymentLink'] );
+				$order->save();
+
+				$redirect_url = $result['PaymentLink'];
+			} else {
+				$redirect_url = $order->get_meta( '_qliro_one_hpp_url' );
+			}
+
+			if ( empty( $redirect_url ) ) {
 				return array(
 					'result'   => 'failure',
-					'messages' => $result->get_error_message(),
+					'messages' => __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ),
 				);
 			}
 
-			$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
-			$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
-			$order->save();
-
 			return array(
 				'result'   => 'success',
-				'redirect' => $result['PaymentLink'],
+				'redirect' => $redirect_url,
 			);
 		}
 
@@ -447,5 +464,25 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		foreach ( $order_status_settings as $order_status_setting ) {
 			$settings[ $order_status_setting ] = 'none';
 		}
+	}
+	/**
+	 * Check if the order should be editable in WooCommerce admin.
+	 *
+	 * @param bool     $is_editable If the order is editable.
+	 * @param WC_Order $order The WooCommerce order.
+	 * @return bool
+	 */
+	public function can_edit_order( $is_editable, $order ) {
+		if ( 'qliro_one' !== $order->get_payment_method() ) {
+			return $is_editable;
+		}
+
+		// If is pay for order and not paid yet, do not allow editing.
+		$qliro_hpp_url = $order->get_meta( '_qliro_one_hpp_url' );
+		if ( ! empty( $qliro_hpp_url ) && empty( $order->get_date_paid() ) ) {
+			return false;
+		}
+
+		return $is_editable;
 	}
 }
