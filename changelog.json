@@ -263,5 +263,10 @@
             "description": "<ul><li>Fix - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.</li></ul>",
             "requires": "5.9.0",
             "tested": "6.9.0"
+      },
+      "1.18.2": {
+            "description": "<ul><li>Notice - Added a admin notice to inform about the plugins release on WordPress.org with instructions on how to migrate to that version.</li></ul>",
+            "requires": "5.9.0",
+            "tested": "6.9.0"
       }
 }

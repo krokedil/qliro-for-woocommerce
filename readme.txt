@@ -7,7 +7,7 @@ Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.4.2
-Stable tag: 1.18.1
+Stable tag: 1.18.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026.01.26    - version 1.18.2 =
+* Notice        - Added a admin notice to inform about the plugins release on WordPress.org with instructions on how to migrate to that version.
+
 = 2025.12.16    - version 1.18.1 =
 * Fix           - Fixed an issue caused by not getting the correct payment transaction id before doing order management actions, such as capture, cancel or refunds that could cause errors with some Qliro payment methods in some cases.
 
