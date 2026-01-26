@@ -41,15 +41,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * Required minimums and constants
- */
-define( 'QLIRO_WC_VERSION', '1.18.1' );
-define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
-define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
-
+// Ensure the class does not already exist to avoid redeclaration errors.
 if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
+
+	/**
+	 * Required minimums and constants
+	 */
+	define( 'QLIRO_WC_VERSION', '1.18.1' );
+	define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
+	define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
+	define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
+
 	/**
 	 * Class Qliro_One_For_WooCommerce
 	 */
@@ -542,15 +544,15 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
-}
 
-/**
- * Main instance QOC WooCommerce.
- *
- * Returns the main instance of QOC.
- *
- * @return Qliro_One_For_WooCommerce
- */
-function QOC_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
-	return Qliro_One_For_WooCommerce::get_instance();
+	/**
+	 * Main instance QOC WooCommerce.
+	 *
+	 * Returns the main instance of QOC.
+	 *
+	 * @return Qliro_One_For_WooCommerce
+	 */
+	function QOC_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
+		return Qliro_One_For_WooCommerce::get_instance();
+	}
 }
