@@ -5,7 +5,7 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 1.18.1
+ * Version: 1.18.2
  * Text Domain: qliro-one-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
@@ -15,7 +15,7 @@
  * WC tested up to: 10.4.2
  * Requires Plugins: woocommerce
  *
- * Copyright (c) 2021-2025 Krokedil
+ * Copyright (c) 2021-2026 Krokedil
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,15 +41,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * Required minimums and constants
- */
-define( 'QLIRO_WC_VERSION', '1.18.1' );
-define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
-define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
-
+// Ensure the class does not already exist to avoid redeclaration errors.
 if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
+
+	/**
+	 * Required minimums and constants
+	 */
+	define( 'QLIRO_WC_VERSION', '1.18.2' );
+	define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
+	define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
+	define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
+
 	/**
 	 * Class Qliro_One_For_WooCommerce
 	 */
@@ -188,6 +190,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notice_testmode' ) );
+			add_action( 'admin_notices', array( $this, 'admin_upgrade_notice' ) );
 		}
 
 		/**
@@ -516,17 +519,40 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				<?php
 			}
 		}
+
+		/**
+		 * Display admin notice to use the new Qliro for WooCommerce plugin.
+		 */
+		public function admin_upgrade_notice() {
+			// Show the notice if only the old version is active.
+			echo '<div class="notice notice-error"><p>';
+			printf(
+				/* translators: %s: Link to Qliro for WooCommerce plugin */
+				wp_kses_post(
+					sprintf(
+						'<strong>%s</strong> %s',
+						esc_html__( 'Important notice:', 'qliro-for-woocommerce' ),
+						esc_html__(
+							'The currently installed version of the Qliro plugin will no longer receive updates. To continue receiving security fixes and new features, please install the latest version of the Qliro plugin from %s or directly via the WordPress plugin interface (Plugins → Add New → Search for "Qliro for WooCommerce"). Once the new version is installed, make sure to uninstall the old version to prevent any conflicts. This notice will disappear automatically once the correct version of the Qliro plugin is active.',
+							'qliro-for-woocommerce'
+						)
+					)
+				),
+				'<a href="https://wordpress.org/plugins/qliro-for-woocommerce/" target="_blank" rel="noopener noreferrer">https://wordpress.org/plugins/qliro-for-woocommerce/</a>'
+			);
+			echo '</p></div>';
+		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
-}
 
-/**
- * Main instance QOC WooCommerce.
- *
- * Returns the main instance of QOC.
- *
- * @return Qliro_One_For_WooCommerce
- */
-function QOC_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
-	return Qliro_One_For_WooCommerce::get_instance();
+	/**
+	 * Main instance QOC WooCommerce.
+	 *
+	 * Returns the main instance of QOC.
+	 *
+	 * @return Qliro_One_For_WooCommerce
+	 */
+	function QOC_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
+		return Qliro_One_For_WooCommerce::get_instance();
+	}
 }
