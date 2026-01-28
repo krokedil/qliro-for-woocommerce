@@ -137,13 +137,13 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 						'messages' => $result->get_error_message(),
 					);
 				}
-
+				$payment_link = $result['PaymentLink'] ?? '';
 				$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
 				$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
-				$order->update_meta_data( '_qliro_one_hpp_url', $result['PaymentLink'] );
+				$order->update_meta_data( '_qliro_one_hpp_url', $payment_link );
 				$order->save();
 
-				$redirect_url = $result['PaymentLink'];
+				$redirect_url = $payment_link;
 			} else {
 				$redirect_url = $order->get_meta( '_qliro_one_hpp_url' );
 			}
