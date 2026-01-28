@@ -138,7 +138,7 @@ class Qliro_One_Helper_Shipping_Methods {
 			);
 
 			// Only add coordinates if available.
-			if ( ! empty( $latitude ) && ! empty( $longitude ) ) {
+			if ( ! empty( $latitude ) || ! empty( $longitude ) ) {
 				$secondary_option['Coordinates'] = array(
 					'Lat' => $latitude,
 					'Lng' => $longitude,
