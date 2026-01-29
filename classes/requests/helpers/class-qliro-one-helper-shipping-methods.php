@@ -121,7 +121,10 @@ class Qliro_One_Helper_Shipping_Methods {
 				continue;
 			}
 
-			$secondary_options[] = array(
+			$latitude  = $pickup_point->get_coordinates()->get_latitude();
+			$longitude = $pickup_point->get_coordinates()->get_longitude();
+
+			$secondary_option = array(
 				'MerchantReference' => $pickup_point->get_id(),
 				'DisplayName'       => $pickup_point->get_name(),
 				'Descriptions'      => array( // Can max have 3 lines.
@@ -129,14 +132,20 @@ class Qliro_One_Helper_Shipping_Methods {
 					trim( mb_substr( $pickup_point->get_address()->get_postcode() . ' ' . $pickup_point->get_address()->get_city(), 0, 100 ) ),
 					trim( mb_substr( $pickup_point->get_description(), 0, 100 ) ),
 				),
-				'Coordinates'       => array(
-					'Lat' => $pickup_point->get_coordinates()->get_latitude(),
-					'Lng' => $pickup_point->get_coordinates()->get_longitude(),
-				),
 				'DeliveryDateInfo'  => array(
 					'DateStart' => $pickup_point->get_eta()->get_utc(),
 				),
 			);
+
+			// Only add coordinates if available.
+			if ( ! empty( $latitude ) || ! empty( $longitude ) ) {
+				$secondary_option['Coordinates'] = array(
+					'Lat' => $latitude,
+					'Lng' => $longitude,
+				);
+			}
+
+			$secondary_options[] = $secondary_option;
 		}
 
 		if ( ! empty( $secondary_options ) ) {
