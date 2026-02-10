@@ -7,7 +7,7 @@ Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.4.3
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026.02.10    - version 2.2.1 =
+* Fix           - Prevented a visible "0" from appearing in the shipping section when pickup point coordinates are zero.
+* Fix           - Fixed an issue where reopening a payment link for a order pay order could fail with an existing Qliro order error, leaving the original order in-process and potentially locking coupons.
+
 = 2026.01.22    - version 2.2.0 =
 * Feature       - Add support for adding VAT rate to order discounts applied to the Qliro order through the admin page.
 * Enhancement   - Updated the design of the modal for the discount.

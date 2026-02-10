@@ -1,14 +1,14 @@
 {
   "name": "qliro-for-woocommerce",
-  "version": "2.0.0",
+  "version": "2.2.1",
   "repository": "git@github.com:krokedil/qliro-for-woocommerce.git",
   "author": "Krokedil AB <info@krokedil.se>",
   "license": "GPL-3.0+",
   "devDependencies": {
-    "@babel/core": "^7.28.6",
+    "@babel/core": "^7.29.0",
     "@babel/plugin-transform-object-rest-spread": "^7.28.6",
-    "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
     "@wordpress/eslint-plugin": "^17.13.0",
     "@wordpress/scripts": "^30.27.0",
     "babel-loader": "^8.4.1",
@@ -18,8 +18,8 @@
     "grunt-contrib-cssmin": "^4.0.0",
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-wp-i18n": "^1.0.4",
-    "prettier": "^3.7.4",
-    "webpack": "^5.104.1",
+    "prettier": "^3.8.1",
+    "webpack": "^5.105.0",
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
