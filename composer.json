@@ -2,7 +2,7 @@
     "name": "krokedil/qliro-for-woocommerce",
     "description": "Qliro Checkout For WooCommerce",
     "type": "wordpress-plugin",
-    "version": "1.7.1",
+    "version": "2.2.1",
     "authors": [
         {
             "name": "Krokedil AB",
