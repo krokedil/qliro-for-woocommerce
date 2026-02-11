@@ -1,7 +1,7 @@
 {
     "require": {
         "php": ">=7.4",
-        "krokedil/shipping": "^2.2.0",
+        "krokedil/shipping": "^2.0",
         "krokedil/woocommerce": "^1.0.0",
         "krokedil/settings-page": "^1.3.0"
     },
