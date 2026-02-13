@@ -32,3 +32,6 @@ yarn-error.log*
 /dependencies/*
 !dependencies/.gitkeep
 tmp*
+
+.changelogs/backup-*
+*.bak

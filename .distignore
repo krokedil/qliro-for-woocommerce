@@ -31,3 +31,5 @@ tmp*
 /.wordpress-org
 .eslintrc
 pnpm-lock.yaml
+
+/.changelogs
