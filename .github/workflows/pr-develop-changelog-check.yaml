@@ -16,7 +16,6 @@ on:
       - "composer.lock"
       - "composer-dependencies.json"
       - "composer-dependencies.lock"
-      - ".github/workflows/on-pull-request.yml"
 
 permissions:
   contents: read
