@@ -18,12 +18,39 @@ class Qliro_One_Subscriptions {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_scheduled_subscription_payment_qliro_one', array( $this, 'process_scheduled_payment' ), 10, 2 );
+
+		add_filter(
+			'woocommerce_subscription_payment_method_to_display',
+			array( $this, 'subscription_payment_method_title' ),
+			10,
+			2
+		);
+	}
+
+	/**
+	 * Change the payment method title for subscriptions to show the correct payment method.
+	 *
+	 * @hook woocommerce_subscription_payment_method_to_display
+	 *
+	 * @param string          $payment_method_to_display The payment method title to display.
+	 * @param WC_Subscription $subscription The subscription object.
+	 *
+	 * @return string
+	 */
+	public function subscription_payment_method_title( $payment_method_to_display, $subscription ) {
+		if ( 'qliro_one' !== $subscription->get_payment_method() ) {
+			return $payment_method_to_display;
+		}
+
+		$parent         = $subscription->get_parent();
+		$payment_method = $parent ? Qliro_One_Metabox::get_payment_method_name( $parent ) : $payment_method_to_display;
+		return $payment_method;
 	}
 
 	/**
 	 * Process subscription renewal.
 	 *
-	 * @param float    $amount_to_charge
+	 * @param float    $amount_to_charge The amount to charge for the renewal.
 	 * @param WC_Order $order The WooCommerce order that will be created as a result of the renewal.
 	 *
 	 * @return void
@@ -85,7 +112,7 @@ class Qliro_One_Subscriptions {
 	 *
 	 * @param WC_Order        $order The order object.
 	 * @param WC_Subscription $subscription The subscription object.
-	 * @param int[]           $token_ids The payment token ids
+	 * @param int[]           $token_ids The payment token ids.
 	 *
 	 * @return void
 	 */
@@ -169,7 +196,7 @@ class Qliro_One_Subscriptions {
 	 * @return bool
 	 */
 	public static function is_subscription_renewal( $order ) {
-		if ( $order !== null && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
+		if ( null !== $order && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
 			return true;
 		}
 
