@@ -42,11 +42,8 @@ class Qliro_One_Subscriptions {
 			return $payment_method_to_display;
 		}
 
-		$parent = $subscription->get_parent();
-		if ( $parent ) {
-			$payment_method = Qliro_One_Metabox::get_payment_method_name( $parent );
-		}
-
+		$parent         = $subscription->get_parent();
+		$payment_method = $parent ? Qliro_One_Metabox::get_payment_method_name( $parent ) : $payment_method_to_display;
 		return $payment_method;
 	}
 
