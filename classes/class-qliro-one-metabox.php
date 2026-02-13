@@ -222,7 +222,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 *
 	 * @return string
 	 */
-	private static function get_payment_method_name( $order ) {
+	public static function get_payment_method_name( $order ) {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 
 		// Replace any _ with a space.

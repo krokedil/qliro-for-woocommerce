@@ -18,6 +18,36 @@ class Qliro_One_Subscriptions {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_scheduled_subscription_payment_qliro_one', array( $this, 'process_scheduled_payment' ), 10, 2 );
+
+		add_filter(
+			'woocommerce_subscription_payment_method_to_display',
+			array( $this, 'subscription_payment_method_title' ),
+			10,
+			2
+		);
+	}
+
+	/**
+	 * Change the payment method title for subscriptions to show the correct payment method.
+	 *
+	 * @hook woocommerce_subscription_payment_method_to_display
+	 *
+	 * @param string          $payment_method_to_display The payment method title to display.
+	 * @param WC_Subscription $subscription The subscription object.
+	 *
+	 * @return string
+	 */
+	public function subscription_payment_method_title( $payment_method_to_display, $subscription ) {
+		if ( 'qliro_one' !== $subscription->get_payment_method() ) {
+			return $payment_method_to_display;
+		}
+
+		$parent = $subscription->get_parent();
+		if ( $parent ) {
+			$payment_method = Qliro_One_Metabox::get_payment_method_name( $parent );
+		}
+
+		return $payment_method;
 	}
 
 	/**
