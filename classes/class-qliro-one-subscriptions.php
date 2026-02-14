@@ -23,7 +23,7 @@ class Qliro_One_Subscriptions {
 	/**
 	 * Process subscription renewal.
 	 *
-	 * @param float    $amount_to_charge
+	 * @param float    $amount_to_charge The amount to charge for the renewal.
 	 * @param WC_Order $order The WooCommerce order that will be created as a result of the renewal.
 	 *
 	 * @return void
@@ -85,7 +85,7 @@ class Qliro_One_Subscriptions {
 	 *
 	 * @param WC_Order        $order The order object.
 	 * @param WC_Subscription $subscription The subscription object.
-	 * @param int[]           $token_ids The payment token ids
+	 * @param int[]           $token_ids The payment token ids.
 	 *
 	 * @return void
 	 */
@@ -99,12 +99,28 @@ class Qliro_One_Subscriptions {
 			}
 		}
 
+		if ( empty( $token ) ) {
+			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
+			return;
+		}
+
 		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed();
-			$subscription->save();
+			$message = sprintf(
+				/* translators: %s: Error message from the Qliro API. */
+				__( 'The recurring payment failed due to an error communicating with Qliro: %s', 'qliro-for-woocommerce' ),
+				$result->get_error_message()
+			);
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
 			return;
 		}
 
@@ -169,7 +185,7 @@ class Qliro_One_Subscriptions {
 	 * @return bool
 	 */
 	public static function is_subscription_renewal( $order ) {
-		if ( $order !== null && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
+		if ( null !== $order && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
 			return true;
 		}
 
