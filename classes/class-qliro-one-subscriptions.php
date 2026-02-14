@@ -23,7 +23,7 @@ class Qliro_One_Subscriptions {
 	/**
 	 * Process subscription renewal.
 	 *
-	 * @param float    $amount_to_charge
+	 * @param float    $amount_to_charge The amount to charge for the renewal.
 	 * @param WC_Order $order The WooCommerce order that will be created as a result of the renewal.
 	 *
 	 * @return void
@@ -85,7 +85,7 @@ class Qliro_One_Subscriptions {
 	 *
 	 * @param WC_Order        $order The order object.
 	 * @param WC_Subscription $subscription The subscription object.
-	 * @param int[]           $token_ids The payment token ids
+	 * @param int[]           $token_ids The payment token ids.
 	 *
 	 * @return void
 	 */
@@ -177,7 +177,7 @@ class Qliro_One_Subscriptions {
 	 * @return bool
 	 */
 	public static function is_subscription_renewal( $order ) {
-		if ( $order !== null && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
+		if ( null !== $order && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
 			return true;
 		}
 
