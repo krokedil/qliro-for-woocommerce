@@ -112,6 +112,14 @@ class Qliro_One_Subscriptions {
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
+			$message = sprintf(
+				/* translators: %s: Error message from the Qliro API. */
+				__( 'The recurring payment failed due to an error communicating with Qliro: %s', 'qliro-for-woocommerce' ),
+				$result->get_error_message()
+			);
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
 			$subscription->payment_failed_for_related_order();
 			return;
 		}
