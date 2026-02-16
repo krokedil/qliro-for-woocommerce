@@ -38,6 +38,12 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 		$token      = $this->arguments['token'];
 		$confirm_id = wp_generate_uuid4();
 
+		$shipping_first_name = $order->get_shipping_first_name();
+		$shipping_last_name  = $order->get_shipping_last_name();
+		$shipping_address_1  = $order->get_shipping_address_1();
+		$shipping_postcode   = $order->get_shipping_postcode();
+		$shipping_city       = $order->get_shipping_city();
+
 		$body = array(
 			'RequestId'                            => $order_data->generate_request_id(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
@@ -55,11 +61,11 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 				'City'       => $order->get_billing_city(),
 			),
 			'ShippingAddress'                      => array(
-				'FirstName'  => $order->get_shipping_first_name(),
-				'LastName'   => $order->get_shipping_last_name(),
-				'Street'     => $order->get_shipping_address_1(),
-				'PostalCode' => $order->get_shipping_postcode(),
-				'City'       => $order->get_shipping_city(),
+				'FirstName'  => empty( $shipping_first_name ) ? $order->get_billing_first_name() : $shipping_first_name,
+				'LastName'   => empty( $shipping_last_name ) ? $order->get_billing_last_name() : $shipping_last_name,
+				'Street'     => empty( $shipping_address_1 ) ? $order->get_billing_address_1() : $shipping_address_1,
+				'PostalCode' => empty( $shipping_postcode ) ? $order->get_billing_postcode() : $shipping_postcode,
+				'City'       => empty( $shipping_city ) ? $order->get_billing_city() : $shipping_city,
 			),
 		);
 
