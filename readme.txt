@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.4.3
-Stable tag: 2.2.1
+WC tested up to: 10.5.1
+Stable tag: 2.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-02-16    - version 2.2.2 =
+* Fix           - Fixed renewal failing for virtual, downloadable subscriptions by defaulting the shipping address to the billing address when it was missing.
+* Fix           - Fixed an issue where integrated shipping could become out of sync with the WC pick-up point selector.
+
 = 2026.02.10    - version 2.2.1 =
 * Fix           - Prevented a visible "0" from appearing in the shipping section when pickup point coordinates are zero.
 * Fix           - Fixed an issue where reopening a payment link for a order pay order could fail with an existing Qliro order error, leaving the original order in-process and potentially locking coupons.
