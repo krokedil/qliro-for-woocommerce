@@ -43,7 +43,7 @@ class Qliro_One_API {
 	/**
 	 * Gets a Qliro Admin order
 	 *
-	 * @param string $qliro_one_order_id The Qliro Checkout order id.
+	 * @param string        $qliro_one_order_id The Qliro Checkout order id.
 	 * @param WC_Order|null $wc_order The WooCommerce order. Optional.
 	 *
 	 * @return array|WP_Error
@@ -58,7 +58,6 @@ class Qliro_One_API {
 
 		return $response;
 	}
-
 
 	/**
 	 * Updates a Qliro Checkout order.

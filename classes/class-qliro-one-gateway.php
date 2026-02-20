@@ -123,8 +123,15 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 
 		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
-		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
+		$is_change_payment_method = isset( $_GET['change_payment_method'] );
+		if ( ! empty( $is_change_payment_method ) ) {
+			return array(
+				'result'   => 'success',
+				'redirect' => Qliro_One_Subscriptions::get_add_card_receipt_page_url( $order ),
+			);
+		}
+
+		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
 			if ( empty( $qliro_order_id ) ) {
