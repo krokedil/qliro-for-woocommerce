@@ -37,7 +37,7 @@ class Qliro_One_Request_Save_Credit_Card extends Qliro_One_Request_Post {
 		$subscription     = wc_get_order( $this->arguments['order_id'] );
 		$parent           = wc_get_order( $subscription->get_parent_id() );
 		$merchant_urls    = QLIRO_WC()->merchant_urls->get_urls( $parent );
-		$confirmation_url = Qliro_One_Subscriptions::get_change_card_confirmation_url( $subscription );
+		$confirmation_url = Qliro_One_Subscriptions::get_add_card_confirmation_url( $subscription );
 
 		$body = array(
 			'RequestId'                      => $order_data->generate_request_id(),

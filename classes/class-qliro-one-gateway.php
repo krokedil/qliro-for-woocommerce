@@ -127,7 +127,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		if ( ! empty( $is_change_payment_method ) ) {
 			return array(
 				'result'   => 'success',
-				'redirect' => Qliro_One_Subscriptions::get_add_card_receipt_page_url( $order ),
+				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $order ),
 			);
 		}
 

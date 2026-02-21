@@ -27,6 +27,7 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
+		add_action( 'wp_enqueue_scripts', array( Qliro_One_Subscriptions::class, 'add_card_on_receipt_page_assets' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
 
 		// Admin scripts.
