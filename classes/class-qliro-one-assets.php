@@ -27,6 +27,7 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
+		add_action( 'wp_enqueue_scripts', array( Qliro_One_Subscriptions::class, 'add_card_on_receipt_page_assets' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
 
 		// Admin scripts.
@@ -54,7 +55,9 @@ class Qliro_One_Assets {
 			return;
 		}
 		// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
-		if ( ! is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-pay' ) ) {
+
+		$pay_for_order = is_wc_endpoint_url( 'order-pay' );
+		if ( ! is_checkout() || is_order_received_page() || $pay_for_order ) {
 			return;
 		}
 
@@ -86,10 +89,7 @@ class Qliro_One_Assets {
 			'terms-field',
 			'_wp_http_referer',
 		);
-		$pay_for_order                = false;
-		if ( is_wc_endpoint_url( 'order-pay' ) ) {
-			$pay_for_order = true;
-		}
+
 		wp_register_script( 'qliro-for-woocommerce', $src, $dependencies, QLIRO_WC_VERSION, false );
 
 		wp_localize_script(

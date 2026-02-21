@@ -53,9 +53,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
+				'subscription_payment_method_change',
+				'subscription_payment_method_change_customer',
+				'subscription_payment_method_change_admin',
 				'multiple_subscriptions',
 				'tokenization', // Only for card payments when buying subscriptions.
 			)
@@ -123,8 +123,15 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 
 		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
-		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
+		$is_change_payment_method = isset( $_GET['change_payment_method'] );
+		if ( ! empty( $is_change_payment_method ) ) {
+			return array(
+				'result'   => 'success',
+				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $order ),
+			);
+		}
+
+		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
 			if ( empty( $qliro_order_id ) ) {
@@ -132,11 +139,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
 
 				if ( is_wp_error( $result ) ) {
-					return array(
-						'result'   => 'failure',
-						'messages' => $result->get_error_message(),
-					);
+					throw new Exception( $result->get_error_message() );
 				}
+
 				$payment_link = $result['PaymentLink'] ?? '';
 				$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
 				$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
@@ -149,10 +154,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			}
 
 			if ( empty( $redirect_url ) ) {
-				return array(
-					'result'   => 'failure',
-					'messages' => __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ),
-				);
+				throw new Exception( __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ) );
 			}
 
 			return array(
@@ -170,10 +172,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// If the order id, confirmation id or merchant reference is not set, we can not proceed.
 		if ( empty( $qliro_order_id ) || empty( $qliro_confirmation_id ) || empty( $qliro_merchant_reference ) ) {
 			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
-			return array(
-				'result'   => 'failure',
-				'messages' => __( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ),
-			);
+			throw new Exception( __( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 		}
 
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
