@@ -1,0 +1,4 @@
+Type: Feature
+Needs Documentation: yes
+
+Added a shipping method setting together with the 'qliro_one_shipping_fee_merchant_reference' filter, to enable sending a custom ShippingFeeMerchantReference value to Qliro. Defaults to the shipping method's id.
