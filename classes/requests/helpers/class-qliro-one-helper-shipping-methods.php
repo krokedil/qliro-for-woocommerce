@@ -34,20 +34,23 @@ class Qliro_One_Helper_Shipping_Methods {
 					continue;
 				}
 
-				$method_id   = $method->id;
-				$method_name = $method->label;
+				$method_id       = $method->id;
+				$method_name     = $method->label;
+				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
+
+				$shipping_fee_merchant_reference = isset( $method_settings['qliro_shipping_fee_merchant_reference'] ) ? sanitize_text_field( $method_settings['qliro_shipping_fee_merchant_reference'] ) : '';
+				$shipping_fee_merchant_reference = apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $method, $method_settings );
 
 				$method_price_inc_tax = round( $method_cost + array_sum( $method->taxes ), 2 );
 				$method_price_ex_tax  = round( $method_cost, 2 );
 				$options              = array(
-					'MerchantReference' => $method_id,
-					'DisplayName'       => $method_name,
-					'PriceIncVat'       => $method_price_inc_tax,
-					'PriceExVat'        => $method_price_ex_tax,
-					'VatRate'           => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
+					'MerchantReference'            => $method_id,
+					'ShippingFeeMerchantReference' => ! empty( $shipping_fee_merchant_reference ) ? $shipping_fee_merchant_reference : $method_id,
+					'DisplayName'                  => $method_name,
+					'PriceIncVat'                  => $method_price_inc_tax,
+					'PriceExVat'                   => $method_price_ex_tax,
+					'VatRate'                      => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
 				);
-
-				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
 
 				// Set the shipping method description if it exists.
 				self::set_shipping_method_description( $method, $method_settings, $options );
