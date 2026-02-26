@@ -126,12 +126,28 @@ class Qliro_One_Subscriptions {
 			}
 		}
 
+		if ( empty( $token ) ) {
+			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
+			return;
+		}
+
 		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed();
-			$subscription->save();
+			$message = sprintf(
+				/* translators: %s: Error message from the Qliro API. */
+				__( 'The recurring payment failed due to an error communicating with Qliro: %s', 'qliro-for-woocommerce' ),
+				$result->get_error_message()
+			);
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
 			return;
 		}
 
