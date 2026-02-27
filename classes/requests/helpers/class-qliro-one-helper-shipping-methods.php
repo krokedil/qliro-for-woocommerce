@@ -47,18 +47,21 @@ class Qliro_One_Helper_Shipping_Methods {
 					? $shipping_fee_merchant_reference
 					: $method_id;
 
-				$shipping_fee_merchant_reference = apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $method, $method_settings );
+				$shipping_fee_merchant_reference = sanitize_text_field( apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $method, $method_settings ) );
 
 				$method_price_inc_tax = round( $method_cost + array_sum( $method->taxes ), 2 );
 				$method_price_ex_tax  = round( $method_cost, 2 );
 				$options              = array(
-					'MerchantReference'            => $method_id,
-					'ShippingFeeMerchantReference' => sanitize_text_field( $shipping_fee_merchant_reference ),
-					'DisplayName'                  => $method_name,
-					'PriceIncVat'                  => $method_price_inc_tax,
-					'PriceExVat'                   => $method_price_ex_tax,
-					'VatRate'                      => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
+					'MerchantReference' => $method_id,
+					'DisplayName'       => $method_name,
+					'PriceIncVat'       => $method_price_inc_tax,
+					'PriceExVat'        => $method_price_ex_tax,
+					'VatRate'           => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
 				);
+
+				if ( ! empty( $shipping_fee_merchant_reference ) ) {
+					$options['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+				}
 
 				// Set the shipping method description if it exists.
 				self::set_shipping_method_description( $method, $method_settings, $options );
