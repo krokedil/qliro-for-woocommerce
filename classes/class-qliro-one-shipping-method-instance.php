@@ -134,6 +134,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'Instabox'    => 'Instabox',
 					'Oda'         => 'ODA Delivery',
 					'Posti'       => 'Posti',
+					'Matkahuolto' => 'Matkahuolto',
 					'PostNord'    => 'PostNord',
 					'Porterbuddy' => 'Porterbuddy',
 					'Schenker'    => 'Schenker',
