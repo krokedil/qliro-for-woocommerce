@@ -49,11 +49,20 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 		// Get the Qliro order id.
 		$qliro_order_id = $body['OrderId'];
 
+		$sanitized_body = $body;
+		foreach ( $sanitized_body as $key => $value ) {
+			if ( in_array( $key, array( 'CardBin', 'CardLast4Digits', 'CardExpiryYear', 'CardExpiryMonth', 'CardBrandName' ), true ) ) {
+				$sanitized_body[ $key ] = '****';
+			}
+		}
+		Qliro_One_Logger::log( "[SAVE CARD]: Received save card callback for Qliro order id #{$qliro_order_id}. Received data:" . wp_json_encode( $sanitized_body ) );
+
 		// Get the WooCommerce order by the Qliro order id.
 		$order = qliro_get_order_by_qliro_id( $qliro_order_id );
 
 		// If we did not get an order, return an error, and Qliro will try again later.
 		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: No order found in WooCommerce for Qliro order id: #{$qliro_order_id}" );
 			return new WP_REST_Response( array( 'error' => 'Order not found in WooCommerce' ), 404 );
 		}
 
@@ -71,6 +80,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 				$existing_token_id = $existing_token->get_token();
 				// If the token already exists, return a success response.
 				if ( $existing_token_id === $body['Id'] ) {
+					Qliro_One_Logger::log( "[SAVE CARD]: Card already exists for token id: {$existing_token_id}. Adding to existing subscription." );
 					// If its set, and the card already exists, save it to the subscription and return a success response.
 					$subscription->add_payment_token( $existing_token );
 					$subscription->save();
@@ -93,11 +103,12 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			// Save the token.
 			$token->save();
 
-			// Add the token to the order.
+			// Add the token to the subscription.
 			$subscription->add_payment_token( $token );
 			$subscription->save();
 		}
 
+		Qliro_One_Logger::log( "[SAVE CARD]: Successfully saved card #{$body['Id']} for Qliro order id #{$qliro_order_id} to subscription #{$subscription->get_id()}" );
 		return $this->success_response();
 	}
 
