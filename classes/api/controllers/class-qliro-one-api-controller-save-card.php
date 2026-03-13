@@ -51,7 +51,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 
 		$sanitized_body = $body;
 		foreach ( $sanitized_body as $key => $value ) {
-			if ( in_array( $key, array( 'CardBin', 'CardLast4Digits', 'CardExpiryYear', 'CardExpiryMonth', 'CardBrandName' ), true ) ) {
+			if ( in_array( $key, array( 'CardLast4Digits', 'CardExpiryYear', 'CardExpiryMonth' ), true ) ) {
 				$sanitized_body[ $key ] = '****';
 			}
 		}
