@@ -41,7 +41,7 @@ class Qliro_One_Helper_Cart {
 		/**
 		 * Get cart fees.
 		 *
-		 * @var $cart_fees WC_Cart_Fees
+		 * @var array<WC_Cart_Fee> $cart_fees
 		 */
 		$cart_fees = WC()->cart->get_fees();
 		foreach ( $cart_fees as $fee ) {
@@ -190,8 +190,12 @@ class Qliro_One_Helper_Cart {
 		$packages        = WC()->shipping()->get_packages();
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
 		$chosen_shipping = $chosen_methods[0];
-		foreach ( $packages as $i => $package ) {
-			/** @var WC_Shipping_Rate $method */
+		foreach ( $packages as $package ) {
+			/**
+			 * Shipping method rate from package.
+			 *
+			 * @var WC_Shipping_Rate $method
+			 */
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
@@ -441,7 +445,7 @@ class Qliro_One_Helper_Cart {
 			$rates = WC_Tax::get_rates( $tax_class );
 			if ( ! empty( $rates ) ) {
 				$first_rate = reset( $rates ); // Only use the first rate returned.
-				// Check if 'rate' key exists; otherwise, fallback to 0
+				// Check if 'rate' key exists; otherwise, fallback to 0.
 				return self::format_vat_rate( $first_rate['rate'] ?? 0 );
 			}
 		}
@@ -458,7 +462,7 @@ class Qliro_One_Helper_Cart {
 	 * @return string
 	 */
 	public static function get_shipping_tax_rate( $shipping_rate ) {
-		$rate = $shipping_rate->get_cost() != 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
+		$rate = $shipping_rate->get_cost() !== 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
 
 		return self::format_vat_rate( $rate );
 	}
