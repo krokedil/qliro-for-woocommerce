@@ -196,8 +196,10 @@ class Qliro_One_Helper_Cart {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
 				if ( $chosen_shipping === $method->id ) {
+					$shipping_fee_merchant_reference = self::get_shipping_fee_merchant_reference_from_rate( $method );
+
 					if ( $method_cost > 0 ) {
-						return array(
+						$shipping = array(
 							'MerchantReference'  => $method->get_id(),
 							'Description'        => $method->get_label(),
 							'Type'               => 'Shipping',
@@ -206,9 +208,15 @@ class Qliro_One_Helper_Cart {
 							'PricePerItemExVat'  => wc_format_decimal( WC()->cart->get_shipping_total(), min( wc_get_price_decimals(), 2 ) ),
 							'VatRate'            => self::get_shipping_tax_rate( $method ),
 						);
+
+						if ( ! empty( $shipping_fee_merchant_reference ) ) {
+							$shipping['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+						}
+
+						return $shipping;
 					}
 
-					return array(
+					$shipping = array(
 						'MerchantReference'  => $method->get_id(),
 						'Description'        => $method->get_label(),
 						'Type'               => 'Shipping',
@@ -217,11 +225,35 @@ class Qliro_One_Helper_Cart {
 						'PricePerItemExVat'  => 0,
 						'VatRate'            => self::format_vat_rate( 0 ),
 					);
+
+					if ( ! empty( $shipping_fee_merchant_reference ) ) {
+						$shipping['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+					}
+
+					return $shipping;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get shipping fee merchant reference for the shipping rate.
+	 *
+	 * @param WC_Shipping_Rate $method The shipping method rate from WooCommerce.
+	 * @return string
+	 */
+	private static function get_shipping_fee_merchant_reference_from_rate( $method ) {
+		$method_id       = $method->get_id();
+		$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
+
+		$shipping_fee_merchant_reference = $method_settings['qliro_shipping_fee_merchant_reference'] ?? '';
+		$shipping_fee_merchant_reference = '' !== $shipping_fee_merchant_reference
+			? $shipping_fee_merchant_reference
+			: $method_id;
+
+		return sanitize_text_field( apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $method, $method_settings ) );
 	}
 
 	/**

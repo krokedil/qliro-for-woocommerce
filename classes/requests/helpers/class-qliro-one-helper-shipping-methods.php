@@ -109,7 +109,7 @@ class Qliro_One_Helper_Shipping_Methods {
 				}
 
 				// Pickup points.
-				self::set_pickup_points( $options, $method );
+				self::set_pickup_points( $options, $method, $shipping_fee_merchant_reference );
 				$shipping_options[] = apply_filters( 'qliro_one_shipping_option', $options, $method, $method_settings );
 
 			}
@@ -122,8 +122,9 @@ class Qliro_One_Helper_Shipping_Methods {
 	 *
 	 * @param array            $options The shipping options for the Qliro api.
 	 * @param WC_Shipping_Rate $method The shipping method rate from WooCommerce.
+	 * @param string           $shipping_fee_merchant_reference The shipping fee merchant reference.
 	 */
-	private static function set_pickup_points( &$options, $method ) {
+	private static function set_pickup_points( &$options, $method, $shipping_fee_merchant_reference = '' ) {
 		// Get any pickup points for the shipping method.
 		$pickup_points = QLIRO_WC()->pickup_points_service()->get_pickup_points_from_rate( $method ) ?? array();
 
@@ -150,6 +151,10 @@ class Qliro_One_Helper_Shipping_Methods {
 					'DateStart' => $pickup_point->get_eta()->get_utc(),
 				),
 			);
+
+			if ( ! empty( $shipping_fee_merchant_reference ) ) {
+				$secondary_option['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+			}
 
 			// Only add coordinates if available.
 			if ( ! empty( $latitude ) || ! empty( $longitude ) ) {
