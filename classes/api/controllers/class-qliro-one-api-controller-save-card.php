@@ -55,7 +55,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 				$sanitized_body[ $key ] = '****';
 			}
 		}
-		Qliro_One_Logger::log( "[SAVE CARD]: Received save card callback for Qliro order id #{$qliro_order_id}. Received data:" . wp_json_encode( $sanitized_body ) );
+		Qliro_One_Logger::log( "[SAVE CARD]: Received save card callback for Qliro order id #{$qliro_order_id}. Received data: " . wp_json_encode( $sanitized_body ) );
 
 		// Get the WooCommerce order by the Qliro order id.
 		$order = qliro_get_order_by_qliro_id( $qliro_order_id );
@@ -108,7 +108,8 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			$subscription->save();
 		}
 
-		Qliro_One_Logger::log( "[SAVE CARD]: Successfully saved card #{$body['Id']} for Qliro order id #{$qliro_order_id} to subscription #{$subscription->get_id()}" );
+		$subscription_ids = wp_list_pluck( $subscriptions, 'id' );
+		Qliro_One_Logger::log( "[SAVE CARD]: Successfully saved card #{$body['Id']} for Qliro order id #{$qliro_order_id} to subscriptions: " . implode( ', ', $subscription_ids ) );
 		return $this->success_response();
 	}
 
