@@ -144,7 +144,8 @@ class Qliro_One_Helper_Order {
 	/**
 	 * Formats the order lines for a refund request.
 	 *
-	 * @param int $order_id The WooCommerce Order ID.
+	 * @param array $items Items to refund with quantities.
+	 * @param int   $order_id The WooCommerce Order ID.
 	 * @return array
 	 */
 	public static function get_return_items_from_items( $items, $order_id ) {
@@ -377,6 +378,7 @@ class Qliro_One_Helper_Order {
 	 * @param array    $return_fees The array of return fees.
 	 * @param array    $order_items The order items to send to Qliro for refund.
 	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 * @param bool     $calc_return_fee Whether to calculate and append a return fee delta.
 	 *
 	 * @return array
 	 */
@@ -435,13 +437,25 @@ class Qliro_One_Helper_Order {
 				function ( $original_item ) use ( $reference, $order ) {
 					switch ( $original_item->get_type() ) {
 						case 'line_item':
-							/** @var WC_Order_Item_Product $original_item */
+							/**
+							 * Product order item from original order.
+							 *
+							 * @var WC_Order_Item_Product $original_item
+							 */
 							return $original_item->get_product()->get_sku() === $reference || $original_item->get_product_id() === $reference || $original_item->get_variation_id() === $reference;
 						case 'shipping':
-							/** @var WC_Order_Item_Shipping $original_item */
+							/**
+							 * Shipping order item from original order.
+							 *
+							 * @var WC_Order_Item_Shipping $original_item
+							 */
 							return $original_item->get_method_id() === $reference || $original_item->get_meta( 'qliro_shipping_method' ) === $reference || $order->get_meta( '_qliro_one_shipping_reference' ) === $reference;
 						case 'fee':
-							/** @var WC_Order_Item_Fee $original_item */
+							/**
+							 * Fee order item from original order.
+							 *
+							 * @var WC_Order_Item_Fee $original_item
+							 */
 							return qliro_one_format_fee_reference( $original_item->get_name() ) === $reference;
 						default:
 							return false;
