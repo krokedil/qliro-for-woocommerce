@@ -133,7 +133,7 @@ class Qliro_One_Checkout {
 		// If cart doesn't need payment anymore - reload the checkout page.
 		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
 			if ( ! WC()->cart->needs_payment() ) {
-				WC()->session->reload_checkout = true;
+				WC()->session->set( 'reload_checkout', true );
 			}
 		}
 
@@ -262,7 +262,6 @@ class Qliro_One_Checkout {
 		if ( empty( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return $country_states;
 		}
-
 
 		// Ensure each country (key) has a empty array as a value.
 		foreach ( $country_states as $cc => $states ) {
