@@ -49,13 +49,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 		// Get the Qliro order id.
 		$qliro_order_id = $body['OrderId'];
 
-		$sanitized_body = $body;
-		foreach ( $sanitized_body as $key => $value ) {
-			if ( in_array( $key, array( 'CardLast4Digits', 'CardExpiryYear', 'CardExpiryMonth' ), true ) ) {
-				$sanitized_body[ $key ] = '****';
-			}
-		}
-		Qliro_One_Logger::log( "[SAVE CARD]: Received save card callback for Qliro order id #{$qliro_order_id}. Received data: " . wp_json_encode( $sanitized_body ) );
+		Qliro_One_Logger::log( "[SAVE CARD]: Received save card callback for Qliro order id #{$qliro_order_id}. Received data: " . wp_json_encode( $body ) );
 
 		// Get the WooCommerce order by the Qliro order id.
 		$order = qliro_get_order_by_qliro_id( $qliro_order_id );
