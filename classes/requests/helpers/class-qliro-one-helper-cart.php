@@ -41,7 +41,7 @@ class Qliro_One_Helper_Cart {
 		/**
 		 * Get cart fees.
 		 *
-		 * @var $cart_fees WC_Cart_Fees
+		 * @var array<WC_Cart_Fee> $cart_fees
 		 */
 		$cart_fees = WC()->cart->get_fees();
 		foreach ( $cart_fees as $fee ) {
@@ -190,14 +190,20 @@ class Qliro_One_Helper_Cart {
 		$packages        = WC()->shipping()->get_packages();
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
 		$chosen_shipping = $chosen_methods[0];
-		foreach ( $packages as $i => $package ) {
-			/** @var WC_Shipping_Rate $method */
+		foreach ( $packages as $package ) {
+			/**
+			 * Shipping method rate from package.
+			 *
+			 * @var WC_Shipping_Rate $method
+			 */
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
 				if ( $chosen_shipping === $method->id ) {
+					$shipping_fee_merchant_reference = self::get_shipping_fee_merchant_reference_from_rate( $method );
+
 					if ( $method_cost > 0 ) {
-						return array(
+						$shipping = array(
 							'MerchantReference'  => $method->get_id(),
 							'Description'        => $method->get_label(),
 							'Type'               => 'Shipping',
@@ -206,9 +212,15 @@ class Qliro_One_Helper_Cart {
 							'PricePerItemExVat'  => wc_format_decimal( WC()->cart->get_shipping_total(), min( wc_get_price_decimals(), 2 ) ),
 							'VatRate'            => self::get_shipping_tax_rate( $method ),
 						);
+
+						if ( ! empty( $shipping_fee_merchant_reference ) ) {
+							$shipping['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+						}
+
+						return $shipping;
 					}
 
-					return array(
+					$shipping = array(
 						'MerchantReference'  => $method->get_id(),
 						'Description'        => $method->get_label(),
 						'Type'               => 'Shipping',
@@ -217,11 +229,35 @@ class Qliro_One_Helper_Cart {
 						'PricePerItemExVat'  => 0,
 						'VatRate'            => self::format_vat_rate( 0 ),
 					);
+
+					if ( ! empty( $shipping_fee_merchant_reference ) ) {
+						$shipping['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+					}
+
+					return $shipping;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get shipping fee merchant reference for the shipping rate.
+	 *
+	 * @param WC_Shipping_Rate $method The shipping method rate from WooCommerce.
+	 * @return string
+	 */
+	private static function get_shipping_fee_merchant_reference_from_rate( $method ) {
+		$method_id       = $method->get_id();
+		$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
+
+		$shipping_fee_merchant_reference = $method_settings['qliro_shipping_fee_merchant_reference'] ?? '';
+		$shipping_fee_merchant_reference = '' !== $shipping_fee_merchant_reference
+			? $shipping_fee_merchant_reference
+			: $method_id;
+
+		return sanitize_text_field( apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $method, $method_settings ) );
 	}
 
 	/**
@@ -409,7 +445,7 @@ class Qliro_One_Helper_Cart {
 			$rates = WC_Tax::get_rates( $tax_class );
 			if ( ! empty( $rates ) ) {
 				$first_rate = reset( $rates ); // Only use the first rate returned.
-				// Check if 'rate' key exists; otherwise, fallback to 0
+				// Check if 'rate' key exists; otherwise, fallback to 0.
 				return self::format_vat_rate( $first_rate['rate'] ?? 0 );
 			}
 		}
@@ -426,7 +462,7 @@ class Qliro_One_Helper_Cart {
 	 * @return string
 	 */
 	public static function get_shipping_tax_rate( $shipping_rate ) {
-		$rate = $shipping_rate->get_cost() != 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
+		$rate = $shipping_rate->get_cost() !== 0 ? array_sum( $shipping_rate->get_taxes() ) / $shipping_rate->get_cost() * 100 : 0;
 
 		return self::format_vat_rate( $rate );
 	}

@@ -123,12 +123,19 @@ class Qliro_One_Helper_Order {
 			// we must inverse the price as Qliro expects price <= 0 for discounts.
 			$price = 'Discount' === $order_line['Type'] ? -1 * $price : abs( $price );
 
-			$return_lines[] = array(
+			$return_line = array(
 				'MerchantReference'  => $order_line['MerchantReference'],
 				'Type'               => $order_line['Type'],
 				'Quantity'           => abs( $order_line['Quantity'] ),
 				'PricePerItemIncVat' => wc_format_decimal( $price, min( wc_get_price_decimals(), 2 ) ),
 			);
+
+			$shipping_fee_merchant_reference = $order_line['ShippingFeeMerchantReference'] ?? '';
+			if ( ! empty( $shipping_fee_merchant_reference ) ) {
+				$return_line['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+			}
+
+			$return_lines[] = $return_line;
 		}
 
 		return $return_lines;
@@ -137,7 +144,8 @@ class Qliro_One_Helper_Order {
 	/**
 	 * Formats the order lines for a refund request.
 	 *
-	 * @param int $order_id The WooCommerce Order ID.
+	 * @param array $items Items to refund with quantities.
+	 * @param int   $order_id The WooCommerce Order ID.
 	 * @return array
 	 */
 	public static function get_return_items_from_items( $items, $order_id ) {
@@ -187,7 +195,7 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_order_item_shipping( $order_item, $order ) {
-		return array(
+		$shipping_line = array(
 			'MerchantReference'  => self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
@@ -196,6 +204,14 @@ class Qliro_One_Helper_Order {
 			'PricePerItemExVat'  => self::get_unit_price_ex_vat( $order_item ),
 			'VatRate'            => self::get_tax_rate( $order, $order_item ),
 		);
+
+		$shipping_fee_merchant_reference = self::get_shipping_fee_merchant_reference( $order_item );
+
+		if ( ! empty( $shipping_fee_merchant_reference ) ) {
+			$shipping_line['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+		}
+
+		return $shipping_line;
 	}
 
 	/**
@@ -269,6 +285,29 @@ class Qliro_One_Helper_Order {
 	}
 
 	/**
+	 * Gets the shipping fee merchant reference for a shipping order line.
+	 *
+	 * @param WC_Order_Item_Shipping $order_item The WooCommerce shipping order item.
+	 * @return string
+	 */
+	private static function get_shipping_fee_merchant_reference( $order_item ) {
+		if ( 'shipping' !== $order_item->get_type() ) {
+			return '';
+		}
+
+		$method_id       = $order_item->get_method_id();
+		$instance_id     = $order_item->get_instance_id();
+		$method_settings = get_option( "woocommerce_{$method_id}_{$instance_id}_settings", array() );
+
+		$shipping_fee_merchant_reference = $method_settings['qliro_shipping_fee_merchant_reference'] ?? '';
+		$shipping_fee_merchant_reference = '' !== $shipping_fee_merchant_reference
+			? $shipping_fee_merchant_reference
+			: self::get_reference( $order_item );
+
+		return sanitize_text_field( apply_filters( 'qliro_one_shipping_fee_merchant_reference', $shipping_fee_merchant_reference, $order_item, $method_settings ) );
+	}
+
+	/**
 	 * Get the unit price.
 	 *
 	 * @param WC_Order_Item_Product|WC_Order_Item_Shipping|WC_Order_Item_Fee $order_item The WooCommerce order item.
@@ -339,6 +378,7 @@ class Qliro_One_Helper_Order {
 	 * @param array    $return_fees The array of return fees.
 	 * @param array    $order_items The order items to send to Qliro for refund.
 	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 * @param bool     $calc_return_fee Whether to calculate and append a return fee delta.
 	 *
 	 * @return array
 	 */
@@ -397,13 +437,25 @@ class Qliro_One_Helper_Order {
 				function ( $original_item ) use ( $reference, $order ) {
 					switch ( $original_item->get_type() ) {
 						case 'line_item':
-							/** @var WC_Order_Item_Product $original_item */
+							/**
+							 * Product order item from original order.
+							 *
+							 * @var WC_Order_Item_Product $original_item
+							 */
 							return $original_item->get_product()->get_sku() === $reference || $original_item->get_product_id() === $reference || $original_item->get_variation_id() === $reference;
 						case 'shipping':
-							/** @var WC_Order_Item_Shipping $original_item */
+							/**
+							 * Shipping order item from original order.
+							 *
+							 * @var WC_Order_Item_Shipping $original_item
+							 */
 							return $original_item->get_method_id() === $reference || $original_item->get_meta( 'qliro_shipping_method' ) === $reference || $order->get_meta( '_qliro_one_shipping_reference' ) === $reference;
 						case 'fee':
-							/** @var WC_Order_Item_Fee $original_item */
+							/**
+							 * Fee order item from original order.
+							 *
+							 * @var WC_Order_Item_Fee $original_item
+							 */
 							return qliro_one_format_fee_reference( $original_item->get_name() ) === $reference;
 						default:
 							return false;
