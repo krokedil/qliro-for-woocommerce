@@ -366,6 +366,12 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return $wc_result;
 		}
 
+		// Do not override the needs payment result if the order is not in a valid status for needing payment.
+		// This is necessary to prevent 'processing' orders from being marked as needing payment. Otherwise, a "Pay" button will appear on the order received page.
+		if ( ! in_array( $order->get_status(), $valid_order_statuses, true ) ) {
+			return $wc_result;
+		}
+
 		// Only if our filter is active and is set to false.
 		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
 			return $wc_result;
