@@ -429,18 +429,23 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		return json_decode( $args, true );
 	}
 
+	/**
+	 * Update conditional settings based on other settings values.
+	 *
+	 * @return void
+	 */
 	public function update_conditional_settings() {
 		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
 
 		// If all locations are set to none, disable the banner widget.
 		$banner_cart_location = sanitize_text_field( $settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals' );
 		$banner_location      = sanitize_text_field( $settings['banner_widget_placement_location'] ?? 'none' );
-		$banner_enabled       = ( $banner_cart_location === 'none' && $banner_location === 'none' ) ? 'no' : 'yes';
+		$banner_enabled       = ( 'none' === $banner_cart_location && 'none' === $banner_location ) ? 'no' : 'yes';
 		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_enabled );
 
 		// If the payment widget location is set to none, disable the payment widget.
 		$payment_location = sanitize_text_field( $settings['payment_widget_placement_location'] ?? '15' );
-		$payment_enabled  = ( $payment_location === 'none' ) ? 'no' : 'yes';
+		$payment_enabled  = ( 'none' === $payment_location ) ? 'no' : 'yes';
 		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_enabled );
 
 		$om_advanced_settings = sanitize_text_field( $settings['om_advanced_settings'] ?? 'no' );
