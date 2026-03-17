@@ -132,6 +132,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'Helthjem'    => 'Helthjem',
 					'Instabikes'  => 'Instabikes',
 					'Instabox'    => 'Instabox',
+					'Matkahuolto' => 'Matkahuolto',
 					'Oda'         => 'ODA Delivery',
 					'Posti'       => 'Posti',
 					'PostNord'    => 'PostNord',
