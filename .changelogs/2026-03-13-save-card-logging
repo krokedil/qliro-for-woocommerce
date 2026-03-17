@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Extended logging in callback handling card tokenzation for subscription.
