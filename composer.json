@@ -2,7 +2,7 @@
     "name": "krokedil/qliro-for-woocommerce",
     "description": "Qliro Checkout For WooCommerce",
     "type": "wordpress-plugin",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "authors": [
         {
             "name": "Krokedil AB",
@@ -40,10 +40,10 @@
             "bash .github/scripts/check-changelog-master.sh",
             "bash .github/scripts/check-version-and-compat.sh"
         ],
-        "lint": "vendor/bin/phpcs . --standard=phpcs.xml.dist --extensions=php -q",
-        "lint:fix": "vendor/bin/phpcbf . --standard=phpcs.xml.dist --extensions=php -q",
-        "lint:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcs --standard=phpcs.xml.dist --extensions=php -q",
-        "lint:fix:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcbf --standard=phpcs.xml.dist --extensions=php -q",
+        "lint": "vendor/bin/phpcs . --standard=phpcs.xml --extensions=php -q",
+        "lint:fix": "vendor/bin/phpcbf . --standard=phpcs.xml --extensions=php -q",
+        "lint:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcs --standard=phpcs.xml --extensions=php -q",
+        "lint:fix:changes": "git diff --name-only HEAD~1 | grep '\\.php$' | xargs vendor/bin/phpcbf --standard=phpcs.xml --extensions=php -q",
         "install-codestandards": [
             "PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
         ],
