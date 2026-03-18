@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.5.1
-Stable tag: 2.2.2
+WC tested up to: 10.6.1
+Stable tag: 2.2.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-03-18    - version 2.2.3 =
+* Enhancement   - Extended logging in callback handling card tokenzation for subscription.
+* Enhancement   - Adds Matkahuolto as a selectable shipping Brand for Qliro shipping method instance settings.
+* Tweak         - The chosen payment option is now shown in the subscription's payment method description.
+* Tweak         - Fixes error message not shown during payment processing due to WC changes.
+* Fix           - Fixed a critical error when attempting to retrieve a deleted payment token on subscription renewal.
+
 = 2026-02-16    - version 2.2.2 =
 * Fix           - Fixed renewal failing for virtual, downloadable subscriptions by defaulting the shipping address to the billing address when it was missing.
 * Fix           - Fixed an issue where integrated shipping could become out of sync with the WC pick-up point selector.
