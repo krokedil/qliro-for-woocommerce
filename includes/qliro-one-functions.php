@@ -312,6 +312,11 @@ function qliro_update_wc_shipping( $data ) {
 	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qliro_chosen_shipping_method', $chosen_shipping_methods ) );
 }
 
+/**
+ * Clear the shipping package hashes to ensure recalculation of shipping rates.
+ *
+ * @return void
+ */
 function qliro_clear_shipping_package_hashes() {
 	// Get all package keys.
 	$packages     = WC()->cart->get_shipping_packages();
@@ -340,7 +345,7 @@ function qliro_get_thankyou_page_qliro_order( $qliro_order_id ) {
 			return $qliro_order;
 		}
 
-		set_transient( "qliro_thankyou_order_$qliro_order_id", json_encode( $qliro_order ), 10 );
+		set_transient( "qliro_thankyou_order_$qliro_order_id", wp_json_encode( $qliro_order ), 10 );
 	}
 
 	return $qliro_order;
@@ -511,7 +516,7 @@ function qliro_is_fully_captured( $order ) {
 	return $is_fully_captured;
 }
 
-/*
+/**
  * Get the remaining items to capture for an order.
  *
  * @param WC_Order $order The WooCommerce order.
@@ -671,6 +676,11 @@ function qliro_one_get_billing_country() {
 	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
 }
 
+/**
+ * Check if the billing country has changed during the checkout process.
+ *
+ * @return bool
+ */
 function qliro_one_has_country_changed() {
 	$country_from_session  = WC()->session->get( 'qliro_one_billing_country' );
 	$country_from_checkout = WC()->checkout()->get_value( 'billing_country' );
@@ -688,11 +698,11 @@ function qliro_one_has_country_changed() {
  * If the value cannot be converted to a numeric value, it will return the default value.
  *
  * @param mixed     $value The value to ensure is numeric.
- * @param float|int $default The default value to return if the value is not numeric and $throw_error is false. Default 0.
+ * @param float|int $default_value The default value to return if the value is not numeric and $throw_error is false. Default 0.
  *
  * @return float|int Returns the numeric value of the input, or the default value if the input is not numeric and cannot be converted.
  */
-function qliro_ensure_numeric( $value, $default = 0 ) {
+function qliro_ensure_numeric( $value, $default_value = 0 ) {
 	if ( is_numeric( $value ) ) {
 		return floatval( $value );
 	}
@@ -709,7 +719,7 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
 		return $converted_value;
 	}
 
-	return $default; // Return the default value if the value is still not numeric.
+	return $default_value; // Return the default value if the value is still not numeric.
 }
 
 /**

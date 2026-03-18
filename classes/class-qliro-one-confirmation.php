@@ -81,4 +81,5 @@ class Qliro_One_Confirmation {
 
 		delete_transient( $key );
 	}
-} new Qliro_One_Confirmation();
+}
+new Qliro_One_Confirmation();
