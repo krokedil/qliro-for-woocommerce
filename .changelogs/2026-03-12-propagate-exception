@@ -1,4 +1,0 @@
-Type: Tweak
-Needs Documentation: no
-
-Fixes error message not shown during payment processing due to WC changes.
