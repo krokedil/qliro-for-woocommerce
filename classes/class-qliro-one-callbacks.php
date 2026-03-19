@@ -9,6 +9,10 @@
  * Class for handling the callbacks for the Qliro integration
  */
 class Qliro_One_Callbacks {
+
+	public const HOOK_PREFIX           = 'qliro_one_scheduled_callback_';
+	public const SCHEDULE_INTERVAL_SEC = 30;
+
 	/**
 	 * The settings for the plugin.
 	 *
@@ -25,6 +29,7 @@ class Qliro_One_Callbacks {
 		add_action( 'qliro_complete_checkout', array( $this, 'complete_checkout' ), 10 );
 		add_action( 'qliro_fail_checkout', array( $this, 'fail_checkout' ), 10 );
 		add_action( 'qliro_onhold_checkout', array( $this, 'onhold_checkout' ), 10 );
+		add_action( self::HOOK_PREFIX . 'process_preauthorization', Qliro_One_Subscriptions::class . '::process_preauthorization', 10, 2 );
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -34,42 +39,102 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function om_push_cb() {
-		$body            = file_get_contents( 'php://input' );
-		$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
-		$data            = json_decode( $body, true );
+		try {
+			$body            = file_get_contents( 'php://input' );
+			$confirmation_id = filter_input( INPUT_GET, 'qliro_one_confirm_id', FILTER_SANITIZE_SPECIAL_CHARS );
+			$data            = json_decode( $body, true );
 
-		Qliro_One_Logger::log( "OM Callback received: {$body}." );
+			Qliro_One_Logger::log( "OM Callback received: {$body}." );
 
-		if ( isset( $data['PaymentType'] ) ) {
-			$order_number = $data['MerchantReference'];
-			switch ( $data['PaymentType'] ) {
-				case 'Capture':
-					Qliro_One_Logger::log( "Processing capture callback for order {$order_number}." );
-					$this->complete_capture( $confirmation_id, $data );
-					break;
-				case 'Reversal':
-					// Only process the callback if the order actually has the metadata '_qliro_order_cancel_pending', since Qliro can send Reversal callbacks for other reasons.
-					$order = qliro_get_order_by_confirmation_id( $confirmation_id );
-					if ( empty( $order ) || ! $order->get_meta( '_qliro_order_pending_cancellation' ) ) {
-						Qliro_One_Logger::log( "Skipping reversal callback for order {$order_number} as no cancellation is pending." );
+			if ( isset( $data['PaymentType'] ) ) {
+				$order_number = $data['MerchantReference'];
+				switch ( $data['PaymentType'] ) {
+					case 'Capture':
+						Qliro_One_Logger::log( "[CALLBACK OM]: Processing capture callback for order {$order_number}." );
+						$this->complete_capture( $confirmation_id, $data );
 						break;
-					}
+					case 'Reversal':
+						// Only process the callback if the order actually has the metadata '_qliro_order_cancel_pending', since Qliro can send Reversal callbacks for other reasons.
+						$order = qliro_get_order_by_confirmation_id( $confirmation_id );
+						if ( empty( $order ) || ! $order->get_meta( '_qliro_order_pending_cancellation' ) ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping reversal callback for order {$order_number} as no cancellation is pending." );
+							break;
+						}
 
-					Qliro_One_Logger::log( "Processing cancel callback for order {$order_number}." );
-					$this->complete_cancel( $confirmation_id, $data );
-					break;
-				case 'Refund':
-					Qliro_One_Logger::log( "Processing refund callback for order {$order_number}." );
-					$this->complete_refund( $confirmation_id, $data );
-					break;
-				default:
-					$status = $data['PaymentType'];
-					Qliro_One_Logger::log( "Unhandled callback for order {$order_number}. Callback type: {$status}" );
-					break;
+						Qliro_One_Logger::log( "[CALLBACK OM]: Processing cancel callback for order {$order_number}." );
+						$this->complete_cancel( $confirmation_id, $data );
+						break;
+					case 'Refund':
+						Qliro_One_Logger::log( "[CALLBACK OM]: Processing refund callback for order {$order_number}." );
+						$this->complete_refund( $confirmation_id, $data );
+						break;
+					case 'Preauthorization':
+						// Preauthorization callbacks are currently not handled, but log them for debugging and future use.
+						Qliro_One_Logger::log( "[CALLBACK OM]: Received preauthorization callback for merchant reference #{$order_number}." );
+
+						$order = qliro_get_order_by_qliro_id( $data['OrderId'] );
+						if ( empty( $order ) ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as no matching order was found. OrderID: {$data['OrderId']}" );
+							throw new Exception( 'order not found', 404 );
+						}
+
+						// Ignore preauthorization request for non-subscription orders.
+						$is_subscription = ! empty( $order->get_meta( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION ) );
+						if ( ! $is_subscription ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the order is not a subscription." );
+							break;
+						}
+
+						$transaction_id = $data['PaymentTransactionId'];
+						if ( strval( $data['PaymentTransactionId'] ) !== $order->get_transaction_id() ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the transaction ID {$transaction_id} does not match the order's transaction ID." );
+							throw new Exception( 'order not found', 404 );
+						}
+
+						$as_args = array(
+							'hook'   => self::HOOK_PREFIX . 'process_preauthorization',
+							'args'   => array(
+								'order_id'       => $order->get_id(),
+								'qliro_order_id' => $data['OrderId'],
+							),
+							'status' => \ActionScheduler_Store::STATUS_PENDING,
+						);
+
+						$scheduled_actions = as_get_scheduled_actions( $as_args, OBJECT );
+						if ( ! empty( $scheduled_actions ) ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: The order is already scheduled for processing. Order ID: {$order->get_id()}, Qliro Order ID: {$data['OrderId']}." );
+							break;
+						}
+
+						$did_schedule = as_schedule_single_action(
+							time() + self::SCHEDULE_INTERVAL_SEC,
+							$as_args['hook'],
+							$as_args['args'],
+							'',
+							true
+						);
+
+						if ( 0 !== $did_schedule ) {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Scheduled preauthorization processing for merchant reference #{$order_number}." );
+						} else {
+							Qliro_One_Logger::log( "[CALLBACK OM]: Failed to schedule preauthorization processing for merchant reference #{$order_number}." );
+							throw new Exception( 'failed to schedule preauthorization processing', 422 );
+						}
+						break;
+					default:
+						$status = $data['PaymentType'];
+						Qliro_One_Logger::log( "[CALLBACK OM]: Unhandled callback for order {$order_number}. Callback type: {$status}" );
+						break;
+				}
 			}
+			header( 'HTTP/1.1 200 OK' );
+			echo '{ "CallbackResponse": "received" }';
+		} catch ( Exception $e ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Processing error: {$e->getMessage()}" );
+			$http = $e->getCode() ? $e->getCode() : 500;
+			header( "HTTP/1.1 {$http} " . get_status_header_desc( $http ) );
 		}
-		header( 'HTTP/1.1 200 OK' );
-		echo '{ "CallbackResponse": "received" }';
+
 		die();
 	}
 
