@@ -250,7 +250,7 @@ class Qliro_One_Callbacks {
 		$transaction_id = $data['PaymentTransactionId'];
 		if ( strval( $data['PaymentTransactionId'] ) !== $order->get_transaction_id() ) {
 			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the transaction ID {$transaction_id} does not match the order's transaction ID." );
-			throw new Exception( 'order not found', 404 );
+			throw new Exception( 'transaction id mismatch', 422 );
 		}
 
 		$as_args = array(
