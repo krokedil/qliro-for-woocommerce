@@ -69,7 +69,6 @@ class Qliro_One_Callbacks {
 						$this->complete_refund( $confirmation_id, $data );
 						break;
 					case 'Preauthorization':
-						// Preauthorization callbacks are currently not handled, but log them for debugging and future use.
 						Qliro_One_Logger::log( "[CALLBACK OM]: Received preauthorization callback for merchant reference #{$order_number}." );
 						$this->complete_preauthorization( $data );
 

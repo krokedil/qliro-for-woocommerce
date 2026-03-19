@@ -99,7 +99,7 @@ class Qliro_One_Subscriptions {
 		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
-		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time() );
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
 		$order->set_transaction_id( $transaction_id );
 
 		$note = sprintf(
@@ -160,7 +160,7 @@ class Qliro_One_Subscriptions {
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
 		$order->set_transaction_id( $transaction_id );
-		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time() );
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
 
 		$note = sprintf(
 			__( 'Subscription renewal is pending preauthorization via Qliro.', 'qliro-for-woocommerce' ),
@@ -186,7 +186,7 @@ class Qliro_One_Subscriptions {
 		// Remove the pending preauthorization meta and complete the payment.
 		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
 
-		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'any' ) );
+		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'order_type' => 'renewal' ) );
 		foreach ( $subscriptions as $subscription ) {
 			$subscription->add_order_note(
 				sprintf(
