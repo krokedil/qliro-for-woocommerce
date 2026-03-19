@@ -90,7 +90,7 @@ class Qliro_One_Subscriptions {
 			array(
 				'qliro_redirect' => 'subscription',
 			),
-			home_url( $subscription->get_view_order_url() )
+			$subscription->get_view_order_url()
 		);
 	}
 
