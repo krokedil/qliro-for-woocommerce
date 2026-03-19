@@ -271,6 +271,7 @@ class Qliro_One_Callbacks {
 		}
 	}
 
+
 	/**
 	 * Process the Capture callback notification.
 	 *

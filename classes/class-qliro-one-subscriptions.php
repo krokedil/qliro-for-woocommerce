@@ -168,6 +168,14 @@ class Qliro_One_Subscriptions {
 		$order->update_status( 'on-hold', $note );
 	}
 
+	/**
+	 * Process the preauthorization for a subscription renewal order.
+	 *
+	 * @param int    $order_id The order ID of the renewal order.
+	 * @param string $qliro_order_id The Qliro order ID associated with the renewal order.
+	 *
+	 * @return void
+	 */
 	public static function process_preauthorization( $order_id, $qliro_order_id ) {
 		$renewal_order = wc_get_order( $order_id );
 		if ( ! $renewal_order ) {
