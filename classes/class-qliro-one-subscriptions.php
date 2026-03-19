@@ -195,7 +195,6 @@ class Qliro_One_Subscriptions {
 					$qliro_order_id
 				)
 			);
-			$subscription->save();
 			$subscription->payment_complete( $qliro_order_id );
 		}
 
