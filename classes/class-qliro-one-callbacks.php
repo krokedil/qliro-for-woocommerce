@@ -227,6 +227,7 @@ class Qliro_One_Callbacks {
 	/**
 	 * Process the preauthorization callback notification.
 	 *
+	 * @throws Exception If the order is not found or if scheduling the preauthorization processing fails.
 	 * @param array $data The data from the callback from Qliro.
 	 *
 	 * @return void
@@ -434,4 +435,5 @@ class Qliro_One_Callbacks {
 		$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-for-woocommerce' ) );
 		$order->save();
 	}
-} new Qliro_One_Callbacks();
+}
+new Qliro_One_Callbacks();

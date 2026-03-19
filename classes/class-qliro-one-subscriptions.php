@@ -103,7 +103,7 @@ class Qliro_One_Subscriptions {
 		$order->set_transaction_id( $transaction_id );
 
 		$note = sprintf(
-			__( 'Subscription renewal is pending preauthorization via Qliro.', 'collector-checkout-for-woocommerce' ),
+			__( 'Subscription renewal is pending preauthorization via Qliro.', 'qliro-for-woocommerce' ),
 		);
 		$order->update_status( 'on-hold', $note );
 	}
@@ -163,7 +163,7 @@ class Qliro_One_Subscriptions {
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time() );
 
 		$note = sprintf(
-			__( 'Subscription renewal is pending preauthorization via Qliro.', 'collector-checkout-for-woocommerce' ),
+			__( 'Subscription renewal is pending preauthorization via Qliro.', 'qliro-for-woocommerce' ),
 		);
 		$order->update_status( 'on-hold', $note );
 	}
