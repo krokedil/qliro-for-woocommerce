@@ -71,55 +71,8 @@ class Qliro_One_Callbacks {
 					case 'Preauthorization':
 						// Preauthorization callbacks are currently not handled, but log them for debugging and future use.
 						Qliro_One_Logger::log( "[CALLBACK OM]: Received preauthorization callback for merchant reference #{$order_number}." );
+						$this->complete_preauthorization( $data );
 
-						$order = qliro_get_order_by_qliro_id( $data['OrderId'] );
-						if ( empty( $order ) ) {
-							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as no matching order was found. OrderID: {$data['OrderId']}" );
-							throw new Exception( 'order not found', 404 );
-						}
-
-						// Ignore preauthorization request for non-subscription orders.
-						$is_subscription = ! empty( $order->get_meta( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION ) );
-						if ( ! $is_subscription ) {
-							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the order is not a subscription." );
-							break;
-						}
-
-						$transaction_id = $data['PaymentTransactionId'];
-						if ( strval( $data['PaymentTransactionId'] ) !== $order->get_transaction_id() ) {
-							Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the transaction ID {$transaction_id} does not match the order's transaction ID." );
-							throw new Exception( 'order not found', 404 );
-						}
-
-						$as_args = array(
-							'hook'   => self::HOOK_PREFIX . 'process_preauthorization',
-							'args'   => array(
-								'order_id'       => $order->get_id(),
-								'qliro_order_id' => $data['OrderId'],
-							),
-							'status' => \ActionScheduler_Store::STATUS_PENDING,
-						);
-
-						$scheduled_actions = as_get_scheduled_actions( $as_args, OBJECT );
-						if ( ! empty( $scheduled_actions ) ) {
-							Qliro_One_Logger::log( "[CALLBACK OM]: The order is already scheduled for processing. Order ID: {$order->get_id()}, Qliro Order ID: {$data['OrderId']}." );
-							break;
-						}
-
-						$did_schedule = as_schedule_single_action(
-							time() + self::SCHEDULE_INTERVAL_SEC,
-							$as_args['hook'],
-							$as_args['args'],
-							'',
-							true
-						);
-
-						if ( 0 !== $did_schedule ) {
-							Qliro_One_Logger::log( "[CALLBACK OM]: Scheduled preauthorization processing for merchant reference #{$order_number}." );
-						} else {
-							Qliro_One_Logger::log( "[CALLBACK OM]: Failed to schedule preauthorization processing for merchant reference #{$order_number}." );
-							throw new Exception( 'failed to schedule preauthorization processing', 422 );
-						}
 						break;
 					default:
 						$status = $data['PaymentType'];
@@ -271,6 +224,65 @@ class Qliro_One_Callbacks {
 		}
 	}
 
+	/**
+	 * Process the preauthorization callback notification.
+	 *
+	 * @param array $data The data from the callback from Qliro.
+	 *
+	 * @return void
+	 */
+	public function complete_preauthorization( $data ) {
+		$order_number = $data['MerchantReference'];
+
+		$order = qliro_get_order_by_qliro_id( $data['OrderId'] );
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as no matching order was found. OrderID: {$data['OrderId']}" );
+			throw new Exception( 'order not found', 404 );
+		}
+
+		// Ignore preauthorization request for non-subscription orders.
+		$is_subscription = ! empty( $order->get_meta( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION ) );
+		if ( ! $is_subscription ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the order is not a subscription." );
+			return;
+		}
+
+		$transaction_id = $data['PaymentTransactionId'];
+		if ( strval( $data['PaymentTransactionId'] ) !== $order->get_transaction_id() ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the transaction ID {$transaction_id} does not match the order's transaction ID." );
+			throw new Exception( 'order not found', 404 );
+		}
+
+		$as_args = array(
+			'hook'   => self::HOOK_PREFIX . 'process_preauthorization',
+			'args'   => array(
+				'order_id'       => $order->get_id(),
+				'qliro_order_id' => $data['OrderId'],
+			),
+			'status' => \ActionScheduler_Store::STATUS_PENDING,
+		);
+
+		$scheduled_actions = as_get_scheduled_actions( $as_args, OBJECT );
+		if ( ! empty( $scheduled_actions ) ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: The order is already scheduled for processing. Order ID: {$order->get_id()}, Qliro Order ID: {$data['OrderId']}." );
+			return;
+		}
+
+		$did_schedule = as_schedule_single_action(
+			time() + self::SCHEDULE_INTERVAL_SEC,
+			$as_args['hook'],
+			$as_args['args'],
+			'',
+			true
+		);
+
+		if ( 0 !== $did_schedule ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Scheduled preauthorization processing for merchant reference #{$order_number}." );
+		} else {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Failed to schedule preauthorization processing for merchant reference #{$order_number}." );
+			throw new Exception( 'failed to schedule preauthorization processing', 422 );
+		}
+	}
 
 	/**
 	 * Process the Capture callback notification.
