@@ -105,11 +105,7 @@ class Qliro_One_Subscriptions {
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
 
-		$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'renewal' ) );
-		foreach ( $subscriptions as $subscription ) {
-			$subscription->add_order_note( $note );
-		}
-
+		$subscription->add_order_note( $note );
 		$order->update_status( 'on-hold', $note );
 	}
 
@@ -170,11 +166,7 @@ class Qliro_One_Subscriptions {
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
 
-		$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'renewal' ) );
-		foreach ( $subscriptions as $subscription ) {
-			$subscription->add_order_note( $note );
-		}
-
+		$subscription->add_order_note( $note );
 		$order->update_status( 'on-hold', $note );
 	}
 
