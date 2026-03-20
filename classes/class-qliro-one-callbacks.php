@@ -225,7 +225,7 @@ class Qliro_One_Callbacks {
 	/**
 	 * Process the preauthorization callback notification.
 	 *
-	 * @throws Exception If the order is not found or if scheduling the preauthorization processing fails.
+	 * @throws Exception If the order is not found, the transaction ID does not match, or if the order is not a subscription.
 	 * @param array $data The data from the callback from Qliro.
 	 *
 	 * @return void
