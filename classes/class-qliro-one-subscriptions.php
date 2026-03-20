@@ -171,18 +171,12 @@ class Qliro_One_Subscriptions {
 	/**
 	 * Process the preauthorization for a subscription renewal order.
 	 *
-	 * @param int    $order_id The order ID of the renewal order.
-	 * @param string $qliro_order_id The Qliro order ID associated with the renewal order.
+	 * @param WC_Order $renewal_order The renewal order object.
+	 * @param string   $qliro_order_id The Qliro order ID associated with the renewal order.
 	 *
 	 * @return void
 	 */
-	public static function process_preauthorization( $order_id, $qliro_order_id ) {
-		$renewal_order = wc_get_order( $order_id );
-		if ( ! $renewal_order ) {
-			Qliro_One_Logger::log( "[PREAUTHORIZATION]: Renewal order with ID #{$order_id}/#{$qliro_order_id} not found." );
-			return;
-		}
-
+	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
 		// Remove the pending preauthorization meta and complete the payment.
 		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
 

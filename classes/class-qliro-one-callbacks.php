@@ -29,7 +29,6 @@ class Qliro_One_Callbacks {
 		add_action( 'qliro_complete_checkout', array( $this, 'complete_checkout' ), 10 );
 		add_action( 'qliro_fail_checkout', array( $this, 'fail_checkout' ), 10 );
 		add_action( 'qliro_onhold_checkout', array( $this, 'onhold_checkout' ), 10 );
-		add_action( self::HOOK_PREFIX . 'process_preauthorization', Qliro_One_Subscriptions::class . '::process_preauthorization', 10, 2 );
 		$this->settings = get_option( 'woocommerce_qliro_one_settings' );
 	}
 
@@ -253,35 +252,7 @@ class Qliro_One_Callbacks {
 			throw new Exception( 'transaction id mismatch', 422 );
 		}
 
-		$as_args = array(
-			'hook'   => self::HOOK_PREFIX . 'process_preauthorization',
-			'args'   => array(
-				'order_id'       => $order->get_id(),
-				'qliro_order_id' => $data['OrderId'],
-			),
-			'status' => \ActionScheduler_Store::STATUS_PENDING,
-		);
-
-		$scheduled_actions = as_get_scheduled_actions( $as_args, OBJECT );
-		if ( ! empty( $scheduled_actions ) ) {
-			Qliro_One_Logger::log( "[CALLBACK OM]: The order is already scheduled for processing. Order ID: {$order->get_id()}, Qliro Order ID: {$data['OrderId']}." );
-			return;
-		}
-
-		$did_schedule = as_schedule_single_action(
-			time() + self::SCHEDULE_INTERVAL_SEC,
-			$as_args['hook'],
-			$as_args['args'],
-			'',
-			true
-		);
-
-		if ( 0 !== $did_schedule ) {
-			Qliro_One_Logger::log( "[CALLBACK OM]: Scheduled preauthorization processing for merchant reference #{$order_number}." );
-		} else {
-			Qliro_One_Logger::log( "[CALLBACK OM]: Failed to schedule preauthorization processing for merchant reference #{$order_number}." );
-			throw new Exception( 'failed to schedule preauthorization processing', 422 );
-		}
+		Qliro_One_Subscriptions::process_preauthorization( $order, $data['OrderId'] );
 	}
 
 	/**
