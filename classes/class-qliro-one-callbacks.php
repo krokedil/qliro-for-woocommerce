@@ -87,7 +87,7 @@ class Qliro_One_Callbacks {
 			header( "HTTP/1.1 {$http} " . get_status_header_desc( $http ) );
 		}
 
-		die();
+		exit();
 	}
 
 	/**
