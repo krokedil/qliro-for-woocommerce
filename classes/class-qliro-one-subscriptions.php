@@ -11,6 +11,9 @@ defined( 'ABSPATH' ) || exit;
  * Class Qliro_One_Subscriptions
  */
 class Qliro_One_Subscriptions {
+	public const GATEWAY_ID               = 'qliro_one';
+	public const PENDING_PREAUTHORIZATION = self::GATEWAY_ID . '_pending_preauthorization';
+
 	/**
 	 * Class constructor.
 	 *
@@ -89,22 +92,20 @@ class Qliro_One_Subscriptions {
 		}
 
 		// Set the required order meta for the renewal order.
+
+		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
-		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
+		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
 		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
-		$order->add_order_note(
-			sprintf(
-				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
-				$order->get_id()
-			)
-		);
-		$order->save();
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->set_transaction_id( $qliro_order_id );
 
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
+		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
+
+		$subscription->add_order_note( $note );
+		$order->update_status( 'on-hold', $note );
 	}
 
 	/**
@@ -152,22 +153,53 @@ class Qliro_One_Subscriptions {
 		}
 
 		// Set the required order meta for the renewal order.
+		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
-		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
+		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
 		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
-		$order->add_order_note(
+		$order->set_transaction_id( $qliro_order_id );
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+
+		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
+
+		$subscription->add_order_note( $note );
+		$order->update_status( 'on-hold', $note );
+	}
+
+	/**
+	 * Process the preauthorization for a subscription renewal order.
+	 *
+	 * @param WC_Order $renewal_order The renewal order object.
+	 * @param string   $qliro_order_id The Qliro order ID associated with the renewal order.
+	 *
+	 * @return void
+	 */
+	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
+		// Remove the pending preauthorization meta and complete the payment.
+		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
+
+		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'order_type' => 'renewal' ) );
+		foreach ( $subscriptions as $subscription ) {
+			$subscription->add_order_note(
+				sprintf(
+					/* translators: %s: Qliro order ID */
+					__( 'Preauthorization for subscription renewal order was completed via Qliro. Qliro Order ID: %s', 'qliro-for-woocommerce' ),
+					$qliro_order_id
+				)
+			);
+			$subscription->payment_complete( $qliro_order_id );
+		}
+
+		$renewal_order->add_order_note(
 			sprintf(
-				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
-				$order->get_id()
+				/* translators: %s: Qliro order ID */
+				__( 'Preauthorization for this order was completed via Qliro. Qliro Order ID: %s', 'qliro-for-woocommerce' ),
+				$qliro_order_id
 			)
 		);
-		$order->save();
-
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
+		$renewal_order->payment_complete();
 	}
 
 	/**

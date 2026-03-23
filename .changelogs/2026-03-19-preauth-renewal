@@ -1,0 +1,4 @@
+Type: Tweak
+Needs Documentation: yes
+
+Added preauthorization processing for subscription renewal. This puts a renewal order on-hold until it has been confirmed by Qliro for further processing.
