@@ -167,96 +167,111 @@ function qliro_confirm_order( $order ) {
 	$order_id       = $order->get_id();
 	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
-
-	if ( is_wp_error( $qliro_order ) ) {
-		return false;
-	}
-
-	// Save SignupForNewsletter value to order meta if it exists.
-	if ( isset( $qliro_order['SignupForNewsletter'] ) ) {
-		$order->update_meta_data( '_qliro_one_signup_for_newsletter', wc_bool_to_string( $qliro_order['SignupForNewsletter'] ) );
-		$order->save_meta_data();
-	}
-
-	foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
-		if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
-			$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-for-woocommerce' ) );
-			$order->save();
+	$did_lock = false;
+	if ( apply_filters( 'qliro_wc_lock_confirmation', false, $qliro_order_id, $order_id ) ) {
+		$did_lock = Qliro_One_Confirmation::lock_qliro_confirmation( $qliro_order_id, $order_id );
+		if ( ! $did_lock ) {
+			Qliro_One_Logger::log( "Simultaneous confirmation attempt for Qliro order ID #{$qliro_order_id} and WooCommerce order ID #{$order_id}. Stopping process." );
 			return false;
 		}
 	}
 
-	$order = wc_get_order( $order_id );
-
-	// If the order number and the qliro reference already match, we don't need to update the merchant reference.
-	if ( $order->get_order_number() !== $qliro_order['MerchantReference'] ) {
-		$qliro_order = QLIRO_WC()->api->update_qliro_one_merchant_reference( $order_id );
+	try {
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
 
 		if ( is_wp_error( $qliro_order ) ) {
-			// translators: %s - Response error message.
-			$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $qliro_order->get_error_message() );
-			$order->add_order_note( $note );
 			return false;
 		}
-	}
 
-	if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
-		$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
-		$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
-	}
+		// Save SignupForNewsletter value to order meta if it exists.
+		if ( isset( $qliro_order['SignupForNewsletter'] ) ) {
+			$order->update_meta_data( '_qliro_one_signup_for_newsletter', wc_bool_to_string( $qliro_order['SignupForNewsletter'] ) );
+			$order->save_meta_data();
+		}
 
-	$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
-	// translators: %s - the Qliro order ID.
-	$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
+		foreach ( $qliro_order['PaymentTransactions'] as $transaction ) {
+			if ( 'Preauthorization' === $transaction['Type'] && 'OnHold' === $transaction['Status'] ) {
+				$order->update_status( 'on-hold', __( 'The Qliro order is on-hold and awaiting a status update from Qliro.', 'qliro-for-woocommerce' ) );
+				$order->save();
+				return false;
+			}
+		}
 
-	$order->add_order_note( $note );
+		$order = wc_get_order( $order_id );
 
-	$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
-	if ( is_wp_error( $qliro_order ) ) {
-		Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
-	}
+		// If the order number and the qliro reference already match, we don't need to update the merchant reference.
+		if ( $order->get_order_number() !== $qliro_order['MerchantReference'] ) {
+			$qliro_order = QLIRO_WC()->api->update_qliro_one_merchant_reference( $order_id );
 
-	if ( ! is_wp_error( $qliro_order ) && isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
-		$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
-	}
+			if ( is_wp_error( $qliro_order ) ) {
+				// translators: %s - Response error message.
+				$note = sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $qliro_order->get_error_message() );
+				$order->add_order_note( $note );
+				return false;
+			}
+		}
 
-	$order->payment_complete( $qliro_order_id );
+		if ( isset( $qliro_order['PaymentTransactionId'] ) && ! empty( $qliro_order['PaymentTransactionId'] ) ) {
+			$order->update_meta_data( '_qliro_payment_transaction_id', $qliro_order['PaymentTransactionId'] );
+			$order->add_order_note( __( 'Qliro order successfully placed. (Qliro Payment transaction id: ', 'qliro-for-woocommerce' ) . $qliro_order['PaymentTransactionId'] . ')' );
+		}
 
-	foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
-		if ( 'Success' === $payment_transaction['Status'] ) {
-			$order->update_meta_data( 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+		// translators: %s - the Qliro order ID.
+		$note = sprintf( __( 'Payment via Qliro, Qliro order id: %s', 'qliro-for-woocommerce' ), sanitize_key( $qliro_order_id ) );
 
-			// If the PaymentMethodSubtypeCode is missing, we can retrieve it from the PaymentMethodName (e.g., QLIRO_INVOICE).
-			$subtype = implode( ' ', array_slice( explode( '_', $payment_transaction['PaymentMethodName'] ), 1 ) );
-			$subtype = $payment_transaction['PaymentMethodSubtypeCode'] ?? $subtype ?? '';
-			$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $subtype );
+		$order->add_order_note( $note );
 
-			if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
-				// Get the subscriptions for the order.
-				$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'any' ) );
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+		if ( is_wp_error( $qliro_order ) ) {
+			Qliro_One_Logger::log( "Failed to get the admin order during confirmation. Qliro order id: $qliro_order_id, WooCommerce order id: $order_id" );
+		}
 
-				// If the WooCommerce order is a subscription order, we need to store the PersonalNumber if the payment method was not QLIRO_CARD.
-				$personal_number = $qliro_order['Customer']['PersonalNumber'] ?? '';
+		if ( ! is_wp_error( $qliro_order ) && isset( $qliro_order['Upsell'] ) && isset( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) ) {
+			$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
+		}
 
-				if ( ! empty( $personal_number ) ) {
-					// Loop through the subscriptions and set the personal number.
-					foreach ( $subscriptions as $subscription ) {
-						$subscription->update_meta_data( '_qliro_personal_number', $qliro_order['Customer']['PersonalNumber'] );
-						$subscription->save();
+		$order->payment_complete( $qliro_order_id );
+
+		foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
+			if ( 'Success' === $payment_transaction['Status'] ) {
+				$order->update_meta_data( 'qliro_one_payment_method_name', $payment_transaction['PaymentMethodName'] );
+
+				// If the PaymentMethodSubtypeCode is missing, we can retrieve it from the PaymentMethodName (e.g., QLIRO_INVOICE).
+				$subtype = implode( ' ', array_slice( explode( '_', $payment_transaction['PaymentMethodName'] ), 1 ) );
+				$subtype = $payment_transaction['PaymentMethodSubtypeCode'] ?? $subtype ?? '';
+				$order->update_meta_data( 'qliro_one_payment_method_subtype_code', $subtype );
+
+				if ( Qliro_One_Subscriptions::is_subscription( $order ) && 'QLIRO_CARD' !== $payment_transaction['PaymentMethodName'] ) {
+					// Get the subscriptions for the order.
+					$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'any' ) );
+
+					// If the WooCommerce order is a subscription order, we need to store the PersonalNumber if the payment method was not QLIRO_CARD.
+					$personal_number = $qliro_order['Customer']['PersonalNumber'] ?? '';
+
+					if ( ! empty( $personal_number ) ) {
+						// Loop through the subscriptions and set the personal number.
+						foreach ( $subscriptions as $subscription ) {
+							$subscription->update_meta_data( '_qliro_personal_number', $qliro_order['Customer']['PersonalNumber'] );
+							$subscription->save();
+						}
+
+						// If the personal number is not empty, we store it in the WooCommerce order.
+						$order->update_meta_data( '_qliro_personal_number', $personal_number );
 					}
-
-					// If the personal number is not empty, we store it in the WooCommerce order.
-					$order->update_meta_data( '_qliro_personal_number', $personal_number );
 				}
 			}
 		}
-	}
 
-	do_action_deprecated( 'qoc_order_confirmed', array( $qliro_order, $order ), '2.0.0', 'qliro_order_confirmed' );
-	do_action( 'qliro_order_confirmed', $qliro_order, $order );
-	$order->save();
-	return true;
+		do_action_deprecated( 'qoc_order_confirmed', array( $qliro_order, $order ), '2.0.0', 'qliro_order_confirmed' );
+		do_action( 'qliro_order_confirmed', $qliro_order, $order );
+		$order->save();
+		return true;
+	} finally {
+		if ( $did_lock ) {
+			Qliro_One_Confirmation::unlock_qliro_confirmation( $qliro_order_id, $order_id );
+		}
+	}
 }
 
 /**
@@ -297,6 +312,11 @@ function qliro_update_wc_shipping( $data ) {
 	WC()->session->set( 'chosen_shipping_methods', apply_filters( 'qliro_chosen_shipping_method', $chosen_shipping_methods ) );
 }
 
+/**
+ * Clear the shipping package hashes to ensure recalculation of shipping rates.
+ *
+ * @return void
+ */
 function qliro_clear_shipping_package_hashes() {
 	// Get all package keys.
 	$packages     = WC()->cart->get_shipping_packages();
@@ -325,7 +345,7 @@ function qliro_get_thankyou_page_qliro_order( $qliro_order_id ) {
 			return $qliro_order;
 		}
 
-		set_transient( "qliro_thankyou_order_$qliro_order_id", json_encode( $qliro_order ), 10 );
+		set_transient( "qliro_thankyou_order_$qliro_order_id", wp_json_encode( $qliro_order ), 10 );
 	}
 
 	return $qliro_order;
@@ -496,7 +516,7 @@ function qliro_is_fully_captured( $order ) {
 	return $is_fully_captured;
 }
 
-/*
+/**
  * Get the remaining items to capture for an order.
  *
  * @param WC_Order $order The WooCommerce order.
@@ -656,6 +676,11 @@ function qliro_one_get_billing_country() {
 	return apply_filters( 'qliro_one_billing_country', WC()->checkout()->get_value( 'billing_country' ) ?? $base_location['country'] );
 }
 
+/**
+ * Check if the billing country has changed during the checkout process.
+ *
+ * @return bool
+ */
 function qliro_one_has_country_changed() {
 	$country_from_session  = WC()->session->get( 'qliro_one_billing_country' );
 	$country_from_checkout = WC()->checkout()->get_value( 'billing_country' );
@@ -673,11 +698,11 @@ function qliro_one_has_country_changed() {
  * If the value cannot be converted to a numeric value, it will return the default value.
  *
  * @param mixed     $value The value to ensure is numeric.
- * @param float|int $default The default value to return if the value is not numeric and $throw_error is false. Default 0.
+ * @param float|int $default_value The default value to return if the value is not numeric and $throw_error is false. Default 0.
  *
  * @return float|int Returns the numeric value of the input, or the default value if the input is not numeric and cannot be converted.
  */
-function qliro_ensure_numeric( $value, $default = 0 ) {
+function qliro_ensure_numeric( $value, $default_value = 0 ) {
 	if ( is_numeric( $value ) ) {
 		return floatval( $value );
 	}
@@ -694,7 +719,7 @@ function qliro_ensure_numeric( $value, $default = 0 ) {
 		return $converted_value;
 	}
 
-	return $default; // Return the default value if the value is still not numeric.
+	return $default_value; // Return the default value if the value is still not numeric.
 }
 
 /**
