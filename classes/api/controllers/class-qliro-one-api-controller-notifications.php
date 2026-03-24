@@ -127,7 +127,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 	 */
 	private function maybe_store_loyalty_meta( $event_type, $payload, $order ) {
 
-		if ( ! in_array( $event_type, array( 'LOYALTY_PROVIDER_MEMBER_CREATE', 'LOYALTY_PROVIDER_MEMBER_UPDATE' ), true ) ) {
+		if ( ! in_array( $event_type, array( 'loyalty_provider_member_create', 'loyalty_provider_member_update' ), true ) ) {
 			return;
 		}
 
