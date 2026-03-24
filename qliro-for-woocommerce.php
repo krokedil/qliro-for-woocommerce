@@ -5,14 +5,14 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.2.2
+ * Version: 2.2.3
  * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 10.5.1
+ * WC tested up to: 10.6.1
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2026 Krokedil
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.2.2' );
+define( 'QLIRO_WC_VERSION', '2.2.3' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -520,6 +520,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
  *
  * @return Qliro_One_For_WooCommerce
  */
-function QLIRO_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
+function QLIRO_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName, Universal.Files.SeparateFunctionsFromOO.Mixed
 	return Qliro_One_For_WooCommerce::get_instance();
 }

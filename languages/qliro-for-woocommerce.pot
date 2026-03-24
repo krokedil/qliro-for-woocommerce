@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 2.2.0\n"
+"Project-Id-Version: Qliro for WooCommerce 2.2.3\n"
 "Report-Msgid-Bugs-To: "
-"https://wordpress.org/support/plugin/qliro-one-for-woocommerce\n"
-"POT-Creation-Date: 2026-01-22 14:11:56+00:00\n"
+"https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
+"POT-Creation-Date: 2026-03-18 09:35:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -101,13 +101,13 @@ msgstr ""
 #: classes/class-qliro-one-shipping-method-instance.php:99
 #: classes/class-qliro-one-shipping-method-instance.php:109
 #: classes/class-qliro-one-shipping-method-instance.php:121
-#: classes/class-qliro-one-shipping-method-instance.php:151
-#: classes/class-qliro-one-shipping-method-instance.php:164
-#: classes/class-qliro-one-shipping-method-instance.php:177
-#: classes/class-qliro-one-shipping-method-instance.php:190
-#: classes/class-qliro-one-shipping-method-instance.php:202
-#: classes/class-qliro-one-shipping-method-instance.php:214
-#: classes/class-qliro-one-shipping-method-instance.php:226
+#: classes/class-qliro-one-shipping-method-instance.php:152
+#: classes/class-qliro-one-shipping-method-instance.php:165
+#: classes/class-qliro-one-shipping-method-instance.php:178
+#: classes/class-qliro-one-shipping-method-instance.php:191
+#: classes/class-qliro-one-shipping-method-instance.php:203
+#: classes/class-qliro-one-shipping-method-instance.php:215
+#: classes/class-qliro-one-shipping-method-instance.php:227
 msgid "None"
 msgstr ""
 
@@ -893,17 +893,23 @@ msgid ""
 "a first-class shopping experience."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:158
+#: classes/class-qliro-one-gateway.php:151
+msgid ""
+"Could not retrieve the Qliro payment link. Please contact the store "
+"administrator."
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:170
 msgid "The order could not be processed. Please reload the page and try again."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:268
+#: classes/class-qliro-one-gateway.php:280
 msgid ""
 "Qliro order was upsold, but the customer was redirected to a new payment "
 "page."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:273
+#: classes/class-qliro-one-gateway.php:285
 msgid "Qliro order was upsold with transaction id"
 msgstr ""
 
@@ -1211,25 +1217,15 @@ msgid ""
 "option."
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:145
+#: classes/class-qliro-one-shipping-method-instance.php:146
 msgid "ECO friendly label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:148
-#: classes/class-qliro-one-shipping-method-instance.php:161
-#: classes/class-qliro-one-shipping-method-instance.php:174
-#: classes/class-qliro-one-shipping-method-instance.php:187
+#: classes/class-qliro-one-shipping-method-instance.php:149
+#: classes/class-qliro-one-shipping-method-instance.php:162
+#: classes/class-qliro-one-shipping-method-instance.php:175
+#: classes/class-qliro-one-shipping-method-instance.php:188
 msgid "Display a label next to the shipping name."
-msgstr ""
-
-#: classes/class-qliro-one-shipping-method-instance.php:152
-#: classes/class-qliro-one-shipping-method-instance.php:165
-#: classes/class-qliro-one-shipping-method-instance.php:178
-#: classes/class-qliro-one-shipping-method-instance.php:191
-#: classes/class-qliro-one-shipping-method-instance.php:203
-#: classes/class-qliro-one-shipping-method-instance.php:215
-#: classes/class-qliro-one-shipping-method-instance.php:227
-msgid "Text"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:153
@@ -1239,7 +1235,7 @@ msgstr ""
 #: classes/class-qliro-one-shipping-method-instance.php:204
 #: classes/class-qliro-one-shipping-method-instance.php:216
 #: classes/class-qliro-one-shipping-method-instance.php:228
-msgid "Icon"
+msgid "Text"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:154
@@ -1249,50 +1245,60 @@ msgstr ""
 #: classes/class-qliro-one-shipping-method-instance.php:205
 #: classes/class-qliro-one-shipping-method-instance.php:217
 #: classes/class-qliro-one-shipping-method-instance.php:229
+msgid "Icon"
+msgstr ""
+
+#: classes/class-qliro-one-shipping-method-instance.php:155
+#: classes/class-qliro-one-shipping-method-instance.php:168
+#: classes/class-qliro-one-shipping-method-instance.php:181
+#: classes/class-qliro-one-shipping-method-instance.php:194
+#: classes/class-qliro-one-shipping-method-instance.php:206
+#: classes/class-qliro-one-shipping-method-instance.php:218
+#: classes/class-qliro-one-shipping-method-instance.php:230
 msgid "Text and icon"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:158
+#: classes/class-qliro-one-shipping-method-instance.php:159
 msgid "Express shipping label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:171
+#: classes/class-qliro-one-shipping-method-instance.php:172
 msgid "Evening delivery label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:184
+#: classes/class-qliro-one-shipping-method-instance.php:185
 msgid "Morning delivery label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:197
+#: classes/class-qliro-one-shipping-method-instance.php:198
 msgid "Home delivery label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:200
+#: classes/class-qliro-one-shipping-method-instance.php:201
 msgid "Cannot be used together with BOX or PICKUP label."
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:209
+#: classes/class-qliro-one-shipping-method-instance.php:210
 msgid "Box delivery label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:212
+#: classes/class-qliro-one-shipping-method-instance.php:213
 msgid "Cannot be used together with HOME or PICKUP label."
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:221
+#: classes/class-qliro-one-shipping-method-instance.php:222
 msgid "Pickup label"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:224
+#: classes/class-qliro-one-shipping-method-instance.php:225
 msgid "Cannot be used together with HOME or BOX label."
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:233
+#: classes/class-qliro-one-shipping-method-instance.php:234
 msgid "Tax status"
 msgstr ""
 
-#: classes/class-qliro-one-shipping-method-instance.php:238
+#: classes/class-qliro-one-shipping-method-instance.php:239
 msgid "Taxable"
 msgstr ""
 
@@ -1313,10 +1319,21 @@ msgstr ""
 msgid "No shipping data found."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:73
-#: classes/class-qliro-one-subscriptions.php:120
+#: classes/class-qliro-one-subscriptions.php:100
+#: classes/class-qliro-one-subscriptions.php:163
 #. translators: %s: Order ID
 msgid "Qliro recurring payment for order %s was successful."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:130
+msgid ""
+"The previously associated payment token for this subscription is no longer "
+"valid or available."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:144
+#. translators: %s: Error message from the Qliro API.
+msgid "The recurring payment failed due to an error communicating with Qliro: %s"
 msgstr ""
 
 #: classes/class-qliro-order-discount.php:163
