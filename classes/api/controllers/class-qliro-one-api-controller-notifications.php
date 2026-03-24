@@ -67,7 +67,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 
 			// Get the Qliro order id.
 			$qliro_order_id = $body['OrderId'];
-			$payload 	    = $body['Payload'] ?? array();
+			$payload        = $body['Payload'] ?? array();
 
 			// Get the event type and provider from the body, ensuring they are lowercase for consistency.
 			$event_type = strtolower( $body['EventType'] ?? '' );
@@ -82,7 +82,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			}
 
 			// Get the handler for the event type and provider.
-			$handler = $this->provider->get_handler( $event_type, $provider );;
+			$handler = $this->provider->get_handler( $event_type, $provider );
 
 			if ( null === $handler ) {
 				do_action( "qliro_notification_{$event_type}_{$provider}", $qliro_order_id, $body, $order ); // Trigger the action to allow other plugins to handle the event.
@@ -90,6 +90,9 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			}
 
 			$handler->handle_notification( $payload, $order );
+
+			// Store loyalty member information if applicable.
+			$this->maybe_store_loyalty_meta( $event_type, $payload, $order );
 
 			// Trigger an action to let other plugins know that a change has been made, and allow them to take action if needed.
 			do_action( "qliro_notification_{$event_type}_{$provider}", $qliro_order_id, $body, $order );
@@ -111,5 +114,40 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 		);
 
 		return new WP_REST_Response( $response_body, 200 );
+	}
+
+	/**
+	 * Store loyalty information from callback payload on the order and customer.
+	 *
+	 * @param string        $event_type The event type in lowercase.
+	 * @param array         $payload    The callback payload.
+	 * @param WC_Order|null $order      The WooCommerce order, if available.
+	 *
+	 * @return void
+	 */
+	private function maybe_store_loyalty_meta( $event_type, $payload, $order ) {
+
+		if ( ! in_array( $event_type, array( 'LOYALTY_PROVIDER_MEMBER_CREATE', 'LOYALTY_PROVIDER_MEMBER_UPDATE' ), true ) ) {
+			return;
+		}
+
+		if ( ! $order || empty( $payload ) ) {
+			return;
+		}
+
+		$loyalty = $payload['loyalty'] ?? array();
+
+		// Store loyalty information as order meta.
+		$order->update_meta_data( '_qliro_loyalty_id', $loyalty['id'] ?? null );
+		$order->update_meta_data( '_qliro_loyalty_provider', $loyalty['provider'] ?? null );
+		$order->update_meta_data( '_qliro_loyalty_is_member', $loyalty['isMember'] ?? null );
+		$order->save_meta_data();
+
+		// Maybe store loyalty information as user meta.
+		if ( $order->get_user_id() ) {
+			update_user_meta( $order->get_user_id(), '_qliro_loyalty_id', $loyalty['id'] ?? null );
+			update_user_meta( $order->get_user_id(), '_qliro_loyalty_provider', $loyalty['provider'] ?? null );
+			update_user_meta( $order->get_user_id(), '_qliro_loyalty_is_member', $loyalty['isMember'] ?? null );
+		}
 	}
 }
