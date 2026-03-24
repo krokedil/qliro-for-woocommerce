@@ -91,6 +91,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
+			'LoyaltyConfiguration'                 => Qliro_One_Helper_Loyalty::get_loyalty_configuration(),
 		);
 
 		if ( ! empty( $this->get_enforced_juridicial_type() ) ) {
