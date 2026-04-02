@@ -12,9 +12,10 @@ class Qliro_One_Helper_Shipping_Methods {
 	/**
 	 * Get the available shipping methods.
 	 *
+	 * @param bool $new_order Whether the shipping methods are being retrieved for a new order or an existing order.
 	 * @return array
 	 */
-	public static function get_shipping_methods() {
+	public static function get_shipping_methods( $new_order = false ) {
 		if ( ! QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
 			return array();
 		}
@@ -34,18 +35,23 @@ class Qliro_One_Helper_Shipping_Methods {
 					continue;
 				}
 
-				$method_id   = $method->id;
-				$method_name = $method->label;
+				$method_id                       = $method->id;
+				$method_name                     = $method->label;
+				$method_price_inc_tax            = round( $method_cost + array_sum( $method->taxes ), 2 );
+				$method_price_ex_tax             = round( $method_cost, 2 );
+				$shipping_fee_merchant_reference = Qliro_Order_Utility::get_shipping_fee_merchant_reference_from_rate( $method );
 
-				$method_price_inc_tax = round( $method_cost + array_sum( $method->taxes ), 2 );
-				$method_price_ex_tax  = round( $method_cost, 2 );
-				$options              = array(
-					'MerchantReference' => $method_id,
+				$options = array(
+					'MerchantReference' => ! $new_order ? $shipping_fee_merchant_reference : $method_id,
 					'DisplayName'       => $method_name,
 					'PriceIncVat'       => $method_price_inc_tax,
 					'PriceExVat'        => $method_price_ex_tax,
 					'VatRate'           => Qliro_One_Helper_Cart::get_shipping_tax_rate( $method ),
 				);
+
+				if ( $new_order && ( $shipping_fee_merchant_reference !== $method_id ) ) {
+					$options['ShippingFeeMerchantReference'] = $shipping_fee_merchant_reference;
+				}
 
 				$method_settings = get_option( "woocommerce_{$method->method_id}_{$method->instance_id}_settings", array() );
 

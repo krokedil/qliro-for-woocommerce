@@ -18,9 +18,10 @@ class Qliro_One_Helper_Order {
 	 *
 	 * @param int   $order_id The WooCommerce order id.
 	 * @param array $items The order items (optional).
+	 * @param bool  $new_order Whether the order lines are being retrieved for a new order or an existing order.
 	 * @return array
 	 */
-	public static function get_order_items( $order_id, $items = array() ) {
+	public static function get_order_items( $order_id, $items = array(), $new_order = false ) {
 		$order       = wc_get_order( $order_id );
 		$order_lines = array();
 
@@ -49,12 +50,12 @@ class Qliro_One_Helper_Order {
 		foreach ( $order->get_items( 'shipping' ) as $order_item ) {
 			if ( ! empty( $items ) ) {
 				if ( isset( $items[ $order_item->get_id() ] ) ) {
-					$order_lines[] = self::process_order_item_shipping( $order_item, $order );
+					$order_lines[] = self::process_order_item_shipping( $order_item, $order, $new_order );
 				} else {
 					continue;
 				}
 			} else {
-				$order_lines[] = self::process_order_item_shipping( $order_item, $order );
+				$order_lines[] = self::process_order_item_shipping( $order_item, $order, $new_order );
 			}
 		}
 
@@ -186,9 +187,12 @@ class Qliro_One_Helper_Order {
 	 * @param WC_Order|null          $order The WooCommerce order.
 	 * @return array
 	 */
-	public static function process_order_item_shipping( $order_item, $order ) {
+	public static function process_order_item_shipping( $order_item, $order, $new_order = false ) {
+		$method                          = ''; // Need to fetch this here.
+		$shipping_fee_merchant_reference = Qliro_Order_Utility::get_shipping_fee_merchant_reference_from_rate( $method );
+
 		return array(
-			'MerchantReference'  => self::get_reference( $order_item ),
+			'MerchantReference'  => ! $new_order ? $shipping_fee_merchant_reference : self::get_reference( $order_item ),
 			'Description'        => $order_item->get_name(),
 			'Quantity'           => 1,
 			'Type'               => 'Shipping',

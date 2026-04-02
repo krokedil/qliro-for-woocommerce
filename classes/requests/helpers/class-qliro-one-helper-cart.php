@@ -24,9 +24,11 @@ class Qliro_One_Helper_Cart {
 	 * Gets formatted cart items.
 	 *
 	 * @param object $cart The WooCommerce cart object.
+	 * @param bool   $new_order Whether the cart items are for a new order.
+
 	 * @return array Formatted cart items.
 	 */
-	public static function get_cart_items( $cart = null ) {
+	public static function get_cart_items( $cart = null, $new_order = false ) {
 		$formatted_cart_items = array();
 
 		if ( null === $cart ) {
@@ -50,7 +52,7 @@ class Qliro_One_Helper_Cart {
 
 		// Get cart shipping.
 		if ( WC()->cart->needs_shipping() && ! QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
-			$shipping = self::get_shipping();
+			$shipping = self::get_shipping( $new_order );
 			if ( null !== $shipping ) {
 				$formatted_cart_items[] = $shipping;
 			}
@@ -184,9 +186,10 @@ class Qliro_One_Helper_Cart {
 	/**
 	 * Formats the shipping.
 	 *
+	 * @param bool $new_order Whether the shipping is for a new order.
 	 * @return array|null
 	 */
-	public static function get_shipping() {
+	public static function get_shipping( $new_order = false ) {
 		$packages        = WC()->shipping()->get_packages();
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
 		$chosen_shipping = $chosen_methods[0];
@@ -196,9 +199,11 @@ class Qliro_One_Helper_Cart {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
 				if ( $chosen_shipping === $method->id ) {
+					$shipping_fee_merchant_reference = Qliro_Order_Utility::get_shipping_fee_merchant_reference_from_rate( $method );
+
 					if ( $method_cost > 0 ) {
 						return array(
-							'MerchantReference'  => $method->get_id(),
+							'MerchantReference'  => ! $new_order ? $shipping_fee_merchant_reference : $method->get_id(),
 							'Description'        => $method->get_label(),
 							'Type'               => 'Shipping',
 							'Quantity'           => 1,
@@ -209,7 +214,7 @@ class Qliro_One_Helper_Cart {
 					}
 
 					return array(
-						'MerchantReference'  => $method->get_id(),
+						'MerchantReference'  => ! $new_order ? $shipping_fee_merchant_reference : $method->get_id(),
 						'Description'        => $method->get_label(),
 						'Type'               => 'Shipping',
 						'Quantity'           => 1,
