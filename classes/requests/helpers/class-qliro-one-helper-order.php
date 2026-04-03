@@ -188,8 +188,7 @@ class Qliro_One_Helper_Order {
 	 * @return array
 	 */
 	public static function process_order_item_shipping( $order_item, $order, $new_order = false ) {
-		$method                          = ''; // Need to fetch this here.
-		$shipping_fee_merchant_reference = Qliro_Order_Utility::get_shipping_fee_merchant_reference_from_rate( $method );
+		$shipping_fee_merchant_reference = Qliro_Order_Utility::get_shipping_fee_merchant_reference_from_rate( $order_item );
 
 		return array(
 			'MerchantReference'  => ! $new_order ? $shipping_fee_merchant_reference : self::get_reference( $order_item ),
