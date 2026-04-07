@@ -138,7 +138,8 @@ class Qliro_One_Helper_Order {
 	/**
 	 * Formats the order lines for a refund request.
 	 *
-	 * @param int $order_id The WooCommerce Order ID.
+	 * @param array $items The items to be refunded.
+	 * @param int   $order_id The WooCommerce Order ID.
 	 * @return array
 	 */
 	public static function get_return_items_from_items( $items, $order_id ) {
@@ -185,6 +186,7 @@ class Qliro_One_Helper_Order {
 	 *
 	 * @param WC_Order_Item_Shipping $order_item The WooCommerce order line item.
 	 * @param WC_Order|null          $order The WooCommerce order.
+	 * @param bool                   $new_order Whether the order lines are being retrieved for a new order or an existing order.
 	 * @return array
 	 */
 	public static function process_order_item_shipping( $order_item, $order, $new_order = false ) {
@@ -400,13 +402,25 @@ class Qliro_One_Helper_Order {
 				function ( $original_item ) use ( $reference, $order ) {
 					switch ( $original_item->get_type() ) {
 						case 'line_item':
-							/** @var WC_Order_Item_Product $original_item */
+							/**
+							 * The original item as a WC_Order_Item_Product.
+							 *
+							 * @var WC_Order_Item_Product $original_item
+							 */
 							return $original_item->get_product()->get_sku() === $reference || $original_item->get_product_id() === $reference || $original_item->get_variation_id() === $reference;
 						case 'shipping':
-							/** @var WC_Order_Item_Shipping $original_item */
+							/**
+							 * The original item as a WC_Order_Item_Shipping.
+							 *
+							 * @var WC_Order_Item_Shipping $original_item
+							 */
 							return $original_item->get_method_id() === $reference || $original_item->get_meta( 'qliro_shipping_method' ) === $reference || $order->get_meta( '_qliro_one_shipping_reference' ) === $reference;
 						case 'fee':
-							/** @var WC_Order_Item_Fee $original_item */
+							/**
+							 * The original item as a WC_Order_Item_Fee.
+							 *
+							 * @var WC_Order_Item_Fee $original_item
+							 */
 							return qliro_one_format_fee_reference( $original_item->get_name() ) === $reference;
 						default:
 							return false;
