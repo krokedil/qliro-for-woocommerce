@@ -196,6 +196,6 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			return null;
 		}
 
-		return get_permalink( $wc_privacy_policy_page_id ) ?: null;
+		return get_permalink( $wc_privacy_policy_page_id ) ? get_permalink( $wc_privacy_policy_page_id ) : null;
 	}
 }
