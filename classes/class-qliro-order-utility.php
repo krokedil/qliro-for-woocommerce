@@ -464,4 +464,45 @@ class Qliro_Order_Utility {
 			}
 		}
 	}
+
+	/**
+	 * Get shipping fee merchant reference for the shipping rate.
+	 *
+	 * @param WC_Shipping_Rate|WC_Order_Item_Shipping $method The shipping method object from WooCommerce.
+	 * @return string
+	 */
+	public static function get_shipping_fee_merchant_reference_from_rate( $method ) {
+		$method_id   = '';
+		$rate_id     = '';
+		$instance_id = 0;
+
+		if ( $method instanceof WC_Order_Item_Shipping ) {
+			$method_id   = $method->get_method_id();
+			$instance_id = $method->get_instance_id();
+			$rate_id     = $method_id . ':' . $instance_id;
+		} else {
+			$method_id   = method_exists( $method, 'get_method_id' ) ? $method->get_method_id() : ( $method->method_id ?? '' );
+			$instance_id = method_exists( $method, 'get_instance_id' ) ? $method->get_instance_id() : ( $method->instance_id ?? 0 );
+			$rate_id     = method_exists( $method, 'get_id' ) ? $method->get_id() : $method_id . ':' . $instance_id;
+		}
+
+		$rate_id = ! empty( $rate_id ) ? $rate_id : $method_id . ':' . $instance_id;
+
+		$method_settings = get_option( "woocommerce_{$method_id}_{$instance_id}_settings", array() );
+
+		$shipping_fee_merchant_reference = ! empty( $method_settings['qliro_shipping_fee_merchant_reference'] )
+			? $method_settings['qliro_shipping_fee_merchant_reference']
+			: $rate_id;
+
+		$shipping_fee_merchant_reference = sanitize_text_field(
+			apply_filters(
+				'qliro_one_shipping_fee_merchant_reference',
+				$shipping_fee_merchant_reference,
+				$method,
+				$method_settings
+			)
+		);
+
+		return ! empty( $shipping_fee_merchant_reference ) ? $shipping_fee_merchant_reference : $rate_id;
+	}
 }

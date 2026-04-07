@@ -88,9 +88,9 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignUpText'           => $this->get_ask_for_newsletter_label(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
-			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items(),
+			'OrderItems'                           => Qliro_One_Helper_Cart::get_cart_items( null, true ),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
-			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
+			'AvailableShippingMethods'             => Qliro_One_Helper_Shipping_Methods::get_shipping_methods( true ),
 		);
 
 		if ( ! empty( $this->get_enforced_juridicial_type() ) ) {
@@ -163,7 +163,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			'AskForNewsletterSignup'               => $this->get_ask_for_newsletter(),
 			'AskForNewsletterSignUpText'           => $this->get_ask_for_newsletter_label(),
 			'AskForNewsletterSignupChecked'        => $this->get_asked_for_newsletter_checked(),
-			'OrderItems'                           => Qliro_One_Helper_Order::get_order_items( $this->order_id ),
+			'OrderItems'                           => Qliro_One_Helper_Order::get_order_items( $this->order_id, array(), true ),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
 			'EnforcedJuridicalType'                => $this->get_enforced_juridicial_type(),
 			'PrimaryColor'                         => $this->get_primary_color(),
@@ -196,6 +196,6 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			return null;
 		}
 
-		return get_permalink( $wc_privacy_policy_page_id ) ?: null;
+		return get_permalink( $wc_privacy_policy_page_id ) ? get_permalink( $wc_privacy_policy_page_id ) : null;
 	}
 }
