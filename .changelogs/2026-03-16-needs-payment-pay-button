@@ -1,4 +1,0 @@
-Type: Fix
-Needs Documentation: no
-
-Prevent the order from entering an invalid needs payment state when the 'qliro_check_if_needs_payment' filter is active and set to false. This would make a 'Pay' button appear on the order received page even for completed purchases.
