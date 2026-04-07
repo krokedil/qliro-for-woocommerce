@@ -344,6 +344,7 @@ class Qliro_One_Helper_Order {
 	 * @param array    $return_fees The array of return fees.
 	 * @param array    $order_items The order items to send to Qliro for refund.
 	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 * @param bool     $calc_return_fee Whether to calculate the return fee.
 	 *
 	 * @return array
 	 */

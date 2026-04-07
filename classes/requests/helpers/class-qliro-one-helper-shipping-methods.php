@@ -27,7 +27,10 @@ class Qliro_One_Helper_Shipping_Methods {
 		$shipping_options = array();
 		$packages         = WC()->shipping->get_packages();
 		foreach ( $packages as $i => $package ) {
-			/** @var WC_Shipping_Rate $method */
+			/** Shipping method rate.
+			 *
+			 * @var WC_Shipping_Rate $method
+			 */
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 				// If the method id contains the qliro_shipping string, skip.
