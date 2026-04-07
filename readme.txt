@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.6.1
-Stable tag: 2.2.3
+WC tested up to: 10.6.2
+Stable tag: 2.2.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-04-07    - version 2.2.4 =
+* Tweak         - Added a locking mechanism in the confirmation step to prevent a race condition that could lead to an order being processed more than once.
+* Tweak         - Added preauthorization processing for subscription renewal. This puts a renewal order on-hold until it has been confirmed by Qliro for further processing.
+* Fix           - Prevent the order from entering an invalid needs payment state when the 'qliro_check_if_needs_payment' filter is active and set to false. This would make a 'Pay' button appear on the order received page even for completed purchases.
+
 = 2026-03-18    - version 2.2.3 =
 * Enhancement   - Extended logging in callback handling card tokenzation for subscription.
 * Enhancement   - Adds Matkahuolto as a selectable shipping Brand for Qliro shipping method instance settings.
