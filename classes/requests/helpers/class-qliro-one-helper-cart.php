@@ -25,7 +25,7 @@ class Qliro_One_Helper_Cart {
 	 *
 	 * @param object $cart The WooCommerce cart object.
 	 * @param bool   $new_order Whether the cart items are for a new order.
-
+	 *
 	 * @return array Formatted cart items.
 	 */
 	public static function get_cart_items( $cart = null, $new_order = false ) {
