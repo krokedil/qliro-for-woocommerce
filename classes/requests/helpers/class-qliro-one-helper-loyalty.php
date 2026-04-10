@@ -15,6 +15,6 @@ class Qliro_One_Helper_Loyalty {
 	 * @return array
 	 */
 	public static function get_loyalty_configuration() {
-		return apply_filters( 'qliro_one_loyalty_configuration', null );
+		return apply_filters( 'qliro_loyalty_configuration', null );
 	}
 }
