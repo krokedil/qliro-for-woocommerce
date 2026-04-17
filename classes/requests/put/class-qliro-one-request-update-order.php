@@ -41,6 +41,7 @@ class Qliro_One_Request_Update_Order extends Qliro_One_Request_Put {
 			'MerchantApiKey'           => $this->get_qliro_key(),
 			'OrderItems'               => Qliro_One_Helper_Cart::get_cart_items(),
 			'AvailableShippingMethods' => Qliro_One_Helper_Shipping_Methods::get_shipping_methods(),
+			'LoyaltyConfiguration'     => Qliro_One_Helper_Loyalty::get_loyalty_configuration(),
 		);
 
 		$additional_header = $this->settings['shipping_additional_header'];
