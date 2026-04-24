@@ -40,9 +40,21 @@ class Qliro_One_Notifications_Voyado_Member_Update extends Qliro_One_Notificatio
 			throw new WP_Exception( 'Order not found in WooCommerce.', 404 );
 		}
 
-		if ( ! isset( $payload['session'] ) ) {
-			throw new WP_Exception( 'Session data is missing from the payload.', 401 );
+		if ( ! isset( $payload['data'] ) ) {
+			throw new WP_Exception( 'Data is missing from the payload.', 401 );
 		}
-		$session = $payload['session'];
+
+		$loyalty = $payload['data'] ?? array();
+
+		// Store loyalty information as order meta.
+		$order->update_meta_data( '_qliro_loyalty_id', $loyalty['id'] ?? null );
+		$order->update_meta_data( '_qliro_loyalty_provider', 'voyado' );
+		$order->save_meta_data();
+
+		// Maybe store loyalty information as user meta.
+		if ( $order->get_user_id() ) {
+			update_user_meta( $order->get_user_id(), '_qliro_loyalty_id', $loyalty['id'] ?? null );
+			update_user_meta( $order->get_user_id(), '_qliro_loyalty_provider', 'voyado' );
+		}
 	}
 }
