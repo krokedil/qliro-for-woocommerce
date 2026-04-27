@@ -186,7 +186,14 @@ abstract class Qliro_One_Request {
 		return $result;
 	}
 
-	protected function get_message_by_error_code( $error_code, $default ) {
+	/**
+	 * Get a human-readable error message for a known API error code.
+	 *
+	 * @param string $error_code The API error code.
+	 * @param string $fallback   The fallback message when the error code is not recognized.
+	 * @return string
+	 */
+	protected function get_message_by_error_code( $error_code, $fallback ) {
 		switch ( $error_code ) {
 			case 'PAYMENT_METHOD_NOT_CONFIGURED':
 				$message            = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-for-woocommerce' );
@@ -199,7 +206,7 @@ abstract class Qliro_One_Request {
 				$message = __( 'The order has already been captured.', 'qliro-for-woocommerce' );
 				break;
 			default:
-				return $default;
+				return $fallback;
 		}
 
 		return $message;
