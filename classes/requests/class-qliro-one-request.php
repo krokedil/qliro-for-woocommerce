@@ -115,10 +115,14 @@ abstract class Qliro_One_Request {
 	 * @return string
 	 */
 	protected function get_user_agent() {
-		return apply_filters(
-			'http_headers_useragent',
-			'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' )
-		) . ' - WooCommerce: ' . WC()->version . ' - QLIRO: ' . QLIRO_WC_VERSION . ' - PHP Version: ' . phpversion() . ' - Krokedil';
+		$wp_version     = get_bloginfo( 'version' );
+		$wp_url         = get_bloginfo( 'url' );
+		$wc_version     = WC()->version;
+		$plugin_version = QLIRO_WC_VERSION;
+		$php_version    = phpversion();
+		$user_agent     = "WordPress/{$wp_version}; {$wp_url} - WooCommerce: {$wc_version} - QLIRO: {$plugin_version} - PHP Version: {$php_version} - Krokedil";
+
+		return apply_filters( 'http_headers_useragent', $user_agent, $this->get_request_url() );
 	}
 
 	/**
@@ -182,7 +186,14 @@ abstract class Qliro_One_Request {
 		return $result;
 	}
 
-	protected function get_message_by_error_code( $error_code, $default ) {
+	/**
+	 * Get a human-readable error message for a known API error code.
+	 *
+	 * @param string $error_code The API error code.
+	 * @param string $fallback   The fallback message when the error code is not recognized.
+	 * @return string
+	 */
+	protected function get_message_by_error_code( $error_code, $fallback ) {
 		switch ( $error_code ) {
 			case 'PAYMENT_METHOD_NOT_CONFIGURED':
 				$message            = __( 'Qliro is not configured for the selected country and currency. Please select a different country.', 'qliro-for-woocommerce' );
@@ -195,7 +206,7 @@ abstract class Qliro_One_Request {
 				$message = __( 'The order has already been captured.', 'qliro-for-woocommerce' );
 				break;
 			default:
-				return $default;
+				return $fallback;
 		}
 
 		return $message;
