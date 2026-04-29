@@ -96,7 +96,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 			self::output_info(
 				__( 'Scheduled actions', 'qliro-for-woocommerce' ),
-				'<a target="_blank" href="' . $link_url . '">' . $link_text . '</a>'
+				'<a target="_blank" rel="noopener noreferrer" href="' . esc_url( $link_url ) . '">' . esc_html( $link_text ) . '</a>'
 			);
 
 		}
