@@ -228,8 +228,9 @@ jQuery(function ($) {
 				customer = data.customer;
 
 			} catch (error) {
-				console.warning(error);
+				console.warn(error);
 				window.location.reload();
+				return;
 			}
 
 			const firstName = billingAddress?.FirstName ?? customerInfo?.address?.firstName;
