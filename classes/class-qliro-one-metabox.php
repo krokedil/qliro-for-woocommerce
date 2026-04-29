@@ -87,6 +87,20 @@ class Qliro_One_Metabox extends OrderMetabox {
 		if ( $order_sync_disabled ) {
 			self::output_info( __( 'Order management', 'qliro-for-woocommerce' ), __( 'Disabled', 'qliro-for-woocommerce' ) );
 		}
+
+		$confirmation_id = $order->get_meta( '_qliro_one_order_confirmation_id' );
+		if ( ! empty( $confirmation_id ) ) {
+			$scheduled_actions = Qliro_Scheduled_Actions::get_scheduled_actions( $confirmation_id, gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ) );
+			$link_text         = count( $scheduled_actions['complete'] ) . ' completed, ' . count( $scheduled_actions['failed'] ) . ' failed, ' . count( $scheduled_actions['pending'] ) . ' pending';
+			$link_url          = admin_url( 'admin.php?page=wc-status&tab=action-scheduler&s=' . rawurlencode( $confirmation_id ) . '&action=-1&paged=1&action2=-1' );
+
+			self::output_info(
+				__( 'Scheduled actions', 'qliro-for-woocommerce' ),
+				'<a target="_blank" href="' . $link_url . '">' . $link_text . '</a>'
+			);
+
+		}
+
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total );
