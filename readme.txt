@@ -44,7 +44,7 @@ Setup instructions and reference material are available in the [plugin documenta
 
 1. Upload the plugin folder to the "/wp-content/plugins/" directory, or install the plugin through the WordPress plugins screen.
 2. Activate the plugin through the "Plugins" menu in WordPress.
-3. Go to WooCommerce Settings -> Payment Gateways and configure your Qliro settings.
+3. Go to WooCommerce -> Settings -> Payments and configure your Qliro settings.
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Frequently Asked Questions ==
