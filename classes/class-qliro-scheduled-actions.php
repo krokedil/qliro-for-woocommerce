@@ -37,7 +37,7 @@ class Qliro_Scheduled_Actions {
 						'search'       => $confirmation_id,
 						'status'       => array( $status ),
 						'per_page'     => -1,
-						'group'        => 'qliro_checkout_callbacks',
+						'group'        => Qliro_One_Callbacks::CHECKOUT_CALLBACKS,
 						'date'         => $order_created_date,
 						'date_compare' => '>=',
 					),

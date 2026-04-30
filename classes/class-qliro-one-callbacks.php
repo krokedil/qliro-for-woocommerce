@@ -11,6 +11,7 @@
 class Qliro_One_Callbacks {
 
 	public const SCHEDULE_INTERVAL_SEC = 30;
+	public const CHECKOUT_CALLBACKS    = 'qliro_checkout_callbacks';
 
 	/**
 	 * The settings for the plugin.
@@ -115,15 +116,15 @@ class Qliro_One_Callbacks {
 			switch ( $data['Status'] ) {
 				case 'Completed':
 					Qliro_One_Logger::log( "Scheduling completed checkout callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_complete_checkout', array( $confirmation_id ), 'qliro_checkout_callbacks' );
+					as_schedule_single_action( $timestamp, 'qliro_complete_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				case 'Refused':
 					Qliro_One_Logger::log( "Scheduling refused callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_fail_checkout', array( $confirmation_id ), 'qliro_checkout_callbacks' );
+					as_schedule_single_action( $timestamp, 'qliro_fail_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				case 'OnHold':
 					Qliro_One_Logger::log( "Scheduling onhold callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_onhold_checkout', array( $confirmation_id ), 'qliro_checkout_callbacks' );
+					as_schedule_single_action( $timestamp, 'qliro_onhold_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				default:
 					Qliro_One_Logger::log( "Unknown Qliro checkout callback status: {$data['Status']}" );
