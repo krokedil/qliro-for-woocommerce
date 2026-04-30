@@ -57,11 +57,6 @@ You need to sign a merchant agreement with Qliro. Visit [qliro.com](https://www.
 
 The plugin documentation is available at [docs.krokedil.com/qliro-one-for-woocommerce](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
-= Does the plugin work with WooCommerce Subscriptions? =
-
-Yes. The plugin supports recurring payments via WooCommerce Subscriptions, including renewals, switches, and resubscriptions.
-
-
 = Where do I get support? =
 
 Support for this plugin is handled via support@qliro.com.
