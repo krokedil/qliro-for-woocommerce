@@ -136,29 +136,29 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 		switch ( $notice ) {
 			case 'invalid_nonce':
-				$message = __( 'Could not verify the security token. Please try again.', 'qliro-for-woocommerce' );
+				$notice = __( 'Could not verify the security token. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			case 'permission_denied':
-				$message = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
+				$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
 				break;
 			case 'not_qliro_order':
-				$message = __( 'The order is not a Qliro order and a discount cannot be added.', 'qliro-for-woocommerce' );
+				$notice = __( 'The order is not a Qliro order and a discount cannot be added.', 'qliro-for-woocommerce' );
 				break;
 			case 'invalid_hash':
-				$message = __( 'The order key is invalid. Please try again.', 'qliro-for-woocommerce' );
+				$notice = __( 'The order key is invalid. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			case 'missing_parameters':
-				$message = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
+				$notice = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			default:
 				return;
 		}
 
-		$output  = '<div class="notice notice-error is-dismissible">';
-		$output .= '<p>' . esc_html( $message ) . '</p>';
-		$output .= '</div>';
+		$notice  = '<div class="notice notice-error is-dismissible">';
+		$notice .= "<p>{$notice}</p>";
+		$notice .= '</div>';
 
-		echo wp_kses_post( $output );
+		echo wp_kses_post( $notice );
 	}
 
 	/**
