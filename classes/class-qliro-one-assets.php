@@ -41,7 +41,6 @@ class Qliro_One_Assets {
 	 * @return string
 	 */
 	protected function qoc_is_script_debug_enabled() {
-		// return ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 		return '';
 	}
 
