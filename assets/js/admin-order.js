@@ -1,6 +1,30 @@
 jQuery(function ($) {
 	const qoc = {
 		/**
+		 * Show an admin notice.
+		 *
+		 * @param {string} message The message to display.
+		 * @param {'error'|'success'|'warning'|'info'} type The notice type.
+		 */
+		showNotice: function (message, type) {
+			type = type || 'error';
+			$('.qliro-admin-notice').remove();
+			const $notice = $(
+				'<div class="notice notice-' + type + ' is-dismissible qliro-admin-notice">' +
+				'<p>' + $('<span>').text(message).html() + '</p>' +
+				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (qoc_admin_params.dismiss_notice || 'Dismiss') + '</span></button>' +
+				'</div>'
+			);
+			$('.wp-header-end').after($notice);
+			$notice.on('click', '.notice-dismiss', function () {
+				$notice.remove();
+			});
+			$('html, body').animate({
+				scrollTop: $('.qliro-admin-notice').offset().top - 100
+			}, 500);
+		},
+
+		/**
 		 * Create a capture.
 		 */
 		create_capture: function () {
@@ -21,10 +45,10 @@ jQuery(function ($) {
 			// Combine all items to deliver.
 			let items_to_deliver = $.extend({}, line_items, shipping_items, fee_items);
 
-			// If the items to deliver is empty, unblock the UI and return, but display an alert box.
+			// If the items to deliver is empty, unblock the UI and show a notice.
 			if ($.isEmptyObject(items_to_deliver)) {
 				qoc.unblock();
-				window.alert(qoc_admin_params.make_capture_no_items);
+				qoc.showNotice(qoc_admin_params.make_capture_no_items, 'error');
 				return;
 			}
 
@@ -45,7 +69,8 @@ jQuery(function ($) {
 						// Redirect to same page for show the refunded status
 						window.location.reload();
 					} else {
-						window.alert(response.responseJSON.data);
+						qoc.unblock();
+						qoc.showNotice(response.responseJSON.data, 'error');
 					}
 				}
 			});
@@ -302,10 +327,7 @@ jQuery(function ($) {
 			const diff = qoc.unformat_number($refundAmount.val()) - (qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val()));
 
 			if (diff < 0) {
-				// Show an alert box with the message "Refund amount is less than the return fee amount."
-				window.alert(qoc_admin_params.refund_amount_less_than_return_fee_text);
-
-				// Pause the default action of the button.
+				qoc.showNotice(qoc_admin_params.refund_amount_less_than_return_fee_text, 'error');
 				e.preventDefault();
 				e.stopPropagation();
 				return;

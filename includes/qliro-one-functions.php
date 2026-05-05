@@ -107,12 +107,7 @@ function qliro_one_print_error_message( $wp_error ) {
 		$error_message = implode( ' ', $error_message );
 	}
 
-	if ( is_ajax() ) {
-		if ( function_exists( 'wc_add_notice' ) ) {
-			wc_add_notice( $error_message, 'error' );
-		}
-	} elseif ( function_exists( 'wc_add_notice' ) ) {
-		// Add to the queue to be printed later. This allows the notice to be displayed along the other notices.
+	if ( function_exists( 'wc_add_notice' ) ) {
 		wc_add_notice( $error_message, 'error' );
 	}
 }

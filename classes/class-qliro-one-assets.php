@@ -109,6 +109,11 @@ class Qliro_One_Assets {
 				'payForOrder'                 => $pay_for_order,
 				'iframeSnippet'               => qliro_wc_get_snippet(),
 				'customerTypeCookieName'      => apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' ),
+				'i18n'                        => array(
+					'checkoutError' => __( 'An error occurred during checkout. Please try again.', 'qliro-for-woocommerce' ),
+					'ajaxError'     => __( 'A server error occurred. Please reload the page and try again.', 'qliro-for-woocommerce' ),
+					'timeoutError'  => __( 'The request timed out. Please try again.', 'qliro-for-woocommerce' ),
+				),
 			)
 		);
 		wp_enqueue_script( 'qliro-for-woocommerce' );
@@ -190,6 +195,7 @@ class Qliro_One_Assets {
 			'fee_checkbox_text'                       => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-for-woocommerce' ),
 			'with_return_fee_text'                    => __( 'with a return fee of', 'qliro-for-woocommerce' ),
 			'refund_amount_less_than_return_fee_text' => __( 'Refund amount is less than the return fee.', 'qliro-for-woocommerce' ),
+			'dismiss_notice'                          => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
 		);
 
 		$tiptip = 'jquery-blockui';

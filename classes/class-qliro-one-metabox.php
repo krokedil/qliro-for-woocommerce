@@ -112,6 +112,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 					),
 				),
 				'orderId' => $this->get_id(),
+				'i18n'    => array(
+					'orderSyncFailed' => __( 'Failed to toggle order management. Please try again.', 'qliro-for-woocommerce' ),
+					'dismissNotice'   => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
+				),
 			);
 			wp_localize_script( 'qliro-one-metabox', 'qliroMetaboxParams', $localize_data );
 		}
@@ -132,29 +136,29 @@ class Qliro_One_Metabox extends OrderMetabox {
 
 		switch ( $notice ) {
 			case 'invalid_nonce':
-				$notice = __( 'Could not verify the security token. Please try again.', 'qliro-for-woocommerce' );
+				$message = __( 'Could not verify the security token. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			case 'permission_denied':
-				$notice = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
+				$message = __( 'You do not have permission to add a discount to this order.', 'qliro-for-woocommerce' );
 				break;
 			case 'not_qliro_order':
-				$notice = __( 'The order is not a Qliro order and a discount cannot be added.', 'qliro-for-woocommerce' );
+				$message = __( 'The order is not a Qliro order and a discount cannot be added.', 'qliro-for-woocommerce' );
 				break;
 			case 'invalid_hash':
-				$notice = __( 'The order key is invalid. Please try again.', 'qliro-for-woocommerce' );
+				$message = __( 'The order key is invalid. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			case 'missing_parameters':
-				$notice = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
+				$message = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
 				break;
 			default:
 				return;
 		}
 
-		$notice  = '<div class="notice notice-error is-dismissible">';
-		$notice .= "<p>{$notice}</p>";
-		$notice .= '</div>';
+		$output  = '<div class="notice notice-error is-dismissible">';
+		$output .= '<p>' . esc_html( $message ) . '</p>';
+		$output .= '</div>';
 
-		echo wp_kses_post( $notice );
+		echo wp_kses_post( $output );
 	}
 
 	/**
