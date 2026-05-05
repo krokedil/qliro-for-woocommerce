@@ -37,6 +37,8 @@ jQuery(function ($) {
 			const $this = $(this);
 			const $metabox = $("#qliro-one");
 			const enabled = $this.attr("data-qliro-order-sync") === "yes" ? "no" : "yes";
+			const i18n = qliroMetaboxParams.i18n || {};
+			const errorMessage = i18n.orderSyncFailed || 'Failed to toggle order management. Please try again.';
 
 			// Block the page to prevent changing the order during the request.
 			$metabox.block({
@@ -49,8 +51,6 @@ jQuery(function ($) {
 
 			// Make the AJAX request to toggle the order sync for the order.
 			let result;
-			const i18n = qliroMetaboxParams.i18n || {};
-			const errorMessage = i18n.orderSyncFailed || 'Failed to toggle order management. Please try again.';
 
 			try {
 				result = await qliroMetabox.ajaxSetOrderSync(enabled);
