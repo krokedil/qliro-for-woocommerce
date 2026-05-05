@@ -65,11 +65,14 @@ jQuery(function ($) {
 				dataType: 'json',
 				complete: function (response) {
 					console.log(response);
-					if (true === response.responseJSON.success) {
+					const response_json = response.responseJSON || {};
+					const has_structured_json = response.responseJSON && 'success' in response_json;
+
+					if (true === response_json.success) {
 						// Redirect to same page for show the refunded status
 						window.location.reload();
 					} else {
-						const data = response.responseJSON.data || qoc_admin_params.i18n.makeCaptureFailed || 'An error occurred while making the capture. Please try again.';
+						const data = response_json.data || qoc_admin_params.i18n.makeCaptureFailed || 'An error occurred while making the capture. Please try again.';
 						qoc.unblock();
 						qoc.showNotice(data, 'error');
 					}
