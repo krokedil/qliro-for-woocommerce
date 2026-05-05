@@ -66,7 +66,6 @@ jQuery(function ($) {
 				complete: function (response) {
 					console.log(response);
 					const response_json = response.responseJSON || {};
-					const has_structured_json = response.responseJSON && 'success' in response_json;
 
 					if (true === response_json.success) {
 						// Redirect to same page for show the refunded status
