@@ -114,7 +114,6 @@ class Qliro_One_Metabox extends OrderMetabox {
 				'orderId' => $this->get_id(),
 				'i18n'    => array(
 					'orderSyncFailed' => __( 'Failed to toggle order management. Please try again.', 'qliro-for-woocommerce' ),
-					'dismissNotice'   => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
 				),
 			);
 			wp_localize_script( 'qliro-one-metabox', 'qliroMetaboxParams', $localize_data );

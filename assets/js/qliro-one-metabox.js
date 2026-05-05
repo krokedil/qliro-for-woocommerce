@@ -16,10 +16,11 @@ jQuery(function ($) {
 		showNotice: function (message, type) {
 			type = type || 'error';
 			$('.qliro-admin-notice').remove();
+			const i18n = qliroMetaboxParams.i18n || {};
 			const $notice = $(
 				'<div class="notice notice-' + type + ' is-dismissible qliro-admin-notice">' +
 				'<p>' + $('<span>').text(message).html() + '</p>' +
-				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (qoc_admin_params.dismiss_notice || 'Dismiss') + '</span></button>' +
+				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (i18n.dismissNotice || 'Dismiss') + '</span></button>' +
 				'</div>'
 			);
 			$('.wp-header-end').after($notice);
@@ -47,15 +48,24 @@ jQuery(function ($) {
 			});
 
 			// Make the AJAX request to toggle the order sync for the order.
-			const result = await qliroMetabox.ajaxSetOrderSync(enabled);
+			let result;
+			const i18n = qliroMetaboxParams.i18n || {};
+			const errorMessage = i18n.orderSyncFailed || 'Failed to toggle order management. Please try again.';
+
+			try {
+				result = await qliroMetabox.ajaxSetOrderSync(enabled);
+			} catch (error) {
+				$metabox.unblock();
+				qliroMetabox.showNotice(errorMessage, 'error');
+				return;
+			}
 			if (result.success) {
 				qliroMetabox.toggleButton($this, enabled);
 				// Reload the page to ensure the metadata has been added to the form.
 				location.reload();
 			} else {
 				$metabox.unblock();
-				const i18n = qliroMetaboxParams.i18n || {};
-				qliroMetabox.showNotice(i18n.orderSyncFailed || 'Failed to toggle order management. Please try again.', 'error');
+				qliroMetabox.showNotice(errorMessage, 'error');
 			}
 		},
 

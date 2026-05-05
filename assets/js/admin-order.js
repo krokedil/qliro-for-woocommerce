@@ -12,7 +12,7 @@ jQuery(function ($) {
 			const $notice = $(
 				'<div class="notice notice-' + type + ' is-dismissible qliro-admin-notice">' +
 				'<p>' + $('<span>').text(message).html() + '</p>' +
-				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (qoc_admin_params.dismiss_notice || 'Dismiss') + '</span></button>' +
+				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (qoc_admin_params.i18n.dismissNotice || 'Dismiss') + '</span></button>' +
 				'</div>'
 			);
 			$('.wp-header-end').after($notice);
@@ -69,8 +69,9 @@ jQuery(function ($) {
 						// Redirect to same page for show the refunded status
 						window.location.reload();
 					} else {
+						const data = response.responseJSON.data || qoc_admin_params.i18n.makeCaptureFailed || 'An error occurred while making the capture. Please try again.';
 						qoc.unblock();
-						qoc.showNotice(response.responseJSON.data, 'error');
+						qoc.showNotice(data, 'error');
 					}
 				}
 			});

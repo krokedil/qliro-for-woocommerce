@@ -194,7 +194,10 @@ class Qliro_One_Assets {
 			'fee_checkbox_text'                       => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-for-woocommerce' ),
 			'with_return_fee_text'                    => __( 'with a return fee of', 'qliro-for-woocommerce' ),
 			'refund_amount_less_than_return_fee_text' => __( 'Refund amount is less than the return fee.', 'qliro-for-woocommerce' ),
-			'dismiss_notice'                          => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
+			'i18n'                                    => array(
+				'makeCaptureFailed' => __( 'An error occurred while making the capture. Please try again.', 'qliro-for-woocommerce' ),
+				'dismissNotice'     => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
+			),
 		);
 
 		$tiptip = 'jquery-blockui';
