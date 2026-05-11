@@ -290,7 +290,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		self::output_action_button(
-			__( 'Sync order with Qliro', 'qliro-for-woocommerce' ),
+			__( 'Sync order to Qliro', 'qliro-for-woocommerce' ),
 			$action_url,
 			false,
 			$classes
