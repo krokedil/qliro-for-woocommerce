@@ -7,7 +7,7 @@ Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.7.0
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-05-11    - version 2.2.5 =
+* Tweak         - Changed sync button text from 'with qliro' to 'to qliro'.
+* Fix           - Added the request URL as the 2nd parameter to the 'http_headers_useragent' filter which is required for other plugins that hook onto this filter that need the URL to modify the user agent string accordingly.
+
 = 2026-04-07    - version 2.2.4 =
 * Tweak         - Added a locking mechanism in the confirmation step to prevent a race condition that could lead to an order being processed more than once.
 * Tweak         - Added preauthorization processing for subscription renewal. This puts a renewal order on-hold until it has been confirmed by Qliro for further processing.

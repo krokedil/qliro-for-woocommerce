@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 2.2.4\n"
+"Project-Id-Version: Qliro for WooCommerce 2.2.5\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
-"POT-Creation-Date: 2026-03-18 09:35:30+00:00\n"
+"POT-Creation-Date: 2026-05-11 11:40:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -50,48 +50,48 @@ msgstr ""
 msgid "Refund amount is less than the return fee."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:224
+#: classes/class-qliro-one-callbacks.php:274
 msgid "The order failed to be captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:230
+#: classes/class-qliro-one-callbacks.php:280
 msgid "The order has been successfully captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:234
+#: classes/class-qliro-one-callbacks.php:284
 msgid "The order has been fully captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:254
+#: classes/class-qliro-one-callbacks.php:304
 msgid "The order failed to be cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:260
-#: classes/class-qliro-one-callbacks.php:265
+#: classes/class-qliro-one-callbacks.php:310
+#: classes/class-qliro-one-callbacks.php:315
 msgid "The order has been successfully cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:284
+#: classes/class-qliro-one-callbacks.php:334
 msgid "The order failed to be refunded by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:288
+#: classes/class-qliro-one-callbacks.php:338
 msgid "The order has been successfully refunded by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:328
+#: classes/class-qliro-one-callbacks.php:378
 msgid "The Qliro order was rejected by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:352
+#: classes/class-qliro-one-callbacks.php:402
 #. translators: %s - WooCommerce order number, %s - Qliro Confirmation ID.
 msgid ""
 "Aborting onhold_checkout function. WooCommerce order %1$s with "
 "confirmation_id %2$s already confirmed."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:356
-#: includes/qliro-one-functions.php:184
+#: classes/class-qliro-one-callbacks.php:406
+#: includes/qliro-one-functions.php:194
 msgid "The Qliro order is on-hold and awaiting a status update from Qliro."
 msgstr ""
 
@@ -404,7 +404,7 @@ msgid "Customize the label for the newsletter signup checkbox."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:249
-#: classes/requests/class-qliro-one-request.php:365
+#: classes/requests/class-qliro-one-request.php:376
 msgid "Sign up for our newsletter"
 msgstr ""
 
@@ -982,7 +982,7 @@ msgid "Qliro payment method"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:293
-msgid "Sync order with Qliro"
+msgid "Sync order to Qliro"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:330
@@ -990,7 +990,7 @@ msgid "Shipping reference"
 msgstr ""
 
 #: classes/class-qliro-one-order-management.php:104
-#: classes/requests/class-qliro-one-request.php:195
+#: classes/requests/class-qliro-one-request.php:206
 msgid "The order has already been captured."
 msgstr ""
 
@@ -1319,21 +1319,34 @@ msgstr ""
 msgid "No shipping data found."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:100
-#: classes/class-qliro-one-subscriptions.php:163
-#. translators: %s: Order ID
-msgid "Qliro recurring payment for order %s was successful."
+#: classes/class-qliro-one-subscriptions.php:105
+#: classes/class-qliro-one-subscriptions.php:165
+msgid ""
+"Renewal payment has been requested from Qliro and is awaiting "
+"preauthorization."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:130
+#: classes/class-qliro-one-subscriptions.php:131
 msgid ""
 "The previously associated payment token for this subscription is no longer "
 "valid or available."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:144
+#: classes/class-qliro-one-subscriptions.php:145
 #. translators: %s: Error message from the Qliro API.
 msgid "The recurring payment failed due to an error communicating with Qliro: %s"
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:188
+#. translators: %s: Qliro order ID
+msgid ""
+"Preauthorization for subscription renewal order was completed via Qliro. "
+"Qliro Order ID: %s"
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:198
+#. translators: %s: Qliro order ID
+msgid "Preauthorization for this order was completed via Qliro. Qliro Order ID: %s"
 msgstr ""
 
 #: classes/class-qliro-order-discount.php:163
@@ -1379,13 +1392,13 @@ msgstr ""
 msgid "Order status was not found."
 msgstr ""
 
-#: classes/requests/class-qliro-one-request.php:188
+#: classes/requests/class-qliro-one-request.php:199
 msgid ""
 "Qliro is not configured for the selected country and currency. Please "
 "select a different country."
 msgstr ""
 
-#: classes/requests/class-qliro-one-request.php:191
+#: classes/requests/class-qliro-one-request.php:202
 msgid ""
 "Qliro is not configured for the selected country and currency. Please "
 "select a different payment method or country."
@@ -1626,18 +1639,18 @@ msgid ""
 "confirmed."
 msgstr ""
 
-#: includes/qliro-one-functions.php:198
+#: includes/qliro-one-functions.php:208
 #. translators: %s - Response error message.
 msgid ""
 "There was a problem updating merchant reference in Qliro's system. Error "
 "message: %s"
 msgstr ""
 
-#: includes/qliro-one-functions.php:206
+#: includes/qliro-one-functions.php:216
 msgid "Qliro order successfully placed. (Qliro Payment transaction id: "
 msgstr ""
 
-#: includes/qliro-one-functions.php:211
+#: includes/qliro-one-functions.php:221
 #. translators: %s - the Qliro order ID.
 msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
