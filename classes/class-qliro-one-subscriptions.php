@@ -86,6 +86,9 @@ class Qliro_One_Subscriptions {
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
+			$message = 'Qliro: ' . $result->get_error_message();
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
 			$subscription->payment_failed();
 			$subscription->save();
 			return;
