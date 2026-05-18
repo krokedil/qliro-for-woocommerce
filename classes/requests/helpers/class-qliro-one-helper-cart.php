@@ -191,7 +191,7 @@ class Qliro_One_Helper_Cart {
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
 		$chosen_shipping = $chosen_methods[0];
 		foreach ( $packages as $i => $package ) {
-			/** @var WC_Shipping_Rate $method The shipping rate method. */
+			/* @var WC_Shipping_Rate $method */
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
 
