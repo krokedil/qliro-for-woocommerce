@@ -11,8 +11,6 @@ Stable tag: 2.2.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Qliro Checkout payment gateway for WooCommerce. Accept payments via Qliro in your WooCommerce store.
-
 == Description ==
 
 Qliro for WooCommerce connects your WooCommerce store to the Qliro Checkout. Once configured, customers can complete their purchase using the payment methods offered by Qliro, such as invoice, partial payment, card, and direct bank transfers, directly from your checkout page.
@@ -24,7 +22,7 @@ The plugin replaces the standard WooCommerce checkout with the embedded Qliro Ch
 - Embedded Qliro Checkout on the WooCommerce checkout page.
 - Order management from the WooCommerce admin: capture, cancel, and refund orders in Qliro.
 - Support for WooCommerce Subscriptions.
-- Support for pay for order.
+- Support for Pay for order.
 - Support for gift cards.
 - Support for integrated shipping with Ingrid and nShift via the Krokedil Shipping Connector.
 - Support for High-Performance Order Storage (HPOS).
@@ -39,13 +37,13 @@ The plugin replaces the standard WooCommerce checkout with the embedded Qliro Ch
 
 = Documentation =
 
-Setup instructions and reference material are available in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
+Setup instructions and reference material are available in the [plugin documentation]().
 == Installation ==
 
 1. Upload the plugin folder to the "/wp-content/plugins/" directory, or install the plugin through the WordPress plugins screen.
 2. Activate the plugin through the "Plugins" menu in WordPress.
 3. Go to WooCommerce -> Settings -> Payments and configure your Qliro settings.
-4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
+4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-for-woocommerce/).
 
 == Frequently Asked Questions ==
 
@@ -55,7 +53,7 @@ You need to sign a merchant agreement with Qliro. Visit [qliro.com](https://www.
 
 = Where can I find the documentation? =
 
-The plugin documentation is available at [docs.krokedil.com/qliro-one-for-woocommerce](https://docs.krokedil.com/qliro-one-for-woocommerce/).
+The plugin documentation is available at [docs.krokedil.com/qliro-for-woocommerce](https://docs.krokedil.com/qliro-for-woocommerce/).
 
 = Where do I get support? =
 
