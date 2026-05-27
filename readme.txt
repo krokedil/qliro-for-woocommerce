@@ -7,7 +7,7 @@ Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.7.0
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-05-27    - version 2.2.6 =
+* Tweak         - Fixed an edge case where an empty cart could trigger an unnecessary Qliro order creation on the checkout page, as a safeguard for when WooCommerce's built-in redirect does not occur.
+* Fix           - Fixed an issue that could cause a fatal error during checkout when a zero-amount fee was applied to the cart.
+
 = 2026-05-11    - version 2.2.5 =
 * Tweak         - Changed sync button text from 'with qliro' to 'to qliro'.
 * Fix           - Added the request URL as the 2nd parameter to the 'http_headers_useragent' filter which is required for other plugins that hook onto this filter that need the URL to modify the user agent string accordingly.

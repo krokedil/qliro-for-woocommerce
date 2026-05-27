@@ -1,4 +1,0 @@
-Type: Tweak
-Needs Documentation: no
-
-Fixed an edge case where an empty cart could trigger an unnecessary Qliro order creation on the checkout page, as a safeguard for when WooCommerce's built-in redirect does not occur.
