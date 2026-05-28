@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 10.8.0
-Stable tag: 2.2.6
+WC tested up to: 10.8.1
+Stable tag: 2.2.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,6 +19,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
 
 == Changelog ==
+= 2026-05-28    - version 2.2.7 =
+* Fix           - Resolved a checkout error introduced by WooCommerce 10.8.0, where shipping phone became a required field. The shipping phone value is now populated correctly.
+
 = 2026-05-27    - version 2.2.6 =
 * Tweak         - Fixed an edge case where an empty cart could trigger an unnecessary Qliro order creation on the checkout page, as a safeguard for when WooCommerce's built-in redirect does not occur.
 * Fix           - Fixed an issue that could cause a fatal error during checkout when a zero-amount fee was applied to the cart.
