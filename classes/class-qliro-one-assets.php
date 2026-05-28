@@ -79,6 +79,7 @@ class Qliro_One_Assets {
 			'shipping_address_2',
 			'shipping_postcode',
 			'shipping_city',
+			'shipping_phone',
 			'shipping_state',
 			'shipping_country',
 			'shipping_company',
