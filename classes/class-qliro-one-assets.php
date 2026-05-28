@@ -41,7 +41,6 @@ class Qliro_One_Assets {
 	 * @return string
 	 */
 	protected function qoc_is_script_debug_enabled() {
-		// return ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 		return '';
 	}
 
@@ -79,6 +78,7 @@ class Qliro_One_Assets {
 			'shipping_address_2',
 			'shipping_postcode',
 			'shipping_city',
+			'shipping_phone',
 			'shipping_state',
 			'shipping_country',
 			'shipping_company',
