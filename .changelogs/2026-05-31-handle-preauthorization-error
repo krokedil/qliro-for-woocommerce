@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed an issue where a subscription renewal declined by Qliro could still be processed as a successful payment. Failed renewals are now correctly handled and marked as payment failed in WooCommerce.

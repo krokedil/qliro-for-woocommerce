@@ -253,6 +253,28 @@ class Qliro_One_Callbacks {
 			throw new Exception( 'transaction id mismatch', 422 );
 		}
 
+		if ( 'Success' !== $data['Status'] ) {
+			$reason = $data['ErrorCodeDescription'] ?? __( 'Unknown error', 'qliro-for-woocommerce' );
+			Qliro_One_Logger::log( "[CALLBACK OM]: Preauthorization failed for merchant reference #{$order_number}. Status: {$data['Status']}, Reason: {$reason}" );
+
+			$order->delete_meta_data( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION );
+			$order->save();
+
+			$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'renewal' ) );
+			foreach ( $subscriptions as $subscription ) {
+				$subscription->add_order_note(
+					sprintf(
+					/* translators: 1: Qliro error reason */
+						__( 'Renewal preauthorization failed at Qliro: %s.', 'qliro-for-woocommerce' ),
+						$reason
+					)
+				);
+				$subscription->payment_failed_for_related_order();
+			}
+			return;
+
+		}
+
 		Qliro_One_Subscriptions::process_preauthorization( $order, $data['OrderId'] );
 	}
 
