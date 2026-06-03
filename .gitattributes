@@ -15,3 +15,4 @@
 *.tsx   text    eol=lf
 *.css   text    eol=lf
 *.scss  text    eol=lf
+*.neon  text    eol=lf
