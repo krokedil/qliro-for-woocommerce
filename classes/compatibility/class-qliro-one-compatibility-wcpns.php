@@ -16,7 +16,7 @@ class Qliro_One_Compatibility_WCPNS {
 	 *
 	 * @var WCPNS_Checkout
 	 */
-	private $wcpns_checkout;
+	private $wcpns_checkout; // @phpstan-ignore-line - WCPNS_Checkout is a class from the WCPNS plugin, which is an optional dependency. This property will only be set if the plugin is active, and is checked before use.
 
 	/**
 	 * Class constructor.
@@ -50,6 +50,7 @@ class Qliro_One_Compatibility_WCPNS {
 	public function maybe_set_postnord_servicepoints( $rates ) {
 
 		foreach ( $rates as $rate ) {
+			// @phpstan-ignore-next-line - get_shipping_method_from_rate is a method from the WCPNS plugin, which is an optional dependency. This method will only be called if the plugin is active, and is checked before use.
 			$shipping_method = $this->wcpns_checkout::get_shipping_method_from_rate( $rate );
 
 			// If the shipping method is empty or does not support PostNord service points, skip it.
@@ -91,6 +92,7 @@ class Qliro_One_Compatibility_WCPNS {
 		$country_code = sanitize_text_field( $country_code );
 
 		// Get the pickup points from the WCPNS API.
+		// @phpstan-ignore-next-line - get_postnord_servicepoints_for_address is a method from the WCPNS plugin, which is an optional dependency. This method will only be called if the plugin is active, and is checked before use.
 		$wcpns_pickup_points_json = $this->wcpns_checkout->get_postnord_servicepoints_for_address(
 			$country_code,
 			$zip,

@@ -1,0 +1,493 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: classes/class-qliro-one-ajax.php
+
+		-
+			message: '#^Parameter \#1 \$message of function wp_die expects string\|WP_Error, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-one-ajax.php
+
+		-
+			message: '#^Parameter \#1 \$order_id of method Qliro_One_API\:\:capture_qliro_one_order\(\) expects int, string\|false\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-one-ajax.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 3
+			path: classes/class-qliro-one-ajax.php
+
+		-
+			message: '#^PHPDoc tag @param has invalid value \(array Fee to refund\.\)\: Unexpected token "Fee", expected variable at offset 277 on line 8$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: classes/class-qliro-one-api.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: classes/class-qliro-one-assets.php
+
+		-
+			message: '#^Access to an undefined property WC_Session\:\:\$reload_checkout\.$#'
+			identifier: property.notFound
+			count: 2
+			path: classes/class-qliro-one-checkout.php
+
+		-
+			message: '#^Property WooCommerce\:\:\$session \(WC_Session\) in empty\(\) is not falsy\.$#'
+			identifier: empty.property
+			count: 1
+			path: classes/class-qliro-one-checkout.php
+
+		-
+			message: '#^Array has 2 duplicate keys with value ''default'' \(''default'', ''default''\)\.$#'
+			identifier: array.duplicateKey
+			count: 1
+			path: classes/class-qliro-one-fields.php
+
+		-
+			message: '#^Function str_contains not found\.$#'
+			identifier: function.notFound
+			count: 2
+			path: classes/class-qliro-one-gateway.php
+
+		-
+			message: '#^Property Qliro_One_Gateway\:\:\$upsell_percentage \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: classes/class-qliro-one-gateway.php
+
+		-
+			message: '#^Property WC_Payment_Gateway\:\:\$enabled \(string\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/class-qliro-one-gateway.php
+
+		-
+			message: '#^Method Qliro_One_Logger\:\:format_data\(\) should return array but returns string\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/class-qliro-one-logger.php
+
+		-
+			message: '#^PHPDoc tag @var has invalid value \(\$log\)\: Unexpected token "\$log", expected type at offset 40 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: classes/class-qliro-one-logger.php
+
+		-
+			message: '#^Property WooCommerce\:\:\$session \(WC_Session\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: classes/class-qliro-one-logger.php
+
+		-
+			message: '#^Static method Qliro_Order_Discount\:\:output_order_discount_button\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: classes/class-qliro-one-metabox.php
+
+		-
+			message: '#^Default value of the parameter \#5 \$items \(string\) of method Qliro_One_Order_Management\:\:create_refund\(\) is incompatible with type array\.$#'
+			identifier: parameter.defaultValue
+			count: 1
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Offset 1 on array\{list\<string\>, list\<string\>, list\<string\>\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Parameter \#2 \$value of method WC_Data\:\:update_meta_data\(\) expects array\|string, true given\.$#'
+			identifier: argument.type
+			count: 3
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Variable \$refunded_items might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Variable \$response might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: classes/class-qliro-one-order-management.php
+
+		-
+			message: '#^Access to an undefined property WooCommerce\:\:\$payment_gateways\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/class-qliro-one-shipping-method.php
+
+		-
+			message: '#^Call to an undefined method WC_Payment_Token\:\:get_card_type\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: classes/class-qliro-one-subscriptions.php
+
+		-
+			message: '#^Parameter \#2 \$value of method WC_Data\:\:add_meta_data\(\) expects array\|string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: classes/class-qliro-one-subscriptions.php
+
+		-
+			message: '#^Access to an undefined property WooCommerce\:\:\$checkout\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/class-qliro-one-templates.php
+
+		-
+			message: '#^Access to an undefined property WooCommerce\:\:\$payment_gateways\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/class-qliro-one-templates.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(self\:\:\$instance The \*Singleton\* instance\.\)\: Unexpected token "\$instance", expected \* at offset 78 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: classes/class-qliro-one-templates.php
+
+		-
+			message: '#^PHPDoc tag @var has invalid value \(\$instance\)\: Unexpected token "\$instance", expected type at offset 75 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: classes/class-qliro-one-templates.php
+
+		-
+			message: '#^Property WooCommerce\:\:\$session \(WC_Session\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: classes/class-qliro-one-templates.php
+
+		-
+			message: '#^Call to an undefined method WC_Order_Item\:\:get_total\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Call to an undefined method WC_Order_Item\:\:get_total_tax\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Method Qliro_Order_Discount\:\:calculate_discount_vat_amount\(\) never returns int so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Method Qliro_Order_Discount\:\:get_order_discount_modal_data\(\) should return array\{vat_rates\: array\<int, string\>, action_url\: string, items_total_amount\: float, available_amount\: float, total_amount\: float, currency\: string, order\: WC_Order\|null\} but returns array\{vat_rates\: array\<array\{id\: int, class\: string, label\: string, percentage\: float\}\>, action_url\: string, items_total_amount\: float, available_amount\: float, total_amount\: string, fees\: array\<string\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Offset ''fees'' does not exist on array\{vat_rates\: array\<int, string\>, action_url\: string, items_total_amount\: float, available_amount\: float, total_amount\: float, currency\: string, order\: WC_Order\|null\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#1 \$amount of method WC_Order_Item_Fee\:\:set_total\(\) expects string, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#1 \$amount of method WC_Order_Item_Fee\:\:set_total_tax\(\) expects string, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#1 \$value of method WC_Order_Item_Fee\:\:set_amount\(\) expects string, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#2 \$value of method WC_Data\:\:add_meta_data\(\) expects array\|string, float given\.$#'
+			identifier: argument.type
+			count: 2
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#2 \$value of method WC_Data\:\:add_meta_data\(\) expects array\|string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Parameter \#3 \$discount_id of method Qliro_Order_Discount\:\:validate_discount\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^The overwriting exit point is on this line\.$#'
+			identifier: finally.exitPoint
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^This throw is overwritten by a different one in the finally block below\.$#'
+			identifier: finally.exitPoint
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Variable \$qliro_order on left side of \?\? is never defined\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: classes/class-qliro-order-discount.php
+
+		-
+			message: '#^Method Qliro_Order_Utility\:\:format_transactions_meta_data\(\) should return array\<array\> but returns array\<string, list\<array\<string, mixed\>\>\|string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/class-qliro-order-utility.php
+
+		-
+			message: '#^Access to an undefined property WooCommerce\:\:\$checkout\.$#'
+			identifier: property.notFound
+			count: 8
+			path: classes/compatibility/class-qliro-one-compatibility-wcpns.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$package$#'
+			identifier: parameter.notFound
+			count: 1
+			path: classes/compatibility/class-qliro-one-compatibility-wcpns.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$rate_id$#'
+			identifier: parameter.notFound
+			count: 1
+			path: classes/compatibility/class-qliro-one-compatibility-wcpns.php
+
+		-
+			message: '#^Parameter \#1 \$data of static method Qliro_One_Logger\:\:log\(\) expects string, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/class-qliro-one-request.php
+
+		-
+			message: '#^Property Qliro_One_Request\:\:\$qliro_order_id \(string\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/requests/class-qliro-one-request.php
+
+		-
+			message: '#^Binary operation "/" between \(float\|int\) and string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-cart.php
+
+		-
+			message: '#^Method Qliro_One_Helper_Cart\:\:get_product_dimensions\(\) should return array\<string, int\> but returns array\<string, float\>\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-cart.php
+
+		-
+			message: '#^Method Qliro_One_Helper_Cart\:\:get_product_weight\(\) should return int but returns float\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-cart.php
+
+		-
+			message: '#^PHPDoc tag @var has invalid value \(\$cart_fees WC_Cart_Fees\)\: Unexpected token "\$cart_fees", expected type at offset 39 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-cart.php
+
+		-
+			message: '#^Parameter \#3 \$offset of function strpos expects int, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-cart.php
+
+		-
+			message: '#^Binary operation "\+" between float\|int and string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Parameter \#1 \$order_id of static method Qliro_One_Helper_Order\:\:process_gift_cards\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Parameter \#1 \$order_item of static method Qliro_One_Helper_Order\:\:get_order_line_items\(\) expects WC_Order_Item_Product, WC_Order_Item given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Parameter \#1 \$order_item of static method Qliro_One_Helper_Order\:\:get_unit_price_inc_vat\(\) expects WC_Order_Item_Fee\|WC_Order_Item_Product\|WC_Order_Item_Shipping, WC_Order_Item given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Parameter \#3 \$offset of function strpos expects int, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-order.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$cost\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$instance_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$method_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WC_Shipping_Rate\:\:\$taxes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Access to an undefined property WooCommerce\:\:\$shipping\.$#'
+			identifier: property.notFound
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Class WC_Shipping_Rate referenced with incorrect case\: WC_Shipping_rate\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: classes/requests/helpers/class-qliro-one-helper-shipping-methods.php
+
+		-
+			message: '#^Method Qliro_One_Request_Create_Order\:\:get_integrity_url\(\) should return string but returns null\.$#'
+			identifier: return.type
+			count: 1
+			path: classes/requests/post/class-qliro-one-request-create-order.php
+
+		-
+			message: '#^Call to an undefined method WC_Product\:\:get_variation_price\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: classes/widgets/class-qliro-one-payment-widget.php
+
+		-
+			message: '#^Variable \$qliro_discount_data might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/admin/views/html-order-add-discount.php
+
+		-
+			message: '#^Call to function is_numeric\(\) with float will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Function qliro_wc_get_snippet\(\) should return string\|null but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Parameter \#2 \$order_id of static method Qliro_One_Confirmation\:\:lock_qliro_confirmation\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Parameter \#2 \$order_id of static method Qliro_One_Confirmation\:\:unlock_qliro_confirmation\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Parameter \#2 \$value of method WC_Data\:\:update_meta_data\(\) expects array\|string, \(int\|false\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Variable \$subtype on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: includes/qliro-one-functions.php
+
+		-
+			message: '#^Class Qliro_One_Merchant_URLS referenced with incorrect case\: Qliro_One_Merchant_URLs\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: qliro-for-woocommerce.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: qliro-for-woocommerce.php
+
+		-
+			message: '#^Property Qliro_One_For_WooCommerce\:\:\$shipping_method is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: qliro-for-woocommerce.php
