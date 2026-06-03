@@ -306,6 +306,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-payment-widget.php';
 
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-callback-auth.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/compatibility/class-qliro-one-compatibility-wcpns.php';
