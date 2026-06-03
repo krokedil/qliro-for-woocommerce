@@ -66,7 +66,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		/**
 		 * Reference to merchant URLs class.
 		 *
-		 * @var Qliro_One_Merchant_URLs
+		 * @var Qliro_One_Merchant_URLS
 		 */
 		public $merchant_urls;
 
