@@ -24,7 +24,7 @@ class Qliro_One_Merchant_URLS {
 	 */
 	public function get_urls( $order = null ) {
 		// If the order is not null, but not an instance of WC_Order, try to get the order object.
-		if ( $order !== null && ! $order instanceof WC_Order ) {
+		if ( null !== $order && ! $order instanceof WC_Order ) {
 			$order = wc_get_order( $order );
 		}
 
@@ -58,9 +58,10 @@ class Qliro_One_Merchant_URLS {
 			'om_push'      => $this->get_om_push_url( $rand_string ),
 		);
 
-		// If the cart contains a subscription, add the save card callback url.
+		// If the cart contains a subscription, add the save card callback url, authenticated with a token.
 		if ( Qliro_One_Subscriptions::is_subscription( $order ) ) {
-			$merchant_urls['save_card'] = QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+			$save_card_url              = QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+			$merchant_urls['save_card'] = Qliro_One_Callback_Auth::add_token( $save_card_url, $rand_string );
 		}
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
