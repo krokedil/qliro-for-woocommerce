@@ -31,9 +31,20 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'save_card' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'verify_request' ),
 			)
 		);
+	}
+
+	/**
+	 * Verify that the callback is authenticated. Used as the permission callback.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return true|WP_Error
+	 */
+	public function verify_request( $request ) {
+		return Qliro_One_Callback_Auth::verify_request( $request );
 	}
 
 	/**
