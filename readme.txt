@@ -1,24 +1,75 @@
 === Qliro for WooCommerce ===
 Contributors: krokedil
-Tags: woocommerce, qliro, ecommerce, e-commerce, checkout
+Tags: woocommerce, qliro, ecommerce, checkout, payment-gateway
 Donate link: https://krokedil.com
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.8.1
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
+== Description ==
 
+Qliro for WooCommerce connects your WooCommerce store to the Qliro Checkout. Once configured, customers can complete their purchase using the payment methods offered by Qliro, such as invoice, partial payment, card, and direct bank transfers, directly from your checkout page.
+
+The plugin replaces the standard WooCommerce checkout with the embedded Qliro Checkout iframe, and synchronises the WooCommerce order with Qliro throughout the order lifecycle, including capture, cancel, and refund.
+
+= Features =
+
+- Embedded Qliro Checkout on the WooCommerce checkout page.
+- Order management from the WooCommerce admin: capture, cancel, and refund orders in Qliro.
+- Support for WooCommerce Subscriptions.
+- Support for Pay for order.
+- Support for gift cards.
+- Support for integrated shipping with Ingrid and nShift via the Krokedil Shipping Connector.
+- Support for High-Performance Order Storage (HPOS).
+- Country selector for multi-market stores.
+- Payment widget and banner widget shortcodes for product and cart pages.
+
+= Requirements =
+
+- WooCommerce 5.0 or higher.
+- PHP 7.4 or higher.
+- A merchant agreement with Qliro. Visit [qliro.com](https://www.qliro.com/) to sign up.
+
+= Documentation =
+
+Setup instructions and reference material are available in the [plugin documentation]().
 == Installation ==
-1. Upload plugin folder to to the "/wp-content/plugins/" directory.
+
+1. Upload the plugin folder to the "/wp-content/plugins/" directory, or install the plugin through the WordPress plugins screen.
 2. Activate the plugin through the "Plugins" menu in WordPress.
-3. Go WooCommerce Settings –> Payment Gateways and configure your Qliro settings.
-4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-one-for-woocommerce/).
+3. Go to WooCommerce -> Settings -> Payments and configure your Qliro settings.
+4. Read more about the configuration process in the [plugin documentation](https://docs.krokedil.com/qliro-for-woocommerce/).
+
+== Frequently Asked Questions ==
+
+= Where do I get a Qliro merchant account? =
+
+You need to sign a merchant agreement with Qliro. Visit [qliro.com](https://www.qliro.com/) to get started.
+
+= Where can I find the documentation? =
+
+The plugin documentation is available at [docs.krokedil.com/qliro-for-woocommerce](https://docs.krokedil.com/qliro-for-woocommerce/).
+
+= Where do I get support? =
+
+Support for this plugin is handled via support@qliro.com.
+
+
+== Screenshots ==
+
+1. The Qliro Checkout displayed on the WooCommerce checkout page.
+2. The Qliro settings page in the WooCommerce admin.
+3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-06-15    - version 2.2.8 =
+* Fix           - Fixed an issue where a subscription renewal declined by Qliro could still be processed as a successful payment. Failed renewals are now correctly handled and marked as payment failed in WooCommerce.
+
 = 2026-05-28    - version 2.2.7 =
 * Fix           - Resolved a checkout error introduced by WooCommerce 10.8.0, where shipping phone became a required field. The shipping phone value is now populated correctly.
 
