@@ -7,7 +7,7 @@ Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 10.8.1
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,9 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-06-15    - version 2.2.8 =
+* Fix           - Fixed an issue where a subscription renewal declined by Qliro could still be processed as a successful payment. Failed renewals are now correctly handled and marked as payment failed in WooCommerce.
+
 = 2026-05-28    - version 2.2.7 =
 * Fix           - Resolved a checkout error introduced by WooCommerce 10.8.0, where shipping phone became a required field. The shipping phone value is now populated correctly.
 
