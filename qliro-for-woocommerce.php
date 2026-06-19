@@ -195,6 +195,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notice_testmode' ) );
+			add_action( 'admin_notices', array( $this, 'admin_upgrade_notice' ) );
 		}
 
 		/**
@@ -508,6 +509,36 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				</div>
 				<?php
 			}
+		}
+
+		/**
+		 * Display admin notice to upgrade Qliro plugin if the old version is active.
+		 */
+		public function admin_upgrade_notice() {
+			$old_plugin_path      = 'qliro-one-for-woocommerce/qliro-one-for-woocommerce.php';
+			$old_plugin_is_active = is_plugin_active( $old_plugin_path );
+
+			if ( ! $old_plugin_is_active ) {
+				return;
+			}
+
+			// Show the notice if only the old version is active.
+			echo '<div class="notice notice-error"><p>';
+			printf(
+				/* translators: %s: Link to Qliro for WooCommerce plugin */
+				wp_kses_post(
+					sprintf(
+						'<strong>%s</strong> %s',
+						esc_html__( 'Important notice:', 'qliro-for-woocommerce' ),
+						esc_html__(
+							'The currently installed version of the Qliro plugin will no longer receive updates. To continue receiving security fixes and new features, please install the latest version of the Qliro plugin from %s or directly via the WordPress plugin interface (Plugins → Add New → Search for "Qliro for WooCommerce"). Once the new version is installed, make sure to uninstall the old version to prevent any conflicts. This notice will disappear automatically once only the correct version of the Qliro plugin is active.',
+							'qliro-for-woocommerce'
+						)
+					)
+				),
+				'<a href="https://wordpress.org/plugins/qliro-for-woocommerce/" target="_blank" rel="noopener noreferrer">https://wordpress.org/plugins/qliro-for-woocommerce/</a>'
+			);
+			echo '</p></div>';
 		}
 	}
 	Qliro_One_For_WooCommerce::get_instance();
