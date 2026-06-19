@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: yes
+
+Scheduled actions related to an order are now shown in the order metabox, to make troubleshooting easier.
