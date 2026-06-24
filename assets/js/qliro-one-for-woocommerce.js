@@ -353,6 +353,8 @@ jQuery(function ($) {
 			qliroOneForWooCommerce.setStateField('billing', addressData.billingAddress.Area);
 			$('#billing_phone').val(addressData.customer.MobileNumber);
 			$('#billing_email').val(addressData.customer.Email);
+			$('#shipping_phone').val(addressData.customer.MobileNumber);
+			$('#shipping_email').val(addressData.customer.Email);
 
 			// Shipping fields.
 			$('#shipping_first_name').val(addressData.shippingAddress.FirstName);

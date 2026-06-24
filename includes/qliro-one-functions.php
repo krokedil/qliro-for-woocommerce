@@ -19,6 +19,11 @@ use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableControlle
 function qliro_one_maybe_create_order() {
 	$cart    = WC()->cart;
 	$session = WC()->session;
+
+	if ( $cart->is_empty() ) {
+		return null;
+	}
+
 	// try to get id from session.
 	$qliro_one_order_id = $session->get( 'qliro_one_order_id' );
 	$cart->calculate_fees();
