@@ -107,8 +107,10 @@ function qliro_one_print_error_message( $wp_error ) {
 		$error_message = implode( ' ', $error_message );
 	}
 
-	if ( function_exists( 'wc_add_notice' ) ) {
-		wc_add_notice( $error_message, 'error' );
+	if ( is_ajax() && function_exists( 'wc_add_notice' ) ) {
+			wc_add_notice( $error_message, 'error' );
+	} elseif ( function_exists( 'wc_print_notice' ) ) {
+		wc_print_notice( $error_message, 'error' );
 	}
 }
 
