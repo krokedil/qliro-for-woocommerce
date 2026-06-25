@@ -7,11 +7,38 @@ jQuery(function ($) {
 			$(document).on("click", ".qliro-toggle-order-sync", this.toggleOrderSync);
 		},
 
+		/**
+		 * Show an admin notice.
+		 *
+		 * @param {string} message The message to display.
+		 * @param {'error'|'success'|'warning'|'info'} type The notice type.
+		 */
+		showNotice: function (message, type) {
+			type = type || 'error';
+			$('.qliro-admin-notice').remove();
+			const i18n = qliroMetaboxParams.i18n || {};
+			const $notice = $(
+				'<div class="notice notice-' + type + ' is-dismissible qliro-admin-notice">' +
+				'<p>' + $('<span>').text(message).html() + '</p>' +
+				'<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + (i18n.dismissNotice || 'Dismiss') + '</span></button>' +
+				'</div>'
+			);
+			$('.wp-header-end').after($notice);
+			$notice.on('click', '.notice-dismiss', function () {
+				$notice.remove();
+			});
+			$('html, body').animate({
+				scrollTop: $('.qliro-admin-notice').offset().top - 100
+			}, 500);
+		},
+
 		toggleOrderSync: async function (e) {
 			e.preventDefault();
 			const $this = $(this);
 			const $metabox = $("#qliro-one");
 			const enabled = $this.attr("data-qliro-order-sync") === "yes" ? "no" : "yes";
+			const i18n = qliroMetaboxParams.i18n || {};
+			const errorMessage = i18n.orderSyncFailed || 'Failed to toggle order management. Please try again.';
 
 			// Block the page to prevent changing the order during the request.
 			$metabox.block({
@@ -23,15 +50,23 @@ jQuery(function ($) {
 			});
 
 			// Make the AJAX request to toggle the order sync for the order.
-			const result = await qliroMetabox.ajaxSetOrderSync(enabled);
+			let result;
+
+			try {
+				result = await qliroMetabox.ajaxSetOrderSync(enabled);
+			} catch (error) {
+				$metabox.unblock();
+				qliroMetabox.showNotice(errorMessage, 'error');
+				return;
+			}
 			if (result.success) {
 				qliroMetabox.toggleButton($this, enabled);
+				// Reload the page to ensure the metadata has been added to the form.
+				location.reload();
 			} else {
-				alert("Failed to toggle order sync. Please try again.");
+				$metabox.unblock();
+				qliroMetabox.showNotice(errorMessage, 'error');
 			}
-
-			// Reload the page to ensure the metadata has been added to the form.
-			location.reload();
 		},
 
 		toggleButton: function ($button, enabled) {

@@ -228,8 +228,9 @@ jQuery(function ($) {
 				customer = data.customer;
 
 			} catch (error) {
-				console.warning(error);
+				console.warn(error);
 				window.location.reload();
+				return;
 			}
 
 			const firstName = billingAddress?.FirstName ?? customerInfo?.address?.firstName;
@@ -457,8 +458,9 @@ jQuery(function ($) {
 							qliroOneForWooCommerce.logToFile('Checkout error | ' + messages);
 							qliroOneForWooCommerce.failOrder('submission', messages, callback);
 						} else {
+							const checkoutError = (qliroOneParams.i18n || {}).checkoutError || 'An error occurred during checkout. Please try again.';
 							qliroOneForWooCommerce.logToFile('Checkout error | No message');
-							qliroOneForWooCommerce.failOrder('submission', 'Checkout error', callback);
+							qliroOneForWooCommerce.failOrder('submission', checkoutError, callback);
 						}
 					}
 				},
@@ -468,7 +470,8 @@ jQuery(function ($) {
 					} catch (e) {
 						qliroOneForWooCommerce.logToFile('AJAX error | Failed to parse error message.');
 					}
-					qliroOneForWooCommerce.failOrder('ajax-error', 'Internal Server Error', callback)
+					const ajaxError = (qliroOneParams.i18n || {}).ajaxError || 'A server error occurred. Please reload the page and try again.';
+					qliroOneForWooCommerce.failOrder('ajax-error', ajaxError, callback);
 				}
 			});
 		},
@@ -489,8 +492,9 @@ jQuery(function ($) {
 
 		placeWooOrder: function (data, callback) {
 			qliroOneForWooCommerce.timeout = setTimeout(() => {
+				const timeoutError = (qliroOneParams.i18n || {}).timeoutError || 'The request timed out. Please try again.';
 				qliroOneForWooCommerce.logToFile('Timeout error | Timeout when placing the WooCommerce order');
-				qliroOneForWooCommerce.failOrder('timeout-error', 'Timeout error', callback);
+				qliroOneForWooCommerce.failOrder('timeout-error', timeoutError, callback);
 			}, 29000); // 29 seconds.
 
 			qliroOneForWooCommerce.getQliroOneOrder(data, callback);
