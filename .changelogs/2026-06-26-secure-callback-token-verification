@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Hardened the save-card and subscription preauthorization callbacks: the order is now identified from a signed per-order token in the callback URL rather than the request body, and the saved card details and preauthorization outcome are re-fetched from the Qliro API instead of being trusted from the callback body.
