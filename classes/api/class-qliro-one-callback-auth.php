@@ -80,6 +80,25 @@ class Qliro_One_Callback_Auth {
 	}
 
 	/**
+	 * Check whether a token is the valid signature for a given reference.
+	 *
+	 * Use this for callbacks that are not served through the REST API and therefore
+	 * have no WP_REST_Request to pass to verify_request().
+	 *
+	 * @param string $reference The reference the token should have been signed for.
+	 * @param string $token     The signature received in the callback.
+	 *
+	 * @return bool True when the token is a valid signature for the reference.
+	 */
+	public static function is_valid_token( $reference, $token ) {
+		if ( empty( $token ) ) {
+			return false;
+		}
+
+		return hash_equals( self::sign( $reference ), (string) $token );
+	}
+
+	/**
 	 * Verify the authentication token on an incoming callback request.
 	 *
 	 * Intended for use as a REST permission_callback. Returns true when the request
@@ -113,9 +132,7 @@ class Qliro_One_Callback_Auth {
 			return new WP_Error( 'qliro_missing_callback_token', 'Missing callback authentication token.', array( 'status' => 401 ) );
 		}
 
-		$expected = self::sign( $reference );
-
-		if ( ! hash_equals( $expected, (string) $token ) ) {
+		if ( ! self::is_valid_token( $reference, $token ) ) {
 			Qliro_One_Logger::log( "[CALLBACK AUTH]: Rejected a callback with an invalid authentication token for reference '{$reference}'." );
 			return new WP_Error( 'qliro_invalid_callback_token', 'Invalid callback authentication token.', array( 'status' => 401 ) );
 		}
