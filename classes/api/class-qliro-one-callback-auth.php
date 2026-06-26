@@ -115,7 +115,7 @@ class Qliro_One_Callback_Auth {
 		$token     = $request->get_param( self::TOKEN_PARAM );
 
 		if ( empty( $token ) ) {
-			Qliro_One_Logger::log( '[CALLBACK AUTH]: Received a callback without an authentication token. Allowing during the grace period for legacy orders. Enabled via the "qliro_one_allow_unauthenticated_callbacks" filter if you have issues with legacy orders.' );
+			Qliro_One_Logger::log( '[CALLBACK AUTH]: Received a callback without an authentication token. Can be allowed during the grace period for legacy orders. Enabled via the "qliro_one_allow_unauthenticated_callbacks" filter if you have issues with legacy orders.' );
 
 			/**
 			 * Filter whether to allow callbacks that arrive without an authentication token.

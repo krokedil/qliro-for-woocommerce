@@ -246,7 +246,7 @@ class Qliro_One_Callbacks {
 		$ref   = filter_input( INPUT_GET, Qliro_One_Callback_Auth::REF_PARAM, FILTER_SANITIZE_SPECIAL_CHARS );
 
 		if ( empty( $token ) ) {
-			Qliro_One_Logger::log( "[CALLBACK OM]: Preauthorization callback for merchant reference #{$order_number} arrived without an authentication token. Allowing during the grace period for legacy renewal orders. Gate this with the 'qliro_one_allow_unauthenticated_callbacks' filter." );
+			Qliro_One_Logger::log( "[CALLBACK OM]: Preauthorization callback for merchant reference #{$order_number} arrived without an authentication token. Enabled via the 'qliro_one_allow_unauthenticated_callbacks' filter if you have issues with legacy orders." );
 
 			/** This filter is documented in classes/api/class-qliro-one-callback-auth.php */
 			if ( ! apply_filters( 'qliro_one_allow_unauthenticated_callbacks', false, null ) ) {
