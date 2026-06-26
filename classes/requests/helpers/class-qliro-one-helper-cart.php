@@ -41,7 +41,7 @@ class Qliro_One_Helper_Cart {
 		/**
 		 * Get cart fees.
 		 *
-		 * @var $cart_fees WC_Cart_Fees
+		 * @var array $cart_fees
 		 */
 		$cart_fees = WC()->cart->get_fees();
 		foreach ( $cart_fees as $fee ) {

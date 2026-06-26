@@ -4,10 +4,10 @@ on:
     types: [opened, synchronize, reopened]
     branches: [develop, master]
     paths:
-      - '**.php'
-      - 'phpcs.xml'
-      - 'composer.json'
-      - 'composer.lock'
+      - "**.php"
+      - "phpcs.xml"
+      - "composer.json"
+      - "composer.lock"
 
 permissions:
   contents: read
@@ -19,22 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.4', '8.1', '8.4'] # Check minimum, recommended, and latest supported PHP versions for WordPress/WooCommerce
+        php: ["7.4", "8.1", "8.4"] # Check minimum, recommended, and latest supported PHP versions for WordPress/WooCommerce
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, xml, curl, json, zip
           tools: composer
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
         with:
           path: vendor
           key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}

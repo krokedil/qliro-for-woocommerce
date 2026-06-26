@@ -16,7 +16,7 @@ class Qliro_One_Logger {
 	/**
 	 * Log message string
 	 *
-	 * @var $log
+	 * @var WC_Logger $log
 	 */
 	private static $log;
 
@@ -152,7 +152,7 @@ class Qliro_One_Logger {
 	/**
 	 * Removes the HTML snippet from the response body if its set.
 	 *
-	 * @param object $response
+	 * @param object $response The response object.
 	 * @return object
 	 */
 	public static function remove_html_snippet( $response ) {

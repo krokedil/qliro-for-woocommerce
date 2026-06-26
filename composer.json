@@ -13,17 +13,19 @@
         "php": ">=7.4"
     },
     "require-dev": {
-        "php-stubs/woocommerce-stubs": "dev-master",
-        "symplify/phpstan-rules": "*",
-        "phpcompatibility/php-compatibility": "*",
-        "phpcompatibility/phpcompatibility-wp": "*",
-        "wp-coding-standards/wpcs": "*",
+        "php-stubs/woocommerce-stubs": "^10.8.0",
+        "symplify/phpstan-rules": "^14.10.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1.8",
+        "wp-coding-standards/wpcs": "^3.3.0",
         "wpify/scoper": "3.1.3",
-        "squizlabs/php_codesniffer": "*"
-
+        "squizlabs/php_codesniffer": "^3.13.5",
+        "szepeviktor/phpstan-wordpress": "^2.0.3",
+        "php-stubs/woocommerce-subscriptions-stubs": "*",
+        "symfony/polyfill-php80": "^1.0.0"
     },
     "minimum-stability": "dev",
     "config": {
+        "platform-check": false,
         "platform": {
             "php": "7.4"
         },
@@ -49,7 +51,9 @@
         ],
         "post-install-cmd": [
             "@install-codestandards"
-        ]
+        ],
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
+        "phpstan:baseline": "./vendor/bin/phpstan analyse --memory-limit=2G --generate-baseline"
     },
     "extra": {
         "wpify-scoper": {

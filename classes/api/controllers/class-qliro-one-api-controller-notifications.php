@@ -49,9 +49,20 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_notification' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'verify_request' ),
 			)
 		);
+	}
+
+	/**
+	 * Verify that the callback is authenticated. Used as the permission callback.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return true|WP_Error
+	 */
+	public function verify_request( $request ) {
+		return Qliro_One_Callback_Auth::verify_request( $request );
 	}
 
 	/**
@@ -67,7 +78,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 
 			// Get the Qliro order id.
 			$qliro_order_id = $body['OrderId'];
-			$payload 	    = $body['Payload'] ?? array();
+			$payload        = $body['Payload'] ?? array();
 
 			// Get the event type and provider from the body, ensuring they are lowercase for consistency.
 			$event_type = strtolower( $body['EventType'] ?? '' );
@@ -82,7 +93,7 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			}
 
 			// Get the handler for the event type and provider.
-			$handler = $this->provider->get_handler( $event_type, $provider );;
+			$handler = $this->provider->get_handler( $event_type, $provider );
 
 			if ( null === $handler ) {
 				do_action( "qliro_notification_{$event_type}_{$provider}", $qliro_order_id, $body, $order ); // Trigger the action to allow other plugins to handle the event.

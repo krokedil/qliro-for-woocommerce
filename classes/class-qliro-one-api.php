@@ -43,7 +43,7 @@ class Qliro_One_API {
 	/**
 	 * Gets a Qliro Admin order
 	 *
-	 * @param string $qliro_one_order_id The Qliro Checkout order id.
+	 * @param string        $qliro_one_order_id The Qliro Checkout order id.
 	 * @param WC_Order|null $wc_order The WooCommerce order. Optional.
 	 *
 	 * @return array|WP_Error
@@ -68,7 +68,7 @@ class Qliro_One_API {
 	 * @param bool   $force If true always update the order, even if not needed.
 	 * @return array|WP_Error
 	 */
-	public function update_qliro_one_order( $qliro_one_order_id, $order_id = null, $force = false ) {
+	public function update_qliro_one_order( $qliro_one_order_id, $order_id = null, $force = false ) { // phpcs:ignore
 		$request  = new Qliro_One_Request_Update_Order( array( 'qliro_order_id' => $qliro_one_order_id ) );
 		$response = $request->request();
 		return $this->check_for_api_error( $response );
@@ -134,11 +134,11 @@ class Qliro_One_API {
 	/**
 	 * Refund a Qliro order.
 	 *
-	 * @param int                 $order_id Order ID.
-	 * @param int                 $refund_order_id Refund order ID.
-	 * @param string              $capture_id Capture ID.
-	 * @param array               $items Items to refund.
-	 * @param array Fee to refund.
+	 * @param int    $order_id Order ID.
+	 * @param int    $refund_order_id Refund order ID.
+	 * @param string $capture_id Capture ID.
+	 * @param array  $items Items to refund.
+	 * @param array  $return_fees Fee to refund.
 	 *
 	 * @return array|WP_Error
 	 */

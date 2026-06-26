@@ -47,8 +47,6 @@ abstract class Qliro_One_API_Controller_Base {
 	/**
 	 * Get the request path for a specific endpoint.
 	 *
-	 * @param string $endpoint The endpoint to get the path for.
-	 *
 	 * @return string
 	 */
 	public function get_request_path() {
@@ -64,7 +62,7 @@ abstract class Qliro_One_API_Controller_Base {
 	 *
 	 * @return void
 	 */
-	protected function send_response( $response, $status_code = 200 ) {
+	protected function send_response( $response, $status_code = 200 ) { // phpcs:ignore
 		// Check if the response is a WP_Error.
 		if ( is_wp_error( $response ) ) {
 			$this->send_error_response( $response );
