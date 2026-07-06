@@ -1,0 +1,25 @@
+parameters:
+	level: 5
+	# The WordPress stub file is very large and is loaded by every parallel
+	# worker, so cap the worker count to keep memory in check.
+	parallel:
+		maximumNumberOfProcesses: 2
+	paths:
+		- classes
+		- includes
+		- qliro-for-woocommerce.php
+	# The plugin has no PSR-4/composer autoloader (classes are loaded via
+	# include_once at runtime), so PHPStan must scan these dirs to discover
+	# the plugin's own classes and functions.
+	scanDirectories:
+		- classes
+		- includes
+		# Scoped Krokedil dependencies (wpify-scoper, KrokedilQliroDeps\ prefix).
+		- vendor/dependencies/krokedil
+	scanFiles:
+		- qliro-for-woocommerce.php
+	# Load WordPress and WooCommerce symbols so WP_Error, WC_Order,
+	# is_wp_error(), do_action(), etc. resolve instead of being "not found".
+	bootstrapFiles:
+		- vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php

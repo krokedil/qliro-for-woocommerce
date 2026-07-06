@@ -33,6 +33,7 @@
         }
     },
     "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
         "get-changelog": "bash .github/scripts/new-version.sh",
         "update-version": "bash .github/scripts/new-version.sh update",
         "create-changelog": "bash .github/scripts/new-changelog.sh",
