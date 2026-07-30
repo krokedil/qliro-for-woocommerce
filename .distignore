@@ -33,3 +33,13 @@ tmp*
 pnpm-lock.yaml
 
 /.changelogs
+
+# WP Playground dev environment (@krokedil/wp-playground-tools).
+playground.config.mjs
+/tools
+/.claude
+CLAUDE.md
+.nvmrc
+.playground
+/pr-screenshots
+.env

@@ -9,6 +9,7 @@
     "@babel/plugin-transform-object-rest-spread": "^7.28.6",
     "@babel/plugin-transform-runtime": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
+    "@krokedil/wp-playground-tools": "github:krokedil/wp-playground-tools#semver:^1",
     "@wordpress/eslint-plugin": "^17.13.0",
     "@wordpress/scripts": "^30.27.0",
     "babel-loader": "^8.4.1",
@@ -30,7 +31,12 @@
     "lint:css": "wp-scripts lint-style",
     "lint:css:fix": "wp-scripts lint-style --fix",
     "lint:js": "wp-scripts lint-js",
-    "lint:js:fix": "wp-scripts lint-js --fix"
+    "lint:js:fix": "wp-scripts lint-js --fix",
+    "playground:start": "node tools/playground.mjs start",
+    "playground:server-development": "node tools/playground.mjs server development",
+    "playground:server-demo": "node tools/playground.mjs server demo",
+    "playground:setup": "node tools/playground.mjs setup",
+    "screenshots": "node tools/playground.mjs screenshots"
   },
   "engines": {
     "node": ">=22.13.0"
