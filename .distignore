@@ -34,6 +34,10 @@ pnpm-lock.yaml
 
 /.changelogs
 
+phpstan.neon
+phpstan-baseline.neon
+phpstan-bootstrap.php
+
 # WP Playground dev environment (@krokedil/wp-playground-tools).
 playground.config.mjs
 /tools

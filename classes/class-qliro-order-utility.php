@@ -15,6 +15,9 @@ class Qliro_Order_Utility {
 	public const TRANSACTION_TYPE_PREAUTH = 'Preauthorization';
 	public const TRANSACTION_TYPE_CAPTURE = 'Capture';
 
+	public const TRANSACTION_STATUS_SUCCESS = 'Success';
+	public const TRANSACTION_STATUS_ONHOLD  = 'OnHold';
+
 	public const PROCESSING_TRANSACTION_TYPES = array(
 		self::TRANSACTION_TYPE_DEBIT,
 		self::TRANSACTION_TYPE_PREAUTH,
