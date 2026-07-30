@@ -33,3 +33,7 @@ tmp*
 pnpm-lock.yaml
 
 /.changelogs
+
+phpstan.neon
+phpstan-baseline.neon
+phpstan-bootstrap.php

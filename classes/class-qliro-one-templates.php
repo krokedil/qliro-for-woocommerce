@@ -16,7 +16,7 @@ class Qliro_One_Templates {
 	/**
 	 * The reference the *Singleton* instance of this class.
 	 *
-	 * @var $instance
+	 * @var Qliro_One_Templates $instance
 	 */
 	protected static $instance;
 
@@ -30,7 +30,7 @@ class Qliro_One_Templates {
 	/**
 	 * Returns the *Singleton* instance of this class.
 	 *
-	 * @return self::$instance The *Singleton* instance.
+	 * @return self The *Singleton* instance.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -75,7 +75,7 @@ class Qliro_One_Templates {
 	 * @param string|null $content Shortcode content.
 	 * @param string      $shortcode_tag Shortcode tag.
 	 */
-	public function country_selector_shortcode( $atts, $content, $shortcode_tag ) {
+	public function country_selector_shortcode( $atts, $content, $shortcode_tag ) { // phpcs:ignore
 		$this->add_country_selector();
 	}
 
@@ -226,7 +226,7 @@ class Qliro_One_Templates {
 	 *
 	 * @return array
 	 */
-	public function add_body_class( $class ) {
+	public function add_body_class( $class ) { // phpcs:ignore
 		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
 			// Don't display Collector body classes if we have a cart that doesn't needs payment.
