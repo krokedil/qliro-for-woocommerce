@@ -43,7 +43,7 @@ class Qliro_One_Confirmation {
 			Qliro_One_Logger::log( "Order ID $order_id confirmed on the confirmation page. Qliro Order ID: $qliro_order_id." );
 		}
 
-		header( 'Location:' . $order->get_checkout_order_received_url() );
+		wp_safe_redirect( $order->get_checkout_order_received_url() );
 		exit;
 	}
 

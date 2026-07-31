@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed the confirmation page rendering blank after a completed purchase on setups whose HTTP layer is strict about header formatting. The redirect to the thank-you page was written as a raw header without the optional space after the colon ("Location:https://..."), which is legal HTTP and passes through Apache and nginx untouched, but is dropped by stricter layers — leaving the customer with a 302 that has no destination. It now uses wp_safe_redirect(), as every other redirect in the plugin already does. The payment itself was never affected: the order was created and confirmed, and only the final redirect was lost.
