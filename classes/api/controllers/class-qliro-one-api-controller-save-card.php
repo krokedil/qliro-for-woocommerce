@@ -128,7 +128,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			$token->set_last4( $saved_card['Last4Digits'] ?? '' );
 			// Pad the month to ensure its always 2 digits.
 			$token->set_expiry_month( str_pad( strval( $saved_card['ExpiryMonth'] ?? '' ), 2, '0', STR_PAD_LEFT ) );
-			$token->set_expiry_year( strval( $saved_card['ExpiryYear'] ?? '' ) );
+			$token->set_expiry_year( Qliro_One_Subscriptions::normalize_expiry_year( $saved_card['ExpiryYear'] ?? '' ) );
 			$token->set_card_type( $saved_card['BrandName'] ?? '' );
 			$token->set_user_id( $subscription->get_customer_id() );
 

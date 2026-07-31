@@ -32,11 +32,22 @@ class Qliro_One_Subscriptions {
 	public const SAVE_CARD_REFERENCE_KEY = '_qliro_one_save_card_merchant_reference';
 
 	/**
-	 * Meta key set while waiting for Qliro to push the registered card.
+	 * Meta key holding the time a card registration was started, while waiting for Qliro to push
+	 * the registered card.
 	 *
 	 * @var string
 	 */
 	public const SAVE_CARD_PENDING_KEY = '_qliro_one_save_card_pending';
+
+	/**
+	 * How long a card registration is given before it is treated as never completed.
+	 *
+	 * Covers the customer filling in the form, including retrying within it, plus the delay before
+	 * Qliro pushes the card.
+	 *
+	 * @var int
+	 */
+	public const SAVE_CARD_GRACE_SECONDS = 15 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Class constructor.
@@ -376,7 +387,7 @@ class Qliro_One_Subscriptions {
 		// push URL was signed for. The reference is what the callback resolves this subscription by.
 		$subscription->update_meta_data( self::SAVE_CARD_ORDER_ID_KEY, $response['OrderId'] );
 		$subscription->update_meta_data( self::SAVE_CARD_REFERENCE_KEY, $request->get_merchant_reference() );
-		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, 'yes' );
+		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, time() );
 		$subscription->save();
 
 		return $response['OrderForRegistrationTokenHtmlSnippet'];
@@ -451,17 +462,68 @@ class Qliro_One_Subscriptions {
 			return;
 		}
 
-		if ( empty( $subscription->get_meta( self::SAVE_CARD_ORDER_ID_KEY ) ) ) {
+		$qliro_order_id = $subscription->get_meta( self::SAVE_CARD_ORDER_ID_KEY );
+		if ( empty( $qliro_order_id ) ) {
 			return;
 		}
 
+		$started = $subscription->get_meta( self::SAVE_CARD_PENDING_KEY );
+
 		// The callback beat us to it, and has already saved the card.
-		if ( empty( $subscription->get_meta( self::SAVE_CARD_PENDING_KEY ) ) ) {
+		if ( empty( $started ) ) {
 			wc_print_notice( __( 'Your new payment card has been saved, and will be used for upcoming renewals.', 'qliro-for-woocommerce' ), 'success' );
 			return;
 		}
 
+		// The customer may still be working in the card form, retrying inside it after a rejected
+		// card, so a registration is only judged once it has had time to finish either way.
+		if ( is_numeric( $started ) && time() - intval( $started ) < self::SAVE_CARD_GRACE_SECONDS ) {
+			wc_print_notice( __( 'Your new payment card is being registered. It will be used for upcoming renewals as soon as Qliro has confirmed it.', 'qliro-for-woocommerce' ), 'notice' );
+			return;
+		}
+
+		// Qliro reports no failure, so a registration the customer never finished is otherwise
+		// indistinguishable from one whose push has not arrived, and the customer would be told
+		// their card is on its way indefinitely.
+		if ( ! self::customer_completed_registration( $qliro_order_id ) ) {
+			$subscription->delete_meta_data( self::SAVE_CARD_PENDING_KEY );
+			$subscription->save();
+
+			wc_print_notice(
+				sprintf(
+					/* translators: %1$s: Opening anchor tag to the add card page, %2$s: Closing anchor tag. */
+					__( 'Your new payment card was not registered, so your subscription still uses the previous one. %1$sTry adding the card again%2$s.', 'qliro-for-woocommerce' ),
+					'<a href="' . esc_url( self::get_add_card_page_url( $subscription ) ) . '">',
+					'</a>'
+				),
+				'error'
+			);
+			return;
+		}
+
 		wc_print_notice( __( 'Your new payment card is being registered. It will be used for upcoming renewals as soon as Qliro has confirmed it.', 'qliro-for-woocommerce' ), 'notice' );
+	}
+
+	/**
+	 * Whether the customer got to the end of a card registration.
+	 *
+	 * Asks Qliro rather than reading the saved card, because token registration is a separate
+	 * operation that can lag behind the customer completing the form. A completed checkout with no
+	 * card yet is still on its way, while one left in progress never will be.
+	 *
+	 * @param string $qliro_order_id The Qliro order id of the card registration.
+	 * @return bool True when the customer completed it, or when Qliro could not be reached to ask.
+	 */
+	private static function customer_completed_registration( $qliro_order_id ) {
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_order_id );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[ADD CARD]: Could not ask Qliro about card registration #{$qliro_order_id}: " . $qliro_order->get_error_message() );
+			// Our own failure is no reason to tell the customer their card was rejected.
+			return true;
+		}
+
+		return 'Completed' === ( $qliro_order['CustomerCheckoutStatus'] ?? '' );
 	}
 
 	/**
@@ -497,7 +559,7 @@ class Qliro_One_Subscriptions {
 			$token->set_last4( $saved_card['Last4Digits'] ?? '' );
 			// Pad the month to ensure its always 2 digits.
 			$token->set_expiry_month( str_pad( strval( $saved_card['ExpiryMonth'] ?? '' ), 2, '0', STR_PAD_LEFT ) );
-			$token->set_expiry_year( strval( $saved_card['ExpiryYear'] ?? '' ) );
+			$token->set_expiry_year( self::normalize_expiry_year( $saved_card['ExpiryYear'] ?? '' ) );
 			$token->set_card_type( strtolower( $saved_card['BrandName'] ?? '' ) );
 			$token->save();
 		}
@@ -520,6 +582,26 @@ class Qliro_One_Subscriptions {
 		);
 
 		return $token;
+	}
+
+	/**
+	 * Normalise a card expiry year to four digits.
+	 *
+	 * Qliro's documentation shows a two digit year while the API has been observed returning four.
+	 * WooCommerce stores and displays whatever it is given, so a two digit value would show the card
+	 * as expiring in the year 24.
+	 *
+	 * @param string|int $year The expiry year as Qliro gave it.
+	 * @return string
+	 */
+	public static function normalize_expiry_year( $year ) {
+		$year = trim( strval( $year ) );
+
+		if ( 2 !== strlen( $year ) || ! ctype_digit( $year ) ) {
+			return $year;
+		}
+
+		return substr( gmdate( 'Y' ), 0, 2 ) . $year;
 	}
 
 	/**

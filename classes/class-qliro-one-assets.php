@@ -27,6 +27,7 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_add_card_js' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
 
 		// Admin scripts.
@@ -42,6 +43,35 @@ class Qliro_One_Assets {
 	 */
 	protected function qoc_is_script_debug_enabled() {
 		return '';
+	}
+
+	/**
+	 * Loads the script that listens for Qliro's card created event on the add card page.
+	 *
+	 * @return void
+	 */
+	public function load_add_card_js() {
+		if ( ! Qliro_One_Subscriptions::is_add_card_page() ) {
+			return;
+		}
+
+		$handle = 'qliro-one-add-card';
+
+		wp_enqueue_script(
+			$handle,
+			QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-add-card.js',
+			array(),
+			QLIRO_WC_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			$handle,
+			'qliroAddCardParams',
+			array(
+				'accepted_message' => __( 'Your card was accepted. It will be used for upcoming renewals as soon as Qliro has confirmed it.', 'qliro-for-woocommerce' ),
+			)
+		);
 	}
 
 	/**
