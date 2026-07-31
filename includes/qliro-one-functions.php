@@ -112,6 +112,20 @@ function qliro_one_print_error_message( $wp_error ) {
 		$error_message = implode( ' ', $error_message );
 	}
 
+	/**
+	 * Queue the notice while nothing has been sent yet.
+	 *
+	 * Printing starts output, and any redirect that follows is then impossible —
+	 * the confirmation page runs on init and redirects to the thank-you page, so
+	 * printing there leaves the customer on a bare error string instead. A queued
+	 * notice reaches them on the next rendered page either way. Once output has
+	 * begun we are inside a template and printing in place is what's wanted.
+	 */
+	if ( ! headers_sent() && did_action( 'woocommerce_init' ) && function_exists( 'wc_add_notice' ) ) {
+		wc_add_notice( $error_message, 'error' );
+		return;
+	}
+
 	if ( is_ajax() && function_exists( 'wc_add_notice' ) ) {
 			wc_add_notice( $error_message, 'error' );
 	} elseif ( function_exists( 'wc_print_notice' ) ) {

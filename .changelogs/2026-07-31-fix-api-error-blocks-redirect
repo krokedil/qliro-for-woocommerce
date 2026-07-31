@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed a failed Qliro API call leaving the customer on a page containing nothing but the raw error text. API errors were printed as a notice the moment they occurred, which starts the response output — and once output has started no redirect can be sent. On the confirmation page, which runs before the page is rendered and then redirects to the thank-you page, that turned a failed confirmation into a bare error string with no layout and no redirect. Errors raised before rendering are now queued as a WooCommerce notice instead, so the redirect goes through and the customer sees the message on the page they land on. Errors raised while a template is rendering are still printed in place, unchanged.
