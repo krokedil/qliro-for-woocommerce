@@ -24,11 +24,24 @@ class Qliro_One_Merchant_URLS {
 	 */
 	public function get_urls( $order = null ) {
 		// If the order is not null, but not an instance of WC_Order, try to get the order object.
-		if ( $order !== null && ! $order instanceof WC_Order ) {
+		if ( null !== $order && ! $order instanceof WC_Order ) {
 			$order = wc_get_order( $order );
 		}
 
-		$rand_string = self::generate_confirmation_id();
+		// Generate a random string to use as confirmation id, following the UUID format.
+		$rand_string = strtolower(
+			sprintf(
+				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 16384, 20479 ),
+				random_int( 32768, 49151 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 ),
+				random_int( 0, 65535 )
+			)
+		);
 
 		// If the order is null, set the confirmation id to the session, else store it in the order meta.
 		if ( null === $order ) {
@@ -45,38 +58,13 @@ class Qliro_One_Merchant_URLS {
 			'om_push'      => $this->get_om_push_url( $rand_string ),
 		);
 
-		// If the cart contains a subscription, add the save card callback url.
+		// If the cart contains a subscription, add the save card callback url, authenticated with a token.
 		if ( Qliro_One_Subscriptions::is_subscription( $order ) ) {
-			$merchant_urls['save_card'] = $this->get_save_card_push_url( $rand_string );
+			$save_card_url              = QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' );
+			$merchant_urls['save_card'] = Qliro_One_Callback_Auth::add_token( $save_card_url, $rand_string );
 		}
 
 		return apply_filters( 'qliro_one_wc_merchant_urls', $merchant_urls );
-	}
-
-	/**
-	 * Generate a confirmation id.
-	 *
-	 * The id is a random string following the UUID format, and acts as a shared secret between
-	 * us and Qliro: it is included in the callback URLs we send to Qliro, and stored alongside
-	 * the order or subscription it belongs to, so an inbound callback can be verified without
-	 * trusting anything in the request body.
-	 *
-	 * @return string
-	 */
-	public static function generate_confirmation_id() {
-		return strtolower(
-			sprintf(
-				'%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 16384, 20479 ),
-				random_int( 32768, 49151 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 ),
-				random_int( 0, 65535 )
-			)
-		);
 	}
 
 	/**
@@ -149,25 +137,5 @@ class Qliro_One_Merchant_URLS {
 		);
 
 		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
-	}
-
-	/**
-	 * Save card push URL.
-	 *
-	 * URL of the push callback Qliro delivers a registered card to. Carries the confirmation id,
-	 * which is how the callback finds the registration the card belongs to.
-	 *
-	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
-	 * @return string
-	 */
-	public function get_save_card_push_url( $rand_string ) {
-		$save_card_url = add_query_arg(
-			array(
-				'qliro_one_confirm_id' => $rand_string,
-			),
-			QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' )
-		);
-
-		return Qliro_One_Subscriptions::absolutize_url( $save_card_url );
 	}
 }

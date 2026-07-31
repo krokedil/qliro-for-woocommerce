@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Improve the validation of the callbacks from Qliro when storing card tokens and processing notifications.

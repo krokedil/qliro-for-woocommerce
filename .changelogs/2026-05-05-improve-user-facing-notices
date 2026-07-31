@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Improved user-facing error handling with clearer notices containing more descriptive information.

@@ -46,4 +46,40 @@ class Qliro_One_Confirmation {
 		header( 'Location:' . $order->get_checkout_order_received_url() );
 		exit;
 	}
-} new Qliro_One_Confirmation();
+
+	/**
+	 * Lock a Qliro order id and WooCommerce order id combination to prevent multiple simultaneous confirmations.
+	 *
+	 * @param string $qliro_order_id The Qliro order id.
+	 * @param string $order_id The WooCommerce order id.
+	 *
+	 * @return bool True if the lock was successful, false if there is already a lock for the given combination.
+	 */
+	public static function lock_qliro_confirmation( $qliro_order_id, $order_id ) {
+		$key = "qliro_one_confirm_{$qliro_order_id}_{$order_id}";
+		if ( wp_using_ext_object_cache() ) {
+			return wp_cache_add( $key, true, 'qliro_one_locks', MINUTE_IN_SECONDS );
+		}
+
+		return set_transient( $key, true, MINUTE_IN_SECONDS );
+	}
+
+	/**
+	 * Unlock a Qliro order id and WooCommerce order id combination after the confirmation process is done.
+	 *
+	 * @param string $qliro_order_id The Qliro order id.
+	 * @param string $order_id The WooCommerce order id.
+	 *
+	 * @return void
+	 */
+	public static function unlock_qliro_confirmation( $qliro_order_id, $order_id ) {
+		$key = "qliro_one_confirm_{$qliro_order_id}_{$order_id}";
+		if ( wp_using_ext_object_cache() ) {
+			wp_cache_delete( $key, 'qliro_one_locks' );
+			return;
+		}
+
+		delete_transient( $key );
+	}
+}
+new Qliro_One_Confirmation();

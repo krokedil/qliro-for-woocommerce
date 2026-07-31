@@ -53,9 +53,9 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				'subscription_payment_method_change',
-				'subscription_payment_method_change_customer',
-				'subscription_payment_method_change_admin',
+				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
+				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
 				'multiple_subscriptions',
 				'tokenization', // Only for card payments when buying subscriptions.
 			)
@@ -117,15 +117,14 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @param  int $order_id WooCommerce order ID.
 	 *
-	 * @throws Exception If the payment could not be processed.
-	 *
+	 * @throws Exception Throws if the payment could not be processed.
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
 		// A change payment method request registers a new card instead of taking a payment, which is done on a page of its own.
-		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_VALIDATE_INT );
+		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ! empty( $change_payment_method ) ) {
 			return array(
 				'result'   => 'success',
@@ -133,6 +132,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			);
 		}
 
+		// If we are on the pay for order page, we need to process the redirect flow instead.
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
@@ -156,7 +156,8 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			}
 
 			if ( empty( $redirect_url ) ) {
-				throw new Exception( esc_html__( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ) );
+				$error = __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' );
+				throw new Exception( esc_html( $error ) );
 			}
 
 			return array(
@@ -174,7 +175,8 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// If the order id, confirmation id or merchant reference is not set, we can not proceed.
 		if ( empty( $qliro_order_id ) || empty( $qliro_confirmation_id ) || empty( $qliro_merchant_reference ) ) {
 			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
-			throw new Exception( esc_html__( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
+			$error = __( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' );
+			throw new Exception( esc_html( $error ) );
 		}
 
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );
@@ -367,6 +369,12 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			return $wc_result;
 		}
 
+		// Do not override the needs payment result if the order is not in a valid status for needing payment.
+		// This is necessary to prevent 'processing' orders from being marked as needing payment. Otherwise, a "Pay" button will appear on the order received page.
+		if ( ! in_array( $order->get_status(), $valid_order_statuses, true ) ) {
+			return $wc_result;
+		}
+
 		// Only if our filter is active and is set to false.
 		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
 			return $wc_result;
@@ -424,18 +432,23 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		return json_decode( $args, true );
 	}
 
+	/**
+	 * Update conditional settings based on the current settings values.
+	 *
+	 * @return void
+	 */
 	public function update_conditional_settings() {
 		$settings = get_option( 'woocommerce_qliro_one_settings', array() );
 
 		// If all locations are set to none, disable the banner widget.
 		$banner_cart_location = sanitize_text_field( $settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals' );
 		$banner_location      = sanitize_text_field( $settings['banner_widget_placement_location'] ?? 'none' );
-		$banner_enabled       = ( $banner_cart_location === 'none' && $banner_location === 'none' ) ? 'no' : 'yes';
+		$banner_enabled       = ( 'none' === $banner_cart_location && 'none' === $banner_location ) ? 'no' : 'yes';
 		update_option( 'woocommerce_qliro_one_banner_widget_enabled', $banner_enabled );
 
 		// If the payment widget location is set to none, disable the payment widget.
 		$payment_location = sanitize_text_field( $settings['payment_widget_placement_location'] ?? '15' );
-		$payment_enabled  = ( $payment_location === 'none' ) ? 'no' : 'yes';
+		$payment_enabled  = ( 'none' === $payment_location ) ? 'no' : 'yes';
 		update_option( 'woocommerce_qliro_one_payment_widget_enabled', $payment_enabled );
 
 		$om_advanced_settings = sanitize_text_field( $settings['om_advanced_settings'] ?? 'no' );

@@ -112,6 +112,10 @@ class Qliro_One_Metabox extends OrderMetabox {
 					),
 				),
 				'orderId' => $this->get_id(),
+				'i18n'    => array(
+					'orderSyncFailed' => __( 'Failed to toggle order management. Please try again.', 'qliro-for-woocommerce' ),
+					'dismissNotice'   => __( 'Dismiss this notice', 'qliro-for-woocommerce' ),
+				),
 			);
 			wp_localize_script( 'qliro-one-metabox', 'qliroMetaboxParams', $localize_data );
 		}
@@ -222,7 +226,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 	 *
 	 * @return string
 	 */
-	private static function get_payment_method_name( $order ) {
+	public static function get_payment_method_name( $order ) {
 		$payment_method = $order->get_meta( 'qliro_one_payment_method_name' );
 
 		// Replace any _ with a space.
@@ -290,7 +294,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		}
 
 		self::output_action_button(
-			__( 'Sync order with Qliro', 'qliro-for-woocommerce' ),
+			__( 'Sync order to Qliro', 'qliro-for-woocommerce' ),
 			$action_url,
 			false,
 			$classes

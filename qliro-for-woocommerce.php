@@ -5,14 +5,14 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.2.2
+ * Version: 2.2.8
  * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 10.5.1
+ * WC tested up to: 11.0
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2026 Krokedil
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.2.2' );
+define( 'QLIRO_WC_VERSION', '2.2.8' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		/**
 		 * Reference to merchant URLs class.
 		 *
-		 * @var Qliro_One_Merchant_URLs
+		 * @var Qliro_One_Merchant_URLS
 		 */
 		public $merchant_urls;
 
@@ -307,6 +307,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-banner-widget.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/widgets/class-qliro-one-payment-widget.php';
 
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-callback-auth.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/compatibility/class-qliro-one-compatibility-wcpns.php';
@@ -521,6 +522,6 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
  *
  * @return Qliro_One_For_WooCommerce
  */
-function QLIRO_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
+function QLIRO_WC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName, Universal.Files.SeparateFunctionsFromOO.Mixed
 	return Qliro_One_For_WooCommerce::get_instance();
 }

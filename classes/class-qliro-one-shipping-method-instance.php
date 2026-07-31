@@ -132,6 +132,7 @@ class Qliro_One_Shipping_Method_Instance {
 					'Helthjem'    => 'Helthjem',
 					'Instabikes'  => 'Instabikes',
 					'Instabox'    => 'Instabox',
+					'Matkahuolto' => 'Matkahuolto',
 					'Oda'         => 'ODA Delivery',
 					'Posti'       => 'Posti',
 					'PostNord'    => 'PostNord',
@@ -236,7 +237,6 @@ class Qliro_One_Shipping_Method_Instance {
 				'default' => 'taxable',
 				'options' => array(
 					'taxable' => __( 'Taxable', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
-					// 'none'    => _x( 'None', 'Tax status', 'woocommerce' ), @todo Implement logic for this.
 				),
 			),
 		);

@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) || exit;
  * Class Qliro_One_Subscriptions
  */
 class Qliro_One_Subscriptions {
-	public const GATEWAY_ID = 'qliro_one';
+	public const GATEWAY_ID               = 'qliro_one';
+	public const PENDING_PREAUTHORIZATION = self::GATEWAY_ID . '_pending_preauthorization';
 
 	/**
 	 * Meta key holding the Qliro order id of an in-progress card registration.
@@ -22,6 +23,9 @@ class Qliro_One_Subscriptions {
 
 	/**
 	 * Meta key holding the merchant reference of an in-progress card registration.
+	 *
+	 * This is the reference the callback URL is signed for, so it is also how the push callback
+	 * finds the subscription a registration belongs to.
 	 *
 	 * @var string
 	 */
@@ -35,16 +39,6 @@ class Qliro_One_Subscriptions {
 	public const SAVE_CARD_PENDING_KEY = '_qliro_one_save_card_pending';
 
 	/**
-	 * Meta key holding the confirmation id of an in-progress card registration.
-	 *
-	 * The id is the shared secret included in the push URL Qliro delivers the card to, and is
-	 * what makes the callback verifiable. Never expose it to the customer.
-	 *
-	 * @var string
-	 */
-	public const SAVE_CARD_CONFIRMATION_ID_KEY = '_qliro_one_save_card_confirmation_id';
-
-	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -52,11 +46,239 @@ class Qliro_One_Subscriptions {
 	public function __construct() {
 		add_action( 'woocommerce_scheduled_subscription_payment_qliro_one', array( $this, 'process_scheduled_payment' ), 10, 2 );
 
-		// On successful payment method change, the customer is redirected back to the subscription view page. We need to handle the redirect and create a recurring token.
+		add_filter(
+			'woocommerce_subscription_payment_method_to_display',
+			array( $this, 'subscription_payment_method_title' ),
+			10,
+			2
+		);
+
+		// On successful payment method change, the customer is redirected back to the subscription view page.
 		add_action( 'woocommerce_account_view-subscription_endpoint', array( $this, 'handle_redirect_from_change_payment_method' ), 5 );
 
 		// WooCommerce Subscriptions renders its subscription receipt template on the order-pay endpoint, which is where we display the card form.
 		add_action( 'woocommerce_receipt_' . self::GATEWAY_ID, array( __CLASS__, 'display_add_card_page' ) );
+	}
+
+	/**
+	 * Change the payment method title for subscriptions to show the correct payment method.
+	 *
+	 * @hook woocommerce_subscription_payment_method_to_display
+	 *
+	 * @param string          $payment_method_to_display The payment method title to display.
+	 * @param WC_Subscription $subscription The subscription object.
+	 *
+	 * @return string
+	 */
+	public function subscription_payment_method_title( $payment_method_to_display, $subscription ) {
+		if ( 'qliro_one' !== $subscription->get_payment_method() ) {
+			return $payment_method_to_display;
+		}
+
+		$parent         = $subscription->get_parent();
+		$payment_method = $parent ? Qliro_One_Metabox::get_payment_method_name( $parent ) : $payment_method_to_display;
+		return $payment_method;
+	}
+
+	/**
+	 * Process subscription renewal.
+	 *
+	 * @param float    $amount_to_charge The amount to charge for the renewal.
+	 * @param WC_Order $order The WooCommerce order that will be created as a result of the renewal.
+	 *
+	 * @return void
+	 */
+	public function process_scheduled_payment( $amount_to_charge, $order ) {
+		// Get the order and the subscription objects.
+		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->get_id() );
+
+		foreach ( $subscriptions as $subscription ) {
+			// See if we have a token stored on the subscription.
+			$token_ids = $subscription->get_payment_tokens();
+			if ( empty( $token_ids ) ) {
+				$this->process_recurring_invoice_payment( $order, $subscription );
+			} else {
+				$this->process_recurring_card_payment( $order, $subscription, $token_ids );
+			}
+		}
+	}
+
+	/**
+	 * Process recurring invoice payment.
+	 *
+	 * @param WC_Order        $order The order object.
+	 * @param WC_Subscription $subscription The subscription object.
+	 *
+	 * @return void
+	 */
+	private function process_recurring_invoice_payment( $order, $subscription ) {
+		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id() );
+
+		// If the result is a WP_Error, fail the payment.
+		if ( is_wp_error( $result ) ) {
+			$subscription->payment_failed();
+			$subscription->save();
+			return;
+		}
+
+		// Set the required order meta for the renewal order.
+
+		$qliro_order_id = $result['OrderId'];
+		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
+		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
+		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
+		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
+		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->set_transaction_id( $qliro_order_id );
+
+		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
+
+		$subscription->add_order_note( $note );
+		$order->update_status( 'on-hold', $note );
+	}
+
+	/**
+	 * Process recurring card payment.
+	 *
+	 * @param WC_Order        $order The order object.
+	 * @param WC_Subscription $subscription The subscription object.
+	 * @param int[]           $token_ids The payment token ids.
+	 *
+	 * @return void
+	 */
+	private function process_recurring_card_payment( $order, $subscription, $token_ids ) {
+		// If there are multiple payment tokens, use the one thats default.
+		foreach ( $token_ids as $token_id ) {
+			$token = WC_Payment_Tokens::get( $token_id );
+
+			if ( $token && $token->is_default() ) {
+				break;
+			}
+		}
+
+		if ( empty( $token ) ) {
+			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
+			return;
+		}
+
+		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
+
+		// If the result is a WP_Error, fail the payment.
+		if ( is_wp_error( $result ) ) {
+			$message = sprintf(
+				/* translators: %s: Error message from the Qliro API. */
+				__( 'The recurring payment failed due to an error communicating with Qliro: %s', 'qliro-for-woocommerce' ),
+				$result->get_error_message()
+			);
+
+			$order->add_order_note( $message );
+			$subscription->add_order_note( $message );
+			$subscription->payment_failed_for_related_order();
+			return;
+		}
+
+		// Set the required order meta for the renewal order.
+		$qliro_order_id = $result['OrderId'];
+		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
+		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
+		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
+		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
+		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
+		$order->set_transaction_id( $qliro_order_id );
+		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+
+		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
+
+		$subscription->add_order_note( $note );
+		$order->update_status( 'on-hold', $note );
+	}
+
+	/**
+	 * Process the preauthorization for a subscription renewal order.
+	 *
+	 * @param WC_Order $renewal_order The renewal order object.
+	 * @param string   $qliro_order_id The Qliro order ID associated with the renewal order.
+	 *
+	 * @return void
+	 */
+	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
+		// Remove the pending preauthorization meta and complete the payment.
+		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
+
+		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'order_type' => 'renewal' ) );
+		foreach ( $subscriptions as $subscription ) {
+			$subscription->add_order_note(
+				sprintf(
+					/* translators: %s: Qliro order ID */
+					__( 'Preauthorization for subscription renewal order was completed via Qliro. Qliro Order ID: %s', 'qliro-for-woocommerce' ),
+					$qliro_order_id
+				)
+			);
+			$subscription->payment_complete( $qliro_order_id );
+		}
+
+		$renewal_order->add_order_note(
+			sprintf(
+				/* translators: %s: Qliro order ID */
+				__( 'Preauthorization for this order was completed via Qliro. Qliro Order ID: %s', 'qliro-for-woocommerce' ),
+				$qliro_order_id
+			)
+		);
+		$renewal_order->payment_complete();
+	}
+
+	/**
+	 * Check if the cart or order is a subscription of any type.
+	 *
+	 * @param WC_Order|null $order The WooCommerce order if available.
+	 *
+	 * @return bool
+	 */
+	public static function is_subscription( $order ) {
+		if ( empty( $order ) ) {
+			return self::cart_has_subscription();
+		}
+
+		return class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) );
+	}
+
+	/**
+	 * Check if a cart contains a subscription.
+	 *
+	 * @return bool
+	 */
+	public static function cart_has_subscription() {
+		if ( ! is_checkout() ) {
+			return false;
+		}
+
+		return ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) ||
+			( function_exists( 'wcs_cart_contains_renewal' ) && wcs_cart_contains_renewal() ) ||
+			( function_exists( 'wcs_cart_contains_failed_renewal_order_payment' ) && wcs_cart_contains_failed_renewal_order_payment() ) ||
+			( function_exists( 'wcs_cart_contains_resubscribe' ) && wcs_cart_contains_resubscribe() ) ||
+			( function_exists( 'wcs_cart_contains_early_renewal' ) && wcs_cart_contains_early_renewal() ) ||
+			( function_exists( 'wcs_cart_contains_switches' ) && wcs_cart_contains_switches() );
+	}
+
+
+	/**
+	 * Check if the cart or order is a subscription of any type.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return bool
+	 */
+	public static function is_subscription_renewal( $order ) {
+		if ( null !== $order && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -150,11 +372,10 @@ class Qliro_One_Subscriptions {
 			return new WP_Error( 'qliro_missing_card_form', __( 'Qliro did not return a card form.', 'qliro-for-woocommerce' ) );
 		}
 
-		// The card is registered as a separate Qliro order. Store its id so the push callback can find this subscription.
+		// The card is registered as a separate Qliro order, so store its id and the reference the
+		// push URL was signed for. The reference is what the callback resolves this subscription by.
 		$subscription->update_meta_data( self::SAVE_CARD_ORDER_ID_KEY, $response['OrderId'] );
 		$subscription->update_meta_data( self::SAVE_CARD_REFERENCE_KEY, $request->get_merchant_reference() );
-		// Qliro order ids are short sequential integers, so the confirmation id is what proves the callback belongs to this registration.
-		$subscription->update_meta_data( self::SAVE_CARD_CONFIRMATION_ID_KEY, $request->get_confirmation_id() );
 		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, 'yes' );
 		$subscription->save();
 
@@ -210,129 +431,6 @@ class Qliro_One_Subscriptions {
 	}
 
 	/**
-	 * Process subscription renewal.
-	 *
-	 * @param float    $amount_to_charge The amount to charge for the renewal.
-	 * @param WC_Order $order The WooCommerce order that will be created as a result of the renewal.
-	 *
-	 * @return void
-	 */
-	public function process_scheduled_payment( $amount_to_charge, $order ) {
-		// Get the order and the subscription objects.
-		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->get_id() );
-
-		foreach ( $subscriptions as $subscription ) {
-			// See if we have a token stored on the subscription.
-			$token_ids = $subscription->get_payment_tokens();
-			if ( empty( $token_ids ) ) {
-				$this->process_recurring_invoice_payment( $order, $subscription );
-			} else {
-				$this->process_recurring_card_payment( $order, $subscription, $token_ids );
-			}
-		}
-	}
-
-	/**
-	 * Process recurring invoice payment.
-	 *
-	 * @param WC_Order        $order The order object.
-	 * @param WC_Subscription $subscription The subscription object.
-	 *
-	 * @return void
-	 */
-	private function process_recurring_invoice_payment( $order, $subscription ) {
-		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id() );
-
-		// If the result is a WP_Error, fail the payment.
-		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed();
-			$subscription->save();
-			return;
-		}
-
-		// Set the required order meta for the renewal order.
-		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
-		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
-		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
-		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
-		$order->add_order_note(
-			sprintf(
-				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
-				$order->get_id()
-			)
-		);
-		$order->save();
-
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
-	}
-
-	/**
-	 * Process recurring card payment.
-	 *
-	 * @param WC_Order        $order The order object.
-	 * @param WC_Subscription $subscription The subscription object.
-	 * @param int[]           $token_ids The payment token ids.
-	 *
-	 * @return void
-	 */
-	private function process_recurring_card_payment( $order, $subscription, $token_ids ) {
-		// If there are multiple payment tokens, use the one thats default.
-		foreach ( $token_ids as $token_id ) {
-			$token = WC_Payment_Tokens::get( $token_id );
-
-			if ( $token && $token->is_default() ) {
-				break;
-			}
-		}
-
-		if ( empty( $token ) ) {
-			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
-
-			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
-			return;
-		}
-
-		$result = QLIRO_WC()->api->create_merchant_payment( $order->get_id(), $token->get_token() );
-
-		// If the result is a WP_Error, fail the payment.
-		if ( is_wp_error( $result ) ) {
-			$message = sprintf(
-				/* translators: %s: Error message from the Qliro API. */
-				__( 'The recurring payment failed due to an error communicating with Qliro: %s', 'qliro-for-woocommerce' ),
-				$result->get_error_message()
-			);
-
-			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
-			return;
-		}
-
-		// Set the required order meta for the renewal order.
-		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
-		$order->add_meta_data( '_qliro_one_order_id', $result['OrderId'], true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
-		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
-		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
-		$order->add_order_note(
-			sprintf(
-				/* translators: %s: Order ID */
-				__( 'Qliro recurring payment for order %s was successful.', 'qliro-for-woocommerce' ),
-				$order->get_id()
-			)
-		);
-		$order->save();
-
-		// If the result is not a WP_Error, complete the payment.
-		$subscription->payment_complete( $result['OrderId'] );
-	}
-
-	/**
 	 * Handle the redirect from Qliro after the customer added a card.
 	 *
 	 * The card itself is delivered asynchronously to the save card callback, so this only
@@ -353,8 +451,7 @@ class Qliro_One_Subscriptions {
 			return;
 		}
 
-		$qliro_order_id = $subscription->get_meta( self::SAVE_CARD_ORDER_ID_KEY );
-		if ( empty( $qliro_order_id ) ) {
+		if ( empty( $subscription->get_meta( self::SAVE_CARD_ORDER_ID_KEY ) ) ) {
 			return;
 		}
 
@@ -373,11 +470,11 @@ class Qliro_One_Subscriptions {
 	 * Replaces any token already set on the subscription, so renewals use the new card.
 	 *
 	 * @param WC_Subscription $subscription The subscription to save the card for.
-	 * @param array           $card The card as pushed by Qliro.
+	 * @param array           $saved_card The MerchantSavedCreditCard as returned by the Qliro API.
 	 * @return WC_Payment_Token_CC|WP_Error
 	 */
-	public static function save_card_to_subscription( $subscription, $card ) {
-		if ( empty( $card['Id'] ) ) {
+	public static function save_card_to_subscription( $subscription, $saved_card ) {
+		if ( empty( $saved_card['Id'] ) ) {
 			return new WP_Error( 'qliro_missing_card_id', __( 'Qliro did not include a card id.', 'qliro-for-woocommerce' ) );
 		}
 
@@ -386,7 +483,7 @@ class Qliro_One_Subscriptions {
 
 		// Qliro may push the same card more than once, so reuse the token if we already have it.
 		foreach ( WC_Payment_Tokens::get_customer_tokens( $customer_id, self::GATEWAY_ID ) as $existing_token ) {
-			if ( $existing_token->get_token() === $card['Id'] ) {
+			if ( $existing_token->get_token() === $saved_card['Id'] ) {
 				$token = $existing_token;
 				break;
 			}
@@ -395,13 +492,13 @@ class Qliro_One_Subscriptions {
 		if ( empty( $token ) ) {
 			$token = new WC_Payment_Token_CC();
 			$token->set_gateway_id( self::GATEWAY_ID );
-			$token->set_token( $card['Id'] );
+			$token->set_token( $saved_card['Id'] );
 			$token->set_user_id( $customer_id );
-			$token->set_last4( $card['CardLast4Digits'] ?? '' );
+			$token->set_last4( $saved_card['Last4Digits'] ?? '' );
 			// Pad the month to ensure its always 2 digits.
-			$token->set_expiry_month( str_pad( $card['CardExpiryMonth'] ?? '', 2, '0', STR_PAD_LEFT ) );
-			$token->set_expiry_year( $card['CardExpiryYear'] ?? '' );
-			$token->set_card_type( strtolower( $card['CardBrandName'] ?? '' ) );
+			$token->set_expiry_month( str_pad( strval( $saved_card['ExpiryMonth'] ?? '' ), 2, '0', STR_PAD_LEFT ) );
+			$token->set_expiry_year( strval( $saved_card['ExpiryYear'] ?? '' ) );
+			$token->set_card_type( strtolower( $saved_card['BrandName'] ?? '' ) );
 			$token->save();
 		}
 
@@ -428,14 +525,14 @@ class Qliro_One_Subscriptions {
 	/**
 	 * Get the subscription an in-progress card registration belongs to.
 	 *
-	 * The confirmation id is the secret we put in the push URL, so finding a subscription by it is
-	 * what ties an inbound callback to a registration we started.
+	 * The reference is the value the push URL was signed for, so finding a subscription by it is
+	 * what ties an authenticated callback to a registration we started.
 	 *
-	 * @param string $confirmation_id The confirmation id of the card registration.
+	 * @param string $reference The merchant reference of the card registration.
 	 * @return WC_Subscription|null
 	 */
-	public static function get_subscription_by_save_card_confirmation_id( $confirmation_id ) {
-		if ( empty( $confirmation_id ) ) {
+	public static function get_subscription_by_save_card_reference( $reference ) {
+		if ( empty( $reference ) ) {
 			return null;
 		}
 
@@ -445,62 +542,13 @@ class Qliro_One_Subscriptions {
 				// Subscription statuses are not order statuses, which the query defaults to.
 				'status'       => 'any',
 				'limit'        => 1,
-				'meta_key'     => self::SAVE_CARD_CONFIRMATION_ID_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				'meta_value'   => $confirmation_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_key'     => self::SAVE_CARD_REFERENCE_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'   => $reference, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_compare' => '=',
 			)
 		);
 
 		$subscription = reset( $subscriptions );
 		return empty( $subscription ) ? null : $subscription;
-	}
-
-	/**
-	 * Check if the cart or order is a subscription of any type.
-	 *
-	 * @param WC_Order|null $order The WooCommerce order if available.
-	 *
-	 * @return bool
-	 */
-	public static function is_subscription( $order ) {
-		if ( empty( $order ) ) {
-			return self::cart_has_subscription();
-		}
-
-		return class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) );
-	}
-
-	/**
-	 * Check if a cart contains a subscription.
-	 *
-	 * @return bool
-	 */
-	public static function cart_has_subscription() {
-		if ( ! is_checkout() ) {
-			return false;
-		}
-
-		return ( class_exists( 'WC_Subscriptions_Cart' ) && WC_Subscriptions_Cart::cart_contains_subscription() ) ||
-			( function_exists( 'wcs_cart_contains_renewal' ) && wcs_cart_contains_renewal() ) ||
-			( function_exists( 'wcs_cart_contains_failed_renewal_order_payment' ) && wcs_cart_contains_failed_renewal_order_payment() ) ||
-			( function_exists( 'wcs_cart_contains_resubscribe' ) && wcs_cart_contains_resubscribe() ) ||
-			( function_exists( 'wcs_cart_contains_early_renewal' ) && wcs_cart_contains_early_renewal() ) ||
-			( function_exists( 'wcs_cart_contains_switches' ) && wcs_cart_contains_switches() );
-	}
-
-
-	/**
-	 * Check if the cart or order is a subscription of any type.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return bool
-	 */
-	public static function is_subscription_renewal( $order ) {
-		if ( null !== $order && class_exists( 'WC_Subscriptions_Order' ) && wcs_order_contains_subscription( $order, array( 'resubscribe', 'switch', 'renewal' ) ) ) {
-			return true;
-		}
-
-		return false;
 	}
 }

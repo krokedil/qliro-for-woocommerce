@@ -133,7 +133,7 @@ class Qliro_One_Checkout {
 		// If cart doesn't need payment anymore - reload the checkout page.
 		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
 			if ( ! WC()->cart->needs_payment() ) {
-				WC()->session->reload_checkout = true;
+				WC()->session->set( 'reload_checkout', true );
 			}
 		}
 
@@ -168,6 +168,11 @@ class Qliro_One_Checkout {
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
 	}
 
+	/**
+	 * Calculate a hash based on the current cart and checkout data, to be able to compare if anything has changed since last update.
+	 *
+	 * @return string
+	 */
 	public static function calculate_hash() {
 		// Get values to use for the combined hash calculation.
 		$totals = WC()->cart->get_totals();
@@ -208,7 +213,6 @@ class Qliro_One_Checkout {
 		foreach ( $packages as $package ) {
 			// Loop each rate in the package.
 			foreach ( $package['rates'] as $rate ) {
-				/** @var WC_Shipping_Rate $rate */
 				$pickup_point = QLIRO_WC()->pickup_points_service()->get_pickup_point_from_rate_by_id( $rate, $selected_option );
 				if ( ! $pickup_point ) {
 					continue;
@@ -254,7 +258,7 @@ class Qliro_One_Checkout {
 	 * Needed since Qliro checkout has a field for states that is a text input, and WooCommerce renders a select field if a country has states listed.
 	 * This makes it hard or almost impossible to select the correct state in WooCommerce based on the user input in Qliro checkout.
 	 *
-	 * @param array $states The states.
+	 * @param array $country_states The states.
 	 * @return array
 	 */
 	public function maybe_unset_states_from_countries( $country_states ) {
@@ -262,7 +266,6 @@ class Qliro_One_Checkout {
 		if ( empty( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return $country_states;
 		}
-
 
 		// Ensure each country (key) has a empty array as a value.
 		foreach ( $country_states as $cc => $states ) {
