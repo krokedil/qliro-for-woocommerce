@@ -45,8 +45,11 @@ export default {
 		},
 	},
 
-	// Qliro's checkout callbacks need a public URL: run with --tunnel, reserve
-	// a domain under the company ngrok account, claim it in the tunnel domain
-	// registry (wp-playground-tools README) and set it here.
-	// tunnel: { provider: 'ngrok', domain: 'qliro-woo.eu.ngrok.io' },
+	// Qliro requires https on port 443 for the merchant push URLs — creating an
+	// order over plain http fails with "Only https schema on default port(443)
+	// is supported", so checkout work here needs --tunnel. Note --https is not
+	// an alternative: the local mkcert proxy listens on the mode port +400.
+	// The company wildcard gives this checkout (and every worktree of it) its
+	// own stable host, so parallel runs don't collide.
+	tunnel: { provider: 'ngrok', domain: '*.krokedil.ngrok.io' },
 };
