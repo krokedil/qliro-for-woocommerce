@@ -117,14 +117,16 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @param  int $order_id WooCommerce order ID.
 	 *
+	 * @throws Exception If the payment could not be processed.
+	 *
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
-		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
-		$is_change_payment_method = isset( $_GET['change_payment_method'] );
-		if ( ! empty( $is_change_payment_method ) ) {
+		// A change payment method request registers a new card instead of taking a payment, which is done on a page of its own.
+		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_VALIDATE_INT );
+		if ( ! empty( $change_payment_method ) ) {
 			return array(
 				'result'   => 'success',
 				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $order ),
@@ -139,7 +141,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
 
 				if ( is_wp_error( $result ) ) {
-					throw new Exception( $result->get_error_message() );
+					throw new Exception( esc_html( $result->get_error_message() ) );
 				}
 
 				$payment_link = $result['PaymentLink'] ?? '';
@@ -154,7 +156,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			}
 
 			if ( empty( $redirect_url ) ) {
-				throw new Exception( __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ) );
+				throw new Exception( esc_html__( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' ) );
 			}
 
 			return array(
@@ -172,7 +174,7 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// If the order id, confirmation id or merchant reference is not set, we can not proceed.
 		if ( empty( $qliro_order_id ) || empty( $qliro_confirmation_id ) || empty( $qliro_merchant_reference ) ) {
 			Qliro_One_Logger::log( "Could not process payment due to missing session data. qliro_one_order_id: $qliro_order_id, qliro_order_confirmation_id: $qliro_confirmation_id, qliro_one_merchant_reference: $qliro_merchant_reference" );
-			throw new Exception( __( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
+			throw new Exception( esc_html__( 'The order could not be processed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 		}
 
 		$order->update_meta_data( '_qliro_one_order_id', $qliro_order_id );

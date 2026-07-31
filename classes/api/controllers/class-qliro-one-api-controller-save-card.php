@@ -31,9 +31,39 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'save_card' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'has_confirmation_id' ),
 			)
 		);
+	}
+
+	/**
+	 * Whether the request carries a confirmation id at all.
+	 *
+	 * Which registration the id belongs to is settled in the callback, by looking one up with it.
+	 * This only keeps a request without an id from getting that far.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return bool
+	 */
+	public function has_confirmation_id( $request ) {
+		return ! empty( $this->get_confirmation_id( $request ) );
+	}
+
+	/**
+	 * Get the confirmation id from the request.
+	 *
+	 * Only the query string is read. The request body is attacker controlled, and must never be
+	 * able to satisfy the check.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return string
+	 */
+	private function get_confirmation_id( $request ) {
+		$query_params = $request->get_query_params();
+
+		return sanitize_text_field( $query_params['qliro_one_confirm_id'] ?? '' );
 	}
 
 	/**
@@ -46,11 +76,25 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 	public function save_card( $request ) {
 		$body = $request->get_json_params();
 
-		// Get the Qliro order id.
-		$qliro_order_id = $body['OrderId'];
+		// Everything is looked up by the confirmation id from the push URL, never by the Qliro order
+		// id in the body. Qliro order ids are short sequential integers, so a caller can guess one,
+		// but not the confirmation id that decides which registration a callback belongs to.
+		$confirmation_id = $this->get_confirmation_id( $request );
 
-		// Get the WooCommerce order by the Qliro order id.
-		$order = qliro_get_order_by_qliro_id( $qliro_order_id );
+		// A card the customer adds from their account is registered as its own Qliro order, tied to the subscription instead of to an order.
+		$subscription = Qliro_One_Subscriptions::get_subscription_by_save_card_confirmation_id( $confirmation_id );
+		if ( ! empty( $subscription ) ) {
+			$result = Qliro_One_Subscriptions::save_card_to_subscription( $subscription, $body );
+
+			if ( is_wp_error( $result ) ) {
+				return new WP_REST_Response( array( 'error' => $result->get_error_message() ), 400 );
+			}
+
+			return $this->success_response();
+		}
+
+		// The checkout flow reuses the confirmation id the order was created with, the same secret its other push callbacks are found by.
+		$order = qliro_get_order_by_confirmation_id( $confirmation_id );
 
 		// If we did not get an order, return an error, and Qliro will try again later.
 		if ( empty( $order ) ) {

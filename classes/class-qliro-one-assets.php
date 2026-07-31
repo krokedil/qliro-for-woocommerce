@@ -27,7 +27,6 @@ class Qliro_One_Assets {
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'qoc_load_css' ) );
-		add_action( 'wp_enqueue_scripts', array( Qliro_One_Subscriptions::class, 'add_card_on_receipt_page_assets' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_assets' ) );
 
 		// Admin scripts.
@@ -55,7 +54,6 @@ class Qliro_One_Assets {
 			return;
 		}
 		// If we are not on the checkout page, or we are on the order received page, or the pay for order page.
-
 		$pay_for_order = is_wc_endpoint_url( 'order-pay' );
 		if ( ! is_checkout() || is_order_received_page() || $pay_for_order ) {
 			return;
