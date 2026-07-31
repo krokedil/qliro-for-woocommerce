@@ -125,6 +125,10 @@ class Qliro_One_Merchant_URLS {
 	 *
 	 * URL of the push callback page for Order Management status changes.
 	 *
+	 * Signed with the confirmation id: the preauthorization callback authenticates
+	 * on this token and resolves the order from the signed reference, so the URL
+	 * must carry it however the Qliro order was created — checkout or renewal.
+	 *
 	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
 	 * @return string
 	 */
@@ -135,6 +139,8 @@ class Qliro_One_Merchant_URLS {
 			),
 			home_url( '/wc-api/QOC_OM_Status/' )
 		);
+
+		$om_push_url = Qliro_One_Callback_Auth::add_token( $om_push_url, $rand_string );
 
 		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
 	}

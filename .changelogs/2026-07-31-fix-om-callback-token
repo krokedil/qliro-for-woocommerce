@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed order management push callbacks being rejected for ordinary orders. The preauthorization callback authenticates on a signed token in the callback URL, but only the subscription renewal request registered a signed URL with Qliro — orders created through the checkout registered an unsigned one. Qliro sends a preauthorization callback for ordinary orders too, so every purchase logged an authentication error and answered Qliro with HTTP 401, telling it the push had failed and prompting retries. The order management push URL is now signed wherever it is built, and callbacks for orders that are not awaiting preauthorization are acknowledged and skipped instead of rejected, which also settles orders whose callback URL was registered before this change. Subscription preauthorization itself is unchanged: it still requires a valid token before the order is touched.

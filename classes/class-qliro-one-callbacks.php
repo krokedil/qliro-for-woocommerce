@@ -241,10 +241,30 @@ class Qliro_One_Callbacks {
 	public function complete_preauthorization( $data, $confirmation_id ) {
 		$order_number = $data['MerchantReference'] ?? '';
 
-		// Authenticate the callback using the per-order token in the URL, honouring a grace period for legacy renewal orders.
 		$token = filter_input( INPUT_GET, Qliro_One_Callback_Auth::TOKEN_PARAM, FILTER_SANITIZE_SPECIAL_CHARS );
 		$ref   = filter_input( INPUT_GET, Qliro_One_Callback_Auth::REF_PARAM, FILTER_SANITIZE_SPECIAL_CHARS );
 
+		// Resolve the order from the signed reference (or the confirmation id, for orders
+		// whose callback URL was registered with Qliro before it was signed), never from
+		// the request body.
+		$reference = ! empty( $token ) ? $ref : $confirmation_id;
+		$order     = qliro_get_order_by_confirmation_id( $reference );
+		if ( empty( $order ) ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as no matching order was found for the reference." );
+			throw new Exception( 'order not found', 404 );
+		}
+
+		// Ignore preauthorization requests for non-subscription orders. Qliro sends this
+		// callback for ordinary orders too, and answering those 401 would tell it the push
+		// failed. Nothing is written on this path, so it is checked before authenticating.
+		$is_subscription = ! empty( $order->get_meta( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION ) );
+		if ( ! $is_subscription ) {
+			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the order is not awaiting preauthorization." );
+			return;
+		}
+
+		// Authenticate before acting on the order, honouring a grace period for orders whose
+		// callback URL was registered unsigned.
 		if ( empty( $token ) ) {
 			Qliro_One_Logger::log( "[CALLBACK OM]: Preauthorization callback for merchant reference #{$order_number} arrived without an authentication token. Enabled via the 'qliro_one_allow_unauthenticated_callbacks' filter if you have issues with legacy orders." );
 
@@ -255,21 +275,6 @@ class Qliro_One_Callbacks {
 		} elseif ( ! Qliro_One_Callback_Auth::is_valid_token( $ref, $token ) ) {
 			Qliro_One_Logger::log( "[CALLBACK OM]: Rejected preauthorization callback for merchant reference #{$order_number} due to an invalid authentication token." );
 			throw new Exception( 'invalid callback token', 401 );
-		}
-
-		// Resolve the order from the signed reference (or the confirmation id during the grace period), never from the request body.
-		$reference = ! empty( $token ) ? $ref : $confirmation_id;
-		$order     = qliro_get_order_by_confirmation_id( $reference );
-		if ( empty( $order ) ) {
-			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as no matching order was found for the reference." );
-			throw new Exception( 'order not found', 404 );
-		}
-
-		// Ignore preauthorization request for non-subscription orders.
-		$is_subscription = ! empty( $order->get_meta( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION ) );
-		if ( ! $is_subscription ) {
-			Qliro_One_Logger::log( "[CALLBACK OM]: Skipping preauthorization callback for merchant reference #{$order_number} as the order is not awaiting preauthorization." );
-			return;
 		}
 
 		// Re-fetch the order from Qliro and read the preauthorization outcome from the API instead of the callback body.
