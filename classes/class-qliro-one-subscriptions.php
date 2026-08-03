@@ -86,7 +86,7 @@ class Qliro_One_Subscriptions {
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed();
+			$subscription->payment_failed_for_related_order( 'on-hold', $order );
 			$subscription->save();
 			return;
 		}
@@ -131,7 +131,7 @@ class Qliro_One_Subscriptions {
 
 			$order->add_order_note( $message );
 			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
+			$subscription->payment_failed_for_related_order( 'on-hold', $order );
 			return;
 		}
 
@@ -147,7 +147,7 @@ class Qliro_One_Subscriptions {
 
 			$order->add_order_note( $message );
 			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
+			$subscription->payment_failed_for_related_order( 'on-hold', $order );
 			return;
 		}
 
