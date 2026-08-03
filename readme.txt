@@ -7,7 +7,7 @@ Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 11.0
-Stable tag: 2.2.8
+Stable tag: 2.2.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,12 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-08-03    - version 2.2.9 =
+* Enhancement   - Improved user-facing error handling with clearer notices containing more descriptive information.
+* Enhancement   - Improve the validation of the callbacks from Qliro when storing card tokens and processing notifications.
+* Enhancement   - Hardened the save-card and subscription preauthorization callbacks: the order is now identified from a signed per-order token in the callback URL rather than the request body, and the saved card details and preauthorization outcome are re-fetched from the Qliro API instead of being trusted from the callback body.
+* Enhancement   - Added an `x-platform: WooCommerce` HTTP header to all requests sent to the Qliro API.
+
 = 2026-06-15    - version 2.2.8 =
 * Fix           - Fixed an issue where a subscription renewal declined by Qliro could still be processed as a successful payment. Failed renewals are now correctly handled and marked as payment failed in WooCommerce.
 
