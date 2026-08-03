@@ -1,6 +1,8 @@
 <?php
 /**
  * Qliro compatibility class for WooCommerce PostNord Shipping (WCPNS).
+ *
+ * @package Qliro_One_For_WooCommerce/Classes/Compatibility
  */
 
 use KrokedilQliroDeps\Krokedil\Shipping\PickupPoint\PickupPoint;
@@ -16,7 +18,7 @@ class Qliro_One_Compatibility_WCPNS {
 	 *
 	 * @var WCPNS_Checkout
 	 */
-	private $wcpns_checkout;
+	private $wcpns_checkout; // @phpstan-ignore-line - WCPNS_Checkout is a class from the WCPNS plugin, which is an optional dependency. This property will only be set if the plugin is active, and is checked before use.
 
 	/**
 	 * Class constructor.
@@ -27,6 +29,11 @@ class Qliro_One_Compatibility_WCPNS {
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
+	/**
+	 * Initialize the class.
+	 *
+	 * @return void
+	 */
 	public function init() {
 
 		if ( ! class_exists( 'WCPNS_Checkout' ) ) {
@@ -42,14 +49,14 @@ class Qliro_One_Compatibility_WCPNS {
 	/**
 	 * Maybe add PostNord pickup point data to the shipping rate metadata.
 	 *
-	 * @param array $package['rates'] Package rates.
-	 * @param array $package          Package of cart items.
+	 * @param array $rates Package rates.
 	 *
 	 * @return array
 	 */
 	public function maybe_set_postnord_servicepoints( $rates ) {
 
 		foreach ( $rates as $rate ) {
+			// @phpstan-ignore-next-line - get_shipping_method_from_rate is a method from the WCPNS plugin, which is an optional dependency. This method will only be called if the plugin is active, and is checked before use.
 			$shipping_method = $this->wcpns_checkout::get_shipping_method_from_rate( $rate );
 
 			// If the shipping method is empty or does not support PostNord service points, skip it.
@@ -62,8 +69,8 @@ class Qliro_One_Compatibility_WCPNS {
 
 			if ( ! empty( $pickup_points ) ) {
 				$selected_pickup_point = $pickup_points[0];
-				$rate->add_meta_data( 'krokedil_pickup_points', json_encode( $pickup_points ) );
-				$rate->add_meta_data( 'krokedil_selected_pickup_point', json_encode( $selected_pickup_point ) );
+				$rate->add_meta_data( 'krokedil_pickup_points', wp_json_encode( $pickup_points ) );
+				$rate->add_meta_data( 'krokedil_selected_pickup_point', wp_json_encode( $selected_pickup_point ) );
 				$rate->add_meta_data( 'krokedil_selected_pickup_point_id', $selected_pickup_point->get_id() );
 			}
 		}
@@ -72,8 +79,6 @@ class Qliro_One_Compatibility_WCPNS {
 
 	/**
 	 * Get the PostNord pickup points for the shipping rate.
-	 *
-	 * @param string $rate_id The shipping rate from WooCommerce.
 	 *
 	 * @return array
 	 */
@@ -91,6 +96,7 @@ class Qliro_One_Compatibility_WCPNS {
 		$country_code = sanitize_text_field( $country_code );
 
 		// Get the pickup points from the WCPNS API.
+		// @phpstan-ignore-next-line - get_postnord_servicepoints_for_address is a method from the WCPNS plugin, which is an optional dependency. This method will only be called if the plugin is active, and is checked before use.
 		$wcpns_pickup_points_json = $this->wcpns_checkout->get_postnord_servicepoints_for_address(
 			$country_code,
 			$zip,
@@ -118,6 +124,7 @@ class Qliro_One_Compatibility_WCPNS {
 	 * @return PickupPoint[]
 	 */
 	private function format_pickup_points( $wcpns_pickup_points ) {
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName -- The variable name is based on the WCPNS plugin response, which uses camelCase.
 		$pickup_points = array();
 		foreach ( $wcpns_pickup_points as $wcpns_pickup_point ) {
 			if ( empty( $wcpns_pickup_point->servicePointId ) ) {
@@ -133,6 +140,7 @@ class Qliro_One_Compatibility_WCPNS {
 			$pickup_points[] = $pickup_point;
 		}
 
+		// phpcs:enable WordPress.NamingConventions.ValidVariableName
 		return $pickup_points;
 	}
 
@@ -175,7 +183,9 @@ class Qliro_One_Compatibility_WCPNS {
 		$wcpns_pickup_point = array_filter(
 			$wcpns_pickup_points,
 			function ( $pickup_point ) use ( $chosen_pickup_id ) {
+				// phpcs:disable WordPress.NamingConventions.ValidVariableName -- The variable name is based on the WCPNS plugin response, which uses camelCase.
 				return isset( $pickup_point->servicePointId ) && $chosen_pickup_id === $pickup_point->servicePointId;
+				// phpcs:enable WordPress.NamingConventions.ValidVariableName
 			}
 		);
 

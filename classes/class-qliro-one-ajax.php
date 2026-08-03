@@ -48,7 +48,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 	public static function qliro_one_wc_change_payment_method() {
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_change_payment_method' ) ) {
-			wp_send_json_error( 'bad_nonce' );
+			wp_send_json_error( __( 'Security check failed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 		}
 		$available_gateways  = WC()->payment_gateways()->get_available_payment_gateways();
 		$switch_to_qliro_one = isset( $_POST['qliro_one'] ) ? sanitize_text_field( wp_unslash( $_POST['qliro_one'] ) ) : '';
@@ -81,7 +81,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 	 */
 	public static function qliro_one_get_order() {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'qliro_one_get_order' ) ) {
-			wp_send_json_error( 'bad_nonce' );
+			wp_send_json_error( __( 'Security check failed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 		}
 
 		$order_id        = WC()->session->get( 'qliro_one_order_id' );
@@ -152,7 +152,7 @@ class Qliro_One_Ajax extends WC_AJAX {
 
 		$nonce = filter_input( INPUT_POST, 'nonce', FILTER_SANITIZE_SPECIAL_CHARS );
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_make_capture' ) ) {
-			wp_send_json_error( 'bad_nonce' );
+			wp_send_json_error( __( 'Security check failed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 		}
 
 		try {
@@ -204,19 +204,19 @@ class Qliro_One_Ajax extends WC_AJAX {
 		$enabled  = filter_input( INPUT_POST, 'enabled', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( ! wp_verify_nonce( $nonce, 'qliro_one_wc_set_order_sync' ) ) {
-			wp_send_json_error( 'bad_nonce' );
+			wp_send_json_error( __( 'Security check failed. Please reload the page and try again.', 'qliro-for-woocommerce' ) );
 			exit;
 		}
 
 		if ( ! $order_id ) {
-			wp_send_json_error( 'no_order_id' );
+			wp_send_json_error( __( 'No order ID provided.', 'qliro-for-woocommerce' ) );
 			exit;
 		}
 
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
-			wp_send_json_error( 'no_order' );
+			wp_send_json_error( __( 'Order not found.', 'qliro-for-woocommerce' ) );
 			exit;
 		}
 
