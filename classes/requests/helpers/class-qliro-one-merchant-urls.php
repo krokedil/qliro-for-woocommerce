@@ -136,6 +136,8 @@ class Qliro_One_Merchant_URLS {
 			home_url( '/wc-api/QOC_OM_Status/' )
 		);
 
+		$om_push_url = Qliro_One_Callback_Auth::add_token( $om_push_url, $rand_string );
+
 		return apply_filters( 'qliro_one_wc_om_push_url', $om_push_url );
 	}
 }
