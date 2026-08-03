@@ -304,7 +304,7 @@ class Qliro_One_Callbacks {
 						$reason
 					)
 				);
-				$subscription->payment_failed_for_related_order();
+				$subscription->payment_failed_for_related_order( 'on-hold', $order );
 			}
 			return;
 		}
