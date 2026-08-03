@@ -95,6 +95,7 @@ abstract class Qliro_One_Request {
 		return array(
 			'Content-type'  => 'application/json',
 			'Authorization' => $this->calculate_auth( $body ),
+			'x-platform'    => 'WooCommerce',
 		);
 	}
 

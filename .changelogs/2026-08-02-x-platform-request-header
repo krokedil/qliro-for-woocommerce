@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Added an `x-platform: WooCommerce` HTTP header to all requests sent to the Qliro API.
