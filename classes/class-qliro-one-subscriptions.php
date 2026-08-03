@@ -96,7 +96,6 @@ class Qliro_One_Subscriptions {
 		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
@@ -156,7 +155,6 @@ class Qliro_One_Subscriptions {
 		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
 		$order->set_transaction_id( $qliro_order_id );
@@ -179,6 +177,19 @@ class Qliro_One_Subscriptions {
 	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
 		// Remove the pending preauthorization meta and complete the payment.
 		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
+
+		// Claim the order number now that the payment has gone through. A failed attempt keeps its
+		// temporary reference, which is what leaves the order number free for the next retry.
+		if ( $renewal_order->get_order_number() !== $renewal_order->get_meta( '_qliro_one_merchant_reference' ) ) {
+			$response = QLIRO_WC()->api->update_qliro_one_merchant_reference( $renewal_order->get_id() );
+
+			if ( is_wp_error( $response ) ) {
+				// translators: %s - Response error message.
+				$renewal_order->add_order_note( sprintf( __( 'There was a problem updating the merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $response->get_error_message() ) );
+			} else {
+				$renewal_order->update_meta_data( '_qliro_one_merchant_reference', $renewal_order->get_order_number() );
+			}
+		}
 
 		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'order_type' => 'renewal' ) );
 		foreach ( $subscriptions as $subscription ) {
