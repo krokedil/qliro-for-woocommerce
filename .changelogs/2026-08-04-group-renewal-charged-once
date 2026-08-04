@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed renewals that cover several subscriptions being charged once per subscription, which could leave extra payment reservations at Qliro.

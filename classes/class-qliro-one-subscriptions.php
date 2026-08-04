@@ -62,14 +62,20 @@ class Qliro_One_Subscriptions {
 		// Get the order and the subscription objects.
 		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->get_id() );
 
-		foreach ( $subscriptions as $subscription ) {
-			// See if we have a token stored on the subscription.
-			$token_ids = $subscription->get_payment_tokens();
-			if ( empty( $token_ids ) ) {
-				$this->process_recurring_invoice_payment( $order, $subscription );
-			} else {
-				$this->process_recurring_card_payment( $order, $subscription, $token_ids );
-			}
+		// Charge the renewal order once, even when it covers several subscriptions. Paying per
+		// subscription would open a separate Qliro order for each one, and all but the last would be
+		// left as a preauthorization that is never captured or cancelled. Grouped subscriptions share
+		// the parent order's payment method, so the first one decides how to pay.
+		$subscription = reset( $subscriptions );
+		if ( empty( $subscription ) ) {
+			return;
+		}
+
+		$token_ids = $subscription->get_payment_tokens();
+		if ( empty( $token_ids ) ) {
+			$this->process_recurring_invoice_payment( $order, $subscription );
+		} else {
+			$this->process_recurring_card_payment( $order, $subscription, $token_ids );
 		}
 	}
 
