@@ -80,6 +80,25 @@ class Qliro_One_Subscriptions {
 	}
 
 	/**
+	 * Fail the renewal payment for every subscription the renewal order covers, so a grouped renewal
+	 * cannot leave some of its subscriptions active while others are put on hold.
+	 *
+	 * @param WC_Order $order The renewal order.
+	 * @param string   $note  Note to add to each subscription, if any.
+	 *
+	 * @return void
+	 */
+	private function fail_renewal_payment( $order, $note = '' ) {
+		foreach ( wcs_get_subscriptions_for_renewal_order( $order->get_id() ) as $subscription ) {
+			if ( ! empty( $note ) ) {
+				$subscription->add_order_note( $note );
+			}
+
+			$subscription->payment_failed_for_related_order( 'on-hold', $order );
+		}
+	}
+
+	/**
 	 * Process recurring invoice payment.
 	 *
 	 * @param WC_Order        $order The order object.
@@ -92,8 +111,7 @@ class Qliro_One_Subscriptions {
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed_for_related_order( 'on-hold', $order );
-			$subscription->save();
+			$this->fail_renewal_payment( $order );
 			return;
 		}
 
@@ -136,8 +154,7 @@ class Qliro_One_Subscriptions {
 			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
 
 			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order( 'on-hold', $order );
+			$this->fail_renewal_payment( $order, $message );
 			return;
 		}
 
@@ -152,8 +169,7 @@ class Qliro_One_Subscriptions {
 			);
 
 			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order( 'on-hold', $order );
+			$this->fail_renewal_payment( $order, $message );
 			return;
 		}
 
