@@ -191,7 +191,7 @@ class Qliro_One_Subscriptions {
 
 			if ( is_wp_error( $response ) ) {
 				// translators: %s - Response error message.
-				$renewal_order->add_order_note( sprintf( __( 'There was a problem updating the merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $response->get_error_message() ) );
+				$renewal_order->add_order_note( sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $response->get_error_message() ) );
 			} else {
 				$renewal_order->update_meta_data( '_qliro_one_merchant_reference', $renewal_order->get_order_number() );
 			}
