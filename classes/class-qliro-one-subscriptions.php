@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class Qliro_One_Subscriptions {
 	public const GATEWAY_ID               = 'qliro_one';
 	public const PENDING_PREAUTHORIZATION = self::GATEWAY_ID . '_pending_preauthorization';
+	public const SCHEDULED_ATTEMPT        = self::GATEWAY_ID . '_scheduled_payment_attempt';
 
 	/**
 	 * Class constructor.
@@ -123,6 +124,7 @@ class Qliro_One_Subscriptions {
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->add_meta_data( self::SCHEDULED_ATTEMPT, wc_bool_to_string( self::is_scheduled_payment_attempt() ), true );
 		$order->set_transaction_id( $qliro_order_id );
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
@@ -181,6 +183,7 @@ class Qliro_One_Subscriptions {
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
 		$order->set_transaction_id( $qliro_order_id );
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->add_meta_data( self::SCHEDULED_ATTEMPT, wc_bool_to_string( self::is_scheduled_payment_attempt() ), true );
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
 
@@ -199,6 +202,7 @@ class Qliro_One_Subscriptions {
 	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
 		// Remove the pending preauthorization meta and complete the payment.
 		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
+		$renewal_order->delete_meta_data( self::SCHEDULED_ATTEMPT );
 
 		// Claim the order number now that the payment has gone through. A failed attempt keeps its
 		// temporary reference, which is what leaves the order number free for the next retry.
@@ -233,6 +237,18 @@ class Qliro_One_Subscriptions {
 			)
 		);
 		$renewal_order->payment_complete();
+	}
+
+	/**
+	 * Whether the current request is a WooCommerce Subscriptions scheduled payment attempt.
+	 *
+	 * Recorded on the renewal order, since Qliro reports the outcome in a later request.
+	 *
+	 * @return bool
+	 */
+	private static function is_scheduled_payment_attempt() {
+		return doing_action( 'woocommerce_scheduled_subscription_payment' )
+			|| doing_action( 'woocommerce_scheduled_subscription_payment_retry' );
 	}
 
 	/**
