@@ -292,19 +292,50 @@ class Qliro_One_Callbacks {
 			$reason = sanitize_text_field( $data['ErrorCodeDescription'] ?? __( 'Unknown error', 'qliro-for-woocommerce' ) );
 			Qliro_One_Logger::log( "[CALLBACK OM]: Preauthorization failed for merchant reference #{$order_number}. Qliro transaction status: {$status}, Reason: {$reason}" );
 
+			// An unflagged renewal predates the upgrade, and can only have been a scheduled payment.
+			$attempt_meta          = $order->get_meta( Qliro_One_Subscriptions::SCHEDULED_ATTEMPT );
+			$was_scheduled_attempt = '' === $attempt_meta || wc_string_to_bool( $attempt_meta );
+
 			$order->delete_meta_data( Qliro_One_Subscriptions::PENDING_PREAUTHORIZATION );
+			$order->delete_meta_data( Qliro_One_Subscriptions::SCHEDULED_ATTEMPT );
 			$order->save();
 
+			// Subscriptions only applies its retry rules to a failure raised during the scheduled
+			// payment hook, and Qliro reports the outcome here instead, so claim the attempt as
+			// scheduled. That also suppresses maybe_reapply_last_retry_rule(), as it should.
+			$force_retry_rule = $was_scheduled_attempt;
+
 			$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'renewal' ) );
-			foreach ( $subscriptions as $subscription ) {
-				$subscription->add_order_note(
-					sprintf(
-					/* translators: 1: Qliro error reason */
-						__( 'Renewal preauthorization failed at Qliro: %s.', 'qliro-for-woocommerce' ),
-						$reason
-					)
-				);
-				$subscription->payment_failed_for_related_order( 'on-hold', $order );
+
+			try {
+				foreach ( $subscriptions as $subscription ) {
+					$subscription->add_order_note(
+						sprintf(
+						/* translators: 1: Qliro error reason */
+							__( 'Renewal preauthorization failed at Qliro: %s.', 'qliro-for-woocommerce' ),
+							$reason
+						)
+					);
+
+					// Only the charged subscription gets a rule, and only if Qliro is what it pays with.
+					// Subscriptions counts the rules already saved against this order, so a grouped
+					// renewal would otherwise burn several on one failure, or apply one to a
+					// subscription whose gateway had nothing to do with this failure.
+					$claim_attempt = $force_retry_rule && Qliro_One_Subscriptions::GATEWAY_ID === $subscription->get_payment_method();
+
+					if ( $claim_attempt ) {
+						add_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
+					}
+
+					$subscription->payment_failed_for_related_order( 'on-hold', $order );
+
+					if ( $claim_attempt ) {
+						remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
+						$force_retry_rule = false;
+					}
+				}
+			} finally {
+				remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
 			}
 			return;
 		}
