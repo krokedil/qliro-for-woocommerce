@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: yes
+
+Fixed a declined subscription renewal never being retried. When "Retry Failed Payments" is enabled in the WooCommerce Subscriptions settings, a renewal that Qliro declines now has the store's retry rules applied to it, so the renewal order is moved on and retried according to those rules instead of being left as failed.
