@@ -302,7 +302,8 @@ class Qliro_One_Callbacks {
 
 			// Subscriptions only applies its retry rules to a failure raised during the scheduled
 			// payment hook, and Qliro reports the outcome here instead, so claim the attempt as
-			// scheduled. That also suppresses maybe_reapply_last_retry_rule(), as it should.
+			// scheduled - last, so nothing hooked later answers for us. That also suppresses
+			// maybe_reapply_last_retry_rule(), as it should.
 			$force_retry_rule = $was_scheduled_attempt;
 
 			$subscriptions = wcs_get_subscriptions_for_order( $order, array( 'order_type' => 'renewal' ) );
@@ -324,18 +325,18 @@ class Qliro_One_Callbacks {
 					$claim_attempt = $force_retry_rule && Qliro_One_Subscriptions::GATEWAY_ID === $subscription->get_payment_method();
 
 					if ( $claim_attempt ) {
-						add_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
+						add_filter( 'wcs_is_scheduled_payment_attempt', '__return_true', PHP_INT_MAX );
 					}
 
 					$subscription->payment_failed_for_related_order( 'on-hold', $order );
 
 					if ( $claim_attempt ) {
-						remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
+						remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true', PHP_INT_MAX );
 						$force_retry_rule = false;
 					}
 				}
 			} finally {
-				remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true' );
+				remove_filter( 'wcs_is_scheduled_payment_attempt', '__return_true', PHP_INT_MAX );
 			}
 			return;
 		}
