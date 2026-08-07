@@ -187,9 +187,15 @@ class Qliro_One_Helper_Cart {
 	 * @return array|null
 	 */
 	public static function get_shipping() {
-		$packages        = WC()->shipping()->get_packages();
 		$chosen_methods  = WC()->session->get( 'chosen_shipping_methods' );
-		$chosen_shipping = $chosen_methods[0];
+		$chosen_shipping = is_array( $chosen_methods ) ? ( $chosen_methods[0] ?? null ) : null;
+
+		// WooCommerce does not store a chosen shipping method until shipping has been calculated. With "Hide shipping costs until an address is entered" enabled, that does not happen until the customer has entered an address, leaving nothing for us to match against.
+		if ( null === $chosen_shipping ) {
+			return null;
+		}
+
+		$packages = WC()->shipping()->get_packages();
 		foreach ( $packages as $i => $package ) {
 			foreach ( $package['rates'] as $method ) {
 				$method_cost = qliro_ensure_numeric( $method->cost );
