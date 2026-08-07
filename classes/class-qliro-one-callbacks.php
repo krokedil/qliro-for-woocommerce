@@ -239,7 +239,7 @@ class Qliro_One_Callbacks {
 	 * @return void
 	 */
 	public function complete_preauthorization( $data, $confirmation_id ) {
-		$order_number = $data['MerchantReference'] ?? '';
+		$order_number = sanitize_text_field( $data['MerchantReference'] ?? '' );
 
 		// Authenticate the callback using the per-order token in the URL, honouring a grace period for legacy renewal orders.
 		$token = filter_input( INPUT_GET, Qliro_One_Callback_Auth::TOKEN_PARAM, FILTER_SANITIZE_SPECIAL_CHARS );
