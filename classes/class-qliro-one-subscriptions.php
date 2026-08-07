@@ -244,6 +244,9 @@ class Qliro_One_Subscriptions {
 	 *
 	 * Recorded on the renewal order, since Qliro reports the outcome in a later request.
 	 *
+	 * The generic hooks, not the gateway one: Subscriptions nests the gateway hook inside them for
+	 * an automatic renewal, and fires it alone for a manual attempt like the admin retry action.
+	 *
 	 * @return bool
 	 */
 	private static function is_scheduled_payment_attempt() {
