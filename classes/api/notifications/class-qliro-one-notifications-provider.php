@@ -25,9 +25,17 @@ class Qliro_One_Notifications_Provider {
 		// Include the base notification class, and the specific notification handler for Ingrid shipping.
 		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications.php';
 		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications-ingrid-shipping.php';
+		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications-klaviyo-member-create.php';
+		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications-klaviyo-member-update.php';
+		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications-voyado-member-create.php';
+		include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/notifications/class-qliro-one-notifications-voyado-member-update.php';
 
 		$this->handlers = array(
 			new Qliro_One_Notifications_Ingrid_Shipping(),
+			new Qliro_One_Notifications_Klaviyo_Member_Create(),
+			new Qliro_One_Notifications_Klaviyo_Member_Update(),
+			new Qliro_One_Notifications_Voyado_Member_Create(),
+			new Qliro_One_Notifications_Voyado_Member_Update(),
 		);
 	}
 
