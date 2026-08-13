@@ -326,9 +326,11 @@ jQuery(function ($) {
 			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
 			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
 
-			const returnFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
+			// Check amount and tax independently so non-zero entries cannot cancel each other out.
+			const returnFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val());
+			const returnFeeTaxAmount = qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
 
-			if (returnFeeAmount !== 0) {
+			if (returnFeeAmount !== 0 || returnFeeTaxAmount !== 0) {
 				qoc.showNotice(qoc_admin_params.return_fee_manual_refund_text, 'error');
 				e.preventDefault();
 				e.stopPropagation();
