@@ -346,7 +346,7 @@ class Qliro_One_Fields {
 				'label'       => __( 'Automatically calculate return fee on refunds', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
-				'description' => __( 'If enabled, then the Qliro return fee will be automatically calculated in the background if a refunded order line is less than the unit amount.', 'qliro-for-woocommerce' ),
+				'description' => __( 'If enabled and you refund an order line at a lower amount than its original price, the difference is automatically sent to Qliro as a return fee. The fee is deducted from the amount Qliro pays back to the customer and is shown on the order and in the customer\'s refund details.', 'qliro-for-woocommerce' ),
 				'desc_tip'    => true,
 			),
 			'om_advanced_settings'                       => array(

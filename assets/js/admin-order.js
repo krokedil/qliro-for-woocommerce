@@ -276,6 +276,10 @@ jQuery(function ($) {
 				return;
 			}
 
+			// Clear any entered return fee so the refund button text does not keep a stale suffix.
+			$qliroReturnFee.find('input.refund_line_total.wc_input_price, input.refund_line_tax.wc_input_price').val('');
+			qoc.update_qliro_refund_amount();
+
 			$qliroReturnFee.hide();
 		},
 
@@ -297,8 +301,7 @@ jQuery(function ($) {
 			}
 
 			// Update the button text with the return fee amount by replacing inner text of the span#qliro_return_fee_total with the refund fee amount.
-			//$qliroReturnFeeTotalSpan.text( qoc_admin_params.return_fee_text + ' ' + accounting.formatMoney(refundFeeAmount, {
-			$qliroReturnFeeTotalSpan.text(' (' + qoc_admin_params.with_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ')' );
+			$qliroReturnFeeTotalSpan.text(' (' + qoc_admin_params.minus_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ')' );
 		},
 
 		format_number: function (number) {
@@ -357,6 +360,7 @@ jQuery(function ($) {
 				.ready(this.modify_refund_button_text)
 				.on('change', '#refund_amount', this.update_qliro_refund_amount)
 				.on('change', '#qliro_return_fee input.refund_line_total.wc_input_price', this.update_qliro_refund_amount)
+				.on('change', '#qliro_return_fee input.refund_line_tax.wc_input_price', this.update_qliro_refund_amount)
 
 			window.addEventListener("hashchange", qoc.showListOfDeliveries);
 		}
