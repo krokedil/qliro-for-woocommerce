@@ -272,9 +272,9 @@ class Qliro_One_Order_Management {
 		// If we have the metadata '_qliro_payment_transactions' stored, we can just create a refund normally. Otherwise we will need to use the legacy version.
 		if ( empty( $order->get_meta( '_qliro_payment_transactions' ) ) ) {
 			$did_refund = $this->process_legacy_refund( $order, $refund_order, $amount, $return_fees );
+		} else {
+			$did_refund = $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
 		}
-
-		$did_refund = $this->create_refund( $order, $amount, $refund_order_id, '', array(), $return_fees );
 
 		if ( true === $did_refund ) {
 			$order->update_meta_data( '_qliro_order_refunded', true );
@@ -375,6 +375,10 @@ class Qliro_One_Order_Management {
 	public function create_refund( $order, $amount, $refund_order_id, $capture_id = '', $items = '', $return_fees = array() ) {
 		$response = QLIRO_WC()->api->refund_qliro_one_order( $order->get_id(), $refund_order_id, $capture_id, $items, $return_fees );
 
+		// The request registers the applied return fees on this filter. Read and reset it so the fees do not carry over into any subsequent refund request during the same execution.
+		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
+		remove_all_filters( 'qliro_applied_return_fees' );
+
 		if ( is_wp_error( $response ) ) {
 			// Regex matches any string that starts with "Evaluation," or "Message:" and ends with "Evaluation," or "Property: " or end of string.
 			preg_match_all( '/(?:Evaluation,\s*|Message:\s*)(.*?)(?=(Evaluation,|Property: |$))/s', $response->get_error_message(), $matches );
@@ -385,8 +389,6 @@ class Qliro_One_Order_Management {
 			$response->errors[ $response->get_error_code() ] = array( $note );
 			return $response;
 		}
-
-		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
 
 		// translators: refund amount, refund id.
 		$text = __( 'Processing a refund of %1$s with Qliro', 'qliro-for-woocommerce' );
