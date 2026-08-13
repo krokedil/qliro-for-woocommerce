@@ -1,4 +1,4 @@
 Type: Enhancement
 Needs Documentation: yes
 
-Clearer return fee handling on refunds. The order admin now shows how the return fee affects the refund (refund value, return fee and the amount refunded to the customer) along with a return fee total on the order, and the customer is informed about the deducted fee in refund emails and on the My Account order page.
+Improved return fee clarity on refunds. The order admin now shows how the fee affects the refunded amount, and the customer is informed about the deducted fee in refund emails and on the My Account order page.
