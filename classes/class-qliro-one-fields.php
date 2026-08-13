@@ -142,8 +142,8 @@ class Qliro_One_Fields {
 				'title'       => __( 'Advanced demo mode', 'qliro-for-woocommerce' ),
 				'label'       => __( 'Enable advanced demo mode', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
-				/* translators: 1: WooCommerce coupon settings link, 2: documentation link */
 				'description' => sprintf(
+					/* translators: 1: WooCommerce coupon settings link, 2: documentation link */
 					__( 'Configure coupons in %1$s. For detailed instructions, see the %2$s.', 'qliro-for-woocommerce' ),
 					'<a target="_blank" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-for-woocommerce' ) . '</a>',
 					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-for-woocommerce' ) . '</a>'
@@ -306,7 +306,6 @@ class Qliro_One_Fields {
 				'type'              => 'number',
 				'css'               => 'width: 100px',
 				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment. If you want higher than 10% you will first need to contact Qliro. Read more about upsell <a target="_blank" href="https://docs.krokedil.com/post-purchase-upsell-for-woocommerce/">here</a>.', 'qliro-for-woocommerce' ),
-				'default'           => '',
 				'desc_tip'          => false,
 				'default'           => 10,
 				'class'             => 'krokedil_ppu_setting' . $ppu_status,

@@ -33,7 +33,7 @@ class Qliro_One_Order_Management {
 		add_action( 'woocommerce_admin_order_totals_after_refunded', array( $this, 'add_return_fee_to_order_totals_summary' ) );
 		add_filter( 'woocommerce_order_refund_get_reason', array( $this, 'add_return_fee_info_to_refund_reason' ), 10, 2 );
 
-		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999, 2 );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999 );
 
 		// Register the action to set the transaction meta data when reading the Qliro order from the admin endpoint.
 		add_action( 'qliro_admin_order_received', Qliro_Order_Utility::class . '::maybe_update_transaction_meta', 10, 2 );
@@ -722,10 +722,9 @@ class Qliro_One_Order_Management {
 	/**
 	 * Maybe sync the order with Qliro when the order is updated.
 	 *
-	 * @param int     $order_id The WooCommerce Order ID.
-	 * @param WP_Post $post The post object.
+	 * @param int $order_id The WooCommerce Order ID.
 	 */
-	public function maybe_sync_order( $order_id, $post ) {
+	public function maybe_sync_order( $order_id ) {
 
 		// If the order automatic sync on update is not enabled, bail.
 		if ( ! apply_filters( 'qliro_sync_order_on_update', false, $order_id ) ) {
