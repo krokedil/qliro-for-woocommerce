@@ -321,6 +321,21 @@ jQuery(function ($) {
 			);
 		},
 
+		on_manual_refund_submit: function (e) {
+			// A manual refund never reaches Qliro, so an entered return fee would be silently discarded.
+			const $qliroReturnFeeAmountField = $('#qliro_return_fee input.refund_line_total.wc_input_price');
+			const $qliroReturnFeeTaxAmountField = $('#qliro_return_fee input.refund_line_tax.wc_input_price');
+
+			const returnFeeAmount = qoc.unformat_number($qliroReturnFeeAmountField.val()) + qoc.unformat_number($qliroReturnFeeTaxAmountField.val());
+
+			if (returnFeeAmount !== 0) {
+				qoc.showNotice(qoc_admin_params.return_fee_manual_refund_text, 'error');
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+		},
+
 		on_refund_submit: function (e) {
 			// Get the refund amount from the input field.
 			const $refundAmount = $('#refund_amount');
@@ -349,6 +364,7 @@ jQuery(function ($) {
 				.on('click', '.refund-actions .cancel-action', this.cancel_refund);
 
 			$('button.do-api-refund').on('click', this.on_refund_submit);
+			$('button.do-manual-refund').on('click', this.on_manual_refund_submit);
 
 			$(document)
 				.ready(this.move_element)
