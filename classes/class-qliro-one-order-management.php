@@ -234,7 +234,7 @@ class Qliro_One_Order_Management {
 
 		// Create one or more refunds based on the prepped items array.
 		foreach ( $prepped_items as $capture_id => $items ) {
-			$response = $this->create_refund( $order, $amount, $refund_order->get_id(), $capture_id, $items );
+			$response = $this->create_refund( $order, $amount, $refund_order->get_id(), $capture_id, $items, $return_fees );
 			// If the response is an error, continue to the next capture id.
 			if ( is_wp_error( $response ) ) {
 				continue;
