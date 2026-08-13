@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed subscription renewals failing to retry after a declined payment. Renewal payments are now created with a temporary reference that is replaced by the order number once the payment goes through, so a failed renewal can be retried as many times as needed.

@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Fixed failed subscription renewals staying On hold, which left WooCommerce Subscriptions unable to retry them.
