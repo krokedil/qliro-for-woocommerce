@@ -408,7 +408,7 @@ class Qliro_One_Order_Management {
 
 			$formatted_text = sprintf(
 				// translators: 1: the total refund amount, 2: the return fee amount, 3: the amount paid back to the customer.
-				__( 'Processing a refund of %1$s with Qliro. A return fee of %2$s was deducted — %3$s will be paid back to the customer.', 'qliro-for-woocommerce' ),
+				__( 'Processing a refund of %1$s with Qliro. Return fee %2$s deducted, %3$s paid back to the customer.', 'qliro-for-woocommerce' ),
 				wc_price( $gross_amount, $currency ),
 				wc_price( $manual_fees + $calculated_fees, $currency ),
 				wc_price( $net_amount, $currency )

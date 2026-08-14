@@ -300,8 +300,14 @@ jQuery(function ($) {
 				return;
 			}
 
-			// Update the button text with the return fee amount by replacing inner text of the span#qliro_return_fee_total with the refund fee amount.
-			$qliroReturnFeeTotalSpan.text(' (' + qoc_admin_params.minus_return_fee_text + ' ' + qoc.format_number(refundFeeAmount) + ')' );
+			// The return fee is not part of the refund amount, so it is what the customer gets back that is reduced.
+			const paidBackAmount = qoc.unformat_number($('#refund_amount').val()) - refundFeeAmount;
+
+			// Spell out the fee and the amount paid back in the refund button text.
+			$qliroReturnFeeTotalSpan.text(' ' + qoc_admin_params.return_fee_summary_text
+				.replace('%1$s', qoc.format_number(refundFeeAmount))
+				.replace('%2$s', qoc.format_number(paidBackAmount))
+			);
 		},
 
 		format_number: function (number) {

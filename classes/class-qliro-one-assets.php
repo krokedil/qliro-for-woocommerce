@@ -193,7 +193,8 @@ class Qliro_One_Assets {
 			'captured_items'                          => ! empty( $captured_items ) ? wp_json_encode( $captured_items ) : '{}',
 			'shipping_checkbox_text'                  => __( 'Check this checkbox to include this shipping line in this capture.', 'qliro-for-woocommerce' ),
 			'fee_checkbox_text'                       => __( 'Check this checkbox to include this fee line in this capture.', 'qliro-for-woocommerce' ),
-			'minus_return_fee_text'                   => __( 'minus a return fee of', 'qliro-for-woocommerce' ),
+			// translators: 1: the return fee amount, 2: the amount paid back to the customer.
+			'return_fee_summary_text'                 => __( '(return fee %1$s deducted, %2$s paid back)', 'qliro-for-woocommerce' ),
 			'refund_amount_less_than_return_fee_text' => __( 'The return fee cannot be higher than the refund amount.', 'qliro-for-woocommerce' ),
 			'i18n'                                    => array(
 				'makeCaptureFailed' => __( 'An error occurred while making the capture. Please try again.', 'qliro-for-woocommerce' ),
