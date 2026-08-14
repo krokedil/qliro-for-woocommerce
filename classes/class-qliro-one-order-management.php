@@ -607,8 +607,8 @@ class Qliro_One_Order_Management {
 		$refunded_to_customer = abs( $refund->get_total() + $fee_totals['manual'] );
 
 		$return_fee_info = sprintf(
-			// translators: 1: the return fee amount, 2: the amount refunded to the customer.
-			__( 'Return fee %1$s deducted, %2$s refunded to you.', 'qliro-for-woocommerce' ),
+			// translators: 1: the return fee amount, 2: the amount paid back to the customer.
+			__( 'Return fee %1$s deducted, %2$s paid back to you.', 'qliro-for-woocommerce' ),
 			wc_price( $fee_total, $currency ),
 			wc_price( $refunded_to_customer, $currency )
 		);
