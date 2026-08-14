@@ -613,7 +613,8 @@ class Qliro_One_Order_Management {
 			wc_price( $refunded_to_customer, $currency )
 		);
 
-		return empty( $reason ) ? $return_fee_info : $return_fee_info . '<br>' . $reason;
+		// The space keeps the two apart in plain text emails, where the line break is stripped.
+		return empty( $reason ) ? $return_fee_info : $return_fee_info . ' <br>' . $reason;
 	}
 
 	/**
