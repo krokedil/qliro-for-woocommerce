@@ -1,4 +1,0 @@
-Type: Fix
-Needs Documentation: no
-
-Fixed the confirmation page showing up blank after a completed purchase on some server setups.

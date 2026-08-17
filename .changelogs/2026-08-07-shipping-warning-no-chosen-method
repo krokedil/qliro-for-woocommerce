@@ -1,4 +1,0 @@
-Type: Fix
-Needs Documentation: no
-
-Fixed a PHP warning that was logged during checkout when no shipping method had been selected yet, which happens when the store hides shipping costs until an address is entered.

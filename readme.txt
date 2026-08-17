@@ -7,7 +7,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 11.0.1
-Stable tag: 2.2.9
+Stable tag: 2.2.10
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,14 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-08-17    - version 2.2.10 =
+* Fix           - Fixed the confirmation page showing up blank after a completed purchase on some server setups.
+* Fix           - Fixed failed subscription renewals staying On hold, which left WooCommerce Subscriptions unable to retry them.
+* Fix           - Fixed subscription renewals failing to retry after a declined payment. Renewal payments are now created with a temporary reference that is replaced by the order number once the payment goes through, so a failed renewal can be retried as many times as needed.
+* Fix           - Fixed renewals that cover several subscriptions being charged once per subscription, which could leave extra payment reservations at Qliro.
+* Fix           - Fixed a declined subscription renewal never being retried. When "Retry Failed Payments" is enabled in the WooCommerce Subscriptions settings, a renewal that Qliro declines now has the store's retry rules applied to it, so the renewal order is moved on and retried according to those rules instead of being left as failed.
+* Fix           - Fixed a PHP warning that was logged during checkout when no shipping method had been selected yet, which happens when the store hides shippingcosts until an address is entered.
+
 = 2026-08-03    - version 2.2.9 =
 * Enhancement   - Improved user-facing error handling with clearer notices containing more descriptive information.
 * Enhancement   - Improve the validation of the callbacks from Qliro when storing card tokens and processing notifications.
