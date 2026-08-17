@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class Qliro_One_Subscriptions {
 	public const GATEWAY_ID               = 'qliro_one';
 	public const PENDING_PREAUTHORIZATION = self::GATEWAY_ID . '_pending_preauthorization';
+	public const SCHEDULED_ATTEMPT        = self::GATEWAY_ID . '_scheduled_payment_attempt';
 
 	/**
 	 * Class constructor.
@@ -62,14 +63,39 @@ class Qliro_One_Subscriptions {
 		// Get the order and the subscription objects.
 		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->get_id() );
 
-		foreach ( $subscriptions as $subscription ) {
-			// See if we have a token stored on the subscription.
-			$token_ids = $subscription->get_payment_tokens();
-			if ( empty( $token_ids ) ) {
-				$this->process_recurring_invoice_payment( $order, $subscription );
-			} else {
-				$this->process_recurring_card_payment( $order, $subscription, $token_ids );
+		// Charge the renewal order once, even when it covers several subscriptions. Paying per
+		// subscription would open a separate Qliro order for each one, and all but the last would be
+		// left as a preauthorization that is never captured or cancelled. Grouped subscriptions share
+		// the parent order's payment method, so the first one decides how to pay.
+		$subscription = reset( $subscriptions );
+		if ( empty( $subscription ) ) {
+			return;
+		}
+
+		$token_ids = $subscription->get_payment_tokens();
+		if ( empty( $token_ids ) ) {
+			$this->process_recurring_invoice_payment( $order, $subscription );
+		} else {
+			$this->process_recurring_card_payment( $order, $subscription, $token_ids );
+		}
+	}
+
+	/**
+	 * Fail the renewal payment for every subscription the renewal order covers, so a grouped renewal
+	 * cannot leave some of its subscriptions active while others are put on hold.
+	 *
+	 * @param WC_Order $order The renewal order.
+	 * @param string   $note  Note to add to each subscription, if any.
+	 *
+	 * @return void
+	 */
+	private function fail_renewal_payment( $order, $note = '' ) {
+		foreach ( wcs_get_subscriptions_for_renewal_order( $order->get_id() ) as $subscription ) {
+			if ( ! empty( $note ) ) {
+				$subscription->add_order_note( $note );
 			}
+
+			$subscription->payment_failed_for_related_order( 'on-hold', $order );
 		}
 	}
 
@@ -86,8 +112,7 @@ class Qliro_One_Subscriptions {
 
 		// If the result is a WP_Error, fail the payment.
 		if ( is_wp_error( $result ) ) {
-			$subscription->payment_failed();
-			$subscription->save();
+			$this->fail_renewal_payment( $order );
 			return;
 		}
 
@@ -96,10 +121,10 @@ class Qliro_One_Subscriptions {
 		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'QLIRO_INVOICE', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', 'INVOICE', true );
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->add_meta_data( self::SCHEDULED_ATTEMPT, wc_bool_to_string( self::is_scheduled_payment_attempt() ), true );
 		$order->set_transaction_id( $qliro_order_id );
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
@@ -131,8 +156,7 @@ class Qliro_One_Subscriptions {
 			$message = __( 'The previously associated payment token for this subscription is no longer valid or available.', 'qliro-for-woocommerce' );
 
 			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
+			$this->fail_renewal_payment( $order, $message );
 			return;
 		}
 
@@ -147,8 +171,7 @@ class Qliro_One_Subscriptions {
 			);
 
 			$order->add_order_note( $message );
-			$subscription->add_order_note( $message );
-			$subscription->payment_failed_for_related_order();
+			$this->fail_renewal_payment( $order, $message );
 			return;
 		}
 
@@ -156,11 +179,11 @@ class Qliro_One_Subscriptions {
 		$qliro_order_id = $result['OrderId'];
 		$order->add_meta_data( '_qliro_payment_transaction_id', $result['PaymentTransactions'][0]['PaymentTransactionId'], true );
 		$order->add_meta_data( '_qliro_one_order_id', $qliro_order_id, true );
-		$order->add_meta_data( '_qliro_one_merchant_reference', $order->get_order_number(), true );
 		$order->add_meta_data( 'qliro_one_payment_method_name', 'CREDITCARDS', true );
 		$order->add_meta_data( 'qliro_one_payment_method_subtype_code', $token->get_card_type(), true );
 		$order->set_transaction_id( $qliro_order_id );
 		$order->add_meta_data( self::PENDING_PREAUTHORIZATION, time(), true );
+		$order->add_meta_data( self::SCHEDULED_ATTEMPT, wc_bool_to_string( self::is_scheduled_payment_attempt() ), true );
 
 		$note = __( 'Renewal payment has been requested from Qliro and is awaiting preauthorization.', 'qliro-for-woocommerce' );
 
@@ -179,6 +202,20 @@ class Qliro_One_Subscriptions {
 	public static function process_preauthorization( $renewal_order, $qliro_order_id ) {
 		// Remove the pending preauthorization meta and complete the payment.
 		$renewal_order->delete_meta_data( self::PENDING_PREAUTHORIZATION );
+		$renewal_order->delete_meta_data( self::SCHEDULED_ATTEMPT );
+
+		// Claim the order number now that the payment has gone through. A failed attempt keeps its
+		// temporary reference, which is what leaves the order number free for the next retry.
+		if ( $renewal_order->get_order_number() !== $renewal_order->get_meta( '_qliro_one_merchant_reference' ) ) {
+			$response = QLIRO_WC()->api->update_qliro_one_merchant_reference( $renewal_order->get_id() );
+
+			if ( is_wp_error( $response ) ) {
+				// translators: %s - Response error message.
+				$renewal_order->add_order_note( sprintf( __( 'There was a problem updating merchant reference in Qliro\'s system. Error message: %s', 'qliro-for-woocommerce' ), $response->get_error_message() ) );
+			} else {
+				$renewal_order->update_meta_data( '_qliro_one_merchant_reference', $renewal_order->get_order_number() );
+			}
+		}
 
 		$subscriptions = wcs_get_subscriptions_for_order( $renewal_order, array( 'order_type' => 'renewal' ) );
 		foreach ( $subscriptions as $subscription ) {
@@ -200,6 +237,21 @@ class Qliro_One_Subscriptions {
 			)
 		);
 		$renewal_order->payment_complete();
+	}
+
+	/**
+	 * Whether the current request is a WooCommerce Subscriptions scheduled payment attempt.
+	 *
+	 * Recorded on the renewal order, since Qliro reports the outcome in a later request.
+	 *
+	 * The generic hooks, not the gateway one: Subscriptions nests the gateway hook inside them for
+	 * an automatic renewal, and fires it alone for a manual attempt like the admin retry action.
+	 *
+	 * @return bool
+	 */
+	private static function is_scheduled_payment_attempt() {
+		return doing_action( 'woocommerce_scheduled_subscription_payment' )
+			|| doing_action( 'woocommerce_scheduled_subscription_payment_retry' );
 	}
 
 	/**

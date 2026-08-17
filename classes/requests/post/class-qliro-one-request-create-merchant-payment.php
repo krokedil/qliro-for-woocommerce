@@ -38,6 +38,11 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 		$token      = $this->arguments['token'];
 		$confirm_id = wp_generate_uuid4();
 
+		// Qliro rejects a merchant reference it has already seen, and WooCommerce reuses the same renewal
+		// order for every retry, so send a temporary one. Qliro_One_Subscriptions::process_preauthorization()
+		// swaps it for the order number once the payment goes through.
+		$temp_reference = uniqid( 'q1' );
+
 		$shipping_first_name = $order->get_shipping_first_name();
 		$shipping_last_name  = $order->get_shipping_last_name();
 		$shipping_address_1  = $order->get_shipping_address_1();
@@ -47,7 +52,7 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 		$body = array(
 			'RequestId'                            => $order_data->generate_request_id(),
 			'MerchantApiKey'                       => $this->get_qliro_key(),
-			'MerchantReference'                    => $order->get_order_number(),
+			'MerchantReference'                    => $temp_reference,
 			'Currency'                             => $order->get_currency(),
 			'Country'                              => $order->get_billing_country(),
 			'Language'                             => str_replace( '_', '-', strtolower( get_locale() ) ),
@@ -94,6 +99,8 @@ class Qliro_One_Request_Create_Merchant_Payment extends Qliro_One_Request_Post {
 
 		// Set the confirm id to the order meta to handle the callback for the order management.
 		$order->update_meta_data( '_qliro_one_order_confirmation_id', $confirm_id );
+
+		$order->update_meta_data( '_qliro_one_merchant_reference', $temp_reference );
 		$order->save();
 
 		return $body;
