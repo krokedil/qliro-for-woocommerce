@@ -142,11 +142,11 @@ class Qliro_One_Fields {
 				'title'       => __( 'Advanced demo mode', 'qliro-for-woocommerce' ),
 				'label'       => __( 'Enable advanced demo mode', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
-				/* translators: 1: WooCommerce coupon settings link, 2: documentation link */
 				'description' => sprintf(
+					/* translators: 1: WooCommerce coupon settings link, 2: documentation link */
 					__( 'Configure coupons in %1$s. For detailed instructions, see the %2$s.', 'qliro-for-woocommerce' ),
-					'<a target="_blank" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-for-woocommerce' ) . '</a>',
-					'<a target="_blank" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-for-woocommerce' ) . '</a>'
+					'<a target="_blank" rel="noopener noreferrer" href="' . admin_url( 'edit.php?post_type=shop_coupon' ) . '">' . __( 'WooCommerce coupon settings', 'qliro-for-woocommerce' ) . '</a>',
+					'<a target="_blank" rel="noopener noreferrer" href="https://docs.krokedil.com/qliro-for-woocommerce/get-started/advanced-demo-mode/">' . __( 'documentation', 'qliro-for-woocommerce' ) . '</a>'
 				),
 				'default'     => 'no',
 				'desc_tip'    => false,
@@ -306,7 +306,6 @@ class Qliro_One_Fields {
 				'type'              => 'number',
 				'css'               => 'width: 100px',
 				'description'       => __( 'Set the max amount above the order value a customer can add to a Qliro order paid with a After Delivery payment. If you want higher than 10% you will first need to contact Qliro. Read more about upsell <a target="_blank" href="https://docs.krokedil.com/post-purchase-upsell-for-woocommerce/">here</a>.', 'qliro-for-woocommerce' ),
-				'default'           => '',
 				'desc_tip'          => false,
 				'default'           => 10,
 				'class'             => 'krokedil_ppu_setting' . $ppu_status,
@@ -346,7 +345,7 @@ class Qliro_One_Fields {
 				'label'       => __( 'Automatically calculate return fee on refunds', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
-				'description' => __( 'If enabled, then the Qliro return fee will be automatically calculated in the background if a refunded order line is less than the unit amount.', 'qliro-for-woocommerce' ),
+				'description' => __( 'If enabled and you refund an order line at a lower amount than its original price, the difference is automatically sent to Qliro as a return fee. The fee is deducted from the amount Qliro pays back to the customer and is shown on the order and in the customer\'s refund details.', 'qliro-for-woocommerce' ),
 				'desc_tip'    => true,
 			),
 			'om_advanced_settings'                       => array(

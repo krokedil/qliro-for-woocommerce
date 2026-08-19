@@ -30,8 +30,10 @@ class Qliro_One_Order_Management {
 
 		add_action( 'woocommerce_admin_order_items_after_shipping', array( $this, 'add_return_fee_order_lines_html' ), PHP_INT_MAX );
 		add_action( 'woocommerce_after_order_refund_item_name', array( $this, 'show_return_fee_info' ) );
+		add_action( 'woocommerce_admin_order_totals_after_refunded', array( $this, 'add_return_fee_to_order_totals_summary' ) );
+		add_filter( 'woocommerce_order_refund_get_reason', array( $this, 'add_return_fee_info_to_refund_reason' ), 10, 2 );
 
-		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999, 2 );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999 );
 
 		// Register the action to set the transaction meta data when reading the Qliro order from the admin endpoint.
 		add_action( 'qliro_admin_order_received', Qliro_Order_Utility::class . '::maybe_update_transaction_meta', 10, 2 );
@@ -387,24 +389,35 @@ class Qliro_One_Order_Management {
 		}
 
 		$applied_return_fees = apply_filters( 'qliro_applied_return_fees', array() );
-
-		// translators: refund amount, refund id.
-		$text = __( 'Processing a refund of %1$s with Qliro', 'qliro-for-woocommerce' );
+		$currency            = array( 'currency' => $order->get_currency() );
 
 		if ( ! empty( $applied_return_fees ) ) {
-			$total_return_fees = 0;
+			$manual_fees     = 0;
+			$calculated_fees = 0;
 			foreach ( $applied_return_fees as $return_fee ) {
-				$total_return_fees += $return_fee['PricePerItemIncVat'] ?? 0;
+				if ( 'return-fee-calculated' === ( $return_fee['MerchantReference'] ?? '' ) ) {
+					$calculated_fees += floatval( $return_fee['PricePerItemIncVat'] ?? 0 );
+				} else {
+					$manual_fees += floatval( $return_fee['PricePerItemIncVat'] ?? 0 );
+				}
 			}
 
-			$formatted_total_return_fees = wc_price( $total_return_fees, array( 'currency' => $order->get_currency() ) );
+			// Manual fees are not included in the refund amount, while calculated fees already are.
+			$gross_amount = $amount + $calculated_fees;
+			$net_amount   = $amount - $manual_fees;
 
-			// translators: return frees amount.
-			$extra_text = sprintf( __( ' (including return fees of %1$s)', 'qliro-for-woocommerce' ), $formatted_total_return_fees );
-			$text      .= $extra_text;
+			$formatted_text = sprintf(
+				// translators: 1: the total refund amount, 2: the return fee amount, 3: the amount paid back to the customer.
+				__( 'Processing a refund of %1$s with Qliro. Return fee %2$s deducted, %3$s paid back to the customer.', 'qliro-for-woocommerce' ),
+				wc_price( $gross_amount, $currency ),
+				wc_price( $manual_fees + $calculated_fees, $currency ),
+				wc_price( $net_amount, $currency )
+			);
+		} else {
+			// translators: %1$s: the refund amount.
+			$formatted_text = sprintf( __( 'Processing a refund of %1$s with Qliro', 'qliro-for-woocommerce' ), wc_price( $amount, $currency ) );
 		}
 
-		$formatted_text = sprintf( $text, wc_price( $amount, array( 'currency' => $order->get_currency() ) ) );
 		$order->add_order_note( $formatted_text );
 
 		$refund_order = wc_get_order( $refund_order_id );
@@ -508,32 +521,167 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
-	 * Show the return fee info in the refund order.
+	 * Show a breakdown of how the return fee affects the refund under the refund line in the order admin.
 	 *
-	 * @param WC_Order $refund_order The refund order..
+	 * @param WC_Order_Refund $refund_order The refund order.
 	 */
 	public function show_return_fee_info( $refund_order ) {
-		$return_fees = $refund_order->get_meta( '_qliro_return_fees' );
-		// If its empty, just return.
-		if ( empty( $return_fees ) ) {
+		$fee_totals = self::get_return_fee_totals_for_refund( $refund_order );
+		$fee_total  = $fee_totals['manual'] + $fee_totals['calculated'];
+
+		// If the total is 0, just return.
+		if ( $fee_total <= 0 ) {
 			return;
 		}
 
-		$total = 0;
-		foreach ( $return_fees as $return_fee ) {
-			$total += $return_fee['PricePerItemIncVat'] ?? 0;
+		$currency = array( 'currency' => $refund_order->get_currency() );
+		// The refund total is negative. Manual fees are not included in the refund total, while calculated fees already are.
+		$refund_value         = $refund_order->get_total() - $fee_totals['calculated'];
+		$refunded_to_customer = $refund_order->get_total() + $fee_totals['manual'];
+		?>
+		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
+			<span style="font-weight: bold;"><?php esc_html_e( 'Refund value: ', 'qliro-for-woocommerce' ); ?></span>
+			<?php echo wp_kses_post( wc_price( $refund_value, $currency ) ); ?><br>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Return fee: ', 'qliro-for-woocommerce' ); ?></span>
+			<?php echo wp_kses_post( wc_price( $fee_total, $currency ) ); ?><br>
+			<span style="font-weight: bold;"><?php esc_html_e( 'Refunded to customer: ', 'qliro-for-woocommerce' ); ?></span>
+			<?php echo wp_kses_post( wc_price( $refunded_to_customer, $currency ) ); ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Show the total return fee for the order in the order totals summary, after the refunded row.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return void
+	 */
+	public function add_return_fee_to_order_totals_summary( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order || 'qliro_one' !== $order->get_payment_method() ) {
+			return;
 		}
 
-		// If the total is 0, just return.
-		if ( $total <= 0 ) {
+		$fee_total = self::get_return_fee_total_for_order( $order );
+		if ( $fee_total <= 0 ) {
 			return;
 		}
 		?>
-		<span class="qliro-return-fee-info display_meta" style="display: block; margin-top: 10px; color: #888; font-size: .92em!important;">
-			<span style="font-weight: bold;"><?php esc_html_e( 'Qliro return fee: ', 'qliro-for-woocommerce' ); ?></span>
-			<?php echo wp_kses_post( wc_price( $total, array( 'currency' => $refund_order->get_currency() ) ) ); ?>
-		</span>
+		<tr>
+			<td class="label"><?php esc_html_e( 'Return fee', 'qliro-for-woocommerce' ); ?>:</td>
+			<td width="1%"></td>
+			<td class="total"><?php echo wp_kses_post( wc_price( $fee_total, array( 'currency' => $order->get_currency() ) ) ); ?></td>
+		</tr>
 		<?php
+	}
+
+	/**
+	 * Add information about the deducted return fee to the refund reason shown to the customer.
+	 *
+	 * The reason is only modified while it is being rendered on the customer account page or in an
+	 * email to the customer, and is never persisted to the refund.
+	 *
+	 * @param string          $reason The refund reason.
+	 * @param WC_Order_Refund $refund The refund order.
+	 * @return string
+	 */
+	public function add_return_fee_info_to_refund_reason( $reason, $refund ) {
+		if ( ! $this->should_return_fee_info_be_shown() ) {
+			return $reason;
+		}
+
+		$order = wc_get_order( $refund->get_parent_id() );
+		if ( ! $order || 'qliro_one' !== $order->get_payment_method() ) {
+			return $reason;
+		}
+
+		$fee_totals = self::get_return_fee_totals_for_refund( $refund );
+		$fee_total  = $fee_totals['manual'] + $fee_totals['calculated'];
+		if ( $fee_total <= 0 ) {
+			return $reason;
+		}
+
+		$currency = array( 'currency' => $refund->get_currency() );
+		// Manual fees are not included in the refund total, so the amount paid back to the customer is the total minus the manual fees.
+		$refunded_to_customer = abs( $refund->get_total() + $fee_totals['manual'] );
+
+		$return_fee_info = sprintf(
+			// translators: 1: the return fee amount, 2: the amount paid back to the customer.
+			__( 'Return fee %1$s deducted, %2$s paid back to you.', 'qliro-for-woocommerce' ),
+			wc_price( $fee_total, $currency ),
+			wc_price( $refunded_to_customer, $currency )
+		);
+
+		// The space keeps the two apart in plain text emails, where the line break is stripped.
+		return empty( $reason ) ? $return_fee_info : $return_fee_info . ' <br>' . $reason;
+	}
+
+	/**
+	 * Whether the return fee information should be added to the refund reason.
+	 *
+	 * Only when rendering the customer account page or an email to the customer, so the modified
+	 * reason is never displayed in the admin or saved with the refund.
+	 *
+	 * @return bool
+	 */
+	private function should_return_fee_info_be_shown() {
+		if ( is_account_page() ) {
+			return true;
+		}
+
+		if ( did_action( 'woocommerce_email_order_details' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the return fee totals for a refund, split by how the fee was added.
+	 *
+	 * Manual fees are entered in the return fee row and are not included in the refund total,
+	 * while calculated fees are the difference between the original and the refunded order line
+	 * amounts and are therefore already part of the refund total.
+	 *
+	 * @param WC_Order_Refund $refund_order The refund order.
+	 * @return array The return fee totals including VAT, keyed by 'manual' and 'calculated'.
+	 */
+	public static function get_return_fee_totals_for_refund( $refund_order ) {
+		$fee_totals = array(
+			'manual'     => 0,
+			'calculated' => 0,
+		);
+
+		$return_fees = $refund_order->get_meta( '_qliro_return_fees' );
+		if ( empty( $return_fees ) ) {
+			return $fee_totals;
+		}
+
+		foreach ( $return_fees as $return_fee ) {
+			$type = 'return-fee-calculated' === ( $return_fee['MerchantReference'] ?? '' ) ? 'calculated' : 'manual';
+
+			$fee_totals[ $type ] += floatval( $return_fee['PricePerItemIncVat'] ?? 0 );
+		}
+
+		return $fee_totals;
+	}
+
+	/**
+	 * Get the total return fee including VAT for all refunds on an order.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @return float
+	 */
+	public static function get_return_fee_total_for_order( $order ) {
+		$total = 0;
+
+		foreach ( $order->get_refunds() as $refund_order ) {
+			$fee_totals = self::get_return_fee_totals_for_refund( $refund_order );
+			$total     += $fee_totals['manual'] + $fee_totals['calculated'];
+		}
+
+		return $total;
 	}
 
 	/**
@@ -575,10 +723,9 @@ class Qliro_One_Order_Management {
 	/**
 	 * Maybe sync the order with Qliro when the order is updated.
 	 *
-	 * @param int     $order_id The WooCommerce Order ID.
-	 * @param WP_Post $post The post object.
+	 * @param int $order_id The WooCommerce Order ID.
 	 */
-	public function maybe_sync_order( $order_id, $post ) {
+	public function maybe_sync_order( $order_id ) {
 
 		// If the order automatic sync on update is not enabled, bail.
 		if ( ! apply_filters( 'qliro_sync_order_on_update', false, $order_id ) ) {

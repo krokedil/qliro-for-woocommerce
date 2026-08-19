@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: yes
+
+The return fee on refunds is now explained in the order admin, and shown to the customer in refund emails and on the My Account page.
