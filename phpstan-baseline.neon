@@ -73,12 +73,6 @@ parameters:
 			path: classes/class-qliro-one-logger.php
 
 		-
-			message: '#^Static method Qliro_Order_Discount\:\:output_order_discount_button\(\) invoked with 2 parameters, 1 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: classes/class-qliro-one-metabox.php
-
-		-
 			message: '#^Default value of the parameter \#5 \$items \(string\) of method Qliro_One_Order_Management\:\:create_refund\(\) is incompatible with type array\.$#'
 			identifier: parameter.defaultValue
 			count: 1
@@ -169,12 +163,6 @@ parameters:
 			path: classes/class-qliro-order-discount.php
 
 		-
-			message: '#^Method Qliro_Order_Discount\:\:calculate_discount_vat_amount\(\) never returns int so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: classes/class-qliro-order-discount.php
-
-		-
 			message: '#^Method Qliro_Order_Discount\:\:get_order_discount_modal_data\(\) should return array\{vat_rates\: array\<int, string\>, action_url\: string, items_total_amount\: float, available_amount\: float, total_amount\: float, currency\: string, order\: WC_Order\|null\} but returns array\{vat_rates\: array\<array\{id\: int, class\: string, label\: string, percentage\: float\}\>, action_url\: string, items_total_amount\: float, available_amount\: float, total_amount\: string, fees\: array\<string\>\}\.$#'
 			identifier: return.type
 			count: 1
@@ -213,30 +201,6 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$value of method WC_Data\:\:add_meta_data\(\) expects array\|string, int given\.$#'
 			identifier: argument.type
-			count: 1
-			path: classes/class-qliro-order-discount.php
-
-		-
-			message: '#^Parameter \#3 \$discount_id of method Qliro_Order_Discount\:\:validate_discount\(\) expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: classes/class-qliro-order-discount.php
-
-		-
-			message: '#^The overwriting exit point is on this line\.$#'
-			identifier: finally.exitPoint
-			count: 1
-			path: classes/class-qliro-order-discount.php
-
-		-
-			message: '#^This throw is overwritten by a different one in the finally block below\.$#'
-			identifier: finally.exitPoint
-			count: 1
-			path: classes/class-qliro-order-discount.php
-
-		-
-			message: '#^Variable \$qliro_order on left side of \?\? is never defined\.$#'
-			identifier: nullCoalesce.variable
 			count: 1
 			path: classes/class-qliro-order-discount.php
 
