@@ -90,7 +90,7 @@ class Qliro_One_Metabox extends OrderMetabox {
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total );
-		Qliro_Order_Discount::output_order_discount_button( $order, $qliro_order );
+		Qliro_Order_Discount::output_order_discount_button( $order );
 		self::output_collapsable_section( 'qliro-advanced', __( 'Advanced', 'qliro-for-woocommerce' ), self::get_advanced_section_content( $order ) );
 	}
 
@@ -149,6 +149,9 @@ class Qliro_One_Metabox extends OrderMetabox {
 				break;
 			case 'missing_parameters':
 				$notice = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
+				break;
+			case 'discount_not_allowed':
+				$notice = __( 'A discount can no longer be added to this order.', 'qliro-for-woocommerce' );
 				break;
 			default:
 				return;

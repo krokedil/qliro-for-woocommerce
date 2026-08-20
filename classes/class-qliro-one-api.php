@@ -159,15 +159,17 @@ class Qliro_One_API {
 	/**
 	 * Add items to a shipped Qliro order.
 	 *
-	 * @param int   $order_id Order ID.
-	 * @param array $items Items to add.
+	 * @param int    $order_id Order ID.
+	 * @param array  $items Items to add.
+	 * @param string $transaction_id Optional. The payment transaction id of the invoice to add the items to. If omitted, the transaction id is resolved from the order metadata.
 	 * @return array|WP_Error
 	 */
-	public function add_items_qliro_order( $order_id, $items ) {
+	public function add_items_qliro_order( $order_id, $items, $transaction_id = '' ) {
 		$request  = new Qliro_One_Request_Add_Items(
 			array(
-				'order_id' => $order_id,
-				'items'    => $items,
+				'order_id'       => $order_id,
+				'items'          => $items,
+				'transaction_id' => $transaction_id,
 			)
 		);
 		$response = $request->request();

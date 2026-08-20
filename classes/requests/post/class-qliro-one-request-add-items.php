@@ -47,20 +47,30 @@ class Qliro_One_Request_Add_Items extends Qliro_One_Request_Post {
 		$order                = wc_get_order( $order_id );
 		$this->qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-		$transaction_id = $order->get_meta( '_qliro_order_captured' );
-		if ( empty( $transaction_id ) ) {
-			$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
-		}
-
-		$additions = Qliro_Order_Utility::maybe_convert_to_split_transactions( $this->arguments['items'], $order );
-		// If we failed to convert the order items to additions, use the old logic to send the additions in a single addition.
-		if ( empty( $additions ) ) {
+		// If a transaction id is provided, use that. Otherwise, try to get the transaction id from the order meta.
+		$resolved_transaction_id = $this->arguments['transaction_id'] ?? '';
+		if ( ! empty( $resolved_transaction_id ) ) {
 			$additions = array(
 				array(
-					'PaymentTransactionId' => $transaction_id,
+					'PaymentTransactionId' => intval( $resolved_transaction_id ),
 					'OrderItems'           => $this->arguments['items'],
 				),
 			);
+		} else {
+			$transaction_id = $order->get_meta( '_qliro_order_captured' );
+			if ( empty( $transaction_id ) ) {
+				$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
+			}
+
+			$additions = Qliro_Order_Utility::maybe_convert_to_split_transactions( $this->arguments['items'], $order );
+			if ( empty( $additions ) ) {
+				$additions = array(
+					array(
+						'PaymentTransactionId' => $transaction_id,
+						'OrderItems'           => $this->arguments['items'],
+					),
+				);
+			}
 		}
 
 		return array(
