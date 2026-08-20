@@ -181,12 +181,8 @@ class Qliro_Order_Discount {
 			}
 
 			if ( is_wp_error( $response ) ) {
-				// Remove the fee from the order since the update to Qliro failed.
-				$order->remove_item( $fee );
-				$order->calculate_totals();
-
 				// translators: %1$s: Discount ID, %2$s: Error message.
-				throw new Exception( sprintf( __( 'Failed to add discount [%1$s] to Qliro order. Reason: %2$s', 'qliro-for-woocommerce' ), $discount_id, $response->get_error_message() ) );
+				throw new Exception( esc_html( sprintf( __( 'Failed to add discount [%1$s] to Qliro order. Reason: %2$s', 'qliro-for-woocommerce' ), $discount_id, $response->get_error_message() ) ) );
 			}
 
 			// Get the new payment transaction id from the response, and store it on the order.
