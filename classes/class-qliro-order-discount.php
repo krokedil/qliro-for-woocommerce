@@ -145,7 +145,6 @@ class Qliro_Order_Discount {
 				throw new Exception( esc_html( sprintf( __( 'Failed to add discount [%1$s] to Qliro order. The Qliro order could not be retrieved: %2$s', 'qliro-for-woocommerce' ), $discount_id, $qliro_order->get_error_message() ) ) );
 			}
 
-			// Since a "shipped" Qliro order cannot be updated, the discount must be added to the invoice created by the capture instead.
 			$is_captured = qliro_is_fully_captured( $order );
 
 			// Resolve the payment transaction of the invoice before the order is modified, so that a failure to resolve it requires no rollback.
@@ -167,11 +166,9 @@ class Qliro_Order_Discount {
 			// Add the fee to the order.
 			$fee = $this->add_discount_to_order( $discount_id, $discount_rate_id, $vat_rate, $vat_amount, $discount_amount, $order );
 
-			// Ensure WooCommerce did not change the amounts of the fee while calculating the order totals.
 			$this->validate_discount_fee( $fee, $discount_amount, $vat_amount, $order );
 
 			if ( $is_captured ) {
-				// Only the discount itself is added to the invoice, the items already on it must not be sent again.
 				$items    = array( self::get_discount_order_item( $fee, $order ) );
 				$response = QLIRO_WC()->api->add_items_qliro_order( $order_id, $items, $transaction_id );
 			} else {
@@ -449,6 +446,7 @@ class Qliro_Order_Discount {
 					'action'            => 'qliro_add_order_discount',
 					'order_id'          => $order->get_id(),
 					'order_key'         => $order->get_order_key(),
+					'qliro_order_id'    => $qliro_order['OrderId'] ?? '',
 					'discount_amount'   => 0,
 					'discount_id'       => '',
 					'discount_vat_rate' => 0,
@@ -576,23 +574,12 @@ class Qliro_Order_Discount {
 	 *
 	 * @param WC_Order $order The WooCommerce order.
 	 * @param float    $discount_amount The discount amount.
-	 * @param string   $discount_id The discount ID.
+	 * @param int      $discount_id The discount ID.
 	 *
 	 * @throws Exception When the discount is invalid.
 	 * @return void
 	 */
 	private function validate_discount( $order, $discount_amount, $discount_id ) {
-		// A discount must reduce the order total. A negative amount would be inverted into a fee, and therefore charge the customer instead.
-		if ( $discount_amount <= 0 ) {
-			throw new Exception( esc_html__( 'The discount amount must be greater than zero.', 'qliro-for-woocommerce' ) );
-		}
-
-		// Qliro requires a merchant reference for the discount, and it is derived from the discount id.
-		if ( empty( qliro_one_format_fee_reference( $discount_id ) ) ) {
-			// translators: %s: Discount ID.
-			throw new Exception( esc_html( sprintf( __( 'The Discount ID [%s] cannot be used as a reference for Qliro. Please use one that contains letters or numbers.', 'qliro-for-woocommerce' ), $discount_id ) ) );
-		}
-
 		$items_total_amount = array_reduce( $order->get_items( 'line_item' ), fn( $total_amount, $item ) => $total_amount + ( floatval( $item->get_total() ) * 100 + floatval( $item->get_total_tax() ) * 100 ) ) ?? 0;
 
 		// Get the amount of any previous Qliro discounts applied to the order so we can exclude that from the available amount.
@@ -608,7 +595,7 @@ class Qliro_Order_Discount {
 		// Ensure there is actually a discounted amount, and that is less than the total amount.
 		if ( ( $discount_amount * 100 ) > ( $available_amount ) ) {
 			// translators: %s: Available amount formatted as price.
-			throw new Exception( esc_html( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), self::format_price( max( 0, $available_amount ) / 100, $order ) ) ) );
+			throw new Exception( esc_html( sprintf( __( 'Discount amount must be less than the remaining amount of %s.', 'qliro-for-woocommerce' ), wc_price( max( 0, $available_amount ) ) ) ) );
 		}
 
 		foreach ( $order->get_fees() as $fee ) {
