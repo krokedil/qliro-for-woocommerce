@@ -149,7 +149,7 @@ class Qliro_Order_Discount {
 			$is_captured = qliro_is_fully_captured( $order );
 
 			// Resolve the payment transaction of the invoice before the order is modified, so that a failure to resolve it requires no rollback.
-			$transaction_id = $is_captured ? self::get_invoice_transaction_id( $order, $qliro_order ) : '';
+			$transaction_id = $is_captured ? $order->get_meta( '_qliro_order_captured' ) : '';
 			if ( $is_captured && empty( $transaction_id ) ) {
 				// translators: %s: Discount ID.
 				throw new Exception( esc_html( sprintf( __( 'Failed to add discount [%s] to Qliro order. The captured payment transaction to add the discount to could not be found.', 'qliro-for-woocommerce' ), $discount_id ) ) );
@@ -364,27 +364,6 @@ class Qliro_Order_Discount {
 		 * @param WC_Order          $order The WooCommerce order.
 		 */
 		return apply_filters( 'qliro_one_order_discount_item', $order_item, $fee, $order );
-	}
-
-	/**
-	 * Get the payment transaction id of the invoice that the discount should be added to.
-	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 * @param array    $qliro_order The Qliro order.
-	 *
-	 * @return string The payment transaction id, or an empty string if it could not be resolved.
-	 */
-	private static function get_invoice_transaction_id( $order, $qliro_order ) {
-		// The invoice belongs to the capture, so use the most recent successful capture transaction.
-		$transaction_id = Qliro_Order_Utility::get_latest_transaction_id( $qliro_order, array( Qliro_Order_Utility::TRANSACTION_TYPE_CAPTURE ) );
-		if ( ! empty( $transaction_id ) ) {
-			return $transaction_id;
-		}
-
-		// Fall back to the transaction stored when the order was captured. This is not guaranteed to be a capture transaction, which is why it is only used when no capture was found.
-		$transaction_id = $order->get_meta( '_qliro_order_captured' );
-
-		return is_numeric( $transaction_id ) ? strval( $transaction_id ) : '';
 	}
 
 	/**
