@@ -16,10 +16,9 @@ class Qliro_Scheduled_Actions {
 	 * Gets the scheduled actions for the order.
 	 *
 	 * @param string $confirmation_id The confirmation ID.
-	 * @param string $order_created_date The order creation date.
 	 * @return array
 	 */
-	public static function get_scheduled_actions( $confirmation_id, $order_created_date ) {
+	public static function get_scheduled_actions( $confirmation_id ) {
 		$statuses          = array( 'complete', 'failed', 'pending' );
 		$scheduled_actions = array(
 			'complete' => array(),
@@ -27,23 +26,17 @@ class Qliro_Scheduled_Actions {
 			'pending'  => array(),
 		);
 
-		$order_created_timestamp = strtotime( $order_created_date );
-		$three_months_ago        = strtotime( '-3 months' );
-
-		if ( $order_created_timestamp >= $three_months_ago ) {
-			foreach ( $statuses as $status ) {
-				$scheduled_actions[ $status ] = as_get_scheduled_actions(
-					array(
-						'search'       => $confirmation_id,
-						'status'       => array( $status ),
-						'per_page'     => -1,
-						'group'        => Qliro_One_Callbacks::CHECKOUT_CALLBACKS,
-						'date'         => $order_created_date,
-						'date_compare' => '>=',
-					),
-					'ids'
-				);
-			}
+		foreach ( $statuses as $status ) {
+			$scheduled_actions[ $status ] = as_get_scheduled_actions(
+				array(
+					// Exact args match is indexed in Action Scheduler, unlike the LIKE-based 'search' parameter.
+					'args'     => array( $confirmation_id ),
+					'status'   => array( $status ),
+					'per_page' => -1,
+					'group'    => Qliro_One_Callbacks::CHECKOUT_CALLBACKS,
+				),
+				'ids'
+			);
 		}
 
 		return $scheduled_actions;
