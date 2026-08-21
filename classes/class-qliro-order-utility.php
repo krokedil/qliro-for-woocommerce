@@ -84,50 +84,6 @@ class Qliro_Order_Utility {
 	}
 
 	/**
-	 * Get the id of the most recent successful transaction of a given type from a Qliro order.
-	 *
-	 * @param array    $qliro_order The Qliro order.
-	 * @param string[] $types The transaction types to consider.
-	 *
-	 * @return string The PaymentTransactionId, or an empty string if no matching transaction was found.
-	 */
-	public static function get_latest_transaction_id( $qliro_order, $types ) {
-		$transactions = $qliro_order['PaymentTransactions'] ?? array();
-
-		// Only keep the successful transactions of the requested types that actually have an id.
-		$transactions = array_filter(
-			$transactions,
-			function ( $transaction ) use ( $types ) {
-				if ( empty( $transaction['PaymentTransactionId'] ?? '' ) ) {
-					return false;
-				}
-
-				if ( self::TRANSACTION_STATUS_SUCCESS !== self::get_transaction_status( $transaction ) ) {
-					return false;
-				}
-
-				return in_array( self::get_transaction_type( $transaction ), $types, true );
-			}
-		);
-
-		if ( empty( $transactions ) ) {
-			return '';
-		}
-
-		// Sort the transactions based on the timestamp to get the most recent one.
-		usort(
-			$transactions,
-			function ( $a, $b ) {
-				return strtotime( $a['Timestamp'] ?? '' ) - strtotime( $b['Timestamp'] ?? '' );
-			}
-		);
-
-		$transaction = end( $transactions );
-
-		return strval( $transaction['PaymentTransactionId'] );
-	}
-
-	/**
 	 * Get the type of a Qliro transaction.
 	 *
 	 * @param array $transaction The Qliro transaction.
