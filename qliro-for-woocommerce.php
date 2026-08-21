@@ -268,6 +268,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-product-tab.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method-instance.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-metabox.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-scheduled-actions.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-shipping-method.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-subscriptions.php';
 
