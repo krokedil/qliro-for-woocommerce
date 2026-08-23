@@ -1,0 +1,4 @@
+Type: Enhancement
+Needs Documentation: no
+
+Strengthened the permission and request validation checks on the Qliro order actions in the WooCommerce admin.
