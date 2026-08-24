@@ -52,10 +52,11 @@ class Qliro_One_Merchant_URLS {
 		}
 
 		$merchant_urls = array(
-			'terms'        => $this->get_terms_url(),
-			'confirmation' => $this->get_confirmation_url( $rand_string, $order ),
-			'push'         => $this->get_push_url( $rand_string ),
-			'om_push'      => $this->get_om_push_url( $rand_string ),
+			'terms'         => $this->get_terms_url(),
+			'confirmation'  => $this->get_confirmation_url( $rand_string, $order ),
+			'push'          => $this->get_push_url( $rand_string ),
+			'om_push'       => $this->get_om_push_url( $rand_string ),
+			'notifications' => $this->get_notifications_url( $rand_string ),
 		);
 
 		// If the cart contains a subscription, add the save card callback url, authenticated with a token.
@@ -118,6 +119,22 @@ class Qliro_One_Merchant_URLS {
 			home_url( '/wc-api/QOC_Checkout_Status/' )
 		);
 		return apply_filters( 'qliro_one_wc_push_url', $checkout_push_url );
+	}
+
+	/**
+	 * Notifications URL.
+	 *
+	 * URL of the third-party notifications callback endpoint, authenticated with a token.
+	 *
+	 * Signed with the confirmation id, since the endpoint has to match the reference back to the order.
+	 *
+	 * @param string $rand_string A random string generated on creation that will follow the entire order process.
+	 * @return string
+	 */
+	private function get_notifications_url( $rand_string ) {
+		$notifications_url = QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Notifications::class, 'notifications' );
+
+		return Qliro_One_Callback_Auth::add_token( $notifications_url, $rand_string );
 	}
 
 	/**

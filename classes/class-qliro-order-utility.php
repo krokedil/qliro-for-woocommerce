@@ -60,6 +60,29 @@ class Qliro_Order_Utility {
 	}
 
 	/**
+	 * Check whether the Qliro order has any successful payment transaction.
+	 *
+	 * @param array $qliro_order The Qliro order.
+	 *
+	 * @return bool True if at least one processing or capture transaction succeeded.
+	 */
+	public static function has_successful_payment( $qliro_order ) {
+		$transactions = $qliro_order['PaymentTransactions'] ?? array();
+		$paid_types   = array_merge( self::PROCESSING_TRANSACTION_TYPES, array( self::TRANSACTION_TYPE_CAPTURE ) );
+
+		foreach ( $transactions as $transaction ) {
+			$type   = $transaction['Type'] ?? '';
+			$status = $transaction['Status'] ?? '';
+
+			if ( in_array( $type, $paid_types, true ) && self::TRANSACTION_STATUS_SUCCESS === $status ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the last transaction from the Qliro order.
 	 *
 	 * @param array $qliro_order The Qliro order.
