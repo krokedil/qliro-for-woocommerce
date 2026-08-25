@@ -119,7 +119,6 @@ class Qliro_Order_Discount {
 			$this->handle_error_redirect( 'not_qliro_order', 'metabox_discount' );
 		}
 
-		$order_key = $order->get_order_key();
 		if ( ! hash_equals( $order->get_order_key(), $order_key ) ) {
 			$this->handle_error_redirect( 'invalid_hash', 'metabox_discount' );
 		}
