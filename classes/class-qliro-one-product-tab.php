@@ -112,4 +112,5 @@ class Qliro_One_Product_Tab {
 		$product->update_meta_data( 'qoc_has_risk', $has_risk ?? 'no' );
 		$product->save();
 	}
-} new Qliro_One_Product_Tab();
+}
+new Qliro_One_Product_Tab();
