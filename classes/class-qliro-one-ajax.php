@@ -208,6 +208,10 @@ class Qliro_One_Ajax extends WC_AJAX {
 			exit;
 		}
 
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+			wp_send_json_error( __( 'You do not have permission to change the order management setting.', 'qliro-for-woocommerce' ) );
+		}
+
 		if ( ! $order_id ) {
 			wp_send_json_error( __( 'No order ID provided.', 'qliro-for-woocommerce' ) );
 			exit;
