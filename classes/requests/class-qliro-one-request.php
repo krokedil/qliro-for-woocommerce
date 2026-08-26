@@ -204,7 +204,11 @@ abstract class Qliro_One_Request {
 				}
 				break;
 			case 'INVALID_INPUT':
-				$message = __( 'Qliro is unfortunately not available for this order. Please choose another payment method, or contact us if the problem continues. Error code INVALID_INPUT', 'qliro-for-woocommerce' );
+				$message = sprintf(
+					/* translators: %s: Qliro API error code. */
+					__( 'Qliro is unfortunately not available for this order. Please choose another payment method, or contact us if the problem continues. Error code %s', 'qliro-for-woocommerce' ),
+					$error_code
+				);
 				break;
 			case 'NO_ITEMS_LEFT_IN_RESERVATION':
 				$message = __( 'The order has already been captured.', 'qliro-for-woocommerce' );
