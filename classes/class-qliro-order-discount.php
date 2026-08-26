@@ -143,11 +143,11 @@ class Qliro_Order_Discount {
 			$vat_amount      *= -1; // VAT on fees is also negative.
 
 			// Add the fee to the order.
-			$fee_id = $this->add_discount_to_order( $discount_id, $discount_rate_id, $vat_rate, $vat_amount, $discount_amount, $order );
+			$fee = $this->add_discount_to_order( $discount_id, $discount_rate_id, $vat_rate, $vat_amount, $discount_amount, $order );
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
 			if ( qliro_is_fully_captured( $order ) ) {
-				$items    = array( Qliro_One_Helper_Order::process_order_item_fee( $order->get_item( $fee_id ), $order ) );
+				$items    = array( Qliro_One_Helper_Order::process_order_item_fee( $fee, $order ) );
 				$response = QLIRO_WC()->api->add_items_qliro_order( $order_id, $items );
 			} else {
 				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
@@ -157,7 +157,7 @@ class Qliro_Order_Discount {
 
 			if ( is_wp_error( $response ) ) {
 				// Remove the fee from the order since the update to Qliro failed.
-				$order->remove_item( $fee_id );
+				$order->remove_item( $fee->get_id() );
 				$order->calculate_totals();
 
 				// translators: %1$s: Discount ID, %2$s: Error message.
@@ -231,7 +231,7 @@ class Qliro_Order_Discount {
 	 * @param float    $discount_amount The discount amount.
 	 * @param WC_Order $order The WooCommerce order.
 	 *
-	 * @return int The fee item id.
+	 * @return WC_Order_Item_Fee The fee item added to the order.
 	 */
 	private function add_discount_to_order( $discount_id, $rate_id, $vat_rate, $vat_amount, $discount_amount, $order ) {
 		$fee = new WC_Order_Item_Fee();
@@ -251,13 +251,13 @@ class Qliro_Order_Discount {
 		);
 		$fee->set_tax_status( ( $vat_rate > 0 ) ? 'taxable' : 'none' );
 		$fee->set_name( $discount_id );
-		$fee_id = $fee->save();
+		$fee->save();
 
 		// NOTE! Do not call WC_Order::add_fee(). That method is deprecated, and results in the fee losing all its data when saved to the order, appearing as a generic fee with missing amount.
 		$order->add_item( $fee );
 		$order->calculate_totals();
 
-		return $fee_id;
+		return $fee;
 	}
 
 	/**
