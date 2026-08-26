@@ -28,7 +28,7 @@ class Qliro_One_Product_Tab {
 	 * @return void
 	 */
 	public function validate_sku( $product ) {
-		$notice = qliro_one_get_invalid_sku_notice( $product->get_sku() );
+		$notice = qliro_one_get_invalid_sku_notice( $product->get_sku( 'edit' ) );
 		if ( ! empty( $notice ) ) {
 			WC_Admin_Meta_Boxes::add_error( $notice );
 		}
