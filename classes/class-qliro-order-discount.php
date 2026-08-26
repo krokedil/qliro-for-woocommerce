@@ -147,7 +147,7 @@ class Qliro_Order_Discount {
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
 			if ( qliro_is_fully_captured( $order ) ) {
-				$items    = array( Qliro_One_Helper_Order::process_order_item_fee( new WC_Order_Item_Fee( $fee_id ), $order ) );
+				$items    = array( Qliro_One_Helper_Order::process_order_item_fee( $order->get_item( $fee_id ), $order ) );
 				$response = QLIRO_WC()->api->add_items_qliro_order( $order_id, $items );
 			} else {
 				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
