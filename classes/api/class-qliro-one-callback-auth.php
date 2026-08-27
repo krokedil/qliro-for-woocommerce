@@ -99,6 +99,32 @@ class Qliro_One_Callback_Auth {
 	}
 
 	/**
+	 * Check whether a callback reference is one the given order was registered with.
+	 *
+	 * A valid token proves only that this site issued it, not which order it was issued for.
+	 *
+	 * @param string   $reference The reference the token was signed for.
+	 * @param WC_Order $order     The order the callback claims to be about.
+	 *
+	 * @return bool True when the reference belongs to the order.
+	 */
+	public static function reference_belongs_to_order( $reference, $order ) {
+		if ( empty( $reference ) || ! $order instanceof WC_Order ) {
+			return false;
+		}
+
+		// The merchant reference covers legacy orders, whose URL was signed with it instead.
+		$known_references = array_filter(
+			array(
+				$order->get_meta( '_qliro_one_order_confirmation_id' ),
+				$order->get_meta( '_qliro_one_merchant_reference' ),
+			)
+		);
+
+		return in_array( (string) $reference, $known_references, true );
+	}
+
+	/**
 	 * Verify the authentication token on an incoming callback request.
 	 *
 	 * Intended for use as a REST permission_callback. Returns true when the request
