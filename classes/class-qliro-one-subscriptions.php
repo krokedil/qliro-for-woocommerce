@@ -40,6 +40,14 @@ class Qliro_One_Subscriptions {
 	public const SAVE_CARD_PENDING_KEY = '_qliro_one_save_card_pending';
 
 	/**
+	 * Meta key holding the card form of an in-progress card registration, which Qliro returns only
+	 * when the registration is created.
+	 *
+	 * @var string
+	 */
+	public const SAVE_CARD_FORM_KEY = '_qliro_one_save_card_form';
+
+	/**
 	 * How long a card registration is given before it is treated as never completed.
 	 *
 	 * Covers the customer filling in the form, including retrying within it, plus the delay before
@@ -48,6 +56,15 @@ class Qliro_One_Subscriptions {
 	 * @var int
 	 */
 	public const SAVE_CARD_GRACE_SECONDS = 15 * MINUTE_IN_SECONDS;
+
+	/**
+	 * How long a stored card form is shown again before a new registration is made instead.
+	 *
+	 * Kept well below the hour and a half after which the form Qliro returns expires.
+	 *
+	 * @var int
+	 */
+	public const SAVE_CARD_REUSE_SECONDS = 10 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Class constructor.
@@ -326,7 +343,13 @@ class Qliro_One_Subscriptions {
 			return;
 		}
 
-		$snippet = self::create_card_registration( $subscription );
+		// Registering again would leave the previous registration unable to find its way back here.
+		$snippet = self::get_ongoing_card_registration( $subscription );
+
+		if ( empty( $snippet ) ) {
+			$snippet = self::create_card_registration( $subscription );
+		}
+
 		if ( is_wp_error( $snippet ) ) {
 			wc_print_notice(
 				sprintf(
@@ -388,9 +411,46 @@ class Qliro_One_Subscriptions {
 		$subscription->update_meta_data( self::SAVE_CARD_ORDER_ID_KEY, $response['OrderId'] );
 		$subscription->update_meta_data( self::SAVE_CARD_REFERENCE_KEY, $request->get_merchant_reference() );
 		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, strval( time() ) );
+		$subscription->update_meta_data( self::SAVE_CARD_FORM_KEY, $response['OrderForRegistrationTokenHtmlSnippet'] );
 		$subscription->save();
 
 		return $response['OrderForRegistrationTokenHtmlSnippet'];
+	}
+
+	/**
+	 * Get the card form of a registration the customer can still complete, if there is one.
+	 *
+	 * A registration that has already been resolved, either way, must not be shown again.
+	 *
+	 * @param WC_Subscription $subscription The subscription to look for a registration on.
+	 * @return string The HTML snippet, or an empty string if there is nothing to show again.
+	 */
+	private static function get_ongoing_card_registration( $subscription ) {
+		$started = $subscription->get_meta( self::SAVE_CARD_PENDING_KEY );
+		$snippet = $subscription->get_meta( self::SAVE_CARD_FORM_KEY );
+
+		if ( empty( $started ) || ! is_numeric( $started ) || empty( $snippet ) ) {
+			return '';
+		}
+
+		if ( time() - intval( $started ) >= self::SAVE_CARD_REUSE_SECONDS ) {
+			return '';
+		}
+
+		return $snippet;
+	}
+
+	/**
+	 * Mark a card registration as no longer waiting for its card, discarding its form.
+	 *
+	 * Leaves saving to the caller.
+	 *
+	 * @param WC_Subscription $subscription The subscription the registration belongs to.
+	 * @return void
+	 */
+	private static function clear_pending_card_registration( $subscription ) {
+		$subscription->delete_meta_data( self::SAVE_CARD_PENDING_KEY );
+		$subscription->delete_meta_data( self::SAVE_CARD_FORM_KEY );
 	}
 
 	/**
@@ -486,7 +546,7 @@ class Qliro_One_Subscriptions {
 		// indistinguishable from one whose push has not arrived, and the customer would be told
 		// their card is on its way indefinitely.
 		if ( ! self::customer_completed_registration( $qliro_order_id ) ) {
-			$subscription->delete_meta_data( self::SAVE_CARD_PENDING_KEY );
+			self::clear_pending_card_registration( $subscription );
 			$subscription->save();
 
 			wc_print_notice(
@@ -569,7 +629,7 @@ class Qliro_One_Subscriptions {
 
 		// Replace rather than append, so a renewal can not fall back to the card that was just changed away from.
 		$subscription->get_data_store()->update_payment_token_ids( $subscription, array( $token->get_id() ) );
-		$subscription->delete_meta_data( self::SAVE_CARD_PENDING_KEY );
+		self::clear_pending_card_registration( $subscription );
 		$subscription->save();
 
 		$subscription->add_order_note(
