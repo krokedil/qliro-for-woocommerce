@@ -63,8 +63,14 @@ class Qliro_One_Request_Save_Credit_Card extends Qliro_One_Request_Post {
 	 * @return array
 	 */
 	protected function get_body() {
+		$subscription = wc_get_order( $this->arguments['order_id'] );
+
+		// A card is only ever registered for a subscription, and everything below reads from one.
+		if ( ! $subscription instanceof WC_Subscription ) {
+			return array();
+		}
+
 		$order_data      = new Qliro_One_Helper_Order();
-		$subscription    = wc_get_order( $this->arguments['order_id'] );
 		$parent          = $subscription->get_parent();
 		$push_url        = Qliro_One_Callback_Auth::add_token(
 			Qliro_One_Subscriptions::absolutize_url( QLIRO_WC()->api_registry()->get_request_path( Qliro_One_API_Controller_Save_Card::class, 'save-card' ) ),

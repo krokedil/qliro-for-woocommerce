@@ -1,0 +1,4 @@
+Type: Feature
+Needs Documentation: no
+
+Customers can now change the payment card on a subscription, and are told if the card was not registered.

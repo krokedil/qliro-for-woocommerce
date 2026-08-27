@@ -126,9 +126,16 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		// A change payment method request registers a new card instead of taking a payment, which is done on a page of its own.
 		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ! empty( $change_payment_method ) ) {
+			// Subscriptions passes the subscription itself as the order to change the payment method for.
+			$subscription = function_exists( 'wcs_get_subscription' ) ? wcs_get_subscription( $order_id ) : false;
+
+			if ( empty( $subscription ) ) {
+				throw new Exception( esc_html__( 'The subscription to change the payment method for could not be found.', 'qliro-for-woocommerce' ) );
+			}
+
 			return array(
 				'result'   => 'success',
-				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $order ),
+				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $subscription ),
 			);
 		}
 

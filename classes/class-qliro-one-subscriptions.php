@@ -387,7 +387,7 @@ class Qliro_One_Subscriptions {
 		// push URL was signed for. The reference is what the callback resolves this subscription by.
 		$subscription->update_meta_data( self::SAVE_CARD_ORDER_ID_KEY, $response['OrderId'] );
 		$subscription->update_meta_data( self::SAVE_CARD_REFERENCE_KEY, $request->get_merchant_reference() );
-		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, time() );
+		$subscription->update_meta_data( self::SAVE_CARD_PENDING_KEY, strval( time() ) );
 		$subscription->save();
 
 		return $response['OrderForRegistrationTokenHtmlSnippet'];
@@ -545,7 +545,7 @@ class Qliro_One_Subscriptions {
 
 		// Qliro may push the same card more than once, so reuse the token if we already have it.
 		foreach ( WC_Payment_Tokens::get_customer_tokens( $customer_id, self::GATEWAY_ID ) as $existing_token ) {
-			if ( $existing_token->get_token() === $saved_card['Id'] ) {
+			if ( $existing_token instanceof WC_Payment_Token_CC && $existing_token->get_token() === $saved_card['Id'] ) {
 				$token = $existing_token;
 				break;
 			}
