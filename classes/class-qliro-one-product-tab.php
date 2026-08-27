@@ -17,6 +17,21 @@ class Qliro_One_Product_Tab {
 		add_action( 'woocommerce_product_data_panels', array( $this, 'product_options' ) );
 		add_action( 'woocommerce_process_product_meta_simple', array( $this, 'save_product_options' ) );
 		add_action( 'woocommerce_process_product_meta_variable', array( $this, 'save_product_options' ) );
+		add_action( 'woocommerce_admin_process_product_object', array( $this, 'validate_sku' ) );
+		add_action( 'woocommerce_admin_process_variation_object', array( $this, 'validate_sku' ) );
+	}
+
+	/**
+	 * Warns the merchant when a saved SKU contains characters that Qliro does not accept.
+	 *
+	 * @param WC_Product $product The product or product variation being saved.
+	 * @return void
+	 */
+	public function validate_sku( $product ) {
+		$notice = qliro_one_get_invalid_sku_notice( $product->get_sku( 'edit' ) );
+		if ( ! empty( $notice ) ) {
+			WC_Admin_Meta_Boxes::add_error( $notice );
+		}
 	}
 
 	/**
@@ -97,4 +112,5 @@ class Qliro_One_Product_Tab {
 		$product->update_meta_data( 'qoc_has_risk', $has_risk ?? 'no' );
 		$product->save();
 	}
-} new Qliro_One_Product_Tab();
+}
+new Qliro_One_Product_Tab();

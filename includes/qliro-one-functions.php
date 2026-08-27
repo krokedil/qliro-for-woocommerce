@@ -669,6 +669,40 @@ function qliro_one_format_fee_reference( $fee_name ) {
 }
 
 /**
+ * Get the characters in a merchant reference that Qliro does not accept.
+ *
+ * @param string $reference The reference (product SKU) to check.
+ *
+ * @return array Unique disallowed characters, empty if the reference is valid.
+ */
+function qliro_one_get_invalid_reference_characters( $reference ) {
+	preg_match_all( "/[^\p{L}\s(.)'\-_&,\/–+0-9:|]/u", (string) $reference, $matches );
+
+	return array_values( array_unique( $matches[0] ) );
+}
+
+/**
+ * Get the merchant facing warning for a SKU that Qliro will reject, or an empty string if the SKU is valid.
+ *
+ * @param string $sku The product SKU.
+ *
+ * @return string
+ */
+function qliro_one_get_invalid_sku_notice( $sku ) {
+	$invalid_characters = qliro_one_get_invalid_reference_characters( $sku );
+	if ( empty( $invalid_characters ) ) {
+		return '';
+	}
+
+	return sprintf(
+		/* translators: 1: the product SKU, 2: comma separated list of the characters Qliro does not accept. */
+		__( 'The SKU %1$s contains characters that Qliro doesn\'t accept (%2$s). Customers will not be able to complete Qliro checkout with this product in their cart. Remove the highlighted characters — Qliro allows letters, numbers, spaces and ( . ) \' - _ &amp; , / – + : |.', 'qliro-for-woocommerce' ),
+		'<strong>' . esc_html( $sku ) . '</strong>',
+		esc_html( implode( ', ', $invalid_characters ) )
+	);
+}
+
+/**
  * Get the billing country from the checkout, or the store base location if not set.
  *
  * @return string
