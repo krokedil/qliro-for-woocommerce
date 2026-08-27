@@ -53,9 +53,10 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
+				'subscription_payment_method_change',
+				'subscription_payment_method_change_customer',
+				// 'subscription_payment_method_change_admin' is left out, since it only offers Qliro where
+				// no card is registered, leaving a subscription that falls back to invoicing on renewal.
 				'multiple_subscriptions',
 				'tokenization', // Only for card payments when buying subscriptions.
 			)
