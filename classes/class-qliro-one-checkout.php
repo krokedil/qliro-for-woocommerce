@@ -79,11 +79,19 @@ class Qliro_One_Checkout {
 		}
 
 		if ( isset( $_POST['post_data'] ) ) { // phpcs:ignore
-			parse_str( $_POST['post_data'], $post_data ); // phpcs:ignore
+			parse_str( wp_unslash( $_POST['post_data'] ), $post_data ); // phpcs:ignore
 			if ( isset( $post_data['qoc_shipping_data'] ) ) {
-				WC()->session->set( 'qoc_shipping_data', $post_data['qoc_shipping_data'] );
+				$shipping_data = $post_data['qoc_shipping_data'];
+
+				WC()->session->set( 'qoc_shipping_data', $shipping_data );
 				WC()->session->set( 'qoc_shipping_data_set', true );
-				$data = json_decode( $post_data['qoc_shipping_data'], true );
+
+				$data = json_decode( $shipping_data, true );
+
+				if ( null === $data && ! empty( $shipping_data ) ) {
+					Qliro_One_Logger::log( '[CHECKOUT]: Failed to decode the shipping data from Qliro: ' . json_last_error_msg() . ' Data: ' . $shipping_data );
+				}
+
 				qliro_update_wc_shipping( $data );
 			}
 		}
