@@ -88,7 +88,7 @@ class Qliro_One_Checkout {
 
 				$data = json_decode( $shipping_data, true );
 
-				if ( null === $data && ! empty( $shipping_data ) ) {
+				if ( '' !== $shipping_data && JSON_ERROR_NONE !== json_last_error() ) {
 					Qliro_One_Logger::log( '[CHECKOUT]: Failed to decode the shipping data from Qliro: ' . json_last_error_msg() . ' Data: ' . $shipping_data );
 				}
 
