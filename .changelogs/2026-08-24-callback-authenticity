@@ -1,4 +1,0 @@
-Type: Enhancement
-Needs Documentation: no
-
-The refused and on-hold checkout callbacks are now confirmed against the Qliro API before the order status is changed, and the third-party notifications endpoint now verifies that its callback token was issued for the order the notification refers to.

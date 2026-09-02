@@ -1,4 +1,0 @@
-Type: Enhancement
-Needs Documentation: yes
-
-Products whose SKU contains characters that Qliro does not accept are now flagged when the product is saved, and customers get a clear message in the checkout.
