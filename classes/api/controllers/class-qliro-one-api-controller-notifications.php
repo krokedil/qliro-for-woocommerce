@@ -66,6 +66,33 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 	}
 
 	/**
+	 * Verify that the authenticated token was issued for the order the request body names.
+	 *
+	 * @param WP_REST_Request $request        The request object.
+	 * @param WC_Order|null   $order          The order resolved from the request body.
+	 * @param string          $qliro_order_id The Qliro order id from the request body, used for logging.
+	 *
+	 * @return bool True when the notification may be dispatched.
+	 */
+	protected function token_issued_for_order( $request, $order, $qliro_order_id ) {
+		// Nothing to target, and the order may legitimately not exist yet during checkout.
+		if ( null === $order ) {
+			return true;
+		}
+
+		$reference = $request->get_param( Qliro_One_Callback_Auth::REF_PARAM );
+
+		if ( Qliro_One_Callback_Auth::reference_belongs_to_order( $reference, $order ) ) {
+			return true;
+		}
+
+		Qliro_One_Logger::log( "[CALLBACK AUTH]: Rejected a notification for Qliro order {$qliro_order_id} because its token was not issued for that order. It can be allowed via the 'qliro_one_allow_unauthenticated_callbacks' filter." );
+
+		/** This filter is documented in classes/api/class-qliro-one-callback-auth.php */
+		return (bool) apply_filters( 'qliro_one_allow_unauthenticated_callbacks', false, $request );
+	}
+
+	/**
 	 * Handle the save card callback.
 	 *
 	 * @param WP_REST_Request $request The request object.
@@ -90,6 +117,11 @@ class Qliro_One_API_Controller_Notifications extends Qliro_One_API_Controller_Ba
 			// If the order is returned as 0, set it to null.
 			if ( 0 === $order ) {
 				$order = null;
+			}
+
+			// The order comes from the request body, so confirm the token was issued for it before dispatching anything.
+			if ( ! $this->token_issued_for_order( $request, $order, $qliro_order_id ) ) {
+				return new WP_REST_Response( array( 'error' => 'Callback token was not issued for this order.' ), 401 );
 			}
 
 			// Get the handler for the event type and provider.

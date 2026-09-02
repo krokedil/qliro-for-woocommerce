@@ -43,12 +43,6 @@ parameters:
 			path: classes/class-qliro-one-checkout.php
 
 		-
-			message: '#^Array has 2 duplicate keys with value ''default'' \(''default'', ''default''\)\.$#'
-			identifier: array.duplicateKey
-			count: 1
-			path: classes/class-qliro-one-fields.php
-
-		-
 			message: '#^Property Qliro_One_Gateway\:\:\$upsell_percentage \(int\) does not accept string\.$#'
 			identifier: assign.propertyType
 			count: 1

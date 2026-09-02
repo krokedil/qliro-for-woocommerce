@@ -7,7 +7,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 11.0.1
-Stable tag: 2.2.10
+Stable tag: 2.3.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,14 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-09-02    - version 2.3.0 =
+* Feature       - You can now apply discounts to captured orders.
+* Enhancement   - Scheduled actions related to an order are now shown in the order metabox, to make troubleshooting easier.
+* Enhancement   - The return fee on refunds is now explained in the order admin, and shown to the customer in refund emails and on the My Account page.
+* Enhancement   - Strengthened the permission and request validation checks on the Qliro order actions in the WooCommerce admin.
+* Enhancement   - The refused and on-hold checkout callbacks are now confirmed against the Qliro API before the order status is changed, and the third-party notifications endpoint now verifies that its callback token was issued for the order the notification refers to.
+* Enhancement   - Products whose SKU contains characters that Qliro does not accept are now flagged when the product is saved, and customers get a clear message in the checkout.
+
 = 2026-08-17    - version 2.2.10 =
 * Fix           - Fixed the confirmation page showing up blank after a completed purchase on some server setups.
 * Fix           - Fixed failed subscription renewals staying On hold, which left WooCommerce Subscriptions unable to retry them.

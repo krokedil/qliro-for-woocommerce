@@ -87,6 +87,28 @@ class Qliro_One_Metabox extends OrderMetabox {
 		if ( $order_sync_disabled ) {
 			self::output_info( __( 'Order management', 'qliro-for-woocommerce' ), __( 'Disabled', 'qliro-for-woocommerce' ) );
 		}
+
+		$confirmation_id = $order->get_meta( '_qliro_one_order_confirmation_id' );
+		if ( ! empty( $confirmation_id ) ) {
+			$scheduled_actions = Qliro_Scheduled_Actions::get_scheduled_actions( $confirmation_id );
+			$completed_count   = count( $scheduled_actions['complete'] );
+			$failed_count      = count( $scheduled_actions['failed'] );
+			$pending_count     = count( $scheduled_actions['pending'] );
+			$link_text         = sprintf(
+				/* translators: 1: completed actions count, 2: failed actions count, 3: pending actions count. */
+				__( '%1$s completed, %2$s failed, %3$s pending', 'qliro-for-woocommerce' ),
+				number_format_i18n( $completed_count ),
+				number_format_i18n( $failed_count ),
+				number_format_i18n( $pending_count )
+			);
+			$link_url = admin_url( 'admin.php?page=wc-status&tab=action-scheduler&s=' . rawurlencode( $confirmation_id ) . '&action=-1&paged=1&action2=-1' );
+
+			self::output_info(
+				__( 'Scheduled actions', 'qliro-for-woocommerce' ),
+				'<a target="_blank" rel="noopener noreferrer" href="' . esc_url( $link_url ) . '">' . esc_html( $link_text ) . '</a>'
+			);
+		}
+
 		echo '<br />';
 
 		self::output_sync_order_button( $order, $qliro_order, $last_transaction, $order_sync_disabled, $qliro_total );

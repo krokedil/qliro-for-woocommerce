@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 2.2.10\n"
+"Project-Id-Version: Qliro for WooCommerce 2.3.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
-"POT-Creation-Date: 2026-08-17 09:02:04+00:00\n"
+"POT-Creation-Date: 2026-09-02 07:08:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,10 +32,14 @@ msgid ""
 msgstr ""
 
 #: classes/class-qliro-one-ajax.php:212
+msgid "You do not have permission to change the order management setting."
+msgstr ""
+
+#: classes/class-qliro-one-ajax.php:216
 msgid "No order ID provided."
 msgstr ""
 
-#: classes/class-qliro-one-ajax.php:219
+#: classes/class-qliro-one-ajax.php:223
 msgid "Order not found."
 msgstr ""
 
@@ -67,73 +71,75 @@ msgstr ""
 msgid "Check this checkbox to include this fee line in this capture."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:196
-msgid "with a return fee of"
-msgstr ""
-
 #: classes/class-qliro-one-assets.php:197
-msgid "Refund amount is less than the return fee."
+#. translators: 1: the return fee amount, 2: the amount paid back to the
+#. customer.
+msgid "(return fee %1$s deducted, %2$s paid back)"
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:199
-msgid "An error occurred while making the capture. Please try again."
+#: classes/class-qliro-one-assets.php:198
+msgid "The return fee cannot be higher than the refund amount."
 msgstr ""
 
 #: classes/class-qliro-one-assets.php:200
-#: classes/class-qliro-one-metabox.php:117
+msgid "An error occurred while making the capture. Please try again."
+msgstr ""
+
+#: classes/class-qliro-one-assets.php:201
+#: classes/class-qliro-one-metabox.php:139
 msgid "Dismiss this notice"
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:292
+#: classes/class-qliro-one-callbacks.php:293
 msgid "Unknown error"
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:316
+#: classes/class-qliro-one-callbacks.php:317
 #. translators: 1: Qliro error reason
 msgid "Renewal preauthorization failed at Qliro: %s."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:380
+#: classes/class-qliro-one-callbacks.php:381
 msgid "The order failed to be captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:386
+#: classes/class-qliro-one-callbacks.php:387
 msgid "The order has been successfully captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:390
+#: classes/class-qliro-one-callbacks.php:391
 msgid "The order has been fully captured by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:410
+#: classes/class-qliro-one-callbacks.php:411
 msgid "The order failed to be cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:416
-#: classes/class-qliro-one-callbacks.php:421
+#: classes/class-qliro-one-callbacks.php:417
+#: classes/class-qliro-one-callbacks.php:422
 msgid "The order has been successfully cancelled by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:440
+#: classes/class-qliro-one-callbacks.php:441
 msgid "The order failed to be refunded by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:444
+#: classes/class-qliro-one-callbacks.php:445
 msgid "The order has been successfully refunded by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:484
+#: classes/class-qliro-one-callbacks.php:517
 msgid "The Qliro order was rejected by Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:508
+#: classes/class-qliro-one-callbacks.php:541
 #. translators: %s - WooCommerce order number, %s - Qliro Confirmation ID.
 msgid ""
 "Aborting onhold_checkout function. WooCommerce order %1$s with "
 "confirmation_id %2$s already confirmed."
 msgstr ""
 
-#: classes/class-qliro-one-callbacks.php:512
+#: classes/class-qliro-one-callbacks.php:549
 #: includes/qliro-one-functions.php:196
 msgid "The Qliro order is on-hold and awaiting a status update from Qliro."
 msgstr ""
@@ -303,7 +309,7 @@ msgstr ""
 
 #: classes/class-qliro-one-fields.php:172
 #: classes/class-qliro-one-fields.php:270
-#: classes/class-qliro-one-fields.php:563
+#: classes/class-qliro-one-fields.php:562
 msgid "here"
 msgstr ""
 
@@ -355,9 +361,9 @@ msgid "Country selector placement"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:212
-#: classes/class-qliro-one-fields.php:517
-#: classes/class-qliro-one-fields.php:535
-#: classes/class-qliro-one-fields.php:572
+#: classes/class-qliro-one-fields.php:516
+#: classes/class-qliro-one-fields.php:534
+#: classes/class-qliro-one-fields.php:571
 msgid "Inactive/shortcode placement"
 msgstr ""
 
@@ -447,7 +453,7 @@ msgid "Customize the label for the newsletter signup checkbox."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:249
-#: classes/requests/class-qliro-one-request.php:377
+#: classes/requests/class-qliro-one-request.php:384
 msgid "Sign up for our newsletter"
 msgstr ""
 
@@ -476,7 +482,7 @@ msgid ""
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:274
-#: classes/class-qliro-one-product-tab.php:55
+#: classes/class-qliro-one-product-tab.php:70
 msgid "Minimum customer age"
 msgstr ""
 
@@ -503,7 +509,7 @@ msgid ""
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:290
-#: classes/class-qliro-one-product-tab.php:70
+#: classes/class-qliro-one-product-tab.php:85
 msgid "Has risk"
 msgstr ""
 
@@ -545,17 +551,17 @@ msgid ""
 ">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:326
+#: classes/class-qliro-one-fields.php:325
 msgid ""
 "Manage settings related to an order after it has been created, such as when "
 "capture and cancelation with Qliro should be initiated etc."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:329
+#: classes/class-qliro-one-fields.php:328
 msgid "Capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:332
+#: classes/class-qliro-one-fields.php:331
 msgid ""
 "Select WooCommerce order status used to initiate capturing the order in "
 "Qliros system. Suggested and default is to use Completed. Please note that "
@@ -563,11 +569,11 @@ msgid ""
 "orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:337
+#: classes/class-qliro-one-fields.php:336
 msgid "Cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:340
+#: classes/class-qliro-one-fields.php:339
 msgid ""
 "Select WooCommerce order status used to initiate canceling the order in "
 "Qliros system. Suggested and default is to use Cancelled. Please note that "
@@ -575,29 +581,31 @@ msgid ""
 "orders."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:345
+#: classes/class-qliro-one-fields.php:344
 msgid "Calculate return fee"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:346
+#: classes/class-qliro-one-fields.php:345
 msgid "Automatically calculate return fee on refunds"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:349
+#: classes/class-qliro-one-fields.php:348
 msgid ""
-"If enabled, then the Qliro return fee will be automatically calculated in "
-"the background if a refunded order line is less than the unit amount."
+"If enabled and you refund an order line at a lower amount than its original "
+"price, the difference is automatically sent to Qliro as a return fee. The "
+"fee is deducted from the amount Qliro pays back to the customer and is "
+"shown on the order and in the customer's refund details."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:353
+#: classes/class-qliro-one-fields.php:352
 msgid "Advanced pending status configuration"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:354
+#: classes/class-qliro-one-fields.php:353
 msgid "Enable advanced pending status configuration"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:355
+#: classes/class-qliro-one-fields.php:354
 msgid ""
 "There is a delay when a capture or cancellation is initiated and "
 "WooCommerce receives the response. Therefore you have the possibility to "
@@ -605,74 +613,74 @@ msgid ""
 "only in advanced situations."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:362
+#: classes/class-qliro-one-fields.php:361
 msgid "Pending capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:365
+#: classes/class-qliro-one-fields.php:364
 msgid ""
 "Select what WooCommerce order status to set the order to while WooCommerce "
 "wait for Qliro to tell us if the capture was successful or not."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:371
+#: classes/class-qliro-one-fields.php:370
 msgid "OK capture order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:374
+#: classes/class-qliro-one-fields.php:373
 msgid ""
 "Select what WooCommerce order status to set the order to when we get "
 "notified of a successful order capture from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:380
+#: classes/class-qliro-one-fields.php:379
 msgid "Pending cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:383
+#: classes/class-qliro-one-fields.php:382
 msgid ""
 "Select what WooCommerce order status to set the order to while we wait for "
 "Qliro to tell us if the cancelation was successful or not."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:389
+#: classes/class-qliro-one-fields.php:388
 msgid "OK cancel order status"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:392
+#: classes/class-qliro-one-fields.php:391
 msgid ""
 "Select what WooCommerce order status to set the order to when we get "
 "notified of a successful order cancelation from Qliro."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:405
+#: classes/class-qliro-one-fields.php:404
 msgid ""
 "Customize your checkout related to page layout, other payment method button "
 "text, colors and corner radius to make the look and feel of the checkout "
 "fit into your website in the best possible way."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:408
+#: classes/class-qliro-one-fields.php:407
 msgid "Checkout page layout"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:411
+#: classes/class-qliro-one-fields.php:410
 msgid "One column checkout"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:412
+#: classes/class-qliro-one-fields.php:411
 msgid "Two column checkout (Qliro in right column)"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:413
+#: classes/class-qliro-one-fields.php:412
 msgid "Two column checkout (Qliro in left column)"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:414
+#: classes/class-qliro-one-fields.php:413
 msgid "Two column checkout (Qliro in left column) - Storefront light"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:416
+#: classes/class-qliro-one-fields.php:415
 msgid ""
 "Choose layout to use on the Qliro checkout page. Read more about the "
 "options and how the checkout page template can be further customized <a "
@@ -681,95 +689,95 @@ msgid ""
 "introduction/#checkout-customization\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:421
+#: classes/class-qliro-one-fields.php:420
 msgid "Customize other payment method button text"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:423
+#: classes/class-qliro-one-fields.php:422
 msgid ""
 "Customize the <em>Select another payment method</em> button text that is "
 "displayed on the checkout page if other payment methods than Qliro is "
 "enabled. Leave blank to use the default (and translatable) text."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:432
+#: classes/class-qliro-one-fields.php:431
 msgid "Look and feel"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:437
+#: classes/class-qliro-one-fields.php:436
 msgid "Background color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:439
+#: classes/class-qliro-one-fields.php:438
 msgid ""
 "If the background should be something else than white, set the preferred "
 "hex color. Only colors with saturation <= 10% are supported. If a color "
 "with saturation > 10% is provided, the saturation will be lowered to 10%."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:444
+#: classes/class-qliro-one-fields.php:443
 msgid "Primary color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:446
+#: classes/class-qliro-one-fields.php:445
 msgid ""
 "Define the hex color for the selected options throughout the checkout. The "
 "spinner for loading in the checkout will have the same color."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:451
+#: classes/class-qliro-one-fields.php:450
 msgid "Call to action color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:453
+#: classes/class-qliro-one-fields.php:452
 msgid "Define the hex color for the CTA buttons throughout the checkout."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:458
+#: classes/class-qliro-one-fields.php:457
 msgid "Call to action hover color"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:460
+#: classes/class-qliro-one-fields.php:459
 msgid ""
 "Define the hex color for the CTA buttons hoovered throughout the checkout. "
 "If not provided, the hover color will be a blend between the call to action "
 "color and the background color."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:465
+#: classes/class-qliro-one-fields.php:464
 msgid "Corner radius"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:467
+#: classes/class-qliro-one-fields.php:466
 msgid ""
 "A pixel value to be used on corners throughout Qliro Checkout, eg for the "
 "outline of payment or shipping methods. Changes will also apply on all "
 "fields to be filled in by customer, e.g. fields when customer authenticate."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:473
+#: classes/class-qliro-one-fields.php:472
 msgid "Button corner radius"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:475
+#: classes/class-qliro-one-fields.php:474
 msgid ""
 "A pixel value to be used on corners of CTA buttons throughout Qliro "
 "Checkout."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:486
+#: classes/class-qliro-one-fields.php:485
 msgid "Widgets"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:488
+#: classes/class-qliro-one-fields.php:487
 msgid "Setup Qliro payment widgets and banner widgets on your website."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:491
+#: classes/class-qliro-one-fields.php:490
 msgid "Banner widget"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:494
+#: classes/class-qliro-one-fields.php:493
 msgid ""
 "Promote Qliro payment methods and campaigns, without having to manually "
 "update banners continuously. You can also display it with the shortcode "
@@ -778,123 +786,123 @@ msgid ""
 "display-widget-via-shortcode/\">here</a>."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:502
+#: classes/class-qliro-one-fields.php:501
 msgid "Banner widget payment method"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:503
+#: classes/class-qliro-one-fields.php:502
 msgid "Choose the payment method to be presented in the banner widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:505
+#: classes/class-qliro-one-fields.php:504
 msgid "Campaign"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:506
+#: classes/class-qliro-one-fields.php:505
 msgid "Invoice"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:507
+#: classes/class-qliro-one-fields.php:506
 msgid "Part payment"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:512
+#: classes/class-qliro-one-fields.php:511
 msgid "Banner widget placement on product pages"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:514
+#: classes/class-qliro-one-fields.php:513
 msgid "Choose where on the product page that you want to display the banner widget."
+msgstr ""
+
+#: classes/class-qliro-one-fields.php:517
+#: classes/class-qliro-one-fields.php:572
+msgid "Above Title"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:518
 #: classes/class-qliro-one-fields.php:573
-msgid "Above Title"
+msgid "Between Title and Price"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:519
 #: classes/class-qliro-one-fields.php:574
-msgid "Between Title and Price"
+msgid "Between Price and Excerpt"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:520
 #: classes/class-qliro-one-fields.php:575
-msgid "Between Price and Excerpt"
+msgid "Between Excerpt and Add to cart button"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:521
 #: classes/class-qliro-one-fields.php:576
-msgid "Between Excerpt and Add to cart button"
+msgid "Between Add to cart button and Product meta"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:522
 #: classes/class-qliro-one-fields.php:577
-msgid "Between Add to cart button and Product meta"
+msgid "Between Product meta and Product sharing buttons"
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:523
 #: classes/class-qliro-one-fields.php:578
-msgid "Between Product meta and Product sharing buttons"
-msgstr ""
-
-#: classes/class-qliro-one-fields.php:524
-#: classes/class-qliro-one-fields.php:579
 msgid "After Product sharing-buttons"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:527
-#: classes/class-qliro-one-fields.php:582
+#: classes/class-qliro-one-fields.php:526
+#: classes/class-qliro-one-fields.php:581
 msgid "Select where to display the widget in your product pages."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:530
+#: classes/class-qliro-one-fields.php:529
 msgid "Banner widget placement on cart page"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:531
+#: classes/class-qliro-one-fields.php:530
 msgid "Choose where on the cart page that you want to display the banner widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:536
+#: classes/class-qliro-one-fields.php:535
 msgid "Above cross-sell"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:537
+#: classes/class-qliro-one-fields.php:536
 msgid "Above cart totals"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:538
+#: classes/class-qliro-one-fields.php:537
 msgid "Between cart totals and proceed to checkout button"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:539
+#: classes/class-qliro-one-fields.php:538
 msgid "After proceed to checkout button"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:540
+#: classes/class-qliro-one-fields.php:539
 msgid "Bottom of the page"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:543
+#: classes/class-qliro-one-fields.php:542
 msgid "Select where to display the widget on the cart page."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:547
+#: classes/class-qliro-one-fields.php:546
 msgid "Banner widget styled shadow"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:548
+#: classes/class-qliro-one-fields.php:547
 msgid "Whether or not the banner should be rendered with a Qliro style shadow."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:550
+#: classes/class-qliro-one-fields.php:549
 msgid "Display with a Qliro style shadow"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:554
+#: classes/class-qliro-one-fields.php:553
 msgid "Product widget"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:559
+#: classes/class-qliro-one-fields.php:558
 #. translators: %s: Link to the documentation for displaying the widget via
 #. shortcode.
 msgid ""
@@ -903,25 +911,25 @@ msgid ""
 "[qliro_one_payment_widget], read more about it %s."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:567
+#: classes/class-qliro-one-fields.php:566
 msgid "Payment widget placement on product pages"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:569
+#: classes/class-qliro-one-fields.php:568
 msgid ""
 " Choose where on the product page that you want to display the product "
 "widget."
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:586
+#: classes/class-qliro-one-fields.php:585
 msgid "Payment widget condensed copy"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:587
+#: classes/class-qliro-one-fields.php:586
 msgid "Display with a condensed and shorter copy"
 msgstr ""
 
-#: classes/class-qliro-one-fields.php:589
+#: classes/class-qliro-one-fields.php:588
 msgid "If enabled, the product widget will be rendered with shorter copy."
 msgstr ""
 
@@ -981,7 +989,7 @@ msgid "Total amount"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:88
-#: classes/class-qliro-one-metabox.php:179
+#: classes/class-qliro-one-metabox.php:201
 msgid "Order management"
 msgstr ""
 
@@ -989,136 +997,167 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:94
-msgid "Advanced"
+#: classes/class-qliro-one-metabox.php:99
+#. translators: 1: completed actions count, 2: failed actions count, 3: pending
+#. actions count.
+msgid "%1$s completed, %2$s failed, %3$s pending"
+msgstr ""
+
+#: classes/class-qliro-one-metabox.php:107
+msgid "Scheduled actions"
 msgstr ""
 
 #: classes/class-qliro-one-metabox.php:116
+msgid "Advanced"
+msgstr ""
+
+#: classes/class-qliro-one-metabox.php:138
 msgid "Failed to toggle order management. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:139
+#: classes/class-qliro-one-metabox.php:161
 msgid "Could not verify the security token. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:142
+#: classes/class-qliro-one-metabox.php:164
 msgid "You do not have permission to add a discount to this order."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:145
+#: classes/class-qliro-one-metabox.php:167
 msgid "The order is not a Qliro order and a discount cannot be added."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:148
+#: classes/class-qliro-one-metabox.php:170
 msgid "The order key is invalid. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:151
+#: classes/class-qliro-one-metabox.php:173
 msgid "Missing parameters to add the discount. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:180
+#: classes/class-qliro-one-metabox.php:202
 msgid ""
 "Disable this to turn off the automatic synchronization with the Qliro "
 "Merchant Portal. When disabled, any changes in either system have to be "
 "done manually."
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:253
+#: classes/class-qliro-one-metabox.php:275
 msgid "Qliro payment method"
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:297
+#: classes/class-qliro-one-metabox.php:319
 msgid "Sync order to Qliro"
 msgstr ""
 
-#: classes/class-qliro-one-metabox.php:334
+#: classes/class-qliro-one-metabox.php:356
 msgid "Shipping reference"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:104
-#: classes/requests/class-qliro-one-request.php:207
+#: classes/class-qliro-one-order-management.php:106
+#: classes/requests/class-qliro-one-request.php:214
 msgid "The order has already been captured."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:108
+#: classes/class-qliro-one-order-management.php:110
 #. translators: %s is the error message from Qliro.
 msgid "The order failed to be captured with Qliro: %s."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:133
+#: classes/class-qliro-one-order-management.php:135
 #. translators: %s is transaction ID.
 msgid ""
 "The order has been requested to be captured with Qliro and is in process. "
 "Payment transaction id: %s "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:170
+#: classes/class-qliro-one-order-management.php:172
 #. translators: %s is the error message from Qliro.
 msgid "The order failed to be cancelled with Qliro: %s."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:177
+#: classes/class-qliro-one-order-management.php:179
 msgid ""
 "The order has been requested to be cancelled with Qliro and is in process. "
 "Payment transaction id: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:211
-#: classes/class-qliro-one-order-management.php:231
+#: classes/class-qliro-one-order-management.php:213
+#: classes/class-qliro-one-order-management.php:233
 #. translators: %s is the error message from Qliro.
 msgid "Failed to refund the order with Qliro: %s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:211
+#: classes/class-qliro-one-order-management.php:213
 msgid "No captured data found for the order items."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:231
+#: classes/class-qliro-one-order-management.php:233
 msgid "Multiple capture IDs found for the order items."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:232
+#: classes/class-qliro-one-order-management.php:234
 msgid ""
 "Failed to refund the order with Qliro. Multiple capture IDs can not be used "
 "in one refund request."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:262
+#: classes/class-qliro-one-order-management.php:264
 msgid ""
 "The order management with Qliro is disabled for this order, either enable "
 "it and try again or use the manual refund option."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:383
+#: classes/class-qliro-one-order-management.php:385
 #. translators: %s is the error message from Qliro (if any).
 msgid "Failed to refund the order with Qliro%s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:392
-#. translators: refund amount, refund id.
+#: classes/class-qliro-one-order-management.php:411
+#. translators: 1: the total refund amount, 2: the return fee amount, 3: the
+#. amount paid back to the customer.
+msgid ""
+"Processing a refund of %1$s with Qliro. Return fee %2$s deducted, %3$s paid "
+"back to the customer."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:418
+#. translators: %1$s: the refund amount.
 msgid "Processing a refund of %1$s with Qliro"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:403
-#. translators: return frees amount.
-msgid " (including return fees of %1$s)"
-msgstr ""
-
-#: classes/class-qliro-one-order-management.php:477
+#: classes/class-qliro-one-order-management.php:490
 msgid "Qliro return fee"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:533
-msgid "Qliro return fee: "
+#: classes/class-qliro-one-order-management.php:543
+msgid "Refund value: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:628
+#: classes/class-qliro-one-order-management.php:545
+msgid "Return fee: "
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:547
+msgid "Refunded to customer: "
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:572
+msgid "Return fee"
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:611
+#. translators: 1: the return fee amount, 2: the amount paid back to the
+#. customer.
+msgid "Return fee %1$s deducted, %2$s paid back to you."
+msgstr ""
+
+#: classes/class-qliro-one-order-management.php:775
 #. translators: %s: error message
 msgid "Failed to sync order with Qliro. Error: %s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:642
+#: classes/class-qliro-one-order-management.php:789
 #. translators: %s: new transaction id from Qliro.
 msgid "Order synced with Qliro. Transaction ID: %s"
 msgstr ""
@@ -1139,11 +1178,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: classes/class-qliro-one-product-tab.php:30
+#: classes/class-qliro-one-product-tab.php:45
 msgid "Qliro"
 msgstr ""
 
-#: classes/class-qliro-one-product-tab.php:63
+#: classes/class-qliro-one-product-tab.php:78
 msgid "Require ID verification"
 msgstr ""
 
@@ -1248,7 +1287,7 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:216
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:209
 #. translators: %s is the plugin name.
 msgid "Free"
 msgstr ""
@@ -1438,11 +1477,11 @@ msgstr ""
 msgid "Discount [%s] already added to order."
 msgstr ""
 
-#: classes/class-qliro-order-utility.php:94
+#: classes/class-qliro-order-utility.php:117
 msgid "Not found"
 msgstr ""
 
-#: classes/class-qliro-order-utility.php:105
+#: classes/class-qliro-order-utility.php:128
 msgid "Order status was not found."
 msgstr ""
 
@@ -1456,6 +1495,13 @@ msgstr ""
 msgid ""
 "Qliro is not configured for the selected country and currency. Please "
 "select a different payment method or country."
+msgstr ""
+
+#: classes/requests/class-qliro-one-request.php:209
+#. translators: %s: Qliro API error code.
+msgid ""
+"Qliro is unfortunately not available for this order. Please choose another "
+"payment method, or contact us if the problem continues. Error code %s"
 msgstr ""
 
 #: includes/admin/views/html-order-add-discount.php:14
@@ -1540,6 +1586,16 @@ msgstr ""
 msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
 
+#: includes/qliro-one-functions.php:699
+#. translators: 1: the product SKU, 2: comma separated list of the characters
+#. Qliro does not accept.
+msgid ""
+"The SKU %1$s contains characters that Qliro doesn't accept (%2$s). "
+"Customers will not be able to complete Qliro checkout with this product in "
+"their cart. Remove the highlighted characters — Qliro allows letters, "
+"numbers, spaces and ( . ) ' - _ &amp; , / – + : |."
+msgstr ""
+
 #: qliro-for-woocommerce.php:177 qliro-for-woocommerce.php:187
 msgid "Nope"
 msgstr ""
@@ -1550,18 +1606,18 @@ msgstr ""
 
 #: qliro-for-woocommerce.php:221
 #: vendor/dependencies/krokedil/settings-page/src/Navigation.php:54
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:36
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:30
 msgid "Support"
 msgstr ""
 
-#: qliro-for-woocommerce.php:397 qliro-for-woocommerce.php:407
+#: qliro-for-woocommerce.php:398 qliro-for-woocommerce.php:408
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
 "README.DEV.md file in the plugin."
 msgstr ""
 
-#: qliro-for-woocommerce.php:506
+#: qliro-for-woocommerce.php:507
 msgid ""
 "Qliro for WooCommerce is currently running in test mode. Remember to "
 "disable test mode and enter your live credentials before going live."
@@ -1571,20 +1627,20 @@ msgstr ""
 msgid "You must be logged in to checkout."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:48
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:42
 #: vendor/dependencies/krokedil/settings-page/src/Navigation.php:57
 msgid "Addons"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:248
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:241
 msgid "Active"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:252
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:245
 msgid "Activate"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:258
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:251
 msgid "Install Now"
 msgstr ""
 
@@ -1592,29 +1648,23 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:158
-#: vendor/dependencies/krokedil/settings-page/src/WcSettingsPage.php:150
+#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:157
 msgid "An error occurred while rendering this settings page."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:170
-#: vendor/dependencies/krokedil/settings-page/src/WcSettingsPage.php:168
+#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:169
 msgid "Additionally, an error occurred while rendering the fallback content."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Shipping.php:33
-msgid "Return to shipping"
-msgstr ""
-
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:109
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:100
 msgid "If you still need help, please open a support ticket with Krokedil."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:112
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:103
 msgid "Open support ticket with Krokedil"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Traits/Layout.php:111
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Layout.php:76
 msgid "Return to payments"
 msgstr ""
 

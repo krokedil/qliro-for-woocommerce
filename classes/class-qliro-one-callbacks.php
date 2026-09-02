@@ -11,6 +11,7 @@
 class Qliro_One_Callbacks {
 
 	public const SCHEDULE_INTERVAL_SEC = 30;
+	public const CHECKOUT_CALLBACKS    = 'qliro_checkout_callbacks';
 
 	/**
 	 * The settings for the plugin.
@@ -115,15 +116,15 @@ class Qliro_One_Callbacks {
 			switch ( $data['Status'] ) {
 				case 'Completed':
 					Qliro_One_Logger::log( "Scheduling completed checkout callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_complete_checkout', array( $confirmation_id ) );
+					as_schedule_single_action( $timestamp, 'qliro_complete_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				case 'Refused':
 					Qliro_One_Logger::log( "Scheduling refused callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_fail_checkout', array( $confirmation_id ) );
+					as_schedule_single_action( $timestamp, 'qliro_fail_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				case 'OnHold':
 					Qliro_One_Logger::log( "Scheduling onhold callback for order with confirmation_id {$confirmation_id}." );
-					as_schedule_single_action( $timestamp, 'qliro_onhold_checkout', array( $confirmation_id ) );
+					as_schedule_single_action( $timestamp, 'qliro_onhold_checkout', array( $confirmation_id ), self::CHECKOUT_CALLBACKS );
 					break;
 				default:
 					Qliro_One_Logger::log( "Unknown Qliro checkout callback status: {$data['Status']}" );
@@ -465,6 +466,34 @@ class Qliro_One_Callbacks {
 	}
 
 	/**
+	 * Ask Qliro whether the order really is unpaid, before acting on a status that says so.
+	 *
+	 * The checkout push URL carries no per-order token, so the reported status cannot be
+	 * trusted. Returns false when Qliro cannot be reached, so the order is left alone.
+	 *
+	 * @param WC_Order $order           The order the callback refers to.
+	 * @param string   $reported_status The status claimed by the callback, used for logging.
+	 *
+	 * @return bool True only when Qliro confirms the order has no successful payment.
+	 */
+	private function qliro_confirms_unpaid( $order, $reported_status ) {
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+		$qliro_order    = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+
+		if ( is_wp_error( $qliro_order ) ) {
+			Qliro_One_Logger::log( "Could not retrieve Qliro order {$qliro_order_id} to verify the reported '{$reported_status}' status for WooCommerce order {$order->get_id()}. Leaving the order unchanged. Error: " . $qliro_order->get_error_message() );
+			return false;
+		}
+
+		if ( Qliro_Order_Utility::has_successful_payment( $qliro_order ) ) {
+			Qliro_One_Logger::log( "Ignoring the reported '{$reported_status}' status for WooCommerce order {$order->get_id()}: Qliro order {$qliro_order_id} has a successful payment transaction." );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Process the failed callback from the checkout push.
 	 *
 	 * @param string $confirmation_id The confirmation ID generated in the create call.
@@ -478,6 +507,10 @@ class Qliro_One_Callbacks {
 
 		if ( empty( $order ) ) {
 			Qliro_One_Logger::log( "Could not find an order with the confirmation id $confirmation_id when failing the checkout" );
+			return;
+		}
+
+		if ( ! $this->qliro_confirms_unpaid( $order, 'Refused' ) ) {
 			return;
 		}
 
@@ -506,6 +539,10 @@ class Qliro_One_Callbacks {
 		if ( ! empty( $order->get_date_paid() ) ) {
 			// translators: %s - WooCommerce order number, %s - Qliro Confirmation ID.
 			Qliro_One_Logger::log( sprintf( __( 'Aborting onhold_checkout function. WooCommerce order %1$s with confirmation_id %2$s already confirmed.', 'qliro-for-woocommerce' ), $order->get_order_number(), $confirmation_id ) );
+			return;
+		}
+
+		if ( ! $this->qliro_confirms_unpaid( $order, 'OnHold' ) ) {
 			return;
 		}
 
