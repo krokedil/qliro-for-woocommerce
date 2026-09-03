@@ -61,6 +61,14 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 
 		// Identify the order from the signed reference in the callback URL rather than the request body.
 		$reference = $request->get_param( Qliro_One_Callback_Auth::REF_PARAM );
+
+		// A card the customer adds from their account is registered as its own Qliro order, tied to a
+		// subscription instead of to an order, and signed for its own merchant reference.
+		$subscription = Qliro_One_Subscriptions::get_subscription_by_save_card_reference( $reference );
+		if ( ! empty( $subscription ) ) {
+			return $this->save_card_for_subscription( $subscription, $body );
+		}
+
 		if ( ! empty( $reference ) ) {
 			$order = qliro_get_order_by_confirmation_id( $reference );
 		} else {
@@ -83,25 +91,12 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 		}
 
 		// Re-fetch the order from Qliro and source the saved card details from the API rather than the request body.
-		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_order_id );
-		if ( is_wp_error( $qliro_order ) ) {
-			Qliro_One_Logger::log( "[SAVE CARD]: Could not retrieve Qliro order #{$qliro_order_id} to verify the save card callback: " . $qliro_order->get_error_message() );
-			return new WP_REST_Response( array( 'error' => 'Could not verify order with Qliro' ), 503 );
+		$saved_card = $this->get_saved_card( $qliro_order_id, $body );
+		if ( $saved_card instanceof WP_REST_Response ) {
+			return $saved_card;
 		}
 
-		$saved_card = $qliro_order['MerchantSavedCreditCard'] ?? array();
-		$card_id    = $saved_card['Id'] ?? '';
-
-		// If Qliro has no saved card on the order yet, ask Qliro to retry later instead of trusting the callback body.
-		if ( empty( $card_id ) ) {
-			Qliro_One_Logger::log( "[SAVE CARD]: No saved card available on Qliro order #{$qliro_order_id} yet. Asking Qliro to retry." );
-			return new WP_REST_Response( array( 'error' => 'No saved card available on the Qliro order' ), 503 );
-		}
-
-		// Log if the card id in the body does not match the one returned by the API, as a tamper signal.
-		if ( ! empty( $body['Id'] ) && $body['Id'] !== $card_id ) {
-			Qliro_One_Logger::log( "[SAVE CARD]: Card id in the callback body ({$body['Id']}) does not match the saved card on the Qliro order ({$card_id}) for order #{$qliro_order_id}." );
-		}
+		$card_id = $saved_card['Id'];
 
 		// Get the orders subscription.
 		$subscriptions = wcs_get_subscriptions_for_order( $order );
@@ -133,7 +128,7 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 			$token->set_last4( $saved_card['Last4Digits'] ?? '' );
 			// Pad the month to ensure its always 2 digits.
 			$token->set_expiry_month( str_pad( strval( $saved_card['ExpiryMonth'] ?? '' ), 2, '0', STR_PAD_LEFT ) );
-			$token->set_expiry_year( strval( $saved_card['ExpiryYear'] ?? '' ) );
+			$token->set_expiry_year( Qliro_One_Subscriptions::normalize_expiry_year( $saved_card['ExpiryYear'] ?? '' ) );
 			$token->set_card_type( $saved_card['BrandName'] ?? '' );
 			$token->set_user_id( $subscription->get_customer_id() );
 
@@ -148,6 +143,70 @@ class Qliro_One_API_Controller_Save_Card extends Qliro_One_API_Controller_Base {
 		$subscription_ids = wp_list_pluck( $subscriptions, 'id' );
 		Qliro_One_Logger::log( "[SAVE CARD]: Successfully saved card #{$card_id} for Qliro order id #{$qliro_order_id} to subscriptions: " . implode( ', ', $subscription_ids ) );
 		return $this->success_response();
+	}
+
+	/**
+	 * Save a card the customer registered from their account against its subscription.
+	 *
+	 * @param WC_Subscription $subscription The subscription the registration belongs to.
+	 * @param array           $body The callback body.
+	 *
+	 * @return WP_REST_Response
+	 */
+	private function save_card_for_subscription( $subscription, $body ) {
+		$qliro_order_id = $subscription->get_meta( Qliro_One_Subscriptions::SAVE_CARD_ORDER_ID_KEY );
+
+		// Defence in depth: the registration resolved from the signed reference should match the order id in the body.
+		if ( ! empty( $body['OrderId'] ) && strval( $body['OrderId'] ) !== strval( $qliro_order_id ) ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: Rejecting save card callback: body order id #{$body['OrderId']} does not match the registration resolved from the callback reference (#{$qliro_order_id})." );
+			return new WP_REST_Response( array( 'error' => 'Order id mismatch' ), 403 );
+		}
+
+		$saved_card = $this->get_saved_card( $qliro_order_id, $body );
+		if ( $saved_card instanceof WP_REST_Response ) {
+			return $saved_card;
+		}
+
+		$result = Qliro_One_Subscriptions::save_card_to_subscription( $subscription, $saved_card );
+		if ( is_wp_error( $result ) ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: Could not save card from Qliro order #{$qliro_order_id} to subscription #{$subscription->get_id()}: " . $result->get_error_message() );
+			return new WP_REST_Response( array( 'error' => $result->get_error_message() ), 400 );
+		}
+
+		Qliro_One_Logger::log( "[SAVE CARD]: Successfully saved card #{$saved_card['Id']} from Qliro order #{$qliro_order_id} to subscription #{$subscription->get_id()}." );
+		return $this->success_response();
+	}
+
+	/**
+	 * Get the saved card from the Qliro API, rather than trusting the one in the callback body.
+	 *
+	 * @param string $qliro_order_id The Qliro order the card was registered on.
+	 * @param array  $body The callback body, read only to log a mismatch as a tamper signal.
+	 *
+	 * @return array|WP_REST_Response The MerchantSavedCreditCard, or the response to send back to Qliro.
+	 */
+	private function get_saved_card( $qliro_order_id, $body ) {
+		$qliro_order = QLIRO_WC()->api->get_qliro_one_order( $qliro_order_id );
+		if ( is_wp_error( $qliro_order ) ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: Could not retrieve Qliro order #{$qliro_order_id} to verify the save card callback: " . $qliro_order->get_error_message() );
+			return new WP_REST_Response( array( 'error' => 'Could not verify order with Qliro' ), 503 );
+		}
+
+		$saved_card = $qliro_order['MerchantSavedCreditCard'] ?? array();
+		$card_id    = $saved_card['Id'] ?? '';
+
+		// If Qliro has no saved card on the order yet, ask Qliro to retry later instead of trusting the callback body.
+		if ( empty( $card_id ) ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: No saved card available on Qliro order #{$qliro_order_id} yet. Asking Qliro to retry." );
+			return new WP_REST_Response( array( 'error' => 'No saved card available on the Qliro order' ), 503 );
+		}
+
+		// Log if the card id in the body does not match the one returned by the API, as a tamper signal.
+		if ( ! empty( $body['Id'] ) && $body['Id'] !== $card_id ) {
+			Qliro_One_Logger::log( "[SAVE CARD]: Card id in the callback body ({$body['Id']}) does not match the saved card on the Qliro order ({$card_id}) for order #{$qliro_order_id}." );
+		}
+
+		return $saved_card;
 	}
 
 	/**
