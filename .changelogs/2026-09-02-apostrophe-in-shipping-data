@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Selecting a shipping option or pickup point whose address contains an apostrophe no longer causes the selection to be dropped in WooCommerce, which resulted in mismatching totals and orders registered with the wrong shipping method.
