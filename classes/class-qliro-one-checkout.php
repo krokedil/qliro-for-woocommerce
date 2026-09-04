@@ -78,23 +78,39 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		$shipping_data = $this->get_posted_shipping_data();
+
+		if ( '' === $shipping_data ) {
+			return;
+		}
+
+		WC()->session->set( 'qoc_shipping_data', $shipping_data );
+		WC()->session->set( 'qoc_shipping_data_set', true );
+
+		$data = json_decode( $shipping_data, true );
+
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			Qliro_One_Logger::log( '[CHECKOUT]: Failed to decode the shipping data from Qliro: ' . json_last_error_msg() . ' Data: ' . $shipping_data );
+		}
+
+		qliro_update_wc_shipping( $data );
+	}
+
+	/**
+	 * Get the JSON encoded shipping data that Qliro has sent us from the posted checkout data.
+	 *
+	 * @return string The raw shipping data, or an empty string if none was posted.
+	 */
+	private function get_posted_shipping_data() {
+		$post_data = array();
+
 		if ( isset( $_POST['post_data'] ) ) { // phpcs:ignore
 			parse_str( wp_unslash( $_POST['post_data'] ), $post_data ); // phpcs:ignore
-			if ( isset( $post_data['qoc_shipping_data'] ) ) {
-				$shipping_data = $post_data['qoc_shipping_data'];
-
-				WC()->session->set( 'qoc_shipping_data', $shipping_data );
-				WC()->session->set( 'qoc_shipping_data_set', true );
-
-				$data = json_decode( $shipping_data, true );
-
-				if ( '' !== $shipping_data && JSON_ERROR_NONE !== json_last_error() ) {
-					Qliro_One_Logger::log( '[CHECKOUT]: Failed to decode the shipping data from Qliro: ' . json_last_error_msg() . ' Data: ' . $shipping_data );
-				}
-
-				qliro_update_wc_shipping( $data );
-			}
 		}
+
+		$shipping_data = $post_data['qoc_shipping_data'] ?? wp_unslash( $_POST['qoc_shipping_data'] ?? '' );
+
+		return is_string( $shipping_data ) ? $shipping_data : '';
 	}
 
 	/**

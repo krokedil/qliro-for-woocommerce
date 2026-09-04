@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+A shipping option selected in the Qliro iframe just before the purchase is completed is now always applied to the WooCommerce order, instead of the order potentially being placed with the previously selected option.
