@@ -104,7 +104,7 @@ class Qliro_One_Checkout {
 	private function get_posted_shipping_data() {
 		$post_data = array();
 
-		if ( isset( $_POST['post_data'] ) ) { // phpcs:ignore
+		if ( isset( $_POST['post_data'] ) && is_string( $_POST['post_data'] ) ) { // phpcs:ignore
 			parse_str( wp_unslash( $_POST['post_data'] ), $post_data ); // phpcs:ignore
 		}
 
