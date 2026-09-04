@@ -108,7 +108,7 @@ class Qliro_One_Checkout {
 			parse_str( wp_unslash( $_POST['post_data'] ), $post_data ); // phpcs:ignore
 		}
 
-		$shipping_data = $post_data['qoc_shipping_data'] ?? wp_unslash( $_POST['qoc_shipping_data'] ?? '' );
+		$shipping_data = $post_data['qoc_shipping_data'] ?? wp_unslash( $_POST['qoc_shipping_data'] ?? '' ); // phpcs:ignore
 
 		return is_string( $shipping_data ) ? $shipping_data : '';
 	}
