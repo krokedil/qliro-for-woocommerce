@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 11.0.1
-Stable tag: 2.3.0
+WC tested up to: 11.1.0
+Stable tag: 2.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,11 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-09-07    - version 2.4.0 =
+* Feature       - Customers can now change the payment card on a subscription, and are told if the card was not registered.
+* Fix           - Selecting a shipping option or pickup point whose address contains an apostrophe no longer causes the selection to be dropped in WooCommerce,which resulted in mismatching totals and orders registered with the wrong shipping method.
+* Fix           - A shipping option selected in the Qliro iframe just before the purchase is completed is now always applied to the WooCommerce order, instead of the order potentially being placed with the previously selected option.
+
 = 2026-09-02    - version 2.3.0 =
 * Feature       - You can now apply discounts to captured orders.
 * Enhancement   - Scheduled actions related to an order are now shown in the order metabox, to make troubleshooting easier.
