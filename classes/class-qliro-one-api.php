@@ -59,7 +59,6 @@ class Qliro_One_API {
 		return $response;
 	}
 
-
 	/**
 	 * Updates a Qliro Checkout order.
 	 *

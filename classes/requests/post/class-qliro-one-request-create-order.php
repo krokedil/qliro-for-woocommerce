@@ -126,7 +126,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		}
 
 		if ( ! empty( $merchant_urls['save_card'] ) ) {
-			$body['MerchantSavedCreditCardPushURL'] = $merchant_urls['save_card'];
+			$body['MerchantSavedCreditCardPushUrl'] = $merchant_urls['save_card'];
 		}
 
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
@@ -175,7 +175,7 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 		);
 
 		if ( isset( $merchant_urls['save_card'] ) ) {
-			$body['MerchantSavedCreditCardPushURL'] = $merchant_urls['save_card'];
+			$body['MerchantSavedCreditCardPushUrl'] = $merchant_urls['save_card'];
 		}
 
 		// Remove any empty values from the body.

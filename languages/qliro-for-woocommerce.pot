@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 2.3.0\n"
+"Project-Id-Version: Qliro for WooCommerce 2.4.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
-"POT-Creation-Date: 2026-09-02 07:08:03+00:00\n"
+"POT-Creation-Date: 2026-09-07 11:27:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,49 +43,55 @@ msgstr ""
 msgid "Order not found."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:113
+#: classes/class-qliro-one-assets.php:72
+msgid ""
+"Your card was accepted. It will be used for upcoming renewals as soon as "
+"Qliro has confirmed it."
+msgstr ""
+
+#: classes/class-qliro-one-assets.php:141
 msgid "An error occurred during checkout. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:114
+#: classes/class-qliro-one-assets.php:142
 msgid "A server error occurred. Please reload the page and try again."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:115
+#: classes/class-qliro-one-assets.php:143
 msgid "The request timed out. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:191
+#: classes/class-qliro-one-assets.php:219
 msgid "Are you sure you wish to process this capture?"
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:192
+#: classes/class-qliro-one-assets.php:220
 msgid "You must select at least one item to deliver."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:194
+#: classes/class-qliro-one-assets.php:222
 msgid "Check this checkbox to include this shipping line in this capture."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:195
+#: classes/class-qliro-one-assets.php:223
 msgid "Check this checkbox to include this fee line in this capture."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:197
+#: classes/class-qliro-one-assets.php:225
 #. translators: 1: the return fee amount, 2: the amount paid back to the
 #. customer.
 msgid "(return fee %1$s deducted, %2$s paid back)"
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:198
+#: classes/class-qliro-one-assets.php:226
 msgid "The return fee cannot be higher than the refund amount."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:200
+#: classes/class-qliro-one-assets.php:228
 msgid "An error occurred while making the capture. Please try again."
 msgstr ""
 
-#: classes/class-qliro-one-assets.php:201
+#: classes/class-qliro-one-assets.php:229
 #: classes/class-qliro-one-metabox.php:139
 msgid "Dismiss this notice"
 msgstr ""
@@ -944,23 +950,27 @@ msgid ""
 "a first-class shopping experience."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:151
+#: classes/class-qliro-one-gateway.php:134
+msgid "The subscription to change the payment method for could not be found."
+msgstr ""
+
+#: classes/class-qliro-one-gateway.php:167
 msgid ""
 "Could not retrieve the Qliro payment link. Please contact the store "
 "administrator."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:170
+#: classes/class-qliro-one-gateway.php:186
 msgid "The order could not be processed. Please reload the page and try again."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:280
+#: classes/class-qliro-one-gateway.php:296
 msgid ""
 "Qliro order was upsold, but the customer was redirected to a new payment "
 "page."
 msgstr ""
 
-#: classes/class-qliro-one-gateway.php:285
+#: classes/class-qliro-one-gateway.php:301
 msgid "Qliro order was upsold with transaction id"
 msgstr ""
 
@@ -1404,25 +1414,25 @@ msgstr ""
 msgid "No shipping data found."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:130
 #: classes/class-qliro-one-subscriptions.php:188
+#: classes/class-qliro-one-subscriptions.php:246
 msgid ""
 "Renewal payment has been requested from Qliro and is awaiting "
 "preauthorization."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:156
+#: classes/class-qliro-one-subscriptions.php:214
 msgid ""
 "The previously associated payment token for this subscription is no longer "
 "valid or available."
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:169
+#: classes/class-qliro-one-subscriptions.php:227
 #. translators: %s: Error message from the Qliro API.
 msgid "The recurring payment failed due to an error communicating with Qliro: %s"
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:214
+#: classes/class-qliro-one-subscriptions.php:272
 #: includes/qliro-one-functions.php:210
 #. translators: %s - Response error message.
 msgid ""
@@ -1430,16 +1440,57 @@ msgid ""
 "message: %s"
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:225
+#: classes/class-qliro-one-subscriptions.php:283
 #. translators: %s: Qliro order ID
 msgid ""
 "Preauthorization for subscription renewal order was completed via Qliro. "
 "Qliro Order ID: %s"
 msgstr ""
 
-#: classes/class-qliro-one-subscriptions.php:235
+#: classes/class-qliro-one-subscriptions.php:293
 #. translators: %s: Qliro order ID
 msgid "Preauthorization for this order was completed via Qliro. Qliro Order ID: %s"
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:409
+#. translators: %s: Error message from the Qliro API.
+msgid "Could not load the card form. Reason: %s"
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:458
+msgid "Qliro did not return a card form."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:586
+msgid ""
+"Your new payment card has been saved, and will be used for upcoming "
+"renewals."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:593
+#: classes/class-qliro-one-subscriptions.php:616
+msgid ""
+"Your new payment card is being registered. It will be used for upcoming "
+"renewals as soon as Qliro has confirmed it."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:607
+#. translators: %1$s: Opening anchor tag to the add card page, %2$s: Closing
+#. anchor tag.
+msgid ""
+"Your new payment card was not registered, so your subscription still uses "
+"the previous one. %1$sTry adding the card again%2$s."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:652
+msgid "Qliro did not include a card id."
+msgstr ""
+
+#: classes/class-qliro-one-subscriptions.php:690
+#. translators: 1: Card brand, 2: Last four digits of the card.
+msgid ""
+"The payment card for this subscription was changed by the customer to %1$s "
+"ending in %2$s."
 msgstr ""
 
 #: classes/class-qliro-order-discount.php:163
@@ -1610,14 +1661,14 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: qliro-for-woocommerce.php:398 qliro-for-woocommerce.php:408
+#: qliro-for-woocommerce.php:399 qliro-for-woocommerce.php:409
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
 "README.DEV.md file in the plugin."
 msgstr ""
 
-#: qliro-for-woocommerce.php:507
+#: qliro-for-woocommerce.php:508
 msgid ""
 "Qliro for WooCommerce is currently running in test mode. Remember to "
 "disable test mode and enter your live credentials before going live."

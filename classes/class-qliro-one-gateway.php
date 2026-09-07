@@ -53,9 +53,10 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				// 'subscription_payment_method_change', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_customer', Qliro does not support 0 value orders, which this would create.
-				// 'subscription_payment_method_change_admin', Qliro does not support 0 value orders, which this would create.
+				'subscription_payment_method_change',
+				'subscription_payment_method_change_customer',
+				// 'subscription_payment_method_change_admin' is left out, since it only offers Qliro where
+				// no card is registered, leaving a subscription that falls back to invoicing on renewal.
 				'multiple_subscriptions',
 				'tokenization', // Only for card payments when buying subscriptions.
 			)
@@ -123,9 +124,24 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
-		// If we are on the pay for order page, or the page is a change subscription payment page, we need to process the redirect flow instead.
+		// A change payment method request registers a new card instead of taking a payment, which is done on a page of its own.
 		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		if ( ! empty( $change_payment_method ) || is_wc_endpoint_url( 'order-pay' ) ) {
+		if ( ! empty( $change_payment_method ) ) {
+			// Subscriptions passes the subscription itself as the order to change the payment method for.
+			$subscription = function_exists( 'wcs_get_subscription' ) ? wcs_get_subscription( $order_id ) : false;
+
+			if ( empty( $subscription ) ) {
+				throw new Exception( esc_html__( 'The subscription to change the payment method for could not be found.', 'qliro-for-woocommerce' ) );
+			}
+
+			return array(
+				'result'   => 'success',
+				'redirect' => Qliro_One_Subscriptions::get_add_card_page_url( $subscription ),
+			);
+		}
+
+		// If we are on the pay for order page, we need to process the redirect flow instead.
+		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
 			if ( empty( $qliro_order_id ) ) {
