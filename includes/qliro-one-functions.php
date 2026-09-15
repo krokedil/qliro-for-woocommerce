@@ -713,6 +713,41 @@ function qliro_one_get_billing_country() {
 }
 
 /**
+ * Format a phone number to the international format that Qliro expects, e.g. +46701234567.
+ *
+ * @param string $phone The phone number to format.
+ * @param string $country The country code to get the calling code from, if the number is not already international.
+ *
+ * @return string The phone number in international format, or an empty string.
+ */
+function qliro_one_format_mobile_number( $phone, $country = '' ) {
+	// Keep digits, and a plus sign only if it is the first character.
+	$phone = preg_replace( '/(?!^\+)[^0-9]/', '', trim( (string) $phone ) );
+
+	if ( empty( ltrim( $phone, '+' ) ) ) {
+		return '';
+	}
+
+	// The international call prefix is interchangeable with a plus sign.
+	if ( 0 === strpos( $phone, '00' ) ) {
+		$phone = '+' . substr( $phone, 2 );
+	}
+
+	if ( 0 === strpos( $phone, '+' ) ) {
+		return $phone;
+	}
+
+	$calling_code = empty( $country ) ? '' : WC()->countries->get_country_calling_code( $country );
+
+	if ( empty( $calling_code ) ) {
+		return '';
+	}
+
+	// Drop the national trunk prefix before adding the calling code.
+	return $calling_code . ltrim( $phone, '0' );
+}
+
+/**
  * Check if the billing country has changed during the checkout process.
  *
  * @return bool

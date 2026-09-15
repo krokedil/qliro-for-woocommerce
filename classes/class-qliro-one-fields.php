@@ -232,6 +232,14 @@ class Qliro_One_Fields {
 				'description' => __( 'Qliro supports both B2C and B2B checkout flows. Change the setting if you only want to allow B2C or B2B checkout flow.', 'qliro-for-woocommerce' ),
 				'desc_tip'    => true,
 			),
+			'enable_fasttrack'                           => array(
+				'title'       => __( 'Qliro FastTrack', 'qliro-for-woocommerce' ),
+				'label'       => __( 'Enable Qliro FastTrack', 'qliro-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, returning customers that Qliro recognizes go straight to a single payment step in the checkout, skipping both the identification and the payment method selection. Qliro needs to enable FastTrack on your merchant account before this setting has any effect, so please contact Qliro before enabling it.', 'qliro-for-woocommerce' ),
+				'default'     => 'no',
+				'desc_tip'    => false,
+			),
 			'qliro_one_button_ask_for_newsletter_signup' => array(
 				'title'       => __( 'Ask for newsletter signup', 'qliro-for-woocommerce' ),
 				'type'        => 'checkbox',
