@@ -60,6 +60,10 @@ class Qliro_One_Helper_Customer {
 			return 'Company';
 		}
 
+		if ( ! $source instanceof WC_Customer ) {
+			return 'Physical';
+		}
+
 		$cookie_name   = apply_filters( 'qliro_one_customer_type_cookie_name', 'krokedil_customer_type' );
 		$customer_type = isset( $_COOKIE[ $cookie_name ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only used to pick between B2B and B2C.
 
