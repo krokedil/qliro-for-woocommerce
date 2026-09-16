@@ -129,6 +129,16 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 			$body['MerchantSavedCreditCardPushUrl'] = $merchant_urls['save_card'];
 		}
 
+		$customer_information = Qliro_One_Helper_Customer::get_customer_information( WC()->customer, $this->get_enforced_juridicial_type() );
+		if ( ! empty( $customer_information ) ) {
+			$body['CustomerInformation'] = $customer_information;
+		}
+
+		// Only ever send the flag when it is enabled, since Qliro treats its absence as disabled.
+		if ( $this->get_enable_fasttrack() ) {
+			$body['EnableFastTrack'] = true;
+		}
+
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
 
@@ -180,6 +190,16 @@ class Qliro_One_Request_Create_Order extends Qliro_One_Request_Post {
 
 		// Remove any empty values from the body.
 		$body = array_filter( $body );
+
+		$customer_information = Qliro_One_Helper_Customer::get_customer_information( $order, $this->get_enforced_juridicial_type() );
+		if ( ! empty( $customer_information ) ) {
+			$body['CustomerInformation'] = $customer_information;
+		}
+
+		// Only ever send the flag when it is enabled, since Qliro treats its absence as disabled.
+		if ( $this->get_enable_fasttrack() ) {
+			$body['EnableFastTrack'] = true;
+		}
 
 		return Qliro_One_Helper_Order_Limitations::set_limitations( $body );
 	}
