@@ -75,7 +75,7 @@ class Qliro_One_Product_Tab {
 			woocommerce_wp_checkbox(
 				array(
 					'id'    => 'qoc_require_id_verification',
-					'label' => __( 'Require ID verification', 'qliro-for-woocommerce' ),
+					'label' => __( 'Require identity verification', 'qliro-for-woocommerce' ),
 					'value' => ( ! empty( $require_id_verification ) ) ? $require_id_verification : '',
 				)
 			);
