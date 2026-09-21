@@ -362,6 +362,20 @@ abstract class Qliro_One_Request {
 	}
 
 	/**
+	 * Get if Qliro FastTrack should be enabled.
+	 *
+	 * @return bool
+	 */
+	public function get_enable_fasttrack() {
+		$default_value = false;
+		if ( empty( $this->settings['enable_fasttrack'] ) ) {
+			return $default_value;
+		}
+
+		return 'yes' === $this->settings['enable_fasttrack'];
+	}
+
+	/**
 	 * Get if we should ask for newsletter signup.
 	 *
 	 * @return bool
