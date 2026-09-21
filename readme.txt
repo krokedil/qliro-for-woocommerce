@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 11.1.0
-Stable tag: 2.4.0
+WC tested up to: 11.1.1
+Stable tag: 2.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,10 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-09-21    - version 2.5.0 =
+* Feature       - Added support for the new FastTrack checkout flow that lets logged-in shoppers and returning customers pre-fill their information, creating a smoother shopping experience.
+* Tweak         - The product level setting previously called "Require ID verification" is now called "Require identity verification".
+
 = 2026-09-07    - version 2.4.0 =
 * Feature       - Customers can now change the payment card on a subscription, and are told if the card was not registered.
 * Fix           - Selecting a shipping option or pickup point whose address contains an apostrophe no longer causes the selection to be dropped in WooCommerce,which resulted in mismatching totals and orders registered with the wrong shipping method.
