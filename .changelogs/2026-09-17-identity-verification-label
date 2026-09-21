@@ -1,0 +1,4 @@
+Type: Tweak
+Needs Documentation: yes
+
+The product level setting previously called "Require ID verification" is now called "Require identity verification".
