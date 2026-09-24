@@ -47,7 +47,8 @@ class Qliro_One_Request_Add_Items extends Qliro_One_Request_Post {
 		$order                = wc_get_order( $order_id );
 		$this->qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-		$transaction_id = $order->get_meta( '_qliro_order_captured' );
+		$captures       = wp_list_filter( $order->get_meta( '_qliro_payment_transactions' )['transactions'] ?? array(), array( 'type' => Qliro_Order_Utility::TRANSACTION_TYPE_CAPTURE ) );
+		$transaction_id = end( $captures )['transaction_id'] ?? $order->get_meta( '_qliro_order_captured' );
 		if ( empty( $transaction_id ) ) {
 			$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
 		}
