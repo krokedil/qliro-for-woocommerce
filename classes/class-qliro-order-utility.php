@@ -159,7 +159,7 @@ class Qliro_Order_Utility {
 	}
 
 	/**
-	 * Get the id of the latest successful capture transaction stored on the WooCommerce order.
+	 * Get the id of the last reported successful capture transaction stored on the WooCommerce order.
 	 *
 	 * @param WC_Order $wc_order The WooCommerce order.
 	 *
