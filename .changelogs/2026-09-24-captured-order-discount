@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Adding discounts for orders first captured in the Qliro portal no longer fails with an "Expected type 'Capture'" or "The order has already been captured".
