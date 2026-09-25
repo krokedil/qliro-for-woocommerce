@@ -47,7 +47,7 @@ class Qliro_One_Request_Add_Items extends Qliro_One_Request_Post {
 		$order                = wc_get_order( $order_id );
 		$this->qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
 
-		$transaction_id = $order->get_meta( '_qliro_order_captured' );
+		$transaction_id = Qliro_Order_Utility::get_last_capture_transaction_id( $order ) ?? $order->get_meta( '_qliro_order_captured' );
 		if ( empty( $transaction_id ) ) {
 			$transaction_id = $order->get_meta( '_qliro_payment_transaction_id' );
 		}
