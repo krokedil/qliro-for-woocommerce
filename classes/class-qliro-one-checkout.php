@@ -19,6 +19,13 @@ class Qliro_One_Checkout {
 	private $settings = array();
 
 	/**
+	 * Whether the current request is WooCommerce's update_shipping_method AJAX request.
+	 *
+	 * @var bool
+	 */
+	private $is_shipping_method_request = false;
+
+	/**
 	 * Class constructor
 	 */
 	public function __construct() {
@@ -26,6 +33,10 @@ class Qliro_One_Checkout {
 
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_shipping_data_input' ) );
 		add_filter( 'woocommerce_shipping_packages', array( $this, 'maybe_set_selected_pickup_point' ) );
+
+		foreach ( array( 'wc_ajax_update_shipping_method', 'wp_ajax_woocommerce_update_shipping_method', 'wp_ajax_nopriv_woocommerce_update_shipping_method' ) as $hook ) {
+			add_action( $hook, array( $this, 'flag_shipping_method_request' ), 0 );
+		}
 
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'update_shipping_method' ), 1 );
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'update_qliro_order' ), 9999 );
@@ -119,7 +130,7 @@ class Qliro_One_Checkout {
 	 * @return void
 	 */
 	public function update_qliro_order() {
-		if ( ! is_checkout() ) {
+		if ( ! $this->is_checkout_context() ) {
 			return;
 		}
 
@@ -186,10 +197,37 @@ class Qliro_One_Checkout {
 		}
 
 		if ( 'InProcess' === $qliro_order['CustomerCheckoutStatus'] ) {
-			$qliro_order = QLIRO_WC()->api->update_qliro_one_order( $qliro_order_id );
+			$updated_order = QLIRO_WC()->api->update_qliro_one_order( $qliro_order_id );
+
+			// Keep the old hash so the next recalculation retries. Saving it here would leave Qliro on a stale amount until something else in the cart changes.
+			// The API layer has already reported the error to the customer, so returning is all that is left to do.
+			if ( is_wp_error( $updated_order ) ) {
+				return;
+			}
 		}
 
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
+	}
+
+	/**
+	 * Flag the current request as WooCommerce's update_shipping_method AJAX request.
+	 *
+	 * @return void
+	 */
+	public function flag_shipping_method_request() {
+		$this->is_shipping_method_request = true;
+	}
+
+	/**
+	 * Whether the Qliro checkout should be kept in sync during the current request.
+	 *
+	 * WooCommerce only defines WOOCOMMERCE_CHECKOUT for its own update_order_review request, so is_checkout()
+	 * is false when a shipping plugin recalculates rates through the core update_shipping_method endpoint.
+	 *
+	 * @return bool
+	 */
+	private function is_checkout_context() {
+		return is_checkout() || $this->is_shipping_method_request;
 	}
 
 	/**
@@ -213,11 +251,37 @@ class Qliro_One_Checkout {
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
 		$coupon_code      = WC()->cart->applied_coupons ? implode( ',', WC()->cart->applied_coupons ) : '';
 		$cart_hash        = WC()->cart->get_cart_hash();
+		$shipping_rates   = self::get_available_shipping_rates();
 
 		// Calculate a hash from the values.
-		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method, $coupon_code, $cart_hash ) ) );
+		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method, $coupon_code, $cart_hash, $shipping_rates ) ) );
 
 		return $hash;
+	}
+
+	/**
+	 * Get the price and label of every shipping rate currently available to the customer.
+	 *
+	 * These are sent to Qliro as AvailableShippingMethods, so a repriced rate must change the hash even when the
+	 * selected rate, and with it the cart total, stays the same.
+	 *
+	 * @return array
+	 */
+	private static function get_available_shipping_rates() {
+		if ( ! wc_shipping_enabled() || empty( WC()->shipping() ) ) {
+			return array();
+		}
+
+		$rates = array();
+
+		// Already calculated at this point, so this reads the cached packages rather than triggering a recalculation.
+		foreach ( WC()->shipping()->get_packages() as $package_key => $package ) {
+			foreach ( $package['rates'] ?? array() as $rate_id => $rate ) {
+				$rates[ "$package_key:$rate_id" ] = array( $rate->get_cost(), $rate->get_shipping_tax(), $rate->get_label() );
+			}
+		}
+
+		return $rates;
 	}
 
 	/**
