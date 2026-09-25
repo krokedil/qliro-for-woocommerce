@@ -200,8 +200,8 @@ class Qliro_One_Checkout {
 			$updated_order = QLIRO_WC()->api->update_qliro_one_order( $qliro_order_id );
 
 			// Keep the old hash so the next recalculation retries. Saving it here would leave Qliro on a stale amount until something else in the cart changes.
+			// The API layer has already reported the error to the customer, so returning is all that is left to do.
 			if ( is_wp_error( $updated_order ) ) {
-				qliro_one_print_error_message( $updated_order );
 				return;
 			}
 		}
