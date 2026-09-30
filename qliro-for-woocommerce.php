@@ -273,6 +273,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-subscriptions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-log-masking.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-post.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-get.php';
@@ -313,6 +314,9 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/compatibility/class-qliro-one-compatibility-wcpns.php';
+
+			// Masking has to be in place before anything can log.
+			Qliro_One_Log_Masking::register();
 
 			$this->api                   = new Qliro_One_API();
 			$this->merchant_urls         = new Qliro_One_Merchant_URLS();
