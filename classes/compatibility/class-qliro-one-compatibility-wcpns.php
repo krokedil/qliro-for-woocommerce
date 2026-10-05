@@ -54,7 +54,12 @@ class Qliro_One_Compatibility_WCPNS {
 	 * @return array
 	 */
 	public function maybe_set_postnord_servicepoints( $rates ) {
+		// The pickup points only reach Qliro when the shipping options are shown in the iframe.
+		if ( ! QLIRO_WC()->checkout()->is_shipping_in_iframe_enabled() ) {
+			return $rates;
+		}
 
+		$pickup_points = null;
 		foreach ( $rates as $rate ) {
 			// @phpstan-ignore-next-line - get_shipping_method_from_rate is a method from the WCPNS plugin, which is an optional dependency. This method will only be called if the plugin is active, and is checked before use.
 			$shipping_method = $this->wcpns_checkout::get_shipping_method_from_rate( $rate );
@@ -64,8 +69,11 @@ class Qliro_One_Compatibility_WCPNS {
 				continue;
 			}
 
-			$wcpns_pickup_points = $this->get_pickup_points();
-			$pickup_points       = ! empty( $wcpns_pickup_points ) ? $this->format_pickup_points( $wcpns_pickup_points ) : array();
+			// Each lookup is a PostNord API request for the same address, so do it once for all rates.
+			if ( null === $pickup_points ) {
+				$wcpns_pickup_points = $this->get_pickup_points();
+				$pickup_points       = ! empty( $wcpns_pickup_points ) ? $this->format_pickup_points( $wcpns_pickup_points ) : array();
+			}
 
 			if ( ! empty( $pickup_points ) ) {
 				$selected_pickup_point = $pickup_points[0];

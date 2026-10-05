@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Checkout updates are no longer slowed down by PostNord pickup point lookups from WooCommerce PostNord Shipping. The lookup now runs once per shipping calculation instead of once per shipping rate, and is skipped entirely when the shipping options are not shown in the Qliro iframe.
