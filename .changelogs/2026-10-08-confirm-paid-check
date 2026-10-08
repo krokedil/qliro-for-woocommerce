@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Orders paid through "Pay for order" are no longer marked as paid when the confirmation page is opened without a successful payment in Qliro.
