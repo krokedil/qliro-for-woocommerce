@@ -79,12 +79,6 @@ parameters:
 			path: classes/class-qliro-one-order-management.php
 
 		-
-			message: '#^Offset 1 on array\{list\<string\>, list\<string\>, list\<string\>\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: classes/class-qliro-one-order-management.php
-
-		-
 			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
 			identifier: argument.type
 			count: 2

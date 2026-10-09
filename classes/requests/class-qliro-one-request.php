@@ -235,7 +235,19 @@ abstract class Qliro_One_Request {
 		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		$qliro_order_id = $this->qliro_order_id ?? $response_body['OrderId'] ?? null; // Get the qliro order id if its set, else get it from the response body if possible. Else set it to null.
-		$log            = Qliro_One_Logger::format_log( $qliro_order_id, $method, $title, $request_args, $response, $code, $request_url );
+
+		// Log only the decoded body of the response, since the rest of the HTTP response holds nothing a log needs.
+		if ( is_wp_error( $response ) ) {
+			$response_body = array(
+				'code'    => $response->get_error_code(),
+				'message' => $response->get_error_message(),
+			);
+		}
+
+		$request_args  = Qliro_One_Log_Masking::mask_request( $request_args );
+		$response_body = Qliro_One_Log_Masking::mask_response( $response_body );
+
+		$log = Qliro_One_Logger::format_log( $qliro_order_id, $method, $title, $request_args, $response_body, $code, $request_url );
 		Qliro_One_Logger::log( $log );
 	}
 
