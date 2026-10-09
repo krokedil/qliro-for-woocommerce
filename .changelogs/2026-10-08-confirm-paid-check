@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Orders are no longer marked as paid when the confirmation page or a Qliro push is reached without a successful payment in Qliro. This most affected orders paid through "Pay for order".
