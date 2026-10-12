@@ -199,6 +199,12 @@ function qliro_confirm_order( $order ) {
 			}
 		}
 
+		// The confirmation page can be reached without paying, so require a paid transaction from Qliro.
+		if ( ! Qliro_Order_Utility::has_successful_payment( $qliro_order ) ) {
+			Qliro_One_Logger::log( "Aborting confirmation of WooCommerce order {$order_id}: Qliro order {$qliro_order_id} has no successful payment transaction." );
+			return false;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		// If the order number and the qliro reference already match, we don't need to update the merchant reference.
