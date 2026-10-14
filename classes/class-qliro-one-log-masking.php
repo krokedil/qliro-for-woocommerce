@@ -7,8 +7,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use KrokedilQliroDeps\Krokedil\WpApi\FieldMasker;
 use KrokedilQliroDeps\Krokedil\WpApi\KeyMasker;
+use KrokedilQliroDeps\Krokedil\WpApi\Masking;
 
 /**
  * What the plugin masks out of its logs.
@@ -17,6 +17,11 @@ use KrokedilQliroDeps\Krokedil\WpApi\KeyMasker;
  * safety net for everything else that reaches a log entry.
  */
 class Qliro_One_Log_Masking {
+	/**
+	 * The slug passed to the krokedil_wp_api_mask_log_data filter.
+	 */
+	const SLUG = 'qliro-for-woocommerce';
+
 	/**
 	 * The address fields kept readable, since a rejected address is a common support case
 	 * and none of these identify a person on their own.
@@ -98,17 +103,13 @@ class Qliro_One_Log_Masking {
 	 * @return array|string The masked args, or the failure marker.
 	 */
 	public static function mask_request( $request_args ) {
-		try {
-			// Decode the body that was really sent, so the rules can reach into it.
-			if ( isset( $request_args['body'] ) && is_string( $request_args['body'] ) ) {
-				$decoded              = json_decode( $request_args['body'], true );
-				$request_args['body'] = is_array( $decoded ) ? $decoded : $request_args['body'];
-			}
-
-			return FieldMasker::mask( $request_args, self::request_fields() );
-		} catch ( \Throwable $e ) {
-			return KeyMasker::FAILED;
+		// Decode the body that was really sent, so the rules can reach into it.
+		if ( isset( $request_args['body'] ) && is_string( $request_args['body'] ) ) {
+			$decoded              = json_decode( $request_args['body'], true );
+			$request_args['body'] = is_array( $decoded ) ? $decoded : $request_args['body'];
 		}
+
+		return Masking::mask_fields( $request_args, self::request_fields(), self::SLUG );
 	}
 
 	/**
@@ -122,11 +123,7 @@ class Qliro_One_Log_Masking {
 			return $body;
 		}
 
-		try {
-			return FieldMasker::mask( $body, self::body_fields() );
-		} catch ( \Throwable $e ) {
-			return KeyMasker::FAILED;
-		}
+		return Masking::mask_fields( $body, self::body_fields(), self::SLUG );
 	}
 
 	/**
@@ -136,6 +133,11 @@ class Qliro_One_Log_Masking {
 	 * @return mixed The masked entry, or the failure marker.
 	 */
 	public static function mask_entry( $data ) {
+		// Checked here rather than per masker, so the URLs are never masked on their own.
+		if ( ! Masking::is_enabled( self::SLUG ) ) {
+			return $data;
+		}
+
 		// A failure here costs the entry, it never lets an unmasked one through.
 		try {
 			$data = KeyMasker::mask( $data );
