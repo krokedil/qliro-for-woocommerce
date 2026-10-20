@@ -1,4 +1,0 @@
-Type: Fix
-Needs Documentation: no
-
-The krokedil_wp_api_mask_log_data filter now turns off log masking in the Qliro log, so the full data can be logged while debugging. Masking stays on by default.
