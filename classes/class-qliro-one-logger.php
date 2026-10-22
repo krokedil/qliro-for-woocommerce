@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KrokedilQliroDeps\Krokedil\WpApi\Masking;
+
 /**
  * Qliro_One_Logger class.
  */
@@ -29,7 +31,7 @@ class Qliro_One_Logger {
 		$settings = get_option( 'woocommerce_qliro_one_settings' );
 		$data     = Qliro_One_Log_Masking::mask_entry( self::format_data( $data ) );
 
-		if ( 'yes' === $settings['logging'] ) {
+		if ( wc_string_to_bool( $settings['logging'] ?? 'no' ) ) {
 			$message = $data;
 
 			if ( isset( WC()->session ) ) {
@@ -49,7 +51,9 @@ class Qliro_One_Logger {
 			self::$log->add( 'qliro-one-checkout-for-woocommerce', wp_json_encode( $message ) );
 		}
 
-		if ( isset( $data['response']['code'] ) && ( $data['response']['code'] < 200 || $data['response']['code'] > 299 ) ) {
+		// Unmasked entries are kept out of the status report, which outlives the debugging session.
+		$to_db = Masking::is_enabled( Qliro_One_Log_Masking::SLUG ) && isset( $data['response']['code'] ) && ( $data['response']['code'] < 200 || $data['response']['code'] > 299 );
+		if ( $to_db ) {
 			self::log_to_db( $data );
 		}
 	}
