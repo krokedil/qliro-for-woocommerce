@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Shipping prices that change after the checkout has loaded are now sent to Qliro. Rates repriced by a third-party shipping plugin could previously leave Qliro holding the original price, which made the capture fail.
