@@ -1,4 +1,0 @@
-Type: Enhancement
-Needs Documentation: yes
-
-Masked customer personal data, credentials and callback tokens in the plugin log. Masking can be turned off while debugging with the krokedil_wp_api_mask_log_data filter.

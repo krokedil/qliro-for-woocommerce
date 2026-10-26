@@ -2,10 +2,10 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Qliro for WooCommerce 2.5.0\n"
+"Project-Id-Version: Qliro for WooCommerce 2.5.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/qliro-for-woocommerce\n"
-"POT-Creation-Date: 2026-09-21 08:42:15+00:00\n"
+"POT-Creation-Date: 2026-10-26 10:35:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -476,7 +476,7 @@ msgid "Customize the label for the newsletter signup checkbox."
 msgstr ""
 
 #: classes/class-qliro-one-fields.php:257
-#: classes/requests/class-qliro-one-request.php:398
+#: classes/requests/class-qliro-one-request.php:410
 msgid "Sign up for our newsletter"
 msgstr ""
 
@@ -1092,56 +1092,56 @@ msgstr ""
 msgid "The order failed to be captured with Qliro: %s."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:135
+#: classes/class-qliro-one-order-management.php:136
 #. translators: %s is transaction ID.
 msgid ""
 "The order has been requested to be captured with Qliro and is in process. "
 "Payment transaction id: %s "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:172
+#: classes/class-qliro-one-order-management.php:173
 #. translators: %s is the error message from Qliro.
 msgid "The order failed to be cancelled with Qliro: %s."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:179
+#: classes/class-qliro-one-order-management.php:180
 msgid ""
 "The order has been requested to be cancelled with Qliro and is in process. "
 "Payment transaction id: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:213
-#: classes/class-qliro-one-order-management.php:233
+#: classes/class-qliro-one-order-management.php:214
+#: classes/class-qliro-one-order-management.php:234
 #. translators: %s is the error message from Qliro.
 msgid "Failed to refund the order with Qliro: %s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:213
+#: classes/class-qliro-one-order-management.php:214
 msgid "No captured data found for the order items."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:233
+#: classes/class-qliro-one-order-management.php:234
 msgid "Multiple capture IDs found for the order items."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:234
+#: classes/class-qliro-one-order-management.php:235
 msgid ""
 "Failed to refund the order with Qliro. Multiple capture IDs can not be used "
 "in one refund request."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:264
+#: classes/class-qliro-one-order-management.php:265
 msgid ""
 "The order management with Qliro is disabled for this order, either enable "
 "it and try again or use the manual refund option."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:385
+#: classes/class-qliro-one-order-management.php:386
 #. translators: %s is the error message from Qliro (if any).
 msgid "Failed to refund the order with Qliro%s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:411
+#: classes/class-qliro-one-order-management.php:412
 #. translators: 1: the total refund amount, 2: the return fee amount, 3: the
 #. amount paid back to the customer.
 msgid ""
@@ -1149,43 +1149,43 @@ msgid ""
 "back to the customer."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:418
+#: classes/class-qliro-one-order-management.php:419
 #. translators: %1$s: the refund amount.
 msgid "Processing a refund of %1$s with Qliro"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:490
+#: classes/class-qliro-one-order-management.php:491
 msgid "Qliro return fee"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:543
+#: classes/class-qliro-one-order-management.php:544
 msgid "Refund value: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:545
+#: classes/class-qliro-one-order-management.php:546
 msgid "Return fee: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:547
+#: classes/class-qliro-one-order-management.php:548
 msgid "Refunded to customer: "
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:572
+#: classes/class-qliro-one-order-management.php:573
 msgid "Return fee"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:611
+#: classes/class-qliro-one-order-management.php:612
 #. translators: 1: the return fee amount, 2: the amount paid back to the
 #. customer.
 msgid "Return fee %1$s deducted, %2$s paid back to you."
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:775
+#: classes/class-qliro-one-order-management.php:776
 #. translators: %s: error message
 msgid "Failed to sync order with Qliro. Error: %s"
 msgstr ""
 
-#: classes/class-qliro-one-order-management.php:789
+#: classes/class-qliro-one-order-management.php:790
 #. translators: %s: new transaction id from Qliro.
 msgid "Order synced with Qliro. Transaction ID: %s"
 msgstr ""
@@ -1311,7 +1311,7 @@ msgid "Economy"
 msgstr ""
 
 #: classes/class-qliro-one-shipping-method-instance.php:112
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:209
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:228
 #. translators: %s is the plugin name.
 msgid "Free"
 msgstr ""
@@ -1447,7 +1447,7 @@ msgid "The recurring payment failed due to an error communicating with Qliro: %s
 msgstr ""
 
 #: classes/class-qliro-one-subscriptions.php:272
-#: includes/qliro-one-functions.php:210
+#: includes/qliro-one-functions.php:216
 #. translators: %s - Response error message.
 msgid ""
 "There was a problem updating merchant reference in Qliro's system. Error "
@@ -1642,16 +1642,16 @@ msgid ""
 "confirmed."
 msgstr ""
 
-#: includes/qliro-one-functions.php:218
+#: includes/qliro-one-functions.php:224
 msgid "Qliro order successfully placed. (Qliro Payment transaction id: "
 msgstr ""
 
-#: includes/qliro-one-functions.php:223
+#: includes/qliro-one-functions.php:229
 #. translators: %s - the Qliro order ID.
 msgid "Payment via Qliro, Qliro order id: %s"
 msgstr ""
 
-#: includes/qliro-one-functions.php:699
+#: includes/qliro-one-functions.php:705
 #. translators: 1: the product SKU, 2: comma separated list of the characters
 #. Qliro does not accept.
 msgid ""
@@ -1671,18 +1671,18 @@ msgstr ""
 
 #: qliro-for-woocommerce.php:221
 #: vendor/dependencies/krokedil/settings-page/src/Navigation.php:54
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:30
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:36
 msgid "Support"
 msgstr ""
 
-#: qliro-for-woocommerce.php:400 qliro-for-woocommerce.php:410
+#: qliro-for-woocommerce.php:404 qliro-for-woocommerce.php:414
 msgid ""
 "Your installation of Qliro for WooCommerce is not complete. If you "
 "installed this plugin directly from Github please refer to the "
 "README.DEV.md file in the plugin."
 msgstr ""
 
-#: qliro-for-woocommerce.php:509
+#: qliro-for-woocommerce.php:513
 msgid ""
 "Qliro for WooCommerce is currently running in test mode. Remember to "
 "disable test mode and enter your live credentials before going live."
@@ -1692,20 +1692,20 @@ msgstr ""
 msgid "You must be logged in to checkout."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:42
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:48
 #: vendor/dependencies/krokedil/settings-page/src/Navigation.php:57
 msgid "Addons"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:241
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:260
 msgid "Active"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:245
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:264
 msgid "Activate"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Addons.php:251
+#: vendor/dependencies/krokedil/settings-page/src/Addons.php:270
 msgid "Install Now"
 msgstr ""
 
@@ -1713,23 +1713,29 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:157
+#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:158
+#: vendor/dependencies/krokedil/settings-page/src/WcSettingsPage.php:152
 msgid "An error occurred while rendering this settings page."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:169
+#: vendor/dependencies/krokedil/settings-page/src/SettingsPage.php:170
+#: vendor/dependencies/krokedil/settings-page/src/WcSettingsPage.php:170
 msgid "Additionally, an error occurred while rendering the fallback content."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:100
+#: vendor/dependencies/krokedil/settings-page/src/Shipping.php:33
+msgid "Return to shipping"
+msgstr ""
+
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:109
 msgid "If you still need help, please open a support ticket with Krokedil."
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Support.php:103
+#: vendor/dependencies/krokedil/settings-page/src/Support.php:112
 msgid "Open support ticket with Krokedil"
 msgstr ""
 
-#: vendor/dependencies/krokedil/settings-page/src/Traits/Layout.php:76
+#: vendor/dependencies/krokedil/settings-page/src/Traits/Layout.php:111
 msgid "Return to payments"
 msgstr ""
 
