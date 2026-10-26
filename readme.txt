@@ -6,8 +6,8 @@ Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
-WC tested up to: 11.1.1
-Stable tag: 2.5.0
+WC tested up to: 11.2.1
+Stable tag: 2.5.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,12 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-10-26    - version 2.5.1 =
+* Enhancement   - Masked customer personal data, credentials and callback tokens in the plugin log. Masking can be turned off while debugging with the krokedil_wp_api_mask_log_data filter.
+* Fix           - Adding discounts for orders first captured in the Qliro portal no longer fails with an "Expected type 'Capture'" or "The order has already been captured".
+* Fix           - Checkout updates are no longer slowed down by PostNord pickup point lookups from WooCommerce PostNord Shipping. The lookup now runs once per shipping calculation instead of once per shipping rate, and is skipped entirely when the shipping options are not shown in the Qliro iframe.
+* Fix           - Orders are no longer marked as paid when the confirmation page or a Qliro push is reached without a successful payment in Qliro. This most affected orders paid through "Pay for order".
+
 = 2026-09-21    - version 2.5.0 =
 * Feature       - Added support for the new FastTrack checkout flow that lets logged-in shoppers and returning customers pre-fill their information, creating a smoother shopping experience.
 * Tweak         - The product level setting previously called "Require ID verification" is now called "Require identity verification".

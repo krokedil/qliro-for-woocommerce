@@ -159,6 +159,20 @@ class Qliro_Order_Utility {
 	}
 
 	/**
+	 * Get the id of the last reported successful capture transaction stored on the WooCommerce order.
+	 *
+	 * @param WC_Order $wc_order The WooCommerce order.
+	 *
+	 * @return int|string|null The capture transaction id, or null if none was found.
+	 */
+	public static function get_last_capture_transaction_id( $wc_order ) {
+		$transactions = $wc_order->get_meta( '_qliro_payment_transactions' )['transactions'] ?? array();
+		$captures     = wp_list_filter( $transactions, array( 'type' => self::TRANSACTION_TYPE_CAPTURE ) );
+
+		return end( $captures )['transaction_id'] ?? null;
+	}
+
+	/**
 	 * Get all the transaction ids for the successful transaction ids for transactions from the payment.
 	 *
 	 * @param array $transactions The Qliro transactions [.

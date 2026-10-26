@@ -3,7 +3,8 @@
         "php": ">=7.4",
         "krokedil/shipping": "^2.0",
         "krokedil/woocommerce": "^1.0.0",
-        "krokedil/settings-page": "^1.3.0"
+        "krokedil/settings-page": "^1.3.0",
+        "krokedil/wp-api": "1.2.0"
     },
     "config": {
         "platform": {
@@ -22,6 +23,10 @@
         {
             "type": "vcs",
             "url": "git@github.com:krokedil/settings-page.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/wp-api.git"
         }
     ],
     "minimum-stability": "dev",

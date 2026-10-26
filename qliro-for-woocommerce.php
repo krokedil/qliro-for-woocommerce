@@ -5,14 +5,14 @@
  * Description: Qliro Checkout payment gateway for WooCommerce.
  * Author: Krokedil
  * Author URI: https://krokedil.com/
- * Version: 2.5.0
+ * Version: 2.5.1
  * Text Domain: qliro-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
  * WC requires at least: 5.0.0
- * WC tested up to: 11.1.1
+ * WC tested up to: 11.2.1
  * Requires Plugins: woocommerce
  *
  * Copyright (c) 2021-2026 Krokedil
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'QLIRO_WC_VERSION', '2.5.0' );
+define( 'QLIRO_WC_VERSION', '2.5.1' );
 define( 'QLIRO_WC_MAIN_FILE', __FILE__ );
 define( 'QLIRO_WC_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'QLIRO_WC_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -273,6 +273,7 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-subscriptions.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-logger.php';
+			include_once QLIRO_WC_PLUGIN_PATH . '/classes/class-qliro-one-log-masking.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-post.php';
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/requests/class-qliro-one-request-get.php';
@@ -313,6 +314,9 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/api/class-qliro-one-api-registry.php';
 
 			include_once QLIRO_WC_PLUGIN_PATH . '/classes/compatibility/class-qliro-one-compatibility-wcpns.php';
+
+			// Masking has to be in place before anything can log.
+			Qliro_One_Log_Masking::register();
 
 			$this->api                   = new Qliro_One_API();
 			$this->merchant_urls         = new Qliro_One_Merchant_URLS();
