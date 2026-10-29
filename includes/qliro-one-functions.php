@@ -250,8 +250,8 @@ function qliro_confirm_order( $order ) {
 			$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
 		}
 
-		// The amount paid in Qliro can differ from the order total if the cart was changed while the payment was processed. Zero amount orders (e.g., free trials) are skipped, since any card verification in Qliro would not match them.
-		if ( 0 < floatval( $order->get_total() ) && abs( $qliro_total - floatval( $order->get_total() ) ) > 0.01 ) {
+		// The amount paid in Qliro can differ from the order total if the cart was changed while the payment was processed.
+		if ( Qliro_Order_Utility::is_amount_mismatch( $qliro_total, $order ) ) {
 			$order->set_transaction_id( $qliro_order_id );
 			$order->update_meta_data( '_qliro_amount_mismatch', 'yes' );
 			$order->update_status(
