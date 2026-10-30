@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Orders are no longer placed with a different total than the one paid in Qliro when the cart is changed in another browser tab. The checkout now rejects the order and reloads with the updated total. If an amount mismatch still reaches the confirmation, the order is set to On hold with an order note instead of being marked as paid.

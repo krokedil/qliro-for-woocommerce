@@ -49,6 +49,35 @@ class Qliro_Order_Utility {
 	}
 
 	/**
+	 * Whether the amount paid in Qliro differs from the WooCommerce order total.
+	 *
+	 * Unit prices are sent to Qliro rounded to two decimals, so each unit of a line item (and each fee or shipping line) may drift by half a cent. Differences within that rounding are not treated as a mismatch.
+	 *
+	 * @param float|int $qliro_total The amount paid in Qliro.
+	 * @param WC_Order  $order The WooCommerce order.
+	 *
+	 * @return bool
+	 */
+	public static function is_amount_mismatch( $qliro_total, $order ) {
+		// Compare in cents to avoid floating point errors.
+		$qliro_cents = (int) round( floatval( $qliro_total ) * 100 );
+		$order_cents = (int) round( floatval( $order->get_total() ) * 100 );
+
+		// Nothing has been paid for a free order (e.g., a free trial).
+		if ( 0 === $qliro_cents && 0 === $order_cents ) {
+			return false;
+		}
+
+		$rounded_lines = count( $order->get_items( array( 'fee', 'shipping' ) ) );
+		foreach ( $order->get_items() as $item ) {
+			$rounded_lines += absint( $item->get_quantity() );
+		}
+
+		// Half a cent per rounded line, compared in whole numbers.
+		return 2 * abs( $qliro_cents - $order_cents ) > $rounded_lines;
+	}
+
+	/**
 	 * Get the currency of the Qliro order.
 	 *
 	 * @param array $qliro_order The Qliro order.

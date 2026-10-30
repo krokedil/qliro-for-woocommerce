@@ -165,6 +165,15 @@ class Qliro_One_Checkout {
 			return;
 		}
 
+		$amount_hash       = self::calculate_amount_hash();
+		$saved_amount_hash = WC()->session->get( 'qliro_one_last_update_amount_hash' );
+		if ( did_action( 'woocommerce_checkout_process' ) && null !== $saved_amount_hash && $saved_amount_hash !== $amount_hash ) {
+			Qliro_One_Logger::log( "[CHECKOUT]: The cart was changed after the Qliro order (id: $qliro_order_id) was last updated. Rejecting the order and reloading the checkout page." );
+			wc_add_notice( __( 'Your cart was updated after the checkout was loaded. Please review the order total and try again.', 'qliro-for-woocommerce' ), 'error' );
+			WC()->session->set( 'reload_checkout', true );
+			return;
+		}
+
 		// If cart doesn't need payment anymore - reload the checkout page.
 		if ( apply_filters( 'qliro_check_if_needs_payment', true ) ) {
 			if ( ! WC()->cart->needs_payment() ) {
@@ -207,6 +216,7 @@ class Qliro_One_Checkout {
 		}
 
 		WC()->session->set( 'qliro_one_last_update_hash', $hash );
+		WC()->session->set( 'qliro_one_last_update_amount_hash', $amount_hash );
 	}
 
 	/**
@@ -237,15 +247,7 @@ class Qliro_One_Checkout {
 	 */
 	public static function calculate_hash() {
 		// Get values to use for the combined hash calculation.
-		$totals = WC()->cart->get_totals();
-		$total  = 0;
-
-		// PHP 8.3.0: Now emits E_WARNING when array values cannot be converted to int or float. Previously arrays and objects where ignored whilst every other value was cast to int.
-		foreach ( $totals as $value ) {
-			if ( is_numeric( $value ) ) {
-				$total += $value;
-			}
-		}
+		$total            = self::get_summed_cart_totals();
 		$billing_address  = WC()->customer->get_billing();
 		$shipping_address = WC()->customer->get_shipping();
 		$shipping_method  = WC()->session->get( 'chosen_shipping_methods' );
@@ -257,6 +259,37 @@ class Qliro_One_Checkout {
 		$hash = md5( wp_json_encode( array( $total, $billing_address, $shipping_address, $shipping_method, $coupon_code, $cart_hash, $shipping_rates ) ) );
 
 		return $hash;
+	}
+
+	/**
+	 * Calculate a hash based only on the cart data that affects the amount the customer pays.
+	 *
+	 * @return string
+	 */
+	public static function calculate_amount_hash() {
+		$total           = self::get_summed_cart_totals();
+		$shipping_method = WC()->session->get( 'chosen_shipping_methods' );
+		$coupon_code     = WC()->cart->applied_coupons ? implode( ',', WC()->cart->applied_coupons ) : '';
+		$cart_hash       = WC()->cart->get_cart_hash();
+
+		return md5( wp_json_encode( array( $total, $shipping_method, $coupon_code, $cart_hash ) ) );
+	}
+
+	/**
+	 * Get the sum of all the cart totals.
+	 *
+	 * @return float|int
+	 */
+	private static function get_summed_cart_totals() {
+		$total = 0;
+
+		foreach ( WC()->cart->get_totals() as $value ) {
+			if ( is_numeric( $value ) ) {
+				$total += $value;
+			}
+		}
+
+		return $total;
 	}
 
 	/**

@@ -462,6 +462,11 @@ jQuery(function ($) {
 							qliroOneForWooCommerce.logToFile('Checkout error | No message');
 							qliroOneForWooCommerce.failOrder('submission', checkoutError, callback);
 						}
+
+						// WooCommerce requests a reload when the cart has changed, e.g., in another tab, so the checkout shows the new total.
+						if (data.reload) {
+							window.location.reload();
+						}
 					}
 				},
 				error: function (data) {

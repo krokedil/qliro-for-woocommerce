@@ -65,6 +65,7 @@ function qliro_one_maybe_create_order() {
 	// store id.
 	$session->set( 'qliro_one_order_id', $qliro_order['OrderId'] );
 	$session->set( 'qliro_one_last_update_hash', Qliro_One_Checkout::calculate_hash() );
+	$session->set( 'qliro_one_last_update_amount_hash', Qliro_One_Checkout::calculate_amount_hash() );
 	// get qliro order.
 	return QLIRO_WC()->api->get_qliro_one_order( $session->get( 'qliro_one_order_id' ) );
 }
@@ -130,6 +131,7 @@ function qliro_one_unset_sessions() {
 	WC()->session->__unset( 'qliro_one_merchant_reference' );
 	WC()->session->__unset( 'qliro_one_order_id' );
 	WC()->session->__unset( 'qliro_one_last_update_hash' );
+	WC()->session->__unset( 'qliro_one_last_update_amount_hash' );
 }
 
 /**
@@ -163,6 +165,12 @@ function qliro_confirm_order( $order ) {
 	if ( ! empty( $order->get_date_paid() ) ) {
 		// translators: %s - WooCommerce order number.
 		Qliro_One_Logger::log( sprintf( __( 'Aborting qliro_confirm_order function. WooCommerce order %s already confirmed.', 'qliro-for-woocommerce' ), $order->get_order_number() ) );
+		return false;
+	}
+
+	// An amount mismatch has already been flagged, and needs to be handled by the merchant.
+	if ( ! empty( $order->get_meta( '_qliro_amount_mismatch' ) ) ) {
+		Qliro_One_Logger::log( sprintf( 'Aborting qliro_confirm_order function. WooCommerce order %s has already been flagged for an amount mismatch.', $order->get_order_number() ) );
 		return false;
 	}
 
@@ -205,6 +213,9 @@ function qliro_confirm_order( $order ) {
 			return false;
 		}
 
+		$qliro_total    = Qliro_Order_Utility::get_qliro_order_total( $qliro_order );
+		$qliro_currency = $qliro_order['Currency'] ?? '';
+
 		$order = wc_get_order( $order_id );
 
 		// If the order number and the qliro reference already match, we don't need to update the merchant reference.
@@ -239,7 +250,24 @@ function qliro_confirm_order( $order ) {
 			$order->update_meta_data( '_ppu_upsell_urgency_deadline', strtotime( $qliro_order['Upsell']['EligibleForUpsellUntil'] ) );
 		}
 
-		$order->payment_complete( $qliro_order_id );
+		// The amount paid in Qliro can differ from the order total if the cart was changed while the payment was processed.
+		if ( Qliro_Order_Utility::is_amount_mismatch( $qliro_total, $order ) ) {
+			$order->set_transaction_id( $qliro_order_id );
+			$order->update_meta_data( '_qliro_amount_mismatch', 'yes' );
+			$order->update_status(
+				'on-hold',
+				sprintf(
+					// translators: 1: the amount paid in Qliro, 2: the WooCommerce order total, 3: the currency.
+					__( 'The amount paid in Qliro (%1$s %3$s) does not match the order total (%2$s %3$s). Please verify the order in the Qliro portal before processing it.', 'qliro-for-woocommerce' ),
+					wc_format_decimal( $qliro_total, 2 ),
+					wc_format_decimal( $order->get_total(), 2 ),
+					$qliro_currency
+				)
+			);
+			Qliro_One_Logger::log( "Amount mismatch for WooCommerce order {$order_id}: Qliro order {$qliro_order_id} was paid {$qliro_total}, order total is {$order->get_total()}. Order set to on-hold." );
+		} else {
+			$order->payment_complete( $qliro_order_id );
+		}
 
 		foreach ( $qliro_order['PaymentTransactions'] as $payment_transaction ) {
 			if ( 'Success' === $payment_transaction['Status'] ) {
