@@ -29,6 +29,9 @@ extensions:
     - lucatume\WPBrowser\Extension\ChromeDriverController
     - lucatume\WPBrowser\Extension\BuiltInServerController
     - lucatume\WPBrowser\Extension\Symlinker
+    # Global rather than in EndToEnd.suite.yml: suite extensions are registered during
+    # MODULE_INIT, too late to run on it. It only acts for the EndToEnd suite.
+    - Tests\Support\Extension\DumpBuilder
   config:
     Codeception\Extension\Recorder:
       # Codeception keys modules by the exact string the suite enables
@@ -56,6 +59,11 @@ extensions:
         WORDPRESS_ADMIN_PASSWORD: "%WORDPRESS_ADMIN_PASSWORD%"
         QLIRO_TEST_API_KEY: "%QLIRO_TEST_API_KEY%"
         QLIRO_TEST_API_SECRET: "%QLIRO_TEST_API_SECRET%"
+    Tests\Support\Extension\DumpBuilder:
+      env:
+        QLIRO_TEST_API_KEY: "%QLIRO_TEST_API_KEY%"
+        QLIRO_TEST_API_SECRET: "%QLIRO_TEST_API_SECRET%"
+        WORDPRESS_ADMIN_PASSWORD: "%WORDPRESS_ADMIN_PASSWORD%"
     lucatume\WPBrowser\Extension\Symlinker:
       wpRootFolder: "%WORDPRESS_ROOT_DIR%"
       plugins:
