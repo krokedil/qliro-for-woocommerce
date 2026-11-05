@@ -33,7 +33,9 @@ jobs:
       WORDPRESS_DOMAIN: localhost
 
       # The rest of the env variables to use for the tests.
-      WORDPRESS_DB_URL: sqlite://%codecept_root_dir%/tests/_wordpress/data/db.sqlite
+      # The MySQL server wp-browser downloads and runs; tests/_support_scripts/install-test-env.php starts it.
+      WORDPRESS_DB_URL: mysql://root:password@127.0.0.1:8906/wordpress
+      TEST_DB_URL: mysql://root:password@127.0.0.1:8906/wordpress_tests
       WORDPRESS_TABLE_PREFIX: wp_
       TEST_TABLE_PREFIX: test_
       WORDPRESS_ROOT_DIR: tests/_wordpress
@@ -51,7 +53,7 @@ jobs:
         uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2.37.0
         with:
           php-version: ${{ matrix.php }}
-          extensions: pdo_sqlite, sqlite3, mbstring, mysqli, gd, zip, curl, dom, xml
+          extensions: pdo_mysql, mbstring, mysqli, gd, zip, curl, dom, xml
           coverage: none
           tools: composer:v2
       - name: Write tests/.env
@@ -66,6 +68,7 @@ jobs:
             echo "QLIRO_WORDPRESS_URL=${QLIRO_WORDPRESS_URL}"
             echo "WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN}"
             echo "WORDPRESS_DB_URL=${WORDPRESS_DB_URL}"
+            echo "TEST_DB_URL=${TEST_DB_URL}"
             echo "WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}"
             echo "TEST_TABLE_PREFIX=${TEST_TABLE_PREFIX}"
             echo "WORDPRESS_ROOT_DIR=${WORDPRESS_ROOT_DIR}"
@@ -112,6 +115,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php${{ matrix.php }}-composer-
 
+      # MySQL's official build needs libaio, which the runner image may not have.
+      - name: Install libaio for MySQL
+        run: sudo apt-get update -q && sudo apt-get install -y -q libaio1t64
+
       - name: Install Composer dependencies
         # The post-autoload-dump hook fires here and provisions tests/_wordpress/.
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -132,7 +139,7 @@ jobs:
       - name: Harness tests (gate, redaction must hold)
         run: composer test:harness
 
-      # Shares the SQLite file with the Harness suite, so the two must not overlap.
+      # Shares the test database with the Harness suite, so the two must not overlap.
       - name: Integration tests
         run: composer test:integration
 

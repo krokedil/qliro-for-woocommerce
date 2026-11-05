@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1bdaa638aa377d1fa7ce1ba076773ff",
+    "content-hash": "37008c4748d1a12e9fa2d18b142909ab",
     "packages": [],
     "packages-dev": [
         {
@@ -7262,24 +7262,6 @@
                 }
             ],
             "time": "2026-07-27T11:53:23+00:00"
-        },
-        {
-            "name": "wpackagist-plugin/sqlite-database-integration",
-            "version": "2.2.23",
-            "source": {
-                "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/sqlite-database-integration/",
-                "reference": "tags/2.2.23"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/sqlite-database-integration.2.2.23.zip"
-            },
-            "require": {
-                "composer/installers": "^1.0 || ^2.0"
-            },
-            "type": "wordpress-plugin",
-            "homepage": "https://wordpress.org/plugins/sqlite-database-integration/"
         },
         {
             "name": "wpackagist-plugin/woocommerce",

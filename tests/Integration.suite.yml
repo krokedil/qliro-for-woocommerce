@@ -10,7 +10,7 @@ modules:
   config:
     lucatume\WPBrowser\Module\WPLoader:
       wpRootFolder: "%WORDPRESS_ROOT_DIR%"
-      dbUrl: "%WORDPRESS_DB_URL%"
+      dbUrl: "%TEST_DB_URL%"
       wpDebug: true
       tablePrefix: "%TEST_TABLE_PREFIX%"
       domain: "%WORDPRESS_DOMAIN%"
@@ -27,9 +27,3 @@ extensions:
   config:
     Qameta\Allure\Codeception\AllureCodeception:
       outputDirectory: allure-results/integration
-env:
-  hpos:
-    modules:
-      config:
-        lucatume\WPBrowser\Module\WPLoader:
-          dbUrl: "sqlite://%codecept_root_dir%/tests/_wordpress/data/db-hpos.sqlite"

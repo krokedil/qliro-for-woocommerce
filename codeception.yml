@@ -26,6 +26,7 @@ coverage:
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
+    - lucatume\WPBrowser\Extension\MysqlServerController
     - lucatume\WPBrowser\Extension\ChromeDriverController
     - lucatume\WPBrowser\Extension\BuiltInServerController
     - lucatume\WPBrowser\Extension\Symlinker
@@ -40,6 +41,12 @@ extensions:
       module: lucatume\WPBrowser\Module\WPWebDriver
       delete_successful: true
       animate_slides: true
+    lucatume\WPBrowser\Extension\MysqlServerController:
+      # Matches WORDPRESS_DB_URL and TEST_DB_URL in tests/.env.
+      port: 8906
+      database: wordpress
+      user: root
+      password: password
     lucatume\WPBrowser\Extension\ChromeDriverController:
       port: "%CHROMEDRIVER_PORT%"
     lucatume\WPBrowser\Extension\BuiltInServerController:
@@ -47,10 +54,6 @@ extensions:
       port: "%BUILTIN_SERVER_PORT%"
       docroot: "%WORDPRESS_ROOT_DIR%"
       env:
-        DATABASE_TYPE: sqlite
-        DB_ENGINE: sqlite
-        DB_DIR: "%codecept_root_dir%/tests/Support/Data"
-        DB_FILE: db.sqlite
         WORDPRESS_URL: "%WORDPRESS_URL%"
         # What Qliro is told to call back on, used only by
         # tests/_mu-plugins/01-qliro-public-url.php.

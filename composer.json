@@ -25,7 +25,6 @@
         "lucatume/wp-browser": "^4.5",
         "composer/installers": "^2.0",
         "wpackagist-plugin/woocommerce": "^10.0",
-        "wpackagist-plugin/sqlite-database-integration": "^2.2",
         "wpackagist-theme/storefront": "^4.6",
         "allure-framework/allure-codeception": "^2"
     },
@@ -81,9 +80,9 @@
             "vendor/bin/codecept build"
         ],
         "test:e2e": [
+            "@dev:stop",
             "@test:chromedriver",
             "@test:setup",
-            "@dev:stop",
             "vendor/bin/codecept run EndToEnd --xml report-endtoend.xml",
             "@dev:stop"
         ],

@@ -4,7 +4,7 @@
 # fakes and the artifact redaction, rather than the plugin. WordPress is still
 # booted: these test cases extend IntegrationTestCase / WPTestCase.
 #
-# Shares the SQLite database with the Integration suite, so the two must never
+# Shares the test database with the Integration suite, so the two must never
 # run at the same time.
 
 actor: HarnessTester
@@ -15,7 +15,7 @@ modules:
   config:
     lucatume\WPBrowser\Module\WPLoader:
       wpRootFolder: "%WORDPRESS_ROOT_DIR%"
-      dbUrl: "%WORDPRESS_DB_URL%"
+      dbUrl: "%TEST_DB_URL%"
       wpDebug: true
       tablePrefix: "%TEST_TABLE_PREFIX%"
       domain: "%WORDPRESS_DOMAIN%"

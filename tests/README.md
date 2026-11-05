@@ -12,7 +12,7 @@ against a real WordPress + WooCommerce + Qliro install:
 Start with the Integration suite. It needs no credentials and runs in under a
 minute.
 
-`Harness` boots the same WordPress and shares the same SQLite database as
+`Harness` boots the same WordPress and shares the same test database as
 `Integration`, so **never run the two at once**. Concurrent runs surface as bogus
 assertion failures rather than lock errors.
 
@@ -23,10 +23,14 @@ it before adding a test. This file is the mechanics.
 
 All suites:
 
-- **PHP 8.0+** with `pdo_sqlite`, `sqlite3`, `mbstring`, `mysqli`, `gd`, `zip`,
-  `curl`, `dom`, `xml`. CI runs 8.4. The plugin itself still supports 7.4; only the
+- **PHP 8.0+** with `pdo_mysql`, `mysqli`, `mbstring`, `gd`, `zip`, `curl`, `dom`,
+  `xml`. CI runs 8.4. The plugin itself still supports 7.4; only the
   dev dependencies need 8.0, which is why `composer.json` pins the platform to 8.0.
 - **Composer**.
+- **No database server to install.** The suites run on a real MySQL 8.4, which wp-browser
+  downloads once and runs as a normal background process on port 8906, from
+  `~/.cache/qliro-for-woocommerce-tests/mysql`. No Docker, no sudo. On Ubuntu 24.04 and
+  later it needs the `libaio1t64` package, which is usually installed already.
 
 EndToEnd only:
 
@@ -102,18 +106,17 @@ vendor/bin/codecept run Integration:OrderManagementTest --debug          # with 
 vendor/bin/codecept run Integration OrderManagementTest:test_completing_a_paid_order_captures_it
 ```
 
-`composer test:e2e` starts the PHP built-in server, ChromeDriver and ngrok, restores
-builds and restores the dump before each test, runs the suite, then tears everything down. When running
-`codecept run EndToEnd` by hand, run `composer dev:stop` first: a built-in server left
-over from an earlier run keeps the environment it was started with, credentials
-included.
+`composer test:e2e` starts the MySQL server, the PHP built-in server, ChromeDriver and
+ngrok, builds the dump and restores it before each test, runs the suite, then stops
+everything again. Every `composer test:*` command starts MySQL if it is not running, so
+before running `codecept run` by hand, run `composer test:setup` once. `composer dev:stop`
+stops all of it; a built-in server left over from an earlier run keeps the environment it
+was started with, so stop it after changing `tests/.env`.
 
-The Integration suite also has an `hpos` env that points WPLoader at a separate
-`db-hpos.sqlite`:
-
-```bash
-vendor/bin/codecept run Integration --env hpos
-```
+There are two databases on that server: `wordpress` for the E2E site and
+`wordpress_tests` for the Integration and Harness suites (`WORDPRESS_DB_URL` and
+`TEST_DB_URL`), so restoring the E2E fixture, which drops its whole database, never
+touches the other suites.
 
 ## CI
 
@@ -366,15 +369,6 @@ itself. `_mu-plugins/01-qliro-public-url.php` handles those:
   processed, which is the first few seconds after the order is confirmed.
   `OrderManagementCest` waits for it with `waitForGatewayTransactionSettled()`, which
   reads the transaction status off the metabox.
-- **A cart that loses items, or a paid HPOS order the plugin treats as unpaid.**
-  WordPress and WooCommerce save sessions, options and HPOS operational data with
-  `INSERT ... ON DUPLICATE KEY UPDATE`, which needs the unique indexes the SQLite
-  translation drops. Every save then appends a row and reads pick the first one, so
-  an order's paid date reads back empty and capture and cancel are skipped.
-  `_mu-plugins/03-sqlite-compatibility.php` creates the indexes on every request.
-- **A refund that fatals with `get_id() on null`.** WooCommerce asks HPOS for "no limit"
-  as `LIMIT 0, 18446744073709551615`, which overflows SQLite's integer, so
-  `get_refunds()` answers empty. The same mu-plugin caps the number at SQLite's maximum.
 - **A wp-admin click that never lands.** WooCommerce's "Cha-ching! Order number one"
   modal covers the first order screen of every test, since each starts with no orders.
   The seed dismisses it for the admin, through WooCommerce's own opt-out.
@@ -431,4 +425,4 @@ your machine.
 | `tests/Support/Reporting/` | `Redactor`, `SecretRegistry` and `LogTail`. |
 | `tests/_mu-plugins/` | Test-only mu-plugins, synced into the install. Each one's header says why it exists. |
 | `tests/_support_scripts/` | Install, dump build (`build-dump.sh` + `seed-dump-site.php`), report and leak-gate scripts. |
-| `tests/_plugins/`, `tests/_themes/` | WooCommerce, SQLite Database Integration and Storefront, installed by composer. |
+| `tests/_plugins/`, `tests/_themes/` | WooCommerce and Storefront, installed by composer. |

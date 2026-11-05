@@ -19,7 +19,7 @@ trait CanManageE2EProducts {
 			throw new \InvalidArgumentException("No product data found for SKU: $sku");
 		}
 
-		$productId = $this->haveInDatabase('wp_posts', [
+		$productId = $this->havePostInDatabase([
 			'post_title' => $productData['name'],
 			'post_type' => 'product',
 			'post_status' => 'publish',
@@ -39,7 +39,7 @@ trait CanManageE2EProducts {
 			throw new \InvalidArgumentException("No product data found for SKU: $variationSku");
 		}
 
-		$variationId = $this->haveInDatabase('wp_posts', [
+		$variationId = $this->havePostInDatabase([
 			'post_title' => $variationData['name'],
 			'post_type' => 'product_variation',
 			'post_status' => 'publish',

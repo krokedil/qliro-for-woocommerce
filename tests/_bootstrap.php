@@ -27,7 +27,7 @@ if (is_dir($qliro_mu_plugins) && is_dir($qliro_mu_source)) {
     }
 
     // Drop the ones an earlier checkout installed and this one no longer has, matched on
-    // our own plugin header so wp-browser's SQLite drop-in is left alone.
+    // our own plugin header so anything else in mu-plugins is left alone.
     foreach (glob($qliro_mu_plugins . '/*.php') as $qliro_installed) {
         if (in_array(basename($qliro_installed), $qliro_wanted, true)) {
             continue;
