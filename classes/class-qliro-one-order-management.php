@@ -14,6 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Qliro_One_Order_Management {
 
+	public const CAPTURE_RETRY_HOOK  = 'qliro_retry_capture';
+	public const CAPTURE_RETRY_GROUP = 'qliro_order_management';
+	public const CAPTURE_RETRY_DELAY = 30;
+	public const CAPTURE_MAX_RETRIES = 5;
+
 	/**
 	 * The plugin settings.
 	 *
@@ -34,6 +39,7 @@ class Qliro_One_Order_Management {
 		add_filter( 'woocommerce_order_refund_get_reason', array( $this, 'add_return_fee_info_to_refund_reason' ), 10, 2 );
 
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'maybe_sync_order' ), 9999 );
+		add_action( self::CAPTURE_RETRY_HOOK, array( $this, 'retry_capture' ), 10, 2 );
 
 		// Register the action to set the transaction meta data when reading the Qliro order from the admin endpoint.
 		add_action( 'qliro_admin_order_received', Qliro_Order_Utility::class . '::maybe_update_transaction_meta', 10, 2 );
@@ -83,15 +89,21 @@ class Qliro_One_Order_Management {
 	 *
 	 * @param int      $order_id The WooCommerce order ID.
 	 * @param WC_Order $order The WooCommerce order.
+	 * @param int      $attempt The number of retries already made for this capture.
 	 */
-	public function capture_qliro_one_order( $order_id, $order ) {
+	public function capture_qliro_one_order( $order_id, $order, $attempt = 0 ) {
 		if ( qliro_is_fully_captured( $order ) ) {
 			return;
 		}
 
 		// Read the Qliro order first to ensure we have the latest transaction data before proceeding.
 		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
-		QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+		$qliro_order    = QLIRO_WC()->api->get_qliro_one_admin_order( $qliro_order_id, $order );
+
+		// Qliro rejects the capture while another transaction is in process, e.g. the new preauthorization created when the merchant reference is updated.
+		if ( ! is_wp_error( $qliro_order ) && Qliro_Order_Utility::has_transaction_in_process( $qliro_order ) && $this->maybe_schedule_capture_retry( $order, $attempt ) ) {
+			return;
+		}
 
 		$items = qliro_is_partially_captured( $order ) ? qliro_get_remaining_items_to_capture( $order ) : '';
 
@@ -105,6 +117,9 @@ class Qliro_One_Order_Management {
 			if ( 'NO_ITEMS_LEFT_IN_RESERVATION' === $system_code ) {
 				$order->add_order_note( __( 'The order has already been captured.', 'qliro-for-woocommerce' ) );
 				$order->update_meta_data( '_qliro_order_captured', Qliro_Order_Utility::get_last_capture_transaction_id( $order ) ?? $order->get_meta( '_qliro_payment_transaction_id' ) );
+			} elseif ( 'OPERATION_NOT_SUPPORTED' === $system_code && $this->maybe_schedule_capture_retry( $order, $attempt ) ) {
+				// Qliro asks us to retry shortly, so the order is not set to On hold yet.
+				return;
 			} else {
 				// translators: %s is the error message from Qliro.
 				$order->update_status( 'on-hold', sprintf( __( 'The order failed to be captured with Qliro: %s.', 'qliro-for-woocommerce' ), $error_message ) );
@@ -140,6 +155,60 @@ class Qliro_One_Order_Management {
 			$order->add_order_note( $order_note );
 		}
 		$order->save();
+	}
+
+	/**
+	 * Schedule a new capture attempt, unless the retries are used up.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param int      $attempt The number of retries already made for this capture.
+	 *
+	 * @return bool True if a retry was scheduled.
+	 */
+	private function maybe_schedule_capture_retry( $order, $attempt ) {
+		$attempt = absint( $attempt );
+		if ( $attempt >= self::CAPTURE_MAX_RETRIES ) {
+			return false;
+		}
+
+		$next_attempt = $attempt + 1;
+		as_schedule_single_action( time() + self::CAPTURE_RETRY_DELAY, self::CAPTURE_RETRY_HOOK, array( $order->get_id(), $next_attempt ), self::CAPTURE_RETRY_GROUP );
+
+		Qliro_One_Logger::log( "Qliro is processing another transaction for WooCommerce order {$order->get_id()}. Capture retry {$next_attempt} of " . self::CAPTURE_MAX_RETRIES . ' scheduled.' );
+		$order->add_order_note(
+			sprintf(
+				// translators: %1$d is the number of seconds until the retry, %2$d is the retry number, %3$d is the maximum number of retries.
+				__( 'Qliro is still processing a payment transaction for this order. The capture will be retried in %1$d seconds (retry %2$d of %3$d).', 'qliro-for-woocommerce' ),
+				self::CAPTURE_RETRY_DELAY,
+				$next_attempt,
+				self::CAPTURE_MAX_RETRIES
+			)
+		);
+		$order->save();
+
+		return true;
+	}
+
+	/**
+	 * Retry a capture that Qliro could not process earlier. Runs from Action Scheduler.
+	 *
+	 * @param int $order_id The WooCommerce order ID.
+	 * @param int $attempt The number of retries made, including this one.
+	 */
+	public function retry_capture( $order_id, $attempt ) {
+		$order = wc_get_order( $order_id );
+		if ( empty( $order ) || 'qliro_one' !== $order->get_payment_method() || ! self::is_order_sync_enabled( $order ) ) {
+			return;
+		}
+
+		// The order may have been cancelled or put on hold while the retry was waiting.
+		$capture_status = str_replace( 'wc-', '', $this->settings['capture_status'] );
+		if ( ! $order->has_status( array_merge( wc_get_is_paid_statuses(), array( $capture_status ) ) ) || $order->get_meta( '_qliro_order_canceled' ) ) {
+			Qliro_One_Logger::log( "Skipping capture retry for WooCommerce order {$order_id}, the order has status {$order->get_status()}." );
+			return;
+		}
+
+		$this->capture_qliro_one_order( $order_id, $order, $attempt );
 	}
 
 	/**

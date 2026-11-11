@@ -15,8 +15,9 @@ class Qliro_Order_Utility {
 	public const TRANSACTION_TYPE_PREAUTH = 'Preauthorization';
 	public const TRANSACTION_TYPE_CAPTURE = 'Capture';
 
-	public const TRANSACTION_STATUS_SUCCESS = 'Success';
-	public const TRANSACTION_STATUS_ONHOLD  = 'OnHold';
+	public const TRANSACTION_STATUS_SUCCESS    = 'Success';
+	public const TRANSACTION_STATUS_ONHOLD     = 'OnHold';
+	public const TRANSACTION_STATUS_IN_PROCESS = 'InProcess';
 
 	public const PROCESSING_TRANSACTION_TYPES = array(
 		self::TRANSACTION_TYPE_DEBIT,
@@ -104,6 +105,23 @@ class Qliro_Order_Utility {
 			$status = $transaction['Status'] ?? '';
 
 			if ( in_array( $type, $paid_types, true ) && self::TRANSACTION_STATUS_SUCCESS === $status ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check whether Qliro is still processing a transaction on the order.
+	 *
+	 * @param array $qliro_order The Qliro order.
+	 *
+	 * @return bool
+	 */
+	public static function has_transaction_in_process( $qliro_order ) {
+		foreach ( $qliro_order['PaymentTransactions'] ?? array() as $transaction ) {
+			if ( self::TRANSACTION_STATUS_IN_PROCESS === ( $transaction['Status'] ?? '' ) ) {
 				return true;
 			}
 		}
