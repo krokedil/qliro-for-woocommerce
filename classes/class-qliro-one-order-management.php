@@ -163,7 +163,7 @@ class Qliro_One_Order_Management {
 	 * @param WC_Order $order The WooCommerce order.
 	 * @param int      $attempt The number of retries already made for this capture.
 	 *
-	 * @return bool True if a retry was scheduled.
+	 * @return bool True if a retry was scheduled or is already pending.
 	 */
 	private function maybe_schedule_capture_retry( $order, $attempt ) {
 		$attempt = absint( $attempt );
@@ -171,8 +171,14 @@ class Qliro_One_Order_Management {
 			return false;
 		}
 
+		// A new capture trigger must not start a second retry chain for the same order.
+		if ( $this->has_pending_capture_retry( $order->get_id() ) ) {
+			Qliro_One_Logger::log( "A capture retry is already pending for WooCommerce order {$order->get_id()}." );
+			return true;
+		}
+
 		$next_attempt = $attempt + 1;
-		as_schedule_single_action( time() + self::CAPTURE_RETRY_DELAY, self::CAPTURE_RETRY_HOOK, array( $order->get_id(), $next_attempt ), self::CAPTURE_RETRY_GROUP );
+		as_schedule_single_action( time() + self::CAPTURE_RETRY_DELAY, self::CAPTURE_RETRY_HOOK, array( $order->get_id(), $next_attempt ), self::CAPTURE_RETRY_GROUP, true );
 
 		Qliro_One_Logger::log( "Qliro is processing another transaction for WooCommerce order {$order->get_id()}. Capture retry {$next_attempt} of " . self::CAPTURE_MAX_RETRIES . ' scheduled.' );
 		$order->add_order_note(
@@ -190,6 +196,34 @@ class Qliro_One_Order_Management {
 	}
 
 	/**
+	 * Check whether a capture retry is already waiting to run for the order.
+	 *
+	 * @param int $order_id The WooCommerce order ID.
+	 *
+	 * @return bool
+	 */
+	private function has_pending_capture_retry( $order_id ) {
+		for ( $retry = 1; $retry <= self::CAPTURE_MAX_RETRIES; $retry++ ) {
+			$pending = as_get_scheduled_actions(
+				array(
+					'hook'     => self::CAPTURE_RETRY_HOOK,
+					'group'    => self::CAPTURE_RETRY_GROUP,
+					'args'     => array( $order_id, $retry ),
+					'status'   => ActionScheduler_Store::STATUS_PENDING,
+					'per_page' => 1,
+				),
+				'ids'
+			);
+
+			if ( ! empty( $pending ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Retry a capture that Qliro could not process earlier. Runs from Action Scheduler.
 	 *
 	 * @param int $order_id The WooCommerce order ID.
@@ -201,9 +235,12 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		// The order may have been cancelled or put on hold while the retry was waiting.
+		// The order may have been cancelled or put on hold while the retry was waiting. The capture status is allowed even if it is On hold, but never a cancelling status.
 		$capture_status = str_replace( 'wc-', '', $this->settings['capture_status'] );
-		if ( ! $order->has_status( array_merge( wc_get_is_paid_statuses(), array( $capture_status ) ) ) || $order->get_meta( '_qliro_order_canceled' ) ) {
+		$cancel_status  = str_replace( 'wc-', '', $this->settings['cancel_status'] );
+		$allowed        = $order->has_status( array_merge( wc_get_is_paid_statuses(), array( $capture_status ) ) );
+		$is_cancelled   = $order->has_status( array( 'cancelled', 'refunded', 'failed', $cancel_status ) ) || $order->get_meta( '_qliro_order_canceled' );
+		if ( ! $allowed || $is_cancelled ) {
 			Qliro_One_Logger::log( "Skipping capture retry for WooCommerce order {$order_id}, the order has status {$order->get_status()}." );
 			return;
 		}
