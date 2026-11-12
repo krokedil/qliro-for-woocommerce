@@ -146,13 +146,16 @@ class Qliro_Order_Discount {
 			$discount_amount *= -1; // Fees are positive amounts, so we invert the discount to be negative.
 			$vat_amount      *= -1; // VAT on fees is also negative.
 
+			$is_fully_captured = qliro_is_fully_captured( $order );
+
 			// Add the fee to the order.
 			$fee = $this->add_discount_to_order( $discount_id, $discount_rate_id, $vat_rate, $vat_amount, $discount_amount, $order );
 
 			// Since a "shipped" Qliro order cannot be updated, the AddItemsToInvoice endpoint must be used instead.
-			if ( qliro_is_fully_captured( $order ) ) {
-				$items    = array( Qliro_One_Helper_Order::process_order_item_fee( $fee, $order ) );
-				$response = QLIRO_WC()->api->add_items_qliro_order( $order_id, $items );
+			if ( $is_fully_captured ) {
+				$capture_id = Qliro_Order_Utility::get_last_capture_transaction_id( $order );
+				$items      = array( Qliro_One_Helper_Order::process_order_item_fee( $fee, $order ) );
+				$response   = QLIRO_WC()->api->add_items_qliro_order( $order_id, $items );
 			} else {
 				// When updating an order, all items from the preauthorization must be included when updating an order that hasn't been "shipped" yet.
 				$items    = array_merge( Qliro_One_Helper_Order::get_order_items( $order_id ) );
@@ -171,6 +174,11 @@ class Qliro_Order_Discount {
 			// Get the new payment transaction id from the response, and update the order meta with it.
 			$transaction_id = $response['PaymentTransactions'][0]['PaymentTransactionId'] ?? '';
 			$order->update_meta_data( '_qliro_payment_transaction_id', $transaction_id );
+
+			if ( $is_fully_captured && empty( $order->get_meta( '_qliro_order_captured' ) ) ) {
+				$fee->update_meta_data( '_qliro_captured_data', ( $capture_id ?? $transaction_id ) . ':' . $fee->get_quantity() );
+				$fee->save();
+			}
 
 			// Add order note with the discount id, amount and transaction id to the order.
 			$order->add_order_note(
