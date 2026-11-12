@@ -123,6 +123,11 @@ class Qliro_Order_Discount {
 			$this->handle_error_redirect( 'invalid_hash', 'metabox_discount' );
 		}
 
+		// Discounts are not supported on partially captured orders.
+		if ( qliro_is_partially_captured( $order ) ) {
+			$this->handle_error_redirect( 'partially_captured', 'metabox_discount' );
+		}
+
 		try {
 			$discount_amount = floatval( $discount_amount );
 
@@ -194,7 +199,23 @@ class Qliro_Order_Discount {
 	 */
 	public static function output_order_discount_button( $order ) {
 		$classes = 'krokedil_wc__metabox_button krokedil_wc__metabox_action button button-secondary';
-		echo wp_kses_post( "<a id='qliro_add_order_discount' class='{$classes}'>Add Qliro discount</a>" );
+
+		// Discounts are not supported on partially captured orders, so the button is disabled and the modal is never loaded.
+		if ( qliro_is_partially_captured( $order ) ) {
+			printf(
+				'<a id="qliro_add_order_discount" class="%1$s disabled" aria-disabled="true" title="%2$s">%3$s</a>',
+				esc_attr( $classes ),
+				esc_attr__( 'Discounts cannot be added to partially captured orders. Capture the full order first, then add the discount.', 'qliro-for-woocommerce' ),
+				esc_html__( 'Add Qliro discount', 'qliro-for-woocommerce' )
+			);
+			return;
+		}
+
+		printf(
+			'<a id="qliro_add_order_discount" class="%1$s">%2$s</a>',
+			esc_attr( $classes ),
+			esc_html__( 'Add Qliro discount', 'qliro-for-woocommerce' )
+		);
 
 		$qliro_discount_data = self::get_order_discount_modal_data( $order );
 		// Enqueue the script and style for the discount modal.
