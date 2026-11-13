@@ -1,0 +1,4 @@
+Type: Misc
+Needs Documentation: no
+
+Replaced the old Jest end-to-end setup with Codeception test suites (Integration, Harness and EndToEnd) and a pull request workflow that runs them. No change to the plugin itself.

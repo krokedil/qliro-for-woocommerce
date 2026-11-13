@@ -172,15 +172,18 @@ class Qliro_One_Metabox extends OrderMetabox {
 			case 'missing_parameters':
 				$notice = __( 'Missing parameters to add the discount. Please try again.', 'qliro-for-woocommerce' );
 				break;
+			case 'partially_captured':
+				$notice = __( 'Discounts cannot be added to partially captured orders. Capture the full order first, then add the discount.', 'qliro-for-woocommerce' );
+				break;
 			default:
 				return;
 		}
 
-		$notice  = '<div class="notice notice-error is-dismissible">';
-		$notice .= "<p>{$notice}</p>";
-		$notice .= '</div>';
+		$html  = '<div class="notice notice-error is-dismissible">';
+		$html .= '<p>' . esc_html( $notice ) . '</p>';
+		$html .= '</div>';
 
-		echo wp_kses_post( $notice );
+		echo wp_kses_post( $html );
 	}
 
 	/**
