@@ -58,6 +58,16 @@ try {
         $_ENV['LD_LIBRARY_PATH'] = $_SERVER['LD_LIBRARY_PATH'] = $libPath;
     }
 
+    // MysqlServer::start() does nothing while a PID file exists, so a file left by a server
+    // that has since died would leave nothing listening. Only removed when the PID is gone.
+    $pidFile = codecept_output_dir(MysqlServer::PID_FILE_NAME);
+    $pid     = is_file($pidFile) ? (int) trim((string) file_get_contents($pidFile)) : 0;
+    $pidIsDead = $pid === 0 || (function_exists('posix_kill') && ! @posix_kill($pid, 0));
+    if (is_file($pidFile) && $pidIsDead) {
+        echo "Removing the stale MySQL PID file for PID {$pid}...\n";
+        unlink($pidFile);
+    }
+
     $server = new MysqlServer($serverDir, (int) $dbPort, $db['name'], $db['user'], $db['password']);
     $server->start();
 }
