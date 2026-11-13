@@ -1,4 +1,4 @@
 Type: Fix
 Needs Documentation: no
 
-Paid orders are no longer set to On hold when the capture runs while Qliro is still processing another payment transaction on the order. This could happen with Qliro invoice payments when the capture status is set to Processing, because Qliro is briefly busy right after the order is confirmed. The capture is now retried automatically, up to five times 30 seconds apart, with an order note for each retry. The order is set to On hold only if every retry fails. A retry is skipped if the order has been cancelled or put on hold in the meantime.
+Paid orders are no longer set to On hold when the capture runs while Qliro is still processing another payment transaction on the order. This could happen with Qliro invoice payments when the capture status is set to Processing, because Qliro is briefly busy right after the order is confirmed. The capture is now retried automatically, up to five times 30 seconds apart, with an order note for each retry. The order is set to On hold only if every retry fails. A retry is skipped if the order no longer has the capture status, for example because it has been cancelled in the meantime.

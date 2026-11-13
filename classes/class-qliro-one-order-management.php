@@ -178,7 +178,13 @@ class Qliro_One_Order_Management {
 		}
 
 		$next_attempt = $attempt + 1;
-		as_schedule_single_action( time() + self::CAPTURE_RETRY_DELAY, self::CAPTURE_RETRY_HOOK, array( $order->get_id(), $next_attempt ), self::CAPTURE_RETRY_GROUP, true );
+		$action_id    = as_schedule_single_action( time() + self::CAPTURE_RETRY_DELAY, self::CAPTURE_RETRY_HOOK, array( $order->get_id(), $next_attempt ), self::CAPTURE_RETRY_GROUP, true );
+
+		// Without a scheduled retry nothing would capture the order later, so let the caller set it to On hold instead.
+		if ( empty( $action_id ) ) {
+			Qliro_One_Logger::log( "Failed to schedule capture retry {$next_attempt} for WooCommerce order {$order->get_id()}." );
+			return false;
+		}
 
 		Qliro_One_Logger::log( "Qliro is processing another transaction for WooCommerce order {$order->get_id()}. Capture retry {$next_attempt} of " . self::CAPTURE_MAX_RETRIES . ' scheduled.' );
 		$order->add_order_note(
@@ -235,12 +241,11 @@ class Qliro_One_Order_Management {
 			return;
 		}
 
-		// The order may have been cancelled or put on hold while the retry was waiting. The capture status is allowed even if it is On hold, but never a cancelling status.
+		// Like a regular capture, only capture while the order still has the capture status. It may have been moved, e.g. cancelled, while the retry was waiting.
 		$capture_status = str_replace( 'wc-', '', $this->settings['capture_status'] );
 		$cancel_status  = str_replace( 'wc-', '', $this->settings['cancel_status'] );
-		$allowed        = $order->has_status( array_merge( wc_get_is_paid_statuses(), array( $capture_status ) ) );
 		$is_cancelled   = $order->has_status( array( 'cancelled', 'refunded', 'failed', $cancel_status ) ) || $order->get_meta( '_qliro_order_canceled' );
-		if ( ! $allowed || $is_cancelled ) {
+		if ( ! $order->has_status( $capture_status ) || $is_cancelled ) {
 			Qliro_One_Logger::log( "Skipping capture retry for WooCommerce order {$order_id}, the order has status {$order->get_status()}." );
 			return;
 		}
