@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: yes
+
+The "Add Qliro discount" button is now disabled on partially captured orders, and such requests are rejected. A discount larger than the amount left to capture could previously make the remaining capture fail and put the order On hold. Capture the full order first, then add the discount.
