@@ -81,7 +81,6 @@
         ],
         "test:e2e": [
             "@dev:stop",
-            "@php tests/_support_scripts/wait-for-mysql-stop.php",
             "@test:chromedriver",
             "@test:setup",
             "vendor/bin/codecept run EndToEnd --xml report-endtoend.xml",
