@@ -7,7 +7,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 5.0.0
 WC tested up to: 11.2.1
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,12 @@ Support for this plugin is handled via support@qliro.com.
 3. The Qliro order metabox on the WooCommerce order edit page.
 
 == Changelog ==
+= 2026-11-16    - version 2.5.2 =
+* Misc          - Replaced the old Jest end-to-end setup with Codeception test suites (Integration, Harness and EndToEnd) and a pull request workflow that runs them. No change to the plugin itself.
+* Fix           - Shipping prices that change after the checkout has loaded are now sent to Qliro. Rates repriced by a third-party shipping plugin could previously leave Qliro holding the original price, which made the capture fail.
+* Fix           - Orders are no longer placed with a different total than the one paid in Qliro when the cart is changed in another browser tab. The checkout now rejects the order and reloads with the updated total. If an amount mismatch still reaches the confirmation, the order is set to On hold with an order note instead of being marked as paid.
+* Fix           - The "Add Qliro discount" button is now disabled on partially captured orders, and such requests are rejected. A discount larger than the amount left to capture could previously make the remaining capture fail and put the order On hold. Capture the full order first, then add the discount.
+
 = 2026-10-26    - version 2.5.1 =
 * Enhancement   - Masked customer personal data, credentials and callback tokens in the plugin log. Masking can be turned off while debugging with the krokedil_wp_api_mask_log_data filter.
 * Fix           - Adding discounts for orders first captured in the Qliro portal no longer fails with an "Expected type 'Capture'" or "The order has already been captured".

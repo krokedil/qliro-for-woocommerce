@@ -1,0 +1,10 @@
+{
+    "method": "POST",
+    "path": "https://pago.qit.nu/checkout/adminapi/v2/cancelOrder",
+    "body": {
+        "RequestId": "<request-id>",
+        "MerchantApiKey": "***REDACTED***",
+        "OrderId": "1234567",
+        "Language": null
+    }
+}

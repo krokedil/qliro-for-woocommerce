@@ -1,0 +1,27 @@
+{
+    "method": "POST",
+    "path": "https://pago.qit.nu/checkout/adminapi/v2/MarkItemsAsShipped",
+    "body": {
+        "RequestId": "<request-id>",
+        "MerchantApiKey": "***REDACTED***",
+        "OrderId": "1234567",
+        "Currency": "SEK",
+        "Shipments": [
+            {
+                "PaymentTransactionId": "7654321",
+                "OrderItems": [
+                    {
+                        "MerchantReference": "gateway-order-product",
+                        "Description": "Gateway order product",
+                        "Quantity": 2,
+                        "Type": "Product",
+                        "PricePerItemIncVat": "125.00",
+                        "PricePerItemExVat": "100.00",
+                        "VatRate": "2500.00"
+                    }
+                ]
+            }
+        ],
+        "Language": null
+    }
+}

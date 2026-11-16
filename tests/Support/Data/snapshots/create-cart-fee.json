@@ -1,0 +1,67 @@
+{
+    "method": "POST",
+    "path": "https://pago.qit.nu/checkout/merchantapi/orders",
+    "body": {
+        "MerchantReference": "<merchant-reference>",
+        "Currency": "SEK",
+        "Country": "SE",
+        "Language": "en-us",
+        "MerchantConfirmationUrl": "<site>/checkout/?qliro_one_confirm_page=<confirmation-id>",
+        "MerchantCheckoutStatusPushUrl": "<site>/wc-api/QOC_Checkout_Status/?qliro_one_confirm_id=<confirmation-id>",
+        "MerchantOrderManagementStatusPushUrl": "<site>/wc-api/QOC_OM_Status/?qliro_one_confirm_id=<confirmation-id>&qliro_callback_ref=<confirmation-id>&qliro_callback_token=<qliro_callback_token>",
+        "MerchantNotificationUrl": "<site>/wp-json/qliro/v1/callback/notifications?qliro_callback_ref=<confirmation-id>&qliro_callback_token=<qliro_callback_token>",
+        "MerchantTermsUrl": "<site>/terms/",
+        "MerchantIntegrityPolicyUrl": null,
+        "AskForNewsletterSignup": false,
+        "AskForNewsletterSignUpText": "Sign up for our newsletter",
+        "AskForNewsletterSignupChecked": false,
+        "OrderItems": [
+            {
+                "MerchantReference": "gateway-order-product",
+                "Description": "Gateway order product",
+                "Type": "Product",
+                "Quantity": 1,
+                "PricePerItemIncVat": "125.00",
+                "PricePerItemExVat": "100.00",
+                "VatRate": "25.00",
+                "Metadata": {
+                    "HasRisk": false
+                }
+            },
+            {
+                "MerchantReference": "handling-fee",
+                "Description": "Handling fee",
+                "Quantity": 1,
+                "Type": "Fee",
+                "PricePerItemIncVat": "25.00",
+                "PricePerItemExVat": "20.00",
+                "VatRate": "25.00",
+                "Metadata": {
+                    "HasRisk": false
+                }
+            }
+        ],
+        "MerchantApiKey": "***REDACTED***",
+        "AvailableShippingMethods": [],
+        "CustomerInformation": {
+            "Email": "karl@example.com",
+            "MobileNumber": "+46701234567",
+            "JuridicalType": "Company",
+            "Address": {
+                "FirstName": "Karl",
+                "LastName": "Karlsson",
+                "Street": "Storgatan 1",
+                "PostalCode": "411 06",
+                "City": "G\u00f6teborg"
+            },
+            "ShippingAddress": {
+                "FirstName": "Karl",
+                "LastName": "Karlsson",
+                "Street": "Storgatan 1",
+                "PostalCode": "411 06",
+                "City": "G\u00f6teborg"
+            }
+        },
+        "RequireIdentityVerification": false
+    }
+}

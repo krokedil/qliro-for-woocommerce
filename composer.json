@@ -21,18 +21,30 @@
         "squizlabs/php_codesniffer": "^3.13.5",
         "szepeviktor/phpstan-wordpress": "^2.0.3",
         "php-stubs/woocommerce-subscriptions-stubs": "*",
-        "symfony/polyfill-php80": "^1.0.0"
+        "symfony/polyfill-php80": "^1.0.0",
+        "lucatume/wp-browser": "^4.5",
+        "composer/installers": "^2.0",
+        "wpackagist-plugin/woocommerce": "^10.0",
+        "wpackagist-theme/storefront": "^4.6",
+        "allure-framework/allure-codeception": "^2"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "minimum-stability": "dev",
     "config": {
         "platform-check": false,
         "platform": {
-            "php": "7.4"
+            "php": "8.0"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "wpify/scoper": true
-        }
+            "wpify/scoper": true,
+            "composer/installers": true
+        },
+        "process-timeout": 0
     },
     "scripts": {
         "get-changelog": "bash .github/scripts/new-version.sh",
@@ -53,7 +65,42 @@
             "@install-codestandards"
         ],
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
-        "phpstan:baseline": "./vendor/bin/phpstan analyse --memory-limit=2G --generate-baseline"
+        "phpstan:baseline": "./vendor/bin/phpstan analyse --memory-limit=2G --generate-baseline",
+        "lint:tests": "vendor/bin/phpcs --standard=tests/phpcs.xml tests -q",
+        "lint:tests:fix": "vendor/bin/phpcbf --standard=tests/phpcs.xml tests -q",
+        "test:bootstrap": "@php tests/_support_scripts/install-test-env.php",
+        "test:chromedriver": "vendor/bin/codecept chromedriver:update",
+        "post-autoload-dump-dev": [
+            "@test:bootstrap"
+        ],
+        "dev:start": "vendor/bin/codecept dev:start",
+        "dev:stop": "vendor/bin/codecept dev:stop",
+        "test:setup": [
+            "@test:bootstrap",
+            "vendor/bin/codecept build"
+        ],
+        "test:e2e": [
+            "@dev:stop",
+            "@test:chromedriver",
+            "@test:setup",
+            "vendor/bin/codecept run EndToEnd --xml report-endtoend.xml",
+            "@dev:stop"
+        ],
+        "test:integration": [
+            "@test:setup",
+            "vendor/bin/codecept run Integration --xml report-integration.xml"
+        ],
+        "test:integration:snapshots": [
+            "@test:setup",
+            "UPDATE_SNAPSHOTS=1 vendor/bin/codecept run Integration"
+        ],
+        "test:harness": [
+            "@test:setup",
+            "vendor/bin/codecept run Harness --xml report-harness.xml"
+        ],
+        "test:report": "bash tests/_support_scripts/generate-report.sh",
+        "test:report:share": "bash tests/_support_scripts/generate-report.sh --share",
+        "test:report:reset": "rm -rf tests/_output/allure-results tests/_output/report tests/_output/report-share tests/_output/record_* tests/_output/Tests.EndToEnd.*.html tests/_output/Tests.EndToEnd.*.png"
     },
     "extra": {
         "wpify-scoper": {
@@ -66,6 +113,25 @@
             ],
             "composerjson": "composer-dependencies.json",
             "composerlock": "composer-dependencies.lock"
+        },
+        "installer-paths": {
+            "tests/_plugins/{$name}/": [
+                "type:wordpress-plugin"
+            ],
+            "tests/_themes/{$name}/": [
+                "type:wordpress-theme"
+            ]
         }
-    }
+    },
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org",
+            "only": [
+                "wpackagist-plugin/*",
+                "wpackagist-theme/*"
+            ]
+        }
+    ]
 }

@@ -27,7 +27,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: ["7.4", "8.3", "8.5"]
+                php: ["8.0", "8.3", "8.5"]
         steps:
             - name: Checkout repository
               uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -40,7 +40,7 @@ jobs:
                   tools: composer:v2
 
             - name: Install Composer dependencies
-              run: composer install --prefer-dist --no-progress --optimize-autoloader
+              run: composer install --prefer-dist --no-progress --optimize-autoloader --no-scripts
 
             - name: Run PHPStan
               run: composer phpstan
