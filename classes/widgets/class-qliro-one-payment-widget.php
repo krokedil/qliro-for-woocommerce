@@ -28,7 +28,7 @@ class Qliro_One_Payment_Widget {
 			get_option( 'woocommerce_qliro_one_settings', array() ),
 			array(
 				'enabled'                           => 'no',
-				'payment_widget_condensed'          => 'no',
+				'payment_widget_data_condensed'     => 'no',
 				'payment_widget_placement_location' => '15',
 			)
 		);
@@ -112,7 +112,7 @@ class Qliro_One_Payment_Widget {
 			}
 		}
 
-		$data_condensed = 'yes' === $this->settings['payment_widget_condensed'] ? ' data-condensed' : '';
+		$data_condensed = wc_string_to_bool( $this->settings['payment_widget_data_condensed'] ) ? ' data-condensed' : '';
 
 		$lang = substr( get_locale(), 0, 2 );
 		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ) ) ? $lang : 'en';

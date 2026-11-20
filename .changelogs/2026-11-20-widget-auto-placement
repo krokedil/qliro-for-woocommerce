@@ -1,4 +1,4 @@
 Type: Fix
 Needs Documentation: no
 
-The payment and banner widgets are now shown on product and cart pages according to their placement settings, instead of only through shortcodes.
+The payment and banner widgets are now shown on product and cart pages according to their placement settings, instead of only through shortcodes. The "Payment widget condensed copy" setting is now also applied.
