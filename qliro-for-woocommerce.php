@@ -369,19 +369,12 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 				'banner_widget_cart_enabled' => 'banner_widget_cart_placement_location',
 				'payment_widget_enabled'     => 'payment_widget_placement_location',
 			);
-
-			$saved_since_toggle_removal = null;
 			foreach ( $legacy_widget_toggles as $toggle_key => $placement_key ) {
 				if ( ! isset( $settings[ $toggle_key ] ) ) {
 					continue;
 				}
 
-				// Saves from 1.12.0 wrote this option; the placement shown at that save is the merchant's intent.
-				if ( null === $saved_since_toggle_removal ) {
-					$saved_since_toggle_removal = false !== get_option( 'woocommerce_qliro_one_payment_widget_enabled', false );
-				}
-
-				if ( ! $saved_since_toggle_removal && ! wc_string_to_bool( $settings[ $toggle_key ] ) ) {
+				if ( ! wc_string_to_bool( $settings[ $toggle_key ] ) ) {
 					$settings[ $placement_key ] = 'none';
 				}
 				unset( $settings[ $toggle_key ] );
