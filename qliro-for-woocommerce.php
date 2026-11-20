@@ -349,12 +349,46 @@ if ( ! class_exists( 'Qliro_One_For_WooCommerce' ) ) {
 		 * @return void
 		 */
 		public function migrate_settings() {
+			if ( ! function_exists( 'wc_string_to_bool' ) ) {
+				return;
+			}
+
 			// Get the settings for the gateway.
 			$settings = get_option( 'woocommerce_qliro_one_settings', array() );
+			$migrated = false;
 
 			// If the setting for shipping_in_iframe is 'yes', change it to 'wc_shipping' for the change to a select instead of checkbox.
 			if ( isset( $settings['shipping_in_iframe'] ) && 'yes' === $settings['shipping_in_iframe'] ) {
 				$settings['shipping_in_iframe'] = 'wc_shipping';
+				$migrated                       = true;
+			}
+
+			// Before 1.12.0 each widget had an enable checkbox; now a 'none' placement disables it.
+			$legacy_widget_toggles = array(
+				'banner_widget_enabled'      => 'banner_widget_placement_location',
+				'banner_widget_cart_enabled' => 'banner_widget_cart_placement_location',
+				'payment_widget_enabled'     => 'payment_widget_placement_location',
+			);
+
+			$saved_since_toggle_removal = null;
+			foreach ( $legacy_widget_toggles as $toggle_key => $placement_key ) {
+				if ( ! isset( $settings[ $toggle_key ] ) ) {
+					continue;
+				}
+
+				// Saves from 1.12.0 wrote this option; the placement shown at that save is the merchant's intent.
+				if ( null === $saved_since_toggle_removal ) {
+					$saved_since_toggle_removal = false !== get_option( 'woocommerce_qliro_one_payment_widget_enabled', false );
+				}
+
+				if ( ! $saved_since_toggle_removal && ! wc_string_to_bool( $settings[ $toggle_key ] ) ) {
+					$settings[ $placement_key ] = 'none';
+				}
+				unset( $settings[ $toggle_key ] );
+				$migrated = true;
+			}
+
+			if ( $migrated ) {
 				update_option( 'woocommerce_qliro_one_settings', $settings );
 			}
 		}

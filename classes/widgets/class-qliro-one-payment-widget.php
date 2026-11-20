@@ -27,7 +27,7 @@ class Qliro_One_Payment_Widget {
 		$this->settings = wp_parse_args(
 			get_option( 'woocommerce_qliro_one_settings', array() ),
 			array(
-				'payment_widget_enabled'            => 'no',
+				'enabled'                           => 'no',
 				'payment_widget_condensed'          => 'no',
 				'payment_widget_placement_location' => '15',
 			)
@@ -42,7 +42,8 @@ class Qliro_One_Payment_Widget {
 			)
 		);
 
-		if ( 'yes' === $this->settings['payment_widget_enabled'] ) {
+		// Automatic placement only advertises Qliro while the gateway is enabled; shortcodes always work.
+		if ( wc_string_to_bool( $this->settings['enabled'] ) && 'none' !== $this->settings['payment_widget_placement_location'] ) {
 			add_action( 'woocommerce_single_product_summary', array( $this, 'payment_widget_hook' ), 1 );
 		}
 	}
