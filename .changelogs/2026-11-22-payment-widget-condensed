@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+The "Payment widget condensed copy" setting now takes effect. Previously the payment widget always showed the full-length copy, even with "Display with a condensed and shorter copy" ticked.
