@@ -69,7 +69,7 @@ class Qliro_One_Payment_Widget {
 	 * @param array $atts The attributes for the shortcode.
 	 */
 	public function qliro_one_payment_widget( $atts ) {
-		return $this->get_payment_widget_html( $atts );
+		return $this->get_payment_widget_html( $atts ); // phpcs:ignore Universal.CodeAnalysis.ConstructorDestructorReturn.ReturnValueFound -- Shortcode callback; __construct() exists, so this is not a constructor.
 	}
 
 	/**
@@ -114,10 +114,10 @@ class Qliro_One_Payment_Widget {
 		$data_condensed = wc_string_to_bool( $this->settings['payment_widget_data_condensed'] ) ? ' data-condensed' : '';
 
 		$lang = substr( get_locale(), 0, 2 );
-		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ) ) ? $lang : 'en';
+		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ), true ) ? $lang : 'en';
 
 		$country = ( new WC_Countries() )->get_base_country();
-		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ) ) ? $country : '';
+		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ), true ) ? $country : '';
 
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
