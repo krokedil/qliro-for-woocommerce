@@ -79,7 +79,7 @@ class Qliro_One_Banner_Widget {
 	 * Add banner widget via shortcode.
 	 */
 	public function qliro_one_banner_widget() {
-		return $this->get_banner_widget_html();
+		return $this->get_banner_widget_html(); // phpcs:ignore Universal.CodeAnalysis.ConstructorDestructorReturn.ReturnValueFound -- Not a constructor; the class has __construct().
 	}
 
 	/**
@@ -104,10 +104,10 @@ class Qliro_One_Banner_Widget {
 	 */
 	private function get_banner_widget_html() {
 		$lang = substr( get_locale(), 0, 2 );
-		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ) ) ? $lang : 'en';
+		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ), true ) ? $lang : 'en';
 
 		$country = ( new WC_Countries() )->get_base_country();
-		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ) ) ? $country : '';
+		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ), true ) ? $country : '';
 
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
