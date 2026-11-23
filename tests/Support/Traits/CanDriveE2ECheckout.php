@@ -39,11 +39,18 @@ trait CanDriveE2ECheckout {
 	 */
 	public const DEFAULT_QLIRO_METHOD = 'QLIRO_INVOICE::INVOICE';
 
-	/** The wording a method's card starts with, on the screens that have no radios. */
+	/** The wordings a method's card starts with, on the screens that have no radios. */
 	private const QLIRO_METHOD_LABELS = [
-		'QLIRO_INVOICE::INVOICE' => 'Qliro Invoice',
-		'CREDITCARDS::'          => 'Pay by card',
-		'SWISH::'                => 'Pay by Swish',
+		'QLIRO_INVOICE::INVOICE' => [ 'Within 14 days', 'Qliro Invoice' ],
+		'CREDITCARDS::'          => [ 'Pay by card' ],
+		'SWISH::'                => [ 'Pay by Swish' ],
+	];
+
+	/** The "When do you want to pay?" tab a method's card sits under, on the screens that have one. */
+	private const QLIRO_METHOD_TABS = [
+		'QLIRO_INVOICE::INVOICE' => 'Pay later',
+		'CREDITCARDS::'          => 'Before delivery',
+		'SWISH::'                => 'Before delivery',
 	];
 
 	/** The container the plugin renders Qliro's snippet into, and Qliro's iframe in it. */
@@ -91,7 +98,8 @@ const visible = el => {
 document.querySelectorAll('[data-qliro-e2e]').forEach(e => e.removeAttribute('data-qliro-e2e'));
 const fields = %s;
 const method = %s;
-const methodLabel = %s;
+const methodLabels = %s;
+const methodTab = %s;
 const label = el => (el.innerText || el.value || '').replace(/\s+/g, ' ').trim();
 const buttons = [...document.querySelectorAll('button')].filter(visible);
 const empty = [...document.querySelectorAll('input[name]')]
@@ -100,9 +108,13 @@ const empty = [...document.querySelectorAll('input[name]')]
 const radios = [...document.querySelectorAll('input[type=radio]')];
 // Some screens offer the methods as cards without a radio, so fall back on the wording.
 const card = [...document.querySelectorAll('[class*=selectable_container]')]
-	.find(c => visible(c) && label(c).toLowerCase().startsWith(methodLabel.toLowerCase()));
+	.find(c => visible(c) && methodLabels.some(l => label(c).toLowerCase().startsWith(l.toLowerCase())));
 const option = radios.find(r => r.value === method) || card;
 if (option) option.setAttribute('data-qliro-e2e', 'option');
+// Some screens group the methods under "When do you want to pay?" tabs and show one group at a time.
+const tab = option ? null : [...document.querySelectorAll('[class*=tab_tab__]')]
+	.find(t => visible(t) && label(t) === methodTab);
+if (tab) tab.setAttribute('data-qliro-e2e', 'tab');
 const onward = /^(continue|proceed to payment|complete purchase|pay\b)/i;
 const enabled = b => !b.disabled && b.getAttribute('aria-disabled') !== 'true';
 // "Try again" is Qliro's own recovery from a purchase it failed to process, and wins
@@ -118,6 +130,7 @@ return JSON.stringify({
 	addPin: !!addPin && !document.querySelector('input[name=personalNumber]'),
 	options: radios.map(r => r.value),
 	optionFound: !!option,
+	tab: tab ? methodTab : null,
 	optionChecked: !!option && (option.checked === true || /selected|active|checked/i.test(option.className) || !!option.querySelector('input:checked')),
 	press: press ? label(press) : null,
 	retry: !!retry,
@@ -340,6 +353,10 @@ JS;
 				}
 				// Fields to fill mean a new screen, whose button is pressed once it is filled.
 				$pressed = [ 'label' => null, 'at' => 0.0 ];
+			} elseif ( $screen['tab'] !== null && $this->mayPress( "tab {$screen['tab']}", $pressed ) ) {
+				$moves[] = "open tab \"{$screen['tab']}\"";
+				$this->executeJS( "document.querySelector('[data-qliro-e2e=tab]').click();" );
+				$pressed = [ 'label' => "tab {$screen['tab']}", 'at' => microtime( true ) ];
 			} elseif ( $screen['optionFound'] && ! $buy ) {
 				// The payment methods are on offer, which is as far as filling in goes.
 				return;
@@ -381,7 +398,8 @@ JS;
 			self::QLIRO_READ_SCREEN_JS,
 			wp_json_encode( array_keys( self::QLIRO_FIELDS ) ),
 			wp_json_encode( $paymentMethod ),
-			wp_json_encode( self::QLIRO_METHOD_LABELS[ $paymentMethod ] ?? $paymentMethod )
+			wp_json_encode( self::QLIRO_METHOD_LABELS[ $paymentMethod ] ?? [ $paymentMethod ] ),
+			wp_json_encode( self::QLIRO_METHOD_TABS[ $paymentMethod ] ?? null )
 		);
 
 		return (array) json_decode( (string) $this->executeJS( $js ), true );
