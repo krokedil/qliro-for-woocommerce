@@ -97,7 +97,7 @@ class Qliro_One_Payment_Widget {
 
 		// If called via shortcode, use the amount attribute.
 		if ( isset( $atts['amount'] ) ) {
-			$price = max( 0, (float) $atts['amount'] );
+			$price = max( 0, (float) wc_format_decimal( $atts['amount'] ) );
 		} else {
 			$product = wc_get_product();
 			if ( ! $product ) {
