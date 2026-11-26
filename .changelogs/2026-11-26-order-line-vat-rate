@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+Order lines sent to Qliro from an existing order (renewals, captures, order updates, discounts and upsells) now send the VAT rate as a percentage, e.g. 25.00. Previously the rate was sent 100 times too high, e.g. 2500.00.

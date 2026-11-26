@@ -441,7 +441,7 @@ class Qliro_One_Helper_Order {
 	 */
 	public static function get_tax_rate( $order, $order_item ) {
 		// If we don't have any tax, return 0.
-		if ( '0' === $order_item->get_total_tax() ) {
+		if ( 0.0 === (float) $order_item->get_total_tax() ) {
 			return Qliro_One_Helper_Cart::format_vat_rate( 0 );
 		}
 
@@ -457,7 +457,7 @@ class Qliro_One_Helper_Order {
 			if ( key( $order_item->get_taxes()['total'] ) === $rate_id ) {
 				// Return the tax rate percent value.
 				$rate = (float) WC_Tax::get_rate_percent_value( $rate_id );
-				return Qliro_One_Helper_Cart::format_vat_rate( $rate * 100 );
+				return Qliro_One_Helper_Cart::format_vat_rate( $rate );
 			}
 		}
 		return Qliro_One_Helper_Cart::format_vat_rate( 0 );
