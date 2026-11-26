@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+The payment widget shortcode now only accepts a number as its amount. Other values could previously add markup or script to the page.
