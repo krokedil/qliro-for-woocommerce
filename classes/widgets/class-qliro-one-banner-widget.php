@@ -108,7 +108,7 @@ class Qliro_One_Banner_Widget {
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
 
-		$widget = '<div class="qliro-banner" data-method="' . esc_attr( $this->settings['banner_widget_data_method'] ) . '" data-color="mint"' . ( 'yes' === $this->settings['banner_widget_data_shadow'] ? ' data-shadow' : '' ) . '></div>';
+		$widget = '<div class="qliro-banner" data-method="' . esc_attr( $this->settings['banner_widget_data_method'] ) . '" data-color="mint"' . ( wc_string_to_bool( $this->settings['banner_widget_data_shadow'] ?? 'no' ) ? ' data-shadow' : '' ) . '></div>';
 
 		return $widget;
 	}
