@@ -50,9 +50,16 @@ class PaymentWidgetTest extends IntegrationTestCase {
 		];
 	}
 
-	/** Renders the shortcode and returns its only element. */
+	/**
+	 * Renders the shortcode and returns its only element.
+	 * Delimits with the quote the amount lacks, so the whole value reaches the widget.
+	 */
 	private function render_widget( string $amount ): \DOMElement {
-		$html = do_shortcode( '[qliro_one_payment_widget amount="' . $amount . '"]' );
+		$quote     = str_contains( $amount, '"' ) ? "'" : '"';
+		$attribute = "amount={$quote}{$amount}{$quote}";
+		$this->assertSame( $amount, shortcode_parse_atts( $attribute )['amount'] );
+
+		$html = do_shortcode( "[qliro_one_payment_widget {$attribute}]" );
 
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR );
