@@ -84,7 +84,7 @@ class Qliro_One_Templates {
 	 */
 	public function add_country_selector() {
 		// The order received page is a checkout page, but we don't want to show the country selector there.
-		if ( ! is_checkout() || is_order_received_page() ) {
+		if ( ! is_checkout() || is_order_received_page() || QLIRO_WC()->checkout()->is_redirect_flow() ) {
 			return;
 		}
 
@@ -123,6 +123,11 @@ class Qliro_One_Templates {
 	 * @return string
 	 */
 	public function override_template( $template, $template_name ) {
+
+		if ( QLIRO_WC()->checkout()->is_redirect_flow() ) {
+			return $template;
+		}
+
 		if ( is_checkout() ) {
 			$confirm = filter_input( INPUT_GET, 'confirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			// Don't display Qliro template if we have a cart that doesn't needs payment.
@@ -227,6 +232,11 @@ class Qliro_One_Templates {
 	 * @return array
 	 */
 	public function add_body_class( $class ) { // phpcs:ignore
+
+		if ( QLIRO_WC()->checkout()->is_redirect_flow() ) {
+			return $class;
+		}
+
 		if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 
 			// Don't display Collector body classes if we have a cart that doesn't needs payment.

@@ -77,6 +77,35 @@ class Qliro_One_Fields {
 				'default'     => 'Safe and simple payments.',
 				'desc_tip'    => true,
 			),
+			'checkout_flow'                              => array(
+				'title'       => __( 'Checkout flow', 'qliro-for-woocommerce' ),
+				'type'        => 'select',
+				'options'     => array(
+					'embedded' => __( 'Embedded checkout (iframe)', 'qliro-for-woocommerce' ),
+					'redirect' => __( 'Redirect to Qliro payment page', 'qliro-for-woocommerce' ),
+				),
+				'description' => __( 'Embedded replaces the WooCommerce checkout with the Qliro iframe. Redirect keeps the standard WooCommerce checkout and shipping, lists Qliro as a payment method and sends the customer to Qliro to pay. In redirect mode, the iframe settings (shipping in the iframe, checkout layout and country selector) are not used.', 'qliro-for-woocommerce' ),
+				'default'     => 'embedded',
+				'desc_tip'    => false,
+			),
+			'checkout_logo'                              => array(
+				'title'       => __( 'Payment method logo', 'qliro-for-woocommerce' ),
+				'type'        => 'text',
+				'description' => __( 'URL of an image shown next to the payment method title in the checkout. Leave empty to show no logo.', 'qliro-for-woocommerce' ),
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'checkout_logo_width'                        => array(
+				'title'             => __( 'Payment method logo max width', 'qliro-for-woocommerce' ),
+				'type'              => 'number',
+				'description'       => __( 'Maximum width of the logo in pixels. Leave empty to use the theme default.', 'qliro-for-woocommerce' ),
+				'default'           => '',
+				'desc_tip'          => true,
+				'custom_attributes' => array(
+					'min'  => '1',
+					'step' => '1',
+				),
+			),
 			// API credentials.
 			'api_credentials_title'                      => array(
 				'title' => __( 'API credentials', 'qliro-for-woocommerce' ),

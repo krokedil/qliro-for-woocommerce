@@ -53,6 +53,11 @@ class Qliro_One_Checkout {
 	 * @return array
 	 */
 	public function add_shipping_data_input( $fields ) {
+		// Shipping is chosen in the WooCommerce checkout in the redirect flow, so there is no data from Qliro to carry.
+		if ( $this->is_redirect_flow() ) {
+			return $fields;
+		}
+
 		$default = '';
 
 		if ( is_checkout() ) {
@@ -130,7 +135,8 @@ class Qliro_One_Checkout {
 	 * @return void
 	 */
 	public function update_qliro_order() {
-		if ( ! $this->is_checkout_context() ) {
+		// The redirect flow creates the Qliro order from the WooCommerce order when it is placed, so there is no checkout order to keep in sync.
+		if ( $this->is_redirect_flow() || ! $this->is_checkout_context() ) {
 			return;
 		}
 
@@ -352,6 +358,10 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_shipping_in_iframe_enabled() {
+		if ( $this->is_redirect_flow() ) {
+			return false;
+		}
+
 		return isset( $this->settings['shipping_in_iframe'] ) && 'no' !== $this->settings['shipping_in_iframe'];
 	}
 
@@ -361,6 +371,10 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_integrated_shipping_enabled() {
+		if ( $this->is_redirect_flow() ) {
+			return false;
+		}
+
 		return isset( $this->settings['shipping_in_iframe'] ) && 'integrated_shipping' === $this->settings['shipping_in_iframe'];
 	}
 
@@ -370,7 +384,20 @@ class Qliro_One_Checkout {
 	 * @return bool
 	 */
 	public function is_wc_shipping_in_iframe_enabled() {
+		if ( $this->is_redirect_flow() ) {
+			return false;
+		}
+
 		return isset( $this->settings['shipping_in_iframe'] ) && 'wc_shipping' === $this->settings['shipping_in_iframe'];
+	}
+
+	/**
+	 * Whether the redirect flow is used, where the customer pays on Qliro's hosted payment page instead of in the iframe.
+	 *
+	 * @return bool
+	 */
+	public function is_redirect_flow() {
+		return 'redirect' === ( $this->settings['checkout_flow'] ?? 'embedded' );
 	}
 
 	/**
@@ -383,8 +410,8 @@ class Qliro_One_Checkout {
 	 * @return array
 	 */
 	public function maybe_unset_states_from_countries( $country_states ) {
-		// Only do this if Qliro is the selected payment method.
-		if ( empty( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
+		// Only do this if Qliro is the selected payment method, and the customer enters the address in the Qliro iframe.
+		if ( $this->is_redirect_flow() || empty( WC()->session ) || 'qliro_one' !== WC()->session->get( 'chosen_payment_method' ) ) {
 			return $country_states;
 		}
 

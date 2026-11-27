@@ -88,6 +88,11 @@ class Qliro_One_Assets {
 			return;
 		}
 
+		// The redirect flow has no iframe. Loading the script would also create a Qliro order from the cart through qliro_wc_get_snippet().
+		if ( QLIRO_WC()->checkout()->is_redirect_flow() ) {
+			return;
+		}
+
 		$script_version               = $this->qoc_is_script_debug_enabled();
 		$src                          = QLIRO_WC_PLUGIN_URL . '/assets/js/qliro-one-for-woocommerce' . $script_version . '.js';
 		$dependencies                 = array( 'jquery' );

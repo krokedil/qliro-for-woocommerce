@@ -140,38 +140,15 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 			);
 		}
 
-		// If we are on the pay for order page, we need to process the redirect flow instead.
+		// The pay for order page always pays on Qliro's payment page. The order can't change there, so an existing payment link is reused.
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
-			$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+			return $this->process_redirect_payment( $order, true );
+		}
 
-			if ( empty( $qliro_order_id ) ) {
-				// Create a new order and return the redirect url.
-				$result = QLIRO_WC()->api->create_qliro_one_order( $order_id );
-
-				if ( is_wp_error( $result ) ) {
-					throw new Exception( esc_html( $result->get_error_message() ) );
-				}
-
-				$payment_link = $result['PaymentLink'] ?? '';
-				$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
-				$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
-				$order->update_meta_data( '_qliro_one_hpp_url', $payment_link );
-				$order->save();
-
-				$redirect_url = $payment_link;
-			} else {
-				$redirect_url = $order->get_meta( '_qliro_one_hpp_url' );
-			}
-
-			if ( empty( $redirect_url ) ) {
-				$error = __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' );
-				throw new Exception( esc_html( $error ) );
-			}
-
-			return array(
-				'result'   => 'success',
-				'redirect' => $redirect_url,
-			);
+		// In the redirect flow, the customer can come back from Qliro and change the cart, which WooCommerce writes to the same order.
+		if ( QLIRO_WC()->checkout()->is_redirect_flow() ) {
+			qliro_one_unset_sessions();
+			return $this->process_redirect_payment( $order, false );
 		}
 
 		// Try to get qliro order id from wc session.
@@ -199,6 +176,71 @@ class Qliro_One_Gateway extends WC_Payment_Gateway {
 		return array(
 			'result' => 'success',
 		);
+	}
+
+	/**
+	 * Create a Qliro order from the WooCommerce order and redirect the customer to Qliro's payment page.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param bool     $reuse_existing Whether to reuse the payment link of a Qliro order already created for the order.
+	 *
+	 * @throws Exception Throws if the payment link could not be retrieved.
+	 * @return array
+	 */
+	private function process_redirect_payment( $order, $reuse_existing ) {
+		$qliro_order_id = $order->get_meta( '_qliro_one_order_id' );
+
+		if ( $reuse_existing && ! empty( $qliro_order_id ) ) {
+			$redirect_url = $order->get_meta( '_qliro_one_hpp_url' );
+		} else {
+			$result = QLIRO_WC()->api->create_qliro_one_order( $order->get_id() );
+
+			if ( is_wp_error( $result ) ) {
+				// The API layer usually shows the error to the customer already, and throwing would show it a second time.
+				if ( wc_has_notice( $result->get_error_message(), 'error' ) ) {
+					return array( 'result' => 'failure' );
+				}
+
+				throw new Exception( esc_html( $result->get_error_message() ) );
+			}
+
+			$payment_link = $result['PaymentLink'] ?? '';
+			$order->update_meta_data( '_qliro_one_order_id', $result['OrderId'] );
+			$order->update_meta_data( '_qliro_one_merchant_reference', $order->get_order_number() );
+			$order->update_meta_data( '_qliro_one_hpp_url', $payment_link );
+			$order->save();
+
+			$redirect_url = $payment_link;
+		}
+
+		if ( empty( $redirect_url ) ) {
+			$error = __( 'Could not retrieve the Qliro payment link. Please contact the store administrator.', 'qliro-for-woocommerce' );
+			throw new Exception( esc_html( $error ) );
+		}
+
+		return array(
+			'result'   => 'success',
+			'redirect' => $redirect_url,
+		);
+	}
+
+	/**
+	 * Get the logo shown next to the payment method title in the checkout.
+	 *
+	 * @return string
+	 */
+	public function get_icon() {
+		$logo_url = $this->get_option( 'checkout_logo', '' );
+
+		if ( empty( $logo_url ) ) {
+			return parent::get_icon();
+		}
+
+		$width = absint( $this->get_option( 'checkout_logo_width', '' ) );
+		$style = $width > 0 ? sprintf( ' style="max-width:%dpx"', $width ) : '';
+		$icon  = sprintf( '<img src="%s" alt="%s"%s />', esc_url( $logo_url ), esc_attr( $this->get_title() ), $style );
+
+		return apply_filters( 'woocommerce_gateway_icon', $icon, $this->id );
 	}
 
 	/** Process refund request.

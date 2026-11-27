@@ -1,0 +1,4 @@
+Type: Add
+Needs Documentation: yes
+
+New "Checkout flow" setting with a redirect option. In redirect mode, the standard WooCommerce checkout and shipping are kept, Qliro is listed as a regular payment method, and the customer is sent to Qliro's payment page to pay. A new "Payment method logo" setting, with an optional max width, sets the logo shown next to the payment method in the checkout.
