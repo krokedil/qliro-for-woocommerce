@@ -98,7 +98,7 @@ class Qliro_One_Payment_Widget {
 
 		// If called via shortcode, use the amount attribute.
 		if ( isset( $atts['amount'] ) ) {
-			$price = max( 0, $atts['amount'] );
+			$price = max( 0, (float) wc_format_decimal( $atts['amount'] ) );
 		} else {
 			$product = wc_get_product();
 			if ( ! $product ) {
@@ -123,7 +123,7 @@ class Qliro_One_Payment_Widget {
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
 
-		$widget = "<div class='qliro-widget' data-amount='{$price}' {$data_condensed}></div>";
+		$widget = "<div class='qliro-widget' data-amount='" . esc_attr( $price ) . "' {$data_condensed}></div>";
 
 		return $widget;
 	}

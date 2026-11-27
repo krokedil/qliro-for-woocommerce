@@ -1,0 +1,4 @@
+Type: Fix
+Needs Documentation: no
+
+The payment widget shortcode now reads its amount as a number in the store's price format, so "1299,50" works on stores that use a decimal comma. Other content in the amount could previously add markup or script to the page.
