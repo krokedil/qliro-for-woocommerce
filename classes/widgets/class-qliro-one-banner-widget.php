@@ -27,11 +27,10 @@ class Qliro_One_Banner_Widget {
 		$this->settings = wp_parse_args(
 			get_option( 'woocommerce_qliro_one_settings', array() ),
 			array(
-				'banner_widget_enabled'                 => 'no',
+				'enabled'                               => 'no',
 				'banner_widget_data_shadow'             => 'no',
 				'banner_widget_data_method'             => 'campaign',
-				'banner_widget_placement_location'      => '15',
-				'banner_widget_cart_enabled'            => 'no',
+				'banner_widget_placement_location'      => 'none',
 				'banner_widget_cart_placement_location' => 'woocommerce_cart_collaterals',
 			)
 		);
@@ -45,12 +44,17 @@ class Qliro_One_Banner_Widget {
 			)
 		);
 
-		if ( 'yes' === $this->settings['banner_widget_enabled'] ) {
+		// Automatic placement only advertises Qliro while the gateway is enabled; shortcodes always work.
+		if ( ! wc_string_to_bool( $this->settings['enabled'] ) ) {
+			return;
+		}
+
+		if ( 'none' !== $this->settings['banner_widget_placement_location'] ) {
 			add_action( 'woocommerce_single_product_summary', array( $this, 'banner_widget_hook' ), 1 );
 		}
 
-		if ( 'yes' === $this->settings['banner_widget_cart_enabled'] ) {
-			add_action( $this->settings['banner_widget_cart_placement_location'] ?? 'woocommerce_cart_collaterals', array( $this, 'add_banner_widget_to_page' ), apply_filters( 'qliro_banner_widget_cart_priority', 5 ) );
+		if ( 'none' !== $this->settings['banner_widget_cart_placement_location'] ) {
+			add_action( $this->settings['banner_widget_cart_placement_location'], array( $this, 'add_banner_widget_to_page' ), apply_filters( 'qliro_banner_widget_cart_priority', 5 ) );
 		}
 	}
 
@@ -75,7 +79,7 @@ class Qliro_One_Banner_Widget {
 	 * Add banner widget via shortcode.
 	 */
 	public function qliro_one_banner_widget() {
-		return $this->get_banner_widget_html();
+		return $this->get_banner_widget_html(); // phpcs:ignore Universal.CodeAnalysis.ConstructorDestructorReturn.ReturnValueFound -- Not a constructor; the class has __construct().
 	}
 
 	/**
@@ -100,10 +104,10 @@ class Qliro_One_Banner_Widget {
 	 */
 	private function get_banner_widget_html() {
 		$lang = substr( get_locale(), 0, 2 );
-		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ) ) ? $lang : 'en';
+		$lang = in_array( $lang, array( 'sv', 'no', 'fi', 'da' ), true ) ? $lang : 'en';
 
 		$country = ( new WC_Countries() )->get_base_country();
-		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ) ) ? $country : '';
+		$country = in_array( $country, array( 'SE', 'NO', 'FI', 'DK' ), true ) ? $country : '';
 
 		$src = "https://widgets.qliro.com/?c={$country}&l={$lang}";
 		wp_enqueue_script( 'qliro-one-widget', $src, array(), QLIRO_WC_VERSION, true );
