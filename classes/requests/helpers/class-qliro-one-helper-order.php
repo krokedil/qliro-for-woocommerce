@@ -137,7 +137,8 @@ class Qliro_One_Helper_Order {
 	/**
 	 * Formats the order lines for a refund request.
 	 *
-	 * @param int $order_id The WooCommerce Order ID.
+	 * @param array $items    The items to refund, each with an item_id.
+	 * @param int   $order_id The WooCommerce Order ID.
 	 * @return array
 	 */
 	public static function get_return_items_from_items( $items, $order_id ) {
@@ -339,6 +340,7 @@ class Qliro_One_Helper_Order {
 	 * @param array    $return_fees The array of return fees.
 	 * @param array    $order_items The order items to send to Qliro for refund.
 	 * @param WC_Order $order The WooCommerce order that is refunded.
+	 * @param bool     $calc_return_fee Whether to calculate a return fee from price differences.
 	 *
 	 * @return array
 	 */
@@ -397,13 +399,25 @@ class Qliro_One_Helper_Order {
 				function ( $original_item ) use ( $reference, $order ) {
 					switch ( $original_item->get_type() ) {
 						case 'line_item':
-							/** @var WC_Order_Item_Product $original_item */
+							/**
+							 * A product line matches on SKU, product ID or variation ID.
+							 *
+							 * @var WC_Order_Item_Product $original_item
+							 */
 							return $original_item->get_product()->get_sku() === $reference || $original_item->get_product_id() === $reference || $original_item->get_variation_id() === $reference;
 						case 'shipping':
-							/** @var WC_Order_Item_Shipping $original_item */
+							/**
+							 * A shipping line matches on method ID or the stored shipping reference.
+							 *
+							 * @var WC_Order_Item_Shipping $original_item
+							 */
 							return $original_item->get_method_id() === $reference || $original_item->get_meta( 'qliro_shipping_method' ) === $reference || $order->get_meta( '_qliro_one_shipping_reference' ) === $reference;
 						case 'fee':
-							/** @var WC_Order_Item_Fee $original_item */
+							/**
+							 * A fee line matches on its formatted name.
+							 *
+							 * @var WC_Order_Item_Fee $original_item
+							 */
 							return qliro_one_format_fee_reference( $original_item->get_name() ) === $reference;
 						default:
 							return false;
@@ -441,7 +455,7 @@ class Qliro_One_Helper_Order {
 	 */
 	public static function get_tax_rate( $order, $order_item ) {
 		// If we don't have any tax, return 0.
-		if ( '0' === $order_item->get_total_tax() ) {
+		if ( 0.0 === (float) $order_item->get_total_tax() ) {
 			return Qliro_One_Helper_Cart::format_vat_rate( 0 );
 		}
 
@@ -457,7 +471,7 @@ class Qliro_One_Helper_Order {
 			if ( key( $order_item->get_taxes()['total'] ) === $rate_id ) {
 				// Return the tax rate percent value.
 				$rate = (float) WC_Tax::get_rate_percent_value( $rate_id );
-				return Qliro_One_Helper_Cart::format_vat_rate( $rate * 100 );
+				return Qliro_One_Helper_Cart::format_vat_rate( $rate );
 			}
 		}
 		return Qliro_One_Helper_Cart::format_vat_rate( 0 );
